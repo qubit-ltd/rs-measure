@@ -68,18 +68,21 @@ macro_rules! define_measurement_unit {
 
             const QUANTITY: &'static str = $quantity_name;
 
+            #[inline(always)]
             fn all() -> &'static [Self] {
                 &[
                     $(Self::$variant,)+
                 ]
             }
 
+            #[inline(always)]
             fn symbol(self) -> &'static str {
                 match self {
                     $(Self::$variant => $symbol,)+
                 }
             }
 
+            #[inline(always)]
             fn to_uom(self, value: rust_decimal::Decimal) -> Self::Quantity {
                 let value = super::decimal_to_f64(value);
                 match self {
@@ -87,6 +90,7 @@ macro_rules! define_measurement_unit {
                 }
             }
 
+            #[inline(always)]
             fn value_from_uom(self, quantity: Self::Quantity) -> Result<rust_decimal::Decimal, crate::measure::MeasurementError> {
                 let value = match self {
                     $(Self::$variant => quantity.get::<$uom_unit>(),)+
@@ -96,6 +100,7 @@ macro_rules! define_measurement_unit {
         }
 
         impl std::fmt::Display for $unit {
+            #[inline]
             fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str(crate::measure::Unit::symbol(*self))
             }
@@ -104,6 +109,7 @@ macro_rules! define_measurement_unit {
         impl std::str::FromStr for $unit {
             type Err = crate::measure::MeasurementError;
 
+            #[inline]
             fn from_str(input: &str) -> Result<Self, Self::Err> {
                 match input.trim() {
                     $($symbol $(| $alias)* => Ok(Self::$variant),)+
@@ -116,6 +122,7 @@ macro_rules! define_measurement_unit {
         }
 
         impl serde::Serialize for $unit {
+            #[inline]
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: serde::Serializer,
@@ -125,6 +132,7 @@ macro_rules! define_measurement_unit {
         }
 
         impl<'de> serde::Deserialize<'de> for $unit {
+            #[inline]
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
                 D: serde::Deserializer<'de>,
@@ -139,6 +147,7 @@ macro_rules! define_measurement_unit {
 pub(super) use define_measurement_unit;
 
 /// Converts a decimal value into a finite `f64` for `uom`.
+#[inline(always)]
 fn decimal_to_f64(value: Decimal) -> f64 {
     value
         .to_f64()
@@ -146,6 +155,7 @@ fn decimal_to_f64(value: Decimal) -> f64 {
 }
 
 /// Converts a finite `f64` value from `uom` into `Decimal`.
+#[inline(always)]
 fn decimal_from_f64(value: f64) -> Result<Decimal, MeasurementError> {
     match Decimal::from_f64(value) {
         Some(value) => Ok(value),
