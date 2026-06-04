@@ -264,6 +264,10 @@ assert_eq!(speed.to_uom().get::<meter_per_second>(), 1.0);
 
 ## Supported Quantity Families
 
+Voltage is modeled by the SI electric potential quantity: use
+`unit::ElectricPotential`; `measurement::Voltage` is an ergonomic alias of
+`measurement::ElectricPotential`.
+
 | Measurement alias | Unit family | Examples |
 |-------------------|-------------|----------|
 | `measurement::Length` | `unit::Length` | `µm`, `mm`, `cm`, `m`, `km`, `in`, `ft`, `mi` |
@@ -279,6 +283,49 @@ assert_eq!(speed.to_uom().get::<meter_per_second>(), 1.0);
 | `measurement::MassDensity` | `unit::MassDensity` | `kg/m³`, `g/m³`, `g/cm³`, `lb/ft³`, `lb/gal` |
 | `measurement::Temperature` | `unit::Temperature` | `K`, `°C`, `°F`, `°R` |
 | `measurement::TemperatureInterval` | `unit::TemperatureInterval` | `K`, `°C`, `°F`, `°R` |
+| `measurement::ElectricCurrent` | `unit::ElectricCurrent` | `pA`, `nA`, `µA`, `mA`, `A`, `kA`, `MA` |
+| `measurement::ElectricPotential` / `measurement::Voltage` | `unit::ElectricPotential` | `nV`, `µV`, `mV`, `V`, `kV`, `MV` |
+| `measurement::ElectricCharge` | `unit::ElectricCharge` | `µC`, `mC`, `C`, `kC`, `A · h`, `mA · h` |
+| `measurement::Capacitance` | `unit::Capacitance` | `pF`, `nF`, `µF`, `mF`, `F` |
+| `measurement::ElectricalResistance` | `unit::ElectricalResistance` | `µΩ`, `mΩ`, `Ω`, `kΩ`, `MΩ`, `GΩ` |
+| `measurement::ElectricalConductance` | `unit::ElectricalConductance` | `µS`, `mS`, `S` |
+| `measurement::Inductance` | `unit::Inductance` | `nH`, `µH`, `mH`, `H` |
+| `measurement::Force` | `unit::Force` | `mN`, `N`, `kN`, `MN`, `gf`, `kgf`, `lbf` |
+| `measurement::Acceleration` | `unit::Acceleration` | `mm/s²`, `m/s²`, `ft/s²`, `g₀` |
+| `measurement::Torque` | `unit::Torque` | `mN · m`, `N · m`, `kN · m`, `lbf · ft`, `lbf · in` |
+| `measurement::Angle` | `unit::Angle` | `rad`, `°`, `r`, `′`, `″` |
+| `measurement::AngularVelocity` | `unit::AngularVelocity` | `rad/s`, `°/s`, `rps`, `rpm` |
+| `measurement::VolumeRate` | `unit::VolumeRate` | `m³/s`, `m³/h`, `mL/s`, `L/s`, `L/min`, `gal/min` |
+| `measurement::MassRate` | `unit::MassRate` | `mg/s`, `g/s`, `kg/s`, `kg/h`, `t/h`, `lb/h` |
+| `measurement::DynamicViscosity` | `unit::DynamicViscosity` | `µPa · s`, `mPa · s`, `Pa · s`, `P`, `cP` |
+| `measurement::KinematicViscosity` | `unit::KinematicViscosity` | `mm²/s`, `m²/s`, `St`, `cSt` |
+| `measurement::AmountOfSubstance` | `unit::AmountOfSubstance` | `µmol`, `mmol`, `mol`, `kmol`, `particle` |
+| `measurement::MolarConcentration` | `unit::MolarConcentration` | `nmol/L`, `µmol/L`, `mmol/L`, `mol/L`, `M`, `mol/m³` |
+| `measurement::MassConcentration` | `unit::MassConcentration` | `µg/L`, `mg/L`, `g/L`, `kg/m³`, `mg/dL`, `g/dL` |
+| `measurement::CatalyticActivity` | `unit::CatalyticActivity` | `µkat`, `mkat`, `kat`, `U`, `mU` |
+| `measurement::Radioactivity` | `unit::Radioactivity` | `Bq`, `kBq`, `MBq`, `Ci`, `mCi`, `µCi`, `dpm` |
+| `measurement::ElectricField` | `unit::ElectricField` | `V/m`, `V/cm`, `V/mm`, `V/µm`, `kV/mm`, `MV/m` |
+| `measurement::ElectricCurrentDensity` | `unit::ElectricCurrentDensity` | `A/m²`, `A/cm²`, `A/mm²` |
+| `measurement::ElectricalConductivity` | `unit::ElectricalConductivity` | `S/m`, `S/cm` |
+| `measurement::ElectricalResistivity` | `unit::ElectricalResistivity` | `mΩ · m`, `Ω · m`, `Ω · cm`, `Ω · mm²/m` |
+| `measurement::MagneticFluxDensity` | `unit::MagneticFluxDensity` | `nT`, `µT`, `mT`, `T`, `G` |
+| `measurement::MagneticFlux` | `unit::MagneticFlux` | `µWb`, `mWb`, `Wb`, `Mx` |
+| `measurement::MagneticFieldStrength` | `unit::MagneticFieldStrength` | `A/m`, `A/cm`, `Oe` |
+| `measurement::HeatCapacity` | `unit::HeatCapacity` | `J/K`, `kJ/K`, `J/°C`, `cal/K`, `Btu/°F` |
+| `measurement::SpecificHeatCapacity` | `unit::SpecificHeatCapacity` | `J/(kg · K)`, `kJ/(kg · K)`, `J/(g · °C)`, `cal/(g · K)`, `Btu/(lb · °F)` |
+| `measurement::ThermalConductivity` | `unit::ThermalConductivity` | `mW/(m · K)`, `W/(m · K)`, `kW/(m · K)`, `W/(m · °C)` |
+| `measurement::ThermalResistance` | `unit::ThermalResistance` | `K/mW`, `K/W`, `K/kW` |
+| `measurement::HeatFluxDensity` | `unit::HeatFluxDensity` | `mW/m²`, `W/m²`, `kW/m²`, `W/cm²` |
+| `measurement::SurfaceTension` | `unit::SurfaceTension` | `mN/m`, `N/m`, `dyn/cm`, `J/m²` |
+| `measurement::LuminousIntensity` | `unit::LuminousIntensity` | `mcd`, `cd`, `kcd` |
+| `measurement::Illuminance` | `unit::Illuminance` | `lx`, `klx`, `fc` |
+| `measurement::Luminance` | `unit::Luminance` | `cd/m²`, `cd/cm²`, `cd/ft²`, `fl`, `sb` |
+| `measurement::SolidAngle` | `unit::SolidAngle` | `sr`, `sp`, `°²` |
+| `measurement::Molality` | `unit::Molality` | `mol/kg` |
+| `measurement::MolarMass` | `unit::MolarMass` | `mg/mol`, `g/mol`, `kg/mol` |
+| `measurement::MolarVolume` | `unit::MolarVolume` | `cm³/mol`, `dm³/mol`, `m³/mol` |
+| `measurement::CatalyticActivityConcentration` | `unit::CatalyticActivityConcentration` | `kat/m³`, `U/L`, `mU/mL` |
+| `measurement::SpecificRadioactivity` | `unit::SpecificRadioactivity` | `Bq/kg`, `Ci/kg`, `dpm/kg` |
 
 ## Persistence Strategy
 
