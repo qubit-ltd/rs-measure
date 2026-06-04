@@ -40,6 +40,6 @@ define_measurement_unit! {
         /// Day (`d`).
         Day => "d", day;
         /// Year (`a`).
-        Year => "a", year;
+        Year => "a" | "yr" | "year", year;
     }
 }

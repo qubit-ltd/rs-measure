@@ -16,6 +16,24 @@ use qubit_measure::{
 use serde_json::json;
 use std::str::FromStr;
 
+fn assert_unit_symbols_parse_display_and_serde_round_trip<U>()
+where
+    U: Unit + serde::Serialize + for<'de> serde::Deserialize<'de> + std::fmt::Debug,
+{
+    for unit in U::all() {
+        assert_eq!(U::from_str(unit.symbol()).expect("unit symbol should parse"), *unit,);
+        assert_eq!(unit.to_string(), unit.symbol());
+
+        let value = serde_json::to_value(unit).expect("unit should serialize");
+
+        assert_eq!(value, json!(unit.symbol()));
+        assert_eq!(
+            serde_json::from_value::<U>(value).expect("unit should deserialize"),
+            *unit,
+        );
+    }
+}
+
 #[test]
 fn test_units_expose_quantity_and_symbol() {
     assert_eq!(unit::Length::QUANTITY, "length");
@@ -100,28 +118,20 @@ fn test_production_quantity_family_units_are_available() {
 }
 
 #[test]
-fn test_unit_from_str_parses_all_symbols() {
-    for unit in unit::Length::all() {
-        assert_eq!(
-            unit::Length::from_str(unit.symbol()).expect("unit symbol should parse"),
-            *unit,
-        );
-        assert_eq!(unit.to_string(), unit.symbol());
-    }
-    for unit in unit::Mass::all() {
-        assert_eq!(
-            unit::Mass::from_str(unit.symbol()).expect("unit symbol should parse"),
-            *unit,
-        );
-        assert_eq!(unit.to_string(), unit.symbol());
-    }
-    for unit in unit::Time::all() {
-        assert_eq!(
-            unit::Time::from_str(unit.symbol()).expect("unit symbol should parse"),
-            *unit,
-        );
-        assert_eq!(unit.to_string(), unit.symbol());
-    }
+fn test_unit_symbols_parse_display_and_serde_round_trip() {
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Length>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Area>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Volume>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Mass>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Time>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Pressure>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Energy>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Power>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Velocity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Frequency>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MassDensity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Temperature>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::TemperatureInterval>();
 }
 
 #[test]
@@ -157,6 +167,54 @@ fn test_unit_from_str_accepts_ascii_micro_aliases() {
 }
 
 #[test]
+fn test_unit_from_str_accepts_common_input_aliases() {
+    assert_eq!(
+        unit::Area::from_str("m2").expect("ASCII square meter should parse"),
+        unit::Area::SquareMeter
+    );
+    assert_eq!(
+        unit::Area::from_str("ft^2").expect("ASCII square foot should parse"),
+        unit::Area::SquareFoot
+    );
+    assert_eq!(
+        unit::Volume::from_str("m3").expect("ASCII cubic meter should parse"),
+        unit::Volume::CubicMeter
+    );
+    assert_eq!(
+        unit::Volume::from_str("in^3").expect("ASCII cubic inch should parse"),
+        unit::Volume::CubicInch
+    );
+    assert_eq!(
+        unit::MassDensity::from_str("kg/m3").expect("ASCII kilogram per cubic meter should parse"),
+        unit::MassDensity::KilogramPerCubicMeter
+    );
+    assert_eq!(
+        unit::MassDensity::from_str("g/cm^3").expect("ASCII gram per cubic centimeter should parse"),
+        unit::MassDensity::GramPerCubicCentimeter
+    );
+    assert_eq!(
+        unit::Pressure::from_str("mmHg").expect("millimeter mercury alias should parse"),
+        unit::Pressure::MillimeterOfMercury
+    );
+    assert_eq!(
+        unit::Velocity::from_str("mph").expect("mile per hour alias should parse"),
+        unit::Velocity::MilePerHour
+    );
+    assert_eq!(
+        unit::Velocity::from_str("kph").expect("kilometer per hour alias should parse"),
+        unit::Velocity::KilometerPerHour
+    );
+    assert_eq!(
+        unit::Time::from_str("year").expect("year alias should parse"),
+        unit::Time::Year
+    );
+    assert_eq!(
+        unit::Time::from_str("yr").expect("year abbreviation should parse"),
+        unit::Time::Year
+    );
+}
+
+#[test]
 fn test_unit_from_str_rejects_unknown_symbol_with_quantity_context() {
     let error = unit::Length::from_str("kg").expect_err("wrong quantity unit should fail");
 
@@ -167,19 +225,6 @@ fn test_unit_from_str_rejects_unknown_symbol_with_quantity_context() {
             unit: "kg".to_owned(),
         },
     );
-}
-
-#[test]
-fn test_unit_serde_round_trips_all_symbols() {
-    for unit in unit::Length::all() {
-        let value = serde_json::to_value(unit).expect("unit should serialize");
-
-        assert_eq!(value, json!(unit.symbol()));
-        assert_eq!(
-            serde_json::from_value::<unit::Length>(value).expect("unit should deserialize"),
-            *unit,
-        );
-    }
 }
 
 #[test]

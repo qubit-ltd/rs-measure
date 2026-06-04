@@ -34,11 +34,11 @@ define_measurement_unit! {
         /// Meter per second (`m/s`).
         MeterPerSecond => "m/s", meter_per_second;
         /// Kilometer per hour (`km/h`).
-        KilometerPerHour => "km/h", kilometer_per_hour;
+        KilometerPerHour => "km/h" | "km/hr" | "kph", kilometer_per_hour;
         /// Foot per second (`ft/s`).
         FootPerSecond => "ft/s", foot_per_second;
         /// Mile per hour (`mi/h`).
-        MilePerHour => "mi/h", mile_per_hour;
+        MilePerHour => "mi/h" | "mi/hr" | "mph", mile_per_hour;
         /// Knot (`kn`).
         Knot => "kn", knot;
     }

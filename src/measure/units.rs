@@ -55,6 +55,7 @@ macro_rules! define_measurement_unit {
         }
     ) => {
         $(#[$enum_attr])*
+        #[non_exhaustive]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
         pub enum $unit {
             $(

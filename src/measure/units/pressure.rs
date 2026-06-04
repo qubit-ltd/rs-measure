@@ -50,7 +50,7 @@ define_measurement_unit! {
         /// Standard atmosphere (`atm`).
         Atmosphere => "atm", atmosphere;
         /// Millimeter of mercury (`mm Hg`).
-        MillimeterOfMercury => "mm Hg", millimeter_of_mercury;
+        MillimeterOfMercury => "mm Hg" | "mmHg", millimeter_of_mercury;
         /// Pound-force per square inch (`psi`).
         Psi => "psi", psi;
     }

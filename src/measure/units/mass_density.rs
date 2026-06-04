@@ -23,13 +23,13 @@ define_measurement_unit! {
     /// Units for persisted `uom` mass density quantities.
     pub enum MassDensity for UomMassDensity, "mass density" {
         /// Kilogram per cubic meter (`kg/m³`).
-        KilogramPerCubicMeter => "kg/m³", kilogram_per_cubic_meter;
+        KilogramPerCubicMeter => "kg/m³" | "kg/m3" | "kg/m^3", kilogram_per_cubic_meter;
         /// Gram per cubic meter (`g/m³`).
-        GramPerCubicMeter => "g/m³", gram_per_cubic_meter;
+        GramPerCubicMeter => "g/m³" | "g/m3" | "g/m^3", gram_per_cubic_meter;
         /// Gram per cubic centimeter (`g/cm³`).
-        GramPerCubicCentimeter => "g/cm³", gram_per_cubic_centimeter;
+        GramPerCubicCentimeter => "g/cm³" | "g/cm3" | "g/cm^3", gram_per_cubic_centimeter;
         /// Pound per cubic foot (`lb/ft³`).
-        PoundPerCubicFoot => "lb/ft³", pound_per_cubic_foot;
+        PoundPerCubicFoot => "lb/ft³" | "lb/ft3" | "lb/ft^3", pound_per_cubic_foot;
         /// Pound per gallon (`lb/gal`).
         PoundPerGallon => "lb/gal", pound_per_gallon;
     }

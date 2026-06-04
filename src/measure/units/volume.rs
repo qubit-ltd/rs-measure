@@ -32,11 +32,11 @@ define_measurement_unit! {
     /// Units for persisted `uom` volume quantities.
     pub enum Volume for UomVolume, "volume" {
         /// Cubic millimeter (`mm³`).
-        CubicMillimeter => "mm³", cubic_millimeter;
+        CubicMillimeter => "mm³" | "mm3" | "mm^3", cubic_millimeter;
         /// Cubic centimeter (`cm³`).
-        CubicCentimeter => "cm³", cubic_centimeter;
+        CubicCentimeter => "cm³" | "cm3" | "cm^3", cubic_centimeter;
         /// Cubic meter (`m³`).
-        CubicMeter => "m³", cubic_meter;
+        CubicMeter => "m³" | "m3" | "m^3", cubic_meter;
         /// Microliter (`µL`).
         Microliter => "µL" | "uL" | "μL", microliter;
         /// Milliliter (`mL`).
@@ -44,11 +44,11 @@ define_measurement_unit! {
         /// Liter (`L`).
         Liter => "L", liter;
         /// Cubic inch (`in³`).
-        CubicInch => "in³", cubic_inch;
+        CubicInch => "in³" | "in3" | "in^3", cubic_inch;
         /// Cubic foot (`ft³`).
-        CubicFoot => "ft³", cubic_foot;
+        CubicFoot => "ft³" | "ft3" | "ft^3", cubic_foot;
         /// Cubic yard (`yd³`).
-        CubicYard => "yd³", cubic_yard;
+        CubicYard => "yd³" | "yd3" | "yd^3", cubic_yard;
         /// US fluid ounce (`fl oz`).
         FluidOunce => "fl oz", fluid_ounce;
         /// US cup (`cup`).
