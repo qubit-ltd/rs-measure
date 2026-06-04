@@ -31,9 +31,8 @@ Qubit Measure 因此是 `uom` 的薄 wrapper，不是另一套单位系统。
 ## 设计目标
 
 - **以 `uom` 为换算真相**：单位换算通过 `uom` 完成，本 crate 不维护第二份比例表。
-- **quantity 类型显式**：使用 `LengthMeasurement`、`MassMeasurement`、
-  `TimeMeasurement`、`AreaMeasurement`、`VolumeMeasurement`，不再使用一个
-  未类型化的全局单位枚举。
+- **quantity 类型显式**：使用 `measurement::Length` 这类持久化别名和
+  `unit::Length` 这类 unit family，不再使用一个未类型化的全局单位枚举。
 - **保留输入单位**：把 decimal 数值和用户选择的单位一起保存，适合 API、数据库、
   表单、电子表格和审计记录。
 - **不混入计数单位**：件、张、箱、批属于业务数量或包装概念，不和 `uom` 物理
@@ -45,18 +44,19 @@ Qubit Measure 因此是 `uom` 的薄 wrapper，不是另一套单位系统。
 
 ```rust
 use qubit_measure::{
-    LengthMeasurement,
-    LengthUnit,
+    Unit,
+    measurement,
+    unit,
 };
 use rust_decimal::Decimal;
 
-let thickness = LengthMeasurement::new(Decimal::new(500, 1), LengthUnit::Centimeter);
+let thickness = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
 
 assert_eq!(thickness.value.to_string(), "50.0");
 assert_eq!(thickness.unit.symbol(), "cm");
 ```
 
-`LengthMeasurement` 是 `Measurement<LengthUnit>` 的类型别名。所有支持的
+`measurement::Length` 是 `Measurement<unit::Length>` 的类型别名。所有支持的
 `uom` quantity family 都复用同一个泛型 wrapper。
 
 ### Serde 持久化
@@ -68,20 +68,20 @@ assert_eq!(thickness.unit.symbol(), "cm");
 }
 ```
 
-quantity 通常由字段类型决定。例如字段类型是 `LengthMeasurement` 时，只能反序列化
+quantity 通常由字段类型决定。例如字段类型是 `measurement::Length` 时，只能反序列化
 长度单位。
 
 ### 通过 `uom` 换算
 
 ```rust
 use qubit_measure::{
-    MassMeasurement,
-    MassUnit,
+    measurement,
+    unit,
 };
 use rust_decimal::Decimal;
 
-let grams = MassMeasurement::new(Decimal::new(1, 1), MassUnit::Gram);
-let kilograms = grams.convert_to(MassUnit::Kilogram)?;
+let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
+let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
 
 assert_eq!(kilograms.value, Decimal::new(1, 4));
 # Ok::<(), qubit_measure::MeasurementError>(())
@@ -91,13 +91,13 @@ assert_eq!(kilograms.value, Decimal::new(1, 4));
 
 ```rust
 use qubit_measure::{
-    LengthMeasurement,
-    LengthUnit,
+    measurement,
+    unit,
 };
 use rust_decimal::Decimal;
 use uom::si::length::meter;
 
-let persisted = LengthMeasurement::new(Decimal::new(50, 0), LengthUnit::Centimeter);
+let persisted = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
 let length = persisted.to_uom()?;
 
 assert_eq!(length.get::<meter>(), 0.5);
@@ -108,14 +108,14 @@ assert_eq!(length.get::<meter>(), 0.5);
 
 ```rust
 use qubit_measure::{
-    LengthMeasurement,
-    LengthUnit,
+    measurement,
+    unit,
 };
 use uom::si::f64::Length;
 use uom::si::length::meter;
 
 let length = Length::new::<meter>(0.5);
-let persisted = LengthMeasurement::from_uom(length, LengthUnit::Centimeter)?;
+let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
 
 assert_eq!(persisted.to_string(), "50 cm");
 # Ok::<(), qubit_measure::MeasurementError>(())
@@ -123,11 +123,19 @@ assert_eq!(persisted.to_string(), "50 cm");
 
 ## 已支持的 Quantity Family
 
-- `LengthMeasurement` / `LengthUnit`
-- `AreaMeasurement` / `AreaUnit`
-- `VolumeMeasurement` / `VolumeUnit`
-- `MassMeasurement` / `MassUnit`
-- `TimeMeasurement` / `TimeUnit`
+- `measurement::Length` / `unit::Length`
+- `measurement::Area` / `unit::Area`
+- `measurement::Volume` / `unit::Volume`
+- `measurement::Mass` / `unit::Mass`
+- `measurement::Time` / `unit::Time`
+- `measurement::Pressure` / `unit::Pressure`
+- `measurement::Energy` / `unit::Energy`
+- `measurement::Power` / `unit::Power`
+- `measurement::Velocity` / `unit::Velocity`
+- `measurement::Frequency` / `unit::Frequency`
+- `measurement::MassDensity` / `unit::MassDensity`
+- `measurement::Temperature` / `unit::Temperature`
+- `measurement::TemperatureInterval` / `unit::TemperatureInterval`
 
 API 设计为后续追加其他 `uom` quantity family 时不需要改变泛型
 `Measurement<U>` wrapper。
