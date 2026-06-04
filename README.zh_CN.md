@@ -337,7 +337,7 @@ cargo test --test mod
 
 ## 许可证
 
-Copyright (c) 2026. Haixing Hu, Qubit Co. Ltd. All rights reserved.
+Copyright (c) 2026 Haixing Hu.
 
 根据 Apache 许可证 2.0 版（"许可证"）授权；
 除非遵守许可证，否则您不得使用此文件。
