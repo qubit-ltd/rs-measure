@@ -19,9 +19,13 @@ use rust_decimal::Decimal;
 use serde_json::json;
 use std::str::FromStr;
 use uom::si::area::square_meter;
+use uom::si::electric_current::ampere;
+use uom::si::electric_potential::volt;
 use uom::si::energy::joule;
 use uom::si::f64::{
     Area as UomArea,
+    ElectricCurrent as UomElectricCurrent,
+    ElectricPotential as UomElectricPotential,
     Energy as UomEnergy,
     Frequency as UomFrequency,
     Length as UomLength,
@@ -338,6 +342,16 @@ fn test_new_quantity_families_to_uom_convert_units() {
 }
 
 #[test]
+fn test_electrical_measurements_to_uom_convert_units() {
+    let current = measurement::ElectricCurrent::new(Decimal::new(2500, 0), unit::ElectricCurrent::Milliampere);
+    let voltage = measurement::Voltage::new(Decimal::new(12, 0), unit::ElectricPotential::Volt);
+
+    assert_approx_eq(current.to_uom().get::<ampere>(), 2.5);
+    assert_approx_eq(voltage.to_uom().get::<volt>(), 12.0);
+    assert_eq!(voltage.quantity_name(), "electric potential");
+}
+
+#[test]
 fn test_all_supported_unit_variants_bridge_through_uom() {
     assert_all_unit_variants_bridge_uom::<unit::Length>();
     assert_all_unit_variants_bridge_uom::<unit::Area>();
@@ -352,6 +366,49 @@ fn test_all_supported_unit_variants_bridge_through_uom() {
     assert_all_unit_variants_bridge_uom::<unit::MassDensity>();
     assert_all_unit_variants_bridge_uom::<unit::Temperature>();
     assert_all_unit_variants_bridge_uom::<unit::TemperatureInterval>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricCurrent>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricPotential>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricCharge>();
+    assert_all_unit_variants_bridge_uom::<unit::Capacitance>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricalResistance>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricalConductance>();
+    assert_all_unit_variants_bridge_uom::<unit::Inductance>();
+    assert_all_unit_variants_bridge_uom::<unit::Force>();
+    assert_all_unit_variants_bridge_uom::<unit::Acceleration>();
+    assert_all_unit_variants_bridge_uom::<unit::Torque>();
+    assert_all_unit_variants_bridge_uom::<unit::Angle>();
+    assert_all_unit_variants_bridge_uom::<unit::AngularVelocity>();
+    assert_all_unit_variants_bridge_uom::<unit::VolumeRate>();
+    assert_all_unit_variants_bridge_uom::<unit::MassRate>();
+    assert_all_unit_variants_bridge_uom::<unit::DynamicViscosity>();
+    assert_all_unit_variants_bridge_uom::<unit::KinematicViscosity>();
+    assert_all_unit_variants_bridge_uom::<unit::AmountOfSubstance>();
+    assert_all_unit_variants_bridge_uom::<unit::MolarConcentration>();
+    assert_all_unit_variants_bridge_uom::<unit::MassConcentration>();
+    assert_all_unit_variants_bridge_uom::<unit::CatalyticActivity>();
+    assert_all_unit_variants_bridge_uom::<unit::Radioactivity>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricField>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricCurrentDensity>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricalConductivity>();
+    assert_all_unit_variants_bridge_uom::<unit::ElectricalResistivity>();
+    assert_all_unit_variants_bridge_uom::<unit::MagneticFluxDensity>();
+    assert_all_unit_variants_bridge_uom::<unit::MagneticFlux>();
+    assert_all_unit_variants_bridge_uom::<unit::MagneticFieldStrength>();
+    assert_all_unit_variants_bridge_uom::<unit::HeatCapacity>();
+    assert_all_unit_variants_bridge_uom::<unit::SpecificHeatCapacity>();
+    assert_all_unit_variants_bridge_uom::<unit::ThermalConductivity>();
+    assert_all_unit_variants_bridge_uom::<unit::ThermalResistance>();
+    assert_all_unit_variants_bridge_uom::<unit::HeatFluxDensity>();
+    assert_all_unit_variants_bridge_uom::<unit::SurfaceTension>();
+    assert_all_unit_variants_bridge_uom::<unit::LuminousIntensity>();
+    assert_all_unit_variants_bridge_uom::<unit::Illuminance>();
+    assert_all_unit_variants_bridge_uom::<unit::Luminance>();
+    assert_all_unit_variants_bridge_uom::<unit::SolidAngle>();
+    assert_all_unit_variants_bridge_uom::<unit::Molality>();
+    assert_all_unit_variants_bridge_uom::<unit::MolarMass>();
+    assert_all_unit_variants_bridge_uom::<unit::MolarVolume>();
+    assert_all_unit_variants_bridge_uom::<unit::CatalyticActivityConcentration>();
+    assert_all_unit_variants_bridge_uom::<unit::SpecificRadioactivity>();
 }
 
 #[test]
@@ -461,6 +518,23 @@ fn test_new_quantity_families_from_uom_use_target_unit() {
         measurement::TemperatureInterval::from_uom(interval, unit::TemperatureInterval::Celsius)
             .expect("uom temperature interval should convert to Celsius"),
         measurement::TemperatureInterval::new(Decimal::new(10, 0), unit::TemperatureInterval::Celsius),
+    );
+}
+
+#[test]
+fn test_electrical_measurements_from_uom_use_target_unit() {
+    let current = UomElectricCurrent::new::<ampere>(2.5);
+    let potential = UomElectricPotential::new::<volt>(12.0);
+
+    assert_eq!(
+        measurement::ElectricCurrent::from_uom(current, unit::ElectricCurrent::Milliampere)
+            .expect("uom current should convert to milliamperes"),
+        measurement::ElectricCurrent::new(Decimal::new(2500, 0), unit::ElectricCurrent::Milliampere),
+    );
+    assert_eq!(
+        measurement::Voltage::from_uom(potential, unit::ElectricPotential::Volt)
+            .expect("uom electric potential should convert to volts"),
+        measurement::Voltage::new(Decimal::new(12, 0), unit::ElectricPotential::Volt),
     );
 }
 

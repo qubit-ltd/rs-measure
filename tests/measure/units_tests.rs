@@ -118,6 +118,202 @@ fn test_production_quantity_family_units_are_available() {
 }
 
 #[test]
+fn test_electrical_quantity_family_units_are_available() {
+    let current_symbols: Vec<&str> = unit::ElectricCurrent::all().iter().map(|unit| unit.symbol()).collect();
+    let potential_symbols: Vec<&str> = unit::ElectricPotential::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let charge_symbols: Vec<&str> = unit::ElectricCharge::all().iter().map(|unit| unit.symbol()).collect();
+    let capacitance_symbols: Vec<&str> = unit::Capacitance::all().iter().map(|unit| unit.symbol()).collect();
+    let resistance_symbols: Vec<&str> = unit::ElectricalResistance::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let conductance_symbols: Vec<&str> = unit::ElectricalConductance::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let inductance_symbols: Vec<&str> = unit::Inductance::all().iter().map(|unit| unit.symbol()).collect();
+
+    assert_eq!(current_symbols, vec!["pA", "nA", "µA", "mA", "A", "kA", "MA"]);
+    assert_eq!(potential_symbols, vec!["nV", "µV", "mV", "V", "kV", "MV"]);
+    assert_eq!(charge_symbols, vec!["µC", "mC", "C", "kC", "A · h", "mA · h"],);
+    assert_eq!(capacitance_symbols, vec!["pF", "nF", "µF", "mF", "F"]);
+    assert_eq!(resistance_symbols, vec!["µΩ", "mΩ", "Ω", "kΩ", "MΩ", "GΩ"]);
+    assert_eq!(conductance_symbols, vec!["µS", "mS", "S"]);
+    assert_eq!(inductance_symbols, vec!["nH", "µH", "mH", "H"]);
+}
+
+#[test]
+fn test_mechanical_and_process_quantity_family_units_are_available() {
+    let force_symbols: Vec<&str> = unit::Force::all().iter().map(|unit| unit.symbol()).collect();
+    let acceleration_symbols: Vec<&str> = unit::Acceleration::all().iter().map(|unit| unit.symbol()).collect();
+    let torque_symbols: Vec<&str> = unit::Torque::all().iter().map(|unit| unit.symbol()).collect();
+    let angle_symbols: Vec<&str> = unit::Angle::all().iter().map(|unit| unit.symbol()).collect();
+    let angular_velocity_symbols: Vec<&str> = unit::AngularVelocity::all().iter().map(|unit| unit.symbol()).collect();
+    let volume_rate_symbols: Vec<&str> = unit::VolumeRate::all().iter().map(|unit| unit.symbol()).collect();
+    let mass_rate_symbols: Vec<&str> = unit::MassRate::all().iter().map(|unit| unit.symbol()).collect();
+    let dynamic_viscosity_symbols: Vec<&str> = unit::DynamicViscosity::all().iter().map(|unit| unit.symbol()).collect();
+    let kinematic_viscosity_symbols: Vec<&str> = unit::KinematicViscosity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+
+    assert_eq!(force_symbols, vec!["mN", "N", "kN", "MN", "gf", "kgf", "lbf"]);
+    assert_eq!(acceleration_symbols, vec!["mm/s²", "m/s²", "ft/s²", "g₀"]);
+    assert_eq!(
+        torque_symbols,
+        vec!["mN · m", "N · m", "kN · m", "lbf · ft", "lbf · in"]
+    );
+    assert_eq!(angle_symbols, vec!["rad", "°", "r", "′", "″"]);
+    assert_eq!(angular_velocity_symbols, vec!["rad/s", "°/s", "rps", "rpm"]);
+    assert_eq!(
+        volume_rate_symbols,
+        vec!["m³/s", "m³/h", "mL/s", "L/s", "L/min", "gal/min"],
+    );
+    assert_eq!(mass_rate_symbols, vec!["mg/s", "g/s", "kg/s", "kg/h", "t/h", "lb/h"]);
+    assert_eq!(
+        dynamic_viscosity_symbols,
+        vec!["µPa · s", "mPa · s", "Pa · s", "P", "cP"]
+    );
+    assert_eq!(kinematic_viscosity_symbols, vec!["mm²/s", "m²/s", "St", "cSt"]);
+}
+
+#[test]
+fn test_chemical_medical_and_biological_quantity_family_units_are_available() {
+    let amount_symbols: Vec<&str> = unit::AmountOfSubstance::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let molar_concentration_symbols: Vec<&str> = unit::MolarConcentration::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let mass_concentration_symbols: Vec<&str> = unit::MassConcentration::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let catalytic_activity_symbols: Vec<&str> = unit::CatalyticActivity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let radioactivity_symbols: Vec<&str> = unit::Radioactivity::all().iter().map(|unit| unit.symbol()).collect();
+
+    assert_eq!(amount_symbols, vec!["µmol", "mmol", "mol", "kmol", "particle"]);
+    assert_eq!(
+        molar_concentration_symbols,
+        vec!["nmol/L", "µmol/L", "mmol/L", "mol/L", "mol/m³", "particle/mL"],
+    );
+    assert_eq!(
+        mass_concentration_symbols,
+        vec!["µg/L", "mg/L", "g/L", "kg/m³", "mg/dL", "g/dL"],
+    );
+    assert_eq!(catalytic_activity_symbols, vec!["µkat", "mkat", "kat", "U", "mU"]);
+    assert_eq!(
+        radioactivity_symbols,
+        vec!["Bq", "kBq", "MBq", "Ci", "mCi", "µCi", "dpm"]
+    );
+}
+
+#[test]
+fn test_electromagnetic_thermal_optical_and_chemical_extension_units_are_available() {
+    let electric_field_symbols: Vec<&str> = unit::ElectricField::all().iter().map(|unit| unit.symbol()).collect();
+    let current_density_symbols: Vec<&str> = unit::ElectricCurrentDensity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let conductivity_symbols: Vec<&str> = unit::ElectricalConductivity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let resistivity_symbols: Vec<&str> = unit::ElectricalResistivity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let magnetic_flux_density_symbols: Vec<&str> = unit::MagneticFluxDensity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let magnetic_flux_symbols: Vec<&str> = unit::MagneticFlux::all().iter().map(|unit| unit.symbol()).collect();
+    let magnetic_field_strength_symbols: Vec<&str> = unit::MagneticFieldStrength::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let heat_capacity_symbols: Vec<&str> = unit::HeatCapacity::all().iter().map(|unit| unit.symbol()).collect();
+    let specific_heat_capacity_symbols: Vec<&str> = unit::SpecificHeatCapacity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let thermal_conductivity_symbols: Vec<&str> = unit::ThermalConductivity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let thermal_resistance_symbols: Vec<&str> = unit::ThermalResistance::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let heat_flux_density_symbols: Vec<&str> = unit::HeatFluxDensity::all().iter().map(|unit| unit.symbol()).collect();
+    let surface_tension_symbols: Vec<&str> = unit::SurfaceTension::all().iter().map(|unit| unit.symbol()).collect();
+    let luminous_intensity_symbols: Vec<&str> = unit::LuminousIntensity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let illuminance_symbols: Vec<&str> = unit::Illuminance::all().iter().map(|unit| unit.symbol()).collect();
+    let luminance_symbols: Vec<&str> = unit::Luminance::all().iter().map(|unit| unit.symbol()).collect();
+    let solid_angle_symbols: Vec<&str> = unit::SolidAngle::all().iter().map(|unit| unit.symbol()).collect();
+    let molality_symbols: Vec<&str> = unit::Molality::all().iter().map(|unit| unit.symbol()).collect();
+    let molar_mass_symbols: Vec<&str> = unit::MolarMass::all().iter().map(|unit| unit.symbol()).collect();
+    let molar_volume_symbols: Vec<&str> = unit::MolarVolume::all().iter().map(|unit| unit.symbol()).collect();
+    let catalytic_activity_concentration_symbols: Vec<&str> = unit::CatalyticActivityConcentration::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+    let specific_radioactivity_symbols: Vec<&str> = unit::SpecificRadioactivity::all()
+        .iter()
+        .map(|unit| unit.symbol())
+        .collect();
+
+    assert_eq!(
+        electric_field_symbols,
+        vec!["V/m", "V/cm", "V/mm", "V/µm", "kV/mm", "MV/m"],
+    );
+    assert_eq!(current_density_symbols, vec!["A/m²", "A/cm²", "A/mm²"]);
+    assert_eq!(conductivity_symbols, vec!["S/m", "S/cm"]);
+    assert_eq!(resistivity_symbols, vec!["mΩ · m", "Ω · m", "Ω · cm", "Ω · mm²/m"]);
+    assert_eq!(magnetic_flux_density_symbols, vec!["nT", "µT", "mT", "T", "G"]);
+    assert_eq!(magnetic_flux_symbols, vec!["µWb", "mWb", "Wb", "Mx"]);
+    assert_eq!(magnetic_field_strength_symbols, vec!["A/m", "A/cm", "Oe"]);
+    assert_eq!(heat_capacity_symbols, vec!["J/K", "kJ/K", "J/°C", "cal/K", "Btu/°F"]);
+    assert_eq!(
+        specific_heat_capacity_symbols,
+        vec![
+            "J/(kg · K)",
+            "kJ/(kg · K)",
+            "J/(g · °C)",
+            "cal/(g · K)",
+            "Btu/(lb · °F)"
+        ],
+    );
+    assert_eq!(
+        thermal_conductivity_symbols,
+        vec!["mW/(m · K)", "W/(m · K)", "kW/(m · K)", "W/(m · °C)"],
+    );
+    assert_eq!(thermal_resistance_symbols, vec!["K/mW", "K/W", "K/kW"]);
+    assert_eq!(heat_flux_density_symbols, vec!["mW/m²", "W/m²", "kW/m²", "W/cm²"]);
+    assert_eq!(surface_tension_symbols, vec!["mN/m", "N/m", "dyn/cm", "J/m²"]);
+    assert_eq!(luminous_intensity_symbols, vec!["mcd", "cd", "kcd"]);
+    assert_eq!(illuminance_symbols, vec!["lx", "klx", "fc"]);
+    assert_eq!(luminance_symbols, vec!["cd/m²", "cd/cm²", "cd/ft²", "fl", "sb"]);
+    assert_eq!(solid_angle_symbols, vec!["sr", "sp", "°²"]);
+    assert_eq!(molality_symbols, vec!["mol/kg"]);
+    assert_eq!(molar_mass_symbols, vec!["mg/mol", "g/mol", "kg/mol"]);
+    assert_eq!(molar_volume_symbols, vec!["cm³/mol", "dm³/mol", "m³/mol"]);
+    assert_eq!(catalytic_activity_concentration_symbols, vec!["kat/m³", "U/L", "mU/mL"]);
+    assert_eq!(specific_radioactivity_symbols, vec!["Bq/kg", "Ci/kg", "dpm/kg"]);
+}
+
+#[test]
 fn test_unit_symbols_parse_display_and_serde_round_trip() {
     assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Length>();
     assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Area>();
@@ -132,6 +328,49 @@ fn test_unit_symbols_parse_display_and_serde_round_trip() {
     assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MassDensity>();
     assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Temperature>();
     assert_unit_symbols_parse_display_and_serde_round_trip::<unit::TemperatureInterval>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricCurrent>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricPotential>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricCharge>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Capacitance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricalResistance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricalConductance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Inductance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Force>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Acceleration>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Torque>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Angle>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::AngularVelocity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::VolumeRate>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MassRate>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::DynamicViscosity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::KinematicViscosity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::AmountOfSubstance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MolarConcentration>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MassConcentration>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::CatalyticActivity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Radioactivity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricField>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricCurrentDensity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricalConductivity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ElectricalResistivity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MagneticFluxDensity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MagneticFlux>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MagneticFieldStrength>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::HeatCapacity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::SpecificHeatCapacity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ThermalConductivity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::ThermalResistance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::HeatFluxDensity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::SurfaceTension>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::LuminousIntensity>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Illuminance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Luminance>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::SolidAngle>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::Molality>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MolarMass>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::MolarVolume>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::CatalyticActivityConcentration>();
+    assert_unit_symbols_parse_display_and_serde_round_trip::<unit::SpecificRadioactivity>();
 }
 
 #[test]
@@ -163,6 +402,22 @@ fn test_unit_from_str_accepts_ascii_micro_aliases() {
     assert_eq!(
         unit::Velocity::from_str("um/s").expect("ASCII micrometer per second should parse"),
         unit::Velocity::MicrometerPerSecond
+    );
+    assert_eq!(
+        unit::ElectricCurrent::from_str("uA").expect("ASCII microampere should parse"),
+        unit::ElectricCurrent::Microampere
+    );
+    assert_eq!(
+        unit::Capacitance::from_str("uF").expect("ASCII microfarad should parse"),
+        unit::Capacitance::Microfarad
+    );
+    assert_eq!(
+        unit::Inductance::from_str("uH").expect("ASCII microhenry should parse"),
+        unit::Inductance::Microhenry
+    );
+    assert_eq!(
+        unit::MagneticFluxDensity::from_str("uT").expect("ASCII microtesla should parse"),
+        unit::MagneticFluxDensity::Microtesla
     );
 }
 
@@ -211,6 +466,46 @@ fn test_unit_from_str_accepts_common_input_aliases() {
     assert_eq!(
         unit::Time::from_str("yr").expect("year abbreviation should parse"),
         unit::Time::Year
+    );
+    assert_eq!(
+        unit::ElectricPotential::from_str("volt").expect("voltage name should parse"),
+        unit::ElectricPotential::Volt
+    );
+    assert_eq!(
+        unit::ElectricCharge::from_str("mAh").expect("battery charge alias should parse"),
+        unit::ElectricCharge::MilliampereHour
+    );
+    assert_eq!(
+        unit::ElectricalResistance::from_str("kOhm").expect("ASCII kiloohm should parse"),
+        unit::ElectricalResistance::Kiloohm
+    );
+    assert_eq!(
+        unit::Acceleration::from_str("m/s2").expect("ASCII acceleration should parse"),
+        unit::Acceleration::MeterPerSecondSquared
+    );
+    assert_eq!(
+        unit::Torque::from_str("Nm").expect("compact newton meter should parse"),
+        unit::Torque::NewtonMeter
+    );
+    assert_eq!(
+        unit::Angle::from_str("deg").expect("degree alias should parse"),
+        unit::Angle::Degree
+    );
+    assert_eq!(
+        unit::VolumeRate::from_str("m3/h").expect("ASCII cubic meter per hour should parse"),
+        unit::VolumeRate::CubicMeterPerHour
+    );
+    assert_eq!(
+        unit::MolarConcentration::from_str("M").expect("molar concentration alias should parse"),
+        unit::MolarConcentration::MolePerLiter
+    );
+    assert_eq!(
+        unit::ElectricField::from_str("V/um").expect("ASCII electric field alias should parse"),
+        unit::ElectricField::VoltPerMicrometer
+    );
+    assert_eq!(
+        unit::Luminance::from_str("cd/m2").expect("ASCII luminance alias should parse"),
+        unit::Luminance::CandelaPerSquareMeter
     );
 }
 
