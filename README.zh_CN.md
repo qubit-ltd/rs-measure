@@ -75,7 +75,7 @@ Qubit Measure 把这个边界表示显式建模为 `Decimal + typed unit`，同�
 
 ```toml
 [dependencies]
-qubit-measure = "0.1"
+qubit-measure = "0.2"
 ```
 
 ## 快速开始

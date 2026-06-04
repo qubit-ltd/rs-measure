@@ -94,7 +94,7 @@ Add this to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-qubit-measure = "0.1"
+qubit-measure = "0.2"
 ```
 
 ## Quick Start
