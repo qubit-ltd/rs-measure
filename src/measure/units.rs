@@ -80,11 +80,11 @@ macro_rules! define_measurement_unit {
                 }
             }
 
-            fn to_uom(self, value: rust_decimal::Decimal) -> Result<Self::Quantity, crate::measure::MeasurementError> {
-                let value = super::decimal_to_f64(value)?;
-                Ok(match self {
+            fn to_uom(self, value: rust_decimal::Decimal) -> Self::Quantity {
+                let value = super::decimal_to_f64(value);
+                match self {
                     $(Self::$variant => <$quantity_ty>::new::<$uom_unit>(value),)+
-                })
+                }
             }
 
             fn value_from_uom(self, quantity: Self::Quantity) -> Result<rust_decimal::Decimal, crate::measure::MeasurementError> {
@@ -139,11 +139,10 @@ macro_rules! define_measurement_unit {
 pub(super) use define_measurement_unit;
 
 /// Converts a decimal value into a finite `f64` for `uom`.
-fn decimal_to_f64(value: Decimal) -> Result<f64, MeasurementError> {
-    match value.to_f64().filter(|value| value.is_finite()) {
-        Some(value) => Ok(value),
-        None => Err(MeasurementError::DecimalConversion(value.to_string())),
-    }
+fn decimal_to_f64(value: Decimal) -> f64 {
+    value
+        .to_f64()
+        .expect("rust_decimal::Decimal is finite and within the f64 exponent range")
 }
 
 /// Converts a finite `f64` value from `uom` into `Decimal`.

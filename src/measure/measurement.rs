@@ -56,10 +56,8 @@ where
     }
 
     /// Converts this measurement into its typed `uom` quantity.
-    ///
-    /// Returns [`MeasurementError::DecimalConversion`] if the decimal value
-    /// cannot be represented as a finite `f64` by the configured `uom` backend.
-    pub fn to_uom(self) -> Result<U::Quantity, MeasurementError> {
+    #[must_use]
+    pub fn to_uom(self) -> U::Quantity {
         self.unit.to_uom(self.value)
     }
 
@@ -79,7 +77,7 @@ where
         if self.unit == target {
             return Ok(Self::new(self.value, target));
         }
-        Self::from_uom(self.to_uom()?, target)
+        Self::from_uom(self.to_uom(), target)
     }
 }
 

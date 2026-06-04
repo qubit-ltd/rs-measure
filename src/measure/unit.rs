@@ -34,10 +34,8 @@ pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'st
     fn symbol(self) -> &'static str;
 
     /// Creates a `uom` quantity from a decimal value expressed in this unit.
-    ///
-    /// Returns [`MeasurementError::DecimalConversion`] when the decimal value
-    /// cannot be represented as a finite `f64` for the configured `uom` backend.
-    fn to_uom(self, value: Decimal) -> Result<Self::Quantity, MeasurementError>;
+    #[must_use]
+    fn to_uom(self, value: Decimal) -> Self::Quantity;
 
     /// Extracts a decimal value from a `uom` quantity in this unit.
     ///

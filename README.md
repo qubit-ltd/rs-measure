@@ -102,7 +102,7 @@ use rust_decimal::Decimal;
 use uom::si::length::meter;
 
 let persisted = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
-let length = persisted.to_uom()?;
+let length = persisted.to_uom();
 
 assert_eq!(length.get::<meter>(), 0.5);
 # Ok::<(), qubit_measure::MeasurementError>(())

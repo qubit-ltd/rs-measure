@@ -22,13 +22,17 @@ use uom::si::area::square_meter;
 use uom::si::energy::joule;
 use uom::si::f64::{
     Area as UomArea,
+    Energy as UomEnergy,
+    Frequency as UomFrequency,
     Length as UomLength,
     Mass as UomMass,
     MassDensity as UomMassDensity,
+    Power as UomPower,
     Pressure as UomPressure,
     TemperatureInterval as UomTemperatureInterval,
     ThermodynamicTemperature as UomTemperature,
     Time as UomTime,
+    Velocity as UomVelocity,
     Volume as UomVolume,
 };
 use uom::si::frequency::hertz;
@@ -49,6 +53,18 @@ fn assert_approx_eq(actual: f64, expected: f64) {
         (actual - expected).abs() <= tolerance,
         "expected {actual} to approximately equal {expected}",
     );
+}
+
+fn assert_all_unit_variants_bridge_uom<U>()
+where
+    U: Unit,
+{
+    for unit in U::all() {
+        let measurement = Measurement::<U>::new(Decimal::ONE, *unit);
+        let quantity = measurement.to_uom();
+
+        Measurement::<U>::from_uom(quantity, *unit).expect("uom quantity should convert back");
+    }
 }
 
 #[test]
@@ -215,20 +231,11 @@ fn test_length_measurement_to_uom_converts_unit() {
     let millimeters = measurement::Length::new(Decimal::new(500, 0), unit::Length::Millimeter);
     let meters = measurement::Length::new(Decimal::new(2, 0), unit::Length::Meter);
 
-    let length = measurement.to_uom().expect("centimeter should become uom length");
+    let length = measurement.to_uom();
 
     assert_eq!(length.get::<meter>(), 0.5);
-    assert_eq!(
-        millimeters
-            .to_uom()
-            .expect("millimeter should become uom length")
-            .get::<meter>(),
-        0.5,
-    );
-    assert_eq!(
-        meters.to_uom().expect("meter should become uom length").get::<meter>(),
-        2.0,
-    );
+    assert_eq!(millimeters.to_uom().get::<meter>(), 0.5);
+    assert_eq!(meters.to_uom().get::<meter>(), 2.0);
 }
 
 #[test]
@@ -237,27 +244,18 @@ fn test_mass_measurement_to_uom_converts_unit() {
     let grams = measurement::Mass::new(Decimal::new(500, 0), unit::Mass::Gram);
     let kilograms = measurement::Mass::new(Decimal::new(2, 0), unit::Mass::Kilogram);
 
-    let mass = measurement.to_uom().expect("tonne should become uom mass");
+    let mass = measurement.to_uom();
 
     assert_eq!(mass.get::<kilogram>(), 1000.0);
-    assert_eq!(
-        grams.to_uom().expect("gram should become uom mass").get::<kilogram>(),
-        0.5,
-    );
-    assert_eq!(
-        kilograms
-            .to_uom()
-            .expect("kilogram should become uom mass")
-            .get::<kilogram>(),
-        2.0,
-    );
+    assert_eq!(grams.to_uom().get::<kilogram>(), 0.5);
+    assert_eq!(kilograms.to_uom().get::<kilogram>(), 2.0);
 }
 
 #[test]
 fn test_time_measurement_to_uom_converts_unit() {
     let measurement = measurement::Time::new(Decimal::new(2, 0), unit::Time::Minute);
 
-    let time = measurement.to_uom().expect("minute should become uom time");
+    let time = measurement.to_uom();
 
     assert_eq!(time.get::<second>(), 120.0);
 }
@@ -267,8 +265,8 @@ fn test_area_and_volume_measurements_to_uom_convert_units() {
     let area = measurement::Area::new(Decimal::new(10000, 0), unit::Area::SquareCentimeter);
     let volume = measurement::Volume::new(Decimal::new(1, 0), unit::Volume::Liter);
 
-    assert_eq!(area.to_uom().expect("area should convert").get::<square_meter>(), 1.0);
-    assert_eq!(volume.to_uom().expect("volume should convert").get::<liter>(), 1.0);
+    assert_eq!(area.to_uom().get::<square_meter>(), 1.0);
+    assert_eq!(volume.to_uom().get::<liter>(), 1.0);
 }
 
 #[test]
@@ -282,47 +280,31 @@ fn test_new_quantity_families_to_uom_convert_units() {
     let temperature = measurement::Temperature::new(Decimal::ZERO, unit::Temperature::Celsius);
     let interval = measurement::TemperatureInterval::new(Decimal::new(10, 0), unit::TemperatureInterval::Celsius);
 
-    assert_approx_eq(
-        pressure.to_uom().expect("pressure should convert").get::<pascal>(),
-        101_300.0,
-    );
-    assert_approx_eq(
-        energy.to_uom().expect("energy should convert").get::<joule>(),
-        3_600_000.0,
-    );
-    assert_approx_eq(power.to_uom().expect("power should convert").get::<watt>(), 2_500.0);
-    assert_approx_eq(
-        velocity
-            .to_uom()
-            .expect("velocity should convert")
-            .get::<meter_per_second>(),
-        10.0,
-    );
-    assert_approx_eq(
-        frequency.to_uom().expect("frequency should convert").get::<hertz>(),
-        2_500.0,
-    );
-    assert_approx_eq(
-        density
-            .to_uom()
-            .expect("mass density should convert")
-            .get::<kilogram_per_cubic_meter>(),
-        1_000.0,
-    );
-    assert_approx_eq(
-        temperature
-            .to_uom()
-            .expect("temperature should convert")
-            .get::<kelvin>(),
-        273.15,
-    );
-    assert_approx_eq(
-        interval
-            .to_uom()
-            .expect("temperature interval should convert")
-            .get::<kelvin_interval>(),
-        10.0,
-    );
+    assert_approx_eq(pressure.to_uom().get::<pascal>(), 101_300.0);
+    assert_approx_eq(energy.to_uom().get::<joule>(), 3_600_000.0);
+    assert_approx_eq(power.to_uom().get::<watt>(), 2_500.0);
+    assert_approx_eq(velocity.to_uom().get::<meter_per_second>(), 10.0);
+    assert_approx_eq(frequency.to_uom().get::<hertz>(), 2_500.0);
+    assert_approx_eq(density.to_uom().get::<kilogram_per_cubic_meter>(), 1_000.0);
+    assert_approx_eq(temperature.to_uom().get::<kelvin>(), 273.15);
+    assert_approx_eq(interval.to_uom().get::<kelvin_interval>(), 10.0);
+}
+
+#[test]
+fn test_all_supported_unit_variants_bridge_through_uom() {
+    assert_all_unit_variants_bridge_uom::<unit::Length>();
+    assert_all_unit_variants_bridge_uom::<unit::Area>();
+    assert_all_unit_variants_bridge_uom::<unit::Volume>();
+    assert_all_unit_variants_bridge_uom::<unit::Mass>();
+    assert_all_unit_variants_bridge_uom::<unit::Time>();
+    assert_all_unit_variants_bridge_uom::<unit::Pressure>();
+    assert_all_unit_variants_bridge_uom::<unit::Energy>();
+    assert_all_unit_variants_bridge_uom::<unit::Power>();
+    assert_all_unit_variants_bridge_uom::<unit::Velocity>();
+    assert_all_unit_variants_bridge_uom::<unit::Frequency>();
+    assert_all_unit_variants_bridge_uom::<unit::MassDensity>();
+    assert_all_unit_variants_bridge_uom::<unit::Temperature>();
+    assert_all_unit_variants_bridge_uom::<unit::TemperatureInterval>();
 }
 
 #[test]
@@ -387,6 +369,10 @@ fn test_time_area_and_volume_measurements_from_uom_use_target_unit() {
 #[test]
 fn test_new_quantity_families_from_uom_use_target_unit() {
     let pressure = UomPressure::new::<pascal>(1_000.0);
+    let energy = UomEnergy::new::<joule>(3_600.0);
+    let power = UomPower::new::<watt>(2_000.0);
+    let velocity = UomVelocity::new::<meter_per_second>(10.0);
+    let frequency = UomFrequency::new::<hertz>(2_000.0);
     let density = UomMassDensity::new::<kilogram_per_cubic_meter>(1_000.0);
     let temperature = UomTemperature::new::<kelvin>(273.15);
     let interval = UomTemperatureInterval::new::<kelvin_interval>(10.0);
@@ -395,6 +381,24 @@ fn test_new_quantity_families_from_uom_use_target_unit() {
         measurement::Pressure::from_uom(pressure, unit::Pressure::Kilopascal)
             .expect("uom pressure should convert to kilopascals"),
         measurement::Pressure::new(Decimal::ONE, unit::Pressure::Kilopascal),
+    );
+    assert_eq!(
+        measurement::Energy::from_uom(energy, unit::Energy::WattHour).expect("uom energy should convert to watt hours"),
+        measurement::Energy::new(Decimal::ONE, unit::Energy::WattHour),
+    );
+    assert_eq!(
+        measurement::Power::from_uom(power, unit::Power::Kilowatt).expect("uom power should convert to kilowatts"),
+        measurement::Power::new(Decimal::new(2, 0), unit::Power::Kilowatt),
+    );
+    assert_eq!(
+        measurement::Velocity::from_uom(velocity, unit::Velocity::KilometerPerHour)
+            .expect("uom velocity should convert to kilometers per hour"),
+        measurement::Velocity::new(Decimal::new(36, 0), unit::Velocity::KilometerPerHour),
+    );
+    assert_eq!(
+        measurement::Frequency::from_uom(frequency, unit::Frequency::Kilohertz)
+            .expect("uom frequency should convert to kilohertz"),
+        measurement::Frequency::new(Decimal::new(2, 0), unit::Frequency::Kilohertz),
     );
     assert_eq!(
         measurement::MassDensity::from_uom(density, unit::MassDensity::GramPerCubicCentimeter)
