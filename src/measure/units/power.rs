@@ -15,12 +15,21 @@ use uom::si::power::{
     horsepower,
     kilowatt,
     megawatt,
+    microwatt,
+    milliwatt,
+    nanowatt,
     watt,
 };
 
 define_measurement_unit! {
     /// Units for persisted `uom` power quantities.
     pub enum Power for UomPower, "power" {
+        /// Nanowatt (`nW`).
+        Nanowatt => "nW", nanowatt;
+        /// Microwatt (`µW`).
+        Microwatt => "µW" | "uW" | "μW", microwatt;
+        /// Milliwatt (`mW`).
+        Milliwatt => "mW", milliwatt;
         /// Watt (`W`).
         Watt => "W", watt;
         /// Kilowatt (`kW`).

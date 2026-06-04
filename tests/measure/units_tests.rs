@@ -80,14 +80,19 @@ fn test_production_quantity_family_units_are_available() {
 
     assert_eq!(
         pressure_symbols,
-        vec!["Pa", "kPa", "MPa", "bar", "mbar", "atm", "mm Hg", "psi"],
+        vec![
+            "nPa", "µPa", "mPa", "Pa", "hPa", "kPa", "MPa", "bar", "mbar", "atm", "mm Hg", "psi"
+        ],
     );
     assert_eq!(
         energy_symbols,
         vec!["J", "kJ", "MJ", "W · h", "kW · h", "eV", "cal", "kcal", "Btu"]
     );
-    assert_eq!(power_symbols, vec!["W", "kW", "MW", "hp"]);
-    assert_eq!(velocity_symbols, vec!["m/s", "km/h", "ft/s", "mi/h", "kn"]);
+    assert_eq!(power_symbols, vec!["nW", "µW", "mW", "W", "kW", "MW", "hp"]);
+    assert_eq!(
+        velocity_symbols,
+        vec!["µm/s", "mm/s", "cm/s", "m/s", "km/h", "ft/s", "mi/h", "kn"]
+    );
     assert_eq!(frequency_symbols, vec!["Hz", "kHz", "MHz", "GHz"]);
     assert_eq!(density_symbols, vec!["kg/m³", "g/m³", "g/cm³", "lb/ft³", "lb/gal"],);
     assert_eq!(temperature_symbols, vec!["K", "°C", "°F", "°R"]);
@@ -136,6 +141,18 @@ fn test_unit_from_str_accepts_ascii_micro_aliases() {
     assert_eq!(
         unit::Volume::from_str("uL").expect("ASCII microliter should parse"),
         unit::Volume::Microliter
+    );
+    assert_eq!(
+        unit::Pressure::from_str("uPa").expect("ASCII micropascal should parse"),
+        unit::Pressure::Micropascal
+    );
+    assert_eq!(
+        unit::Power::from_str("uW").expect("ASCII microwatt should parse"),
+        unit::Power::Microwatt
+    );
+    assert_eq!(
+        unit::Velocity::from_str("um/s").expect("ASCII micrometer per second should parse"),
+        unit::Velocity::MicrometerPerSecond
     );
 }
 

@@ -272,18 +272,24 @@ fn test_area_and_volume_measurements_to_uom_convert_units() {
 #[test]
 fn test_new_quantity_families_to_uom_convert_units() {
     let pressure = measurement::Pressure::new(Decimal::new(1013, 1), unit::Pressure::Kilopascal);
+    let millipascal = measurement::Pressure::new(Decimal::new(2500, 0), unit::Pressure::Millipascal);
     let energy = measurement::Energy::new(Decimal::ONE, unit::Energy::KilowattHour);
     let power = measurement::Power::new(Decimal::new(25, 1), unit::Power::Kilowatt);
+    let milliwatt = measurement::Power::new(Decimal::new(2500, 0), unit::Power::Milliwatt);
     let velocity = measurement::Velocity::new(Decimal::new(36, 0), unit::Velocity::KilometerPerHour);
+    let centimeters_per_second = measurement::Velocity::new(Decimal::new(100, 0), unit::Velocity::CentimeterPerSecond);
     let frequency = measurement::Frequency::new(Decimal::new(25, 1), unit::Frequency::Kilohertz);
     let density = measurement::MassDensity::new(Decimal::ONE, unit::MassDensity::GramPerCubicCentimeter);
     let temperature = measurement::Temperature::new(Decimal::ZERO, unit::Temperature::Celsius);
     let interval = measurement::TemperatureInterval::new(Decimal::new(10, 0), unit::TemperatureInterval::Celsius);
 
     assert_approx_eq(pressure.to_uom().get::<pascal>(), 101_300.0);
+    assert_approx_eq(millipascal.to_uom().get::<pascal>(), 2.5);
     assert_approx_eq(energy.to_uom().get::<joule>(), 3_600_000.0);
     assert_approx_eq(power.to_uom().get::<watt>(), 2_500.0);
+    assert_approx_eq(milliwatt.to_uom().get::<watt>(), 2.5);
     assert_approx_eq(velocity.to_uom().get::<meter_per_second>(), 10.0);
+    assert_approx_eq(centimeters_per_second.to_uom().get::<meter_per_second>(), 1.0);
     assert_approx_eq(frequency.to_uom().get::<hertz>(), 2_500.0);
     assert_approx_eq(density.to_uom().get::<kilogram_per_cubic_meter>(), 1_000.0);
     assert_approx_eq(temperature.to_uom().get::<kelvin>(), 273.15);

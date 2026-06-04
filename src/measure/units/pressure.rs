@@ -14,10 +14,14 @@ use uom::si::f64::Pressure as UomPressure;
 use uom::si::pressure::{
     atmosphere,
     bar,
+    hectopascal,
     kilopascal,
     megapascal,
+    micropascal,
     millibar,
     millimeter_of_mercury,
+    millipascal,
+    nanopascal,
     pascal,
     psi,
 };
@@ -25,8 +29,16 @@ use uom::si::pressure::{
 define_measurement_unit! {
     /// Units for persisted `uom` pressure quantities.
     pub enum Pressure for UomPressure, "pressure" {
+        /// Nanopascal (`nPa`).
+        Nanopascal => "nPa", nanopascal;
+        /// Micropascal (`µPa`).
+        Micropascal => "µPa" | "uPa" | "μPa", micropascal;
+        /// Millipascal (`mPa`).
+        Millipascal => "mPa", millipascal;
         /// Pascal (`Pa`).
         Pascal => "Pa", pascal;
+        /// Hectopascal (`hPa`).
+        Hectopascal => "hPa", hectopascal;
         /// Kilopascal (`kPa`).
         Kilopascal => "kPa", kilopascal;
         /// Megapascal (`MPa`).
