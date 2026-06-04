@@ -13,5 +13,5 @@
 
 mod measurement_error_tests;
 mod measurement_tests;
-mod measurement_unit_tests;
+mod unit_tests;
 mod units_tests;
