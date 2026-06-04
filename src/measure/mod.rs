@@ -11,23 +11,24 @@
 
 mod measurement;
 mod measurement_error;
-mod measurement_unit;
+mod unit;
 mod units;
 
-pub use measurement::{
-    AreaMeasurement,
-    LengthMeasurement,
-    MassMeasurement,
-    Measurement,
-    TimeMeasurement,
-    VolumeMeasurement,
-};
+pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
-pub use measurement_unit::MeasurementUnit;
+pub use unit::Unit;
 pub use units::{
-    AreaUnit,
-    LengthUnit,
-    MassUnit,
-    TimeUnit,
-    VolumeUnit,
+    Area,
+    Energy,
+    Frequency,
+    Length,
+    Mass,
+    MassDensity,
+    Power,
+    Pressure,
+    Temperature,
+    TemperatureInterval,
+    Time,
+    Velocity,
+    Volume,
 };

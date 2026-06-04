@@ -7,19 +7,20 @@
  *    Licensed under the Apache License, Version 2.0.
  *
  ******************************************************************************/
-//! # qubit-measure
-//!
-//! Persistent typed measurement values with explicit units and `uom` adapters.
+//! Unit families supported by persisted measurements.
 
-#![deny(missing_docs)]
-#![deny(unsafe_op_in_unsafe_fn)]
-
-mod measure;
-pub mod measurement;
-pub mod unit;
-
-pub use measure::{
-    Measurement,
-    MeasurementError,
-    Unit,
+pub use crate::measure::{
+    Area,
+    Energy,
+    Frequency,
+    Length,
+    Mass,
+    MassDensity,
+    Power,
+    Pressure,
+    Temperature,
+    TemperatureInterval,
+    Time,
+    Velocity,
+    Volume,
 };

@@ -18,7 +18,7 @@ use std::str::FromStr;
 ///
 /// Implementations bridge stable serialized unit symbols, decimal persistence
 /// values, and the strongly typed `uom` quantity used for calculation.
-pub trait MeasurementUnit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static {
+pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static {
     /// The `uom` quantity type represented by this unit family.
     type Quantity: Copy;
 

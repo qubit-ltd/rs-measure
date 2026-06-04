@@ -9,13 +9,8 @@
  ******************************************************************************/
 //! Persisted measurement values and `uom` adapters.
 
-use crate::measure::AreaUnit;
-use crate::measure::LengthUnit;
-use crate::measure::MassUnit;
 use crate::measure::MeasurementError;
-use crate::measure::MeasurementUnit;
-use crate::measure::TimeUnit;
-use crate::measure::VolumeUnit;
+use crate::measure::Unit;
 use rust_decimal::Decimal;
 use serde::{
     Deserialize,
@@ -34,7 +29,7 @@ use std::str::FromStr;
 #[serde(bound(serialize = "U: Serialize", deserialize = "U: Deserialize<'de>"))]
 pub struct Measurement<U>
 where
-    U: MeasurementUnit,
+    U: Unit,
 {
     /// The numeric value expressed in [`Measurement::unit`].
     #[serde(with = "rust_decimal::serde::str")]
@@ -46,7 +41,7 @@ where
 
 impl<U> Measurement<U>
 where
-    U: MeasurementUnit,
+    U: Unit,
 {
     /// Creates a persisted measurement from a decimal value and typed unit.
     #[must_use]
@@ -90,7 +85,7 @@ where
 
 impl<U> fmt::Display for Measurement<U>
 where
-    U: MeasurementUnit,
+    U: Unit,
 {
     /// Formats this measurement as `<value> <unit>`.
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -100,7 +95,7 @@ where
 
 impl<U> FromStr for Measurement<U>
 where
-    U: MeasurementUnit,
+    U: Unit,
 {
     type Err = MeasurementError;
 
@@ -124,18 +119,3 @@ where
         Ok(Self::new(value, unit))
     }
 }
-
-/// A persisted length measurement.
-pub type LengthMeasurement = Measurement<LengthUnit>;
-
-/// A persisted area measurement.
-pub type AreaMeasurement = Measurement<AreaUnit>;
-
-/// A persisted volume measurement.
-pub type VolumeMeasurement = Measurement<VolumeUnit>;
-
-/// A persisted mass measurement.
-pub type MassMeasurement = Measurement<MassUnit>;
-
-/// A persisted time measurement.
-pub type TimeMeasurement = Measurement<TimeUnit>;

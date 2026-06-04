@@ -9,17 +9,33 @@
  ******************************************************************************/
 //! Unit families backed by `uom` quantities.
 
-mod area_unit;
-mod length_unit;
-mod mass_unit;
-mod time_unit;
-mod volume_unit;
+mod area;
+mod energy;
+mod frequency;
+mod length;
+mod mass;
+mod mass_density;
+mod power;
+mod pressure;
+mod temperature;
+mod temperature_interval;
+mod time;
+mod velocity;
+mod volume;
 
-pub use area_unit::AreaUnit;
-pub use length_unit::LengthUnit;
-pub use mass_unit::MassUnit;
-pub use time_unit::TimeUnit;
-pub use volume_unit::VolumeUnit;
+pub use area::Area;
+pub use energy::Energy;
+pub use frequency::Frequency;
+pub use length::Length;
+pub use mass::Mass;
+pub use mass_density::MassDensity;
+pub use power::Power;
+pub use pressure::Pressure;
+pub use temperature::Temperature;
+pub use temperature_interval::TemperatureInterval;
+pub use time::Time;
+pub use velocity::Velocity;
+pub use volume::Volume;
 
 use crate::measure::MeasurementError;
 use rust_decimal::Decimal;
@@ -34,7 +50,7 @@ macro_rules! define_measurement_unit {
         pub enum $unit:ident for $quantity_ty:ty, $quantity_name:literal {
             $(
                 $(#[$variant_attr:meta])*
-                $variant:ident => $symbol:literal, $uom_unit:ty;
+                $variant:ident => $symbol:literal $(| $alias:literal)*, $uom_unit:ty;
             )+
         }
     ) => {
@@ -47,7 +63,7 @@ macro_rules! define_measurement_unit {
             )+
         }
 
-        impl crate::measure::MeasurementUnit for $unit {
+        impl crate::measure::Unit for $unit {
             type Quantity = $quantity_ty;
 
             const QUANTITY: &'static str = $quantity_name;
@@ -81,7 +97,7 @@ macro_rules! define_measurement_unit {
 
         impl std::fmt::Display for $unit {
             fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str(crate::measure::MeasurementUnit::symbol(*self))
+                formatter.write_str(crate::measure::Unit::symbol(*self))
             }
         }
 
@@ -90,9 +106,9 @@ macro_rules! define_measurement_unit {
 
             fn from_str(input: &str) -> Result<Self, Self::Err> {
                 match input.trim() {
-                    $($symbol => Ok(Self::$variant),)+
+                    $($symbol $(| $alias)* => Ok(Self::$variant),)+
                     unit => Err(crate::measure::MeasurementError::UnknownUnit {
-                        quantity: <Self as crate::measure::MeasurementUnit>::QUANTITY.to_owned(),
+                        quantity: <Self as crate::measure::Unit>::QUANTITY.to_owned(),
                         unit: unit.to_owned(),
                     }),
                 }
@@ -104,7 +120,7 @@ macro_rules! define_measurement_unit {
             where
                 S: serde::Serializer,
             {
-                serializer.serialize_str(crate::measure::MeasurementUnit::symbol(*self))
+                serializer.serialize_str(crate::measure::Unit::symbol(*self))
             }
         }
 
