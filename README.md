@@ -75,8 +75,9 @@ unit`, while delegating all physical conversion to `uom`.
   textual decimal value.
 - **Stable unit symbols**: units serialize to compact symbols such as `cm`,
   `kg`, `kPa`, `mW`, and `cm/s`.
-- **ASCII micro aliases**: parsers accept aliases such as `um`, `ug`, `uPa`,
-  `uW`, and `um/s`; serialization uses canonical symbols such as `µm`.
+- **Input aliases**: parsers accept aliases such as `um`, `m2`, `m^3`,
+  `mmHg`, `mph`, and `year`; serialization keeps canonical symbols such as
+  `µm`, `m²`, `m³`, `mm Hg`, `mi/h`, and `a`.
 
 ### Focused public API
 
@@ -125,14 +126,16 @@ use qubit_measure::{
 use rust_decimal::Decimal;
 use serde_json::json;
 
-let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-let value = serde_json::to_value(length)?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let value = serde_json::to_value(length)?;
 
-assert_eq!(value, json!({
-    "value": "50.0",
-    "unit": "cm"
-}));
-# Ok::<(), Box<dyn std::error::Error>>(())
+    assert_eq!(value, json!({
+        "value": "50.0",
+        "unit": "cm"
+    }));
+    Ok(())
+}
 ```
 
 ### Parsing a typed measurement
@@ -145,11 +148,13 @@ use qubit_measure::{
 use rust_decimal::Decimal;
 use std::str::FromStr;
 
-let length = measurement::Length::from_str("12.5 cm")?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = measurement::Length::from_str("12.5 cm")?;
 
-assert_eq!(length.value, Decimal::new(125, 1));
-assert_eq!(length.unit, unit::Length::Centimeter);
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(length.value, Decimal::new(125, 1));
+    assert_eq!(length.unit, unit::Length::Centimeter);
+    Ok(())
+}
 ```
 
 ### Converting units through `uom`
@@ -161,12 +166,14 @@ use qubit_measure::{
 };
 use rust_decimal::Decimal;
 
-let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
-let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
+    let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
 
-assert_eq!(kilograms.value, Decimal::new(1, 4));
-assert_eq!(kilograms.unit, unit::Mass::Kilogram);
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(kilograms.value, Decimal::new(1, 4));
+    assert_eq!(kilograms.unit, unit::Mass::Kilogram);
+    Ok(())
+}
 ```
 
 ### Passing values into `uom`
@@ -195,11 +202,13 @@ use qubit_measure::{
 use uom::si::f64::Length;
 use uom::si::length::meter;
 
-let length = Length::new::<meter>(0.5);
-let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = Length::new::<meter>(0.5);
+    let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
 
-assert_eq!(persisted.to_string(), "50 cm");
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(persisted.to_string(), "50 cm");
+    Ok(())
+}
 ```
 
 ### Using production units
@@ -384,6 +393,9 @@ request:
 - Keep `uom` as the conversion source of truth.
 - Add new physical quantity families as typed `Measurement<U>` aliases and
   `unit::*` families.
+- Unit enums are non-exhaustive. Downstream code should include a wildcard
+  match arm, and this crate can add units by extending the relevant `unit::*`
+  macro invocation with a canonical symbol plus parse aliases.
 - Do not mix business count units into physical measurement families.
 - Add focused integration tests for symbols, parsing, serde, and `uom` bridge
   behavior.

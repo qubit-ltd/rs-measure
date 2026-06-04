@@ -58,7 +58,8 @@ Qubit Measure 把这个边界表示显式建模为 `Decimal + typed unit`，同�
 - **Serde 支持**：值序列化为 `{ "value": "...", "unit": "..." }`。
 - **字符串 decimal**：decimal 使用 `rust_decimal::serde::str`，保留稳定的十进制文本值。
 - **稳定单位符号**：单位序列化为 `cm`、`kg`、`kPa`、`mW`、`cm/s` 等紧凑符号。
-- **ASCII micro 别名**：解析时接受 `um`、`ug`、`uPa`、`uW`、`um/s` 等别名；序列化时使用 `µm` 等规范符号。
+- **输入别名**：解析时接受 `um`、`m2`、`m^3`、`mmHg`、`mph`、`year`
+  等别名；序列化时保持 `µm`、`m²`、`m³`、`mm Hg`、`mi/h`、`a` 等规范符号。
 
 ### 聚焦的公开 API
 
@@ -106,14 +107,16 @@ use qubit_measure::{
 use rust_decimal::Decimal;
 use serde_json::json;
 
-let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-let value = serde_json::to_value(length)?;
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let value = serde_json::to_value(length)?;
 
-assert_eq!(value, json!({
-    "value": "50.0",
-    "unit": "cm"
-}));
-# Ok::<(), Box<dyn std::error::Error>>(())
+    assert_eq!(value, json!({
+        "value": "50.0",
+        "unit": "cm"
+    }));
+    Ok(())
+}
 ```
 
 ### 解析类型化 measurement
@@ -126,11 +129,13 @@ use qubit_measure::{
 use rust_decimal::Decimal;
 use std::str::FromStr;
 
-let length = measurement::Length::from_str("12.5 cm")?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = measurement::Length::from_str("12.5 cm")?;
 
-assert_eq!(length.value, Decimal::new(125, 1));
-assert_eq!(length.unit, unit::Length::Centimeter);
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(length.value, Decimal::new(125, 1));
+    assert_eq!(length.unit, unit::Length::Centimeter);
+    Ok(())
+}
 ```
 
 ### 通过 `uom` 换算单位
@@ -142,12 +147,14 @@ use qubit_measure::{
 };
 use rust_decimal::Decimal;
 
-let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
-let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
+    let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
 
-assert_eq!(kilograms.value, Decimal::new(1, 4));
-assert_eq!(kilograms.unit, unit::Mass::Kilogram);
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(kilograms.value, Decimal::new(1, 4));
+    assert_eq!(kilograms.unit, unit::Mass::Kilogram);
+    Ok(())
+}
 ```
 
 ### 把值传入 `uom`
@@ -176,11 +183,13 @@ use qubit_measure::{
 use uom::si::f64::Length;
 use uom::si::length::meter;
 
-let length = Length::new::<meter>(0.5);
-let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = Length::new::<meter>(0.5);
+    let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
 
-assert_eq!(persisted.to_string(), "50 cm");
-# Ok::<(), qubit_measure::MeasurementError>(())
+    assert_eq!(persisted.to_string(), "50 cm");
+    Ok(())
+}
 ```
 
 ### 使用生产常用单位
@@ -355,6 +364,8 @@ Copyright (c) 2026. Haixing Hu, Qubit Co. Ltd. All rights reserved.
 
 - 保持 `uom` 作为换算真相源。
 - 新增物理 quantity family 时，按类型化 `Measurement<U>` 别名和 `unit::*` family 添加。
+- unit enum 是非穷尽的。下游 `match` 应保留通配分支；本 crate 后续扩展 unit 时，
+  只需要在对应 `unit::*` 宏调用中追加规范符号和解析别名。
 - 不要把业务计数单位混入物理 measurement family。
 - 为符号、解析、serde 和 `uom` 桥接行为补充聚焦的集成测试。
 
