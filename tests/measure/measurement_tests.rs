@@ -185,6 +185,38 @@ fn test_measurement_from_str_parses_signed_and_fractional_values() {
 }
 
 #[test]
+fn test_measurement_from_str_parses_scientific_notation_values() {
+    assert_eq!(
+        measurement::Length::from_str("1e-3 m").expect("scientific length should parse"),
+        measurement::Length::new(Decimal::new(1, 3), unit::Length::Meter),
+    );
+    assert_eq!(
+        measurement::Pressure::from_str("-2.5E+3Pa").expect("scientific pressure should parse"),
+        measurement::Pressure::new(Decimal::new(-2500, 0), unit::Pressure::Pascal),
+    );
+}
+
+#[test]
+fn test_measurement_from_str_keeps_unit_starting_with_e() {
+    assert_eq!(
+        measurement::Energy::from_str("1eV").expect("electronvolt should parse without a space"),
+        measurement::Energy::new(Decimal::ONE, unit::Energy::Electronvolt),
+    );
+}
+
+#[test]
+fn test_measurement_from_str_parses_compact_ascii_unit_aliases() {
+    assert_eq!(
+        measurement::Area::from_str("1m2").expect("compact square meter alias should parse"),
+        measurement::Area::new(Decimal::ONE, unit::Area::SquareMeter),
+    );
+    assert_eq!(
+        measurement::Velocity::from_str("65mph").expect("compact mph alias should parse"),
+        measurement::Velocity::new(Decimal::new(65, 0), unit::Velocity::MilePerHour),
+    );
+}
+
+#[test]
 fn test_typed_measurement_from_str_rejects_unit_from_other_quantity() {
     let error = measurement::Length::from_str("12 kg").expect_err("mass unit should not parse as length");
 
@@ -216,6 +248,15 @@ fn test_measurement_from_str_rejects_invalid_value() {
     let error = measurement::Length::from_str("1..2cm").expect_err("invalid decimal should fail");
 
     assert_eq!(error, MeasurementError::InvalidMeasurement("1..2cm".to_owned()));
+}
+
+#[test]
+fn test_measurement_from_str_rejects_decimal_overflow() {
+    let input = "792281625142643375935439503360 m";
+
+    let error = measurement::Length::from_str(input).expect_err("overflowing decimal should fail");
+
+    assert_eq!(error, MeasurementError::InvalidMeasurement(input.to_owned()));
 }
 
 #[test]

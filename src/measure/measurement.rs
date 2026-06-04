@@ -102,18 +102,71 @@ where
     /// The unit is resolved only inside `U`'s quantity family, so parsing a mass
     /// unit as a length measurement returns [`MeasurementError::UnknownUnit`].
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let trimmed = input.trim();
-        let split_at = trimmed
-            .find(|ch: char| !(ch.is_ascii_digit() || matches!(ch, '+' | '-' | '.')))
-            .ok_or_else(|| MeasurementError::InvalidMeasurement(input.to_owned()))?;
-        let (value_text, unit_text) = trimmed.split_at(split_at);
-        let unit_text = unit_text.trim();
-        if value_text.is_empty() || unit_text.is_empty() {
-            return Err(MeasurementError::InvalidMeasurement(input.to_owned()));
-        }
+        let (value_text, unit_text) =
+            split_measurement_parts(input).ok_or_else(|| MeasurementError::InvalidMeasurement(input.to_owned()))?;
         let value =
             Decimal::from_str(value_text).map_err(|_| MeasurementError::InvalidMeasurement(input.to_owned()))?;
         let unit = U::from_str(unit_text)?;
         Ok(Self::new(value, unit))
     }
+}
+
+/// Splits a measurement string into decimal value text and trimmed unit text.
+fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
+    let trimmed = input.trim();
+    let value_len = decimal_prefix_len(trimmed)?;
+    let (value_text, unit_text) = trimmed.split_at(value_len);
+    let unit_text = unit_text.trim();
+    if unit_text.is_empty() || unit_text.starts_with(['.', '+', '-']) {
+        None
+    } else {
+        Some((value_text, unit_text))
+    }
+}
+
+/// Returns the byte length of the leading decimal value.
+fn decimal_prefix_len(input: &str) -> Option<usize> {
+    let bytes = input.as_bytes();
+    let mut index = 0;
+    if matches!(bytes.first(), Some(b'+' | b'-')) {
+        index += 1;
+    }
+
+    let mut has_digit = false;
+    let mut has_dot = false;
+    while let Some(byte) = bytes.get(index) {
+        match byte {
+            b'0'..=b'9' => {
+                has_digit = true;
+                index += 1;
+            }
+            b'.' if !has_dot => {
+                has_dot = true;
+                index += 1;
+            }
+            b'e' | b'E' if has_digit => {
+                if let Some(end) = exponent_end(bytes, index + 1) {
+                    return Some(end);
+                }
+                break;
+            }
+            b'.' | b'+' | b'-' => return None,
+            _ => break,
+        }
+    }
+
+    has_digit.then_some(index)
+}
+
+/// Returns the end offset of a valid exponent suffix.
+fn exponent_end(bytes: &[u8], mut index: usize) -> Option<usize> {
+    if matches!(bytes.get(index), Some(b'+' | b'-')) {
+        index += 1;
+    }
+
+    let digits_start = index;
+    while matches!(bytes.get(index), Some(b'0'..=b'9')) {
+        index += 1;
+    }
+    (index > digits_start).then_some(index)
 }
