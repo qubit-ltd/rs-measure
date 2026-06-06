@@ -1,12 +1,10 @@
-/*******************************************************************************
- *
- *    Copyright (c) 2026 Haixing Hu.
- *
- *    SPDX-License-Identifier: Apache-2.0
- *
- *    Licensed under the Apache License, Version 2.0.
- *
- ******************************************************************************/
+// =============================================================================
+//    Copyright (c) 2026 Haixing Hu.
+//
+//    SPDX-License-Identifier: Apache-2.0
+//
+//    Licensed under the Apache License, Version 2.0.
+// =============================================================================
 //! Persisted measurement aliases for supported `uom` quantity families.
 
 use crate::Measurement;
@@ -34,7 +32,8 @@ pub type Capacitance = Measurement<unit::Capacitance>;
 pub type CatalyticActivity = Measurement<unit::CatalyticActivity>;
 
 /// A persisted catalytic activity concentration measurement.
-pub type CatalyticActivityConcentration = Measurement<unit::CatalyticActivityConcentration>;
+pub type CatalyticActivityConcentration =
+    Measurement<unit::CatalyticActivityConcentration>;
 
 /// A persisted dynamic viscosity measurement.
 pub type DynamicViscosity = Measurement<unit::DynamicViscosity>;

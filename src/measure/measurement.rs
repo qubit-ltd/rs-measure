@@ -1,12 +1,10 @@
-/*******************************************************************************
- *
- *    Copyright (c) 2026 Haixing Hu.
- *
- *    SPDX-License-Identifier: Apache-2.0
- *
- *    Licensed under the Apache License, Version 2.0.
- *
- ******************************************************************************/
+// =============================================================================
+//    Copyright (c) 2026 Haixing Hu.
+//
+//    SPDX-License-Identifier: Apache-2.0
+//
+//    Licensed under the Apache License, Version 2.0.
+// =============================================================================
 //! Persisted measurement values and `uom` adapters.
 
 use crate::measure::MeasurementError;
@@ -26,7 +24,10 @@ use std::str::FromStr;
 /// `uom` with [`Measurement::to_uom`], while persistence keeps the original
 /// user-facing unit instead of only the normalized base-unit value.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(bound(serialize = "U: Serialize", deserialize = "U: Deserialize<'de>"))]
+#[serde(bound(
+    serialize = "U: Serialize",
+    deserialize = "U: Deserialize<'de>"
+))]
 pub struct Measurement<U>
 where
     U: Unit,
@@ -65,8 +66,12 @@ where
     ///
     /// The returned value is expressed in `unit`, preserving the requested
     /// storage or display unit instead of always using the `uom` base unit.
-    pub fn from_uom(quantity: U::Quantity, unit: U) -> Result<Self, MeasurementError> {
-        unit.value_from_uom(quantity).map(|value| Self::new(value, unit))
+    pub fn from_uom(
+        quantity: U::Quantity,
+        unit: U,
+    ) -> Result<Self, MeasurementError> {
+        unit.value_from_uom(quantity)
+            .map(|value| Self::new(value, unit))
     }
 
     /// Converts this measurement to another unit from the same quantity family.
@@ -97,15 +102,20 @@ where
 {
     type Err = MeasurementError;
 
-    /// Parses a typed measurement written as `<decimal><unit>` or `<decimal> <unit>`.
+    /// Parses a typed measurement written as `<decimal><unit>` or `<decimal>
+    /// <unit>`.
     ///
-    /// The unit is resolved only inside `U`'s quantity family, so parsing a mass
-    /// unit as a length measurement returns [`MeasurementError::UnknownUnit`].
+    /// The unit is resolved only inside `U`'s quantity family, so parsing a
+    /// mass unit as a length measurement returns
+    /// [`MeasurementError::UnknownUnit`].
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let (value_text, unit_text) =
-            split_measurement_parts(input).ok_or_else(|| MeasurementError::InvalidMeasurement(input.to_owned()))?;
-        let value =
-            Decimal::from_str(value_text).map_err(|_| MeasurementError::InvalidMeasurement(input.to_owned()))?;
+        let (value_text, unit_text) = split_measurement_parts(input)
+            .ok_or_else(|| {
+                MeasurementError::InvalidMeasurement(input.to_owned())
+            })?;
+        let value = Decimal::from_str(value_text).map_err(|_| {
+            MeasurementError::InvalidMeasurement(input.to_owned())
+        })?;
         let unit = U::from_str(unit_text)?;
         Ok(Self::new(value, unit))
     }

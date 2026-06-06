@@ -1,12 +1,10 @@
-/*******************************************************************************
- *
- *    Copyright (c) 2026 Haixing Hu.
- *
- *    SPDX-License-Identifier: Apache-2.0
- *
- *    Licensed under the Apache License, Version 2.0.
- *
- ******************************************************************************/
+// =============================================================================
+//    Copyright (c) 2026 Haixing Hu.
+//
+//    SPDX-License-Identifier: Apache-2.0
+//
+//    Licensed under the Apache License, Version 2.0.
+// =============================================================================
 //! Unit families backed by `uom` quantities.
 
 mod acceleration;
@@ -236,9 +234,9 @@ pub(super) use define_measurement_unit;
 /// Converts a decimal value into a finite `f64` for `uom`.
 #[inline(always)]
 fn decimal_to_f64(value: Decimal) -> f64 {
-    value
-        .to_f64()
-        .expect("rust_decimal::Decimal is finite and within the f64 exponent range")
+    value.to_f64().expect(
+        "rust_decimal::Decimal is finite and within the f64 exponent range",
+    )
 }
 
 /// Converts a finite `f64` value from `uom` into `Decimal`.

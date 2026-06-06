@@ -1,12 +1,10 @@
-/*******************************************************************************
- *
- *    Copyright (c) 2026 Haixing Hu.
- *
- *    SPDX-License-Identifier: Apache-2.0
- *
- *    Licensed under the Apache License, Version 2.0.
- *
- ******************************************************************************/
+// =============================================================================
+//    Copyright (c) 2026 Haixing Hu.
+//
+//    SPDX-License-Identifier: Apache-2.0
+//
+//    Licensed under the Apache License, Version 2.0.
+// =============================================================================
 //! Traits shared by persisted measurement units.
 
 use crate::measure::MeasurementError;
@@ -18,7 +16,9 @@ use std::str::FromStr;
 ///
 /// Implementations bridge stable serialized unit symbols, decimal persistence
 /// values, and the strongly typed `uom` quantity used for calculation.
-pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static {
+pub trait Unit:
+    Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static
+{
     /// The `uom` quantity type represented by this unit family.
     type Quantity: Copy;
 
@@ -41,5 +41,8 @@ pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'st
     ///
     /// Returns [`MeasurementError::DecimalConversion`] when the `uom` value
     /// cannot be represented as [`Decimal`].
-    fn value_from_uom(self, quantity: Self::Quantity) -> Result<Decimal, MeasurementError>;
+    fn value_from_uom(
+        self,
+        quantity: Self::Quantity,
+    ) -> Result<Decimal, MeasurementError>;
 }
