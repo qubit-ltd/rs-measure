@@ -7,12 +7,20 @@
 // =============================================================================
 //! Persisted measurement values and `uom` adapters.
 
-use crate::measure::MeasurementError;
-use crate::measure::Unit;
+use crate::measure::{
+    ConversionOptions,
+    MeasurementError,
+    Unit,
+    UomUnit,
+    default_conversion_options,
+};
 use rust_decimal::Decimal;
+use serde::ser::SerializeStruct;
 use serde::{
     Deserialize,
+    Deserializer,
     Serialize,
+    Serializer,
 };
 use std::fmt;
 use std::str::FromStr;
@@ -21,19 +29,14 @@ use std::str::FromStr;
 ///
 /// `Measurement<U>` stores the decimal value exactly as it was supplied and
 /// stores the unit family member alongside it. Calculations can cross into
-/// `uom` with [`Measurement::to_uom`], while persistence keeps the original
-/// user-facing unit instead of only the normalized base-unit value.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(bound(
-    serialize = "U: Serialize",
-    deserialize = "U: Deserialize<'de>"
-))]
+/// `uom` with [`Measurement::to_uom_approx`], while persistence keeps the
+/// original user-facing unit instead of only the normalized base-unit value.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Measurement<U>
 where
     U: Unit,
 {
     /// The numeric value expressed in [`Measurement::unit`].
-    #[serde(with = "rust_decimal::serde::str")]
     pub value: Decimal,
 
     /// The typed unit used to interpret [`Measurement::value`].
@@ -56,33 +59,120 @@ where
         U::QUANTITY
     }
 
+    /// Converts this measurement using the process-wide Decimal options.
+    ///
+    /// # Errors
+    ///
+    /// Returns unit-definition or Decimal arithmetic errors from the exact
+    /// conversion engine.
+    pub fn convert_to(self, target: U) -> Result<Self, MeasurementError> {
+        self.convert_to_with_options(target, default_conversion_options())
+    }
+
+    /// Converts this measurement using explicit Decimal options.
+    ///
+    /// # Errors
+    ///
+    /// Returns unit-definition or Decimal arithmetic errors from the exact
+    /// conversion engine, including an unrepresentable requested scale.
+    pub fn convert_to_with_options(
+        self,
+        target: U,
+        options: ConversionOptions,
+    ) -> Result<Self, MeasurementError> {
+        let source = self.unit.definition()?;
+        let target_definition = target.definition()?;
+        let value =
+            source.convert_value_to(self.value, target_definition, options)?;
+        Ok(Self::new(value, target))
+    }
+
+    /// Parses a measurement whose unit must use its canonical symbol.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidMeasurement`] for malformed numeric
+    /// text, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
+    /// [`MeasurementError::UnknownUnit`] for an unknown unit.
+    pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
+        let (value_text, unit_text) = split_measurement_parts(input)
+            .ok_or_else(|| {
+                MeasurementError::InvalidMeasurement(input.to_owned())
+            })?;
+        let value = Decimal::from_str(value_text).map_err(|_| {
+            MeasurementError::InvalidMeasurement(input.to_owned())
+        })?;
+        let unit = U::parse_strict(unit_text)?;
+        Ok(Self::new(value, unit))
+    }
+}
+
+impl<U> Measurement<U>
+where
+    U: UomUnit,
+{
     /// Converts this measurement into its typed `uom` quantity.
     #[must_use]
-    pub fn to_uom(self) -> U::Quantity {
-        self.unit.to_uom(self.value)
+    pub fn to_uom_approx(self) -> U::Quantity {
+        self.unit.to_uom_approx(self.value)
     }
 
     /// Creates a persisted measurement from a typed `uom` quantity.
     ///
     /// The returned value is expressed in `unit`, preserving the requested
     /// storage or display unit instead of always using the `uom` base unit.
-    pub fn from_uom(
+    pub fn from_uom_approx(
         quantity: U::Quantity,
         unit: U,
     ) -> Result<Self, MeasurementError> {
-        unit.value_from_uom(quantity)
+        unit.value_from_uom_approx(quantity)
             .map(|value| Self::new(value, unit))
     }
+}
 
-    /// Converts this measurement to another unit from the same quantity family.
-    ///
-    /// The conversion is delegated to `uom`: this crate does not maintain an
-    /// independent conversion table.
-    pub fn convert_to(self, target: U) -> Result<Self, MeasurementError> {
-        if self.unit == target {
-            return Ok(Self::new(self.value, target));
+impl<U> Serialize for Measurement<U>
+where
+    U: Unit + Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut state = serializer.serialize_struct("Measurement", 3)?;
+        state.serialize_field("quantity", U::QUANTITY)?;
+        state.serialize_field("value", &self.value.to_string())?;
+        state.serialize_field("unit", &self.unit)?;
+        state.end()
+    }
+}
+
+#[derive(Deserialize)]
+#[serde(bound(deserialize = "U: Deserialize<'de>"))]
+struct MeasurementWire<U> {
+    quantity: String,
+    #[serde(with = "rust_decimal::serde::str")]
+    value: Decimal,
+    unit: U,
+}
+
+impl<'de, U> Deserialize<'de> for Measurement<U>
+where
+    U: Unit + Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        let wire = MeasurementWire::<U>::deserialize(deserializer)?;
+        if wire.quantity != U::QUANTITY {
+            return Err(serde::de::Error::custom(
+                MeasurementError::QuantityMismatch {
+                    expected: U::QUANTITY.to_owned(),
+                    actual: wire.quantity,
+                },
+            ));
         }
-        Self::from_uom(self.to_uom(), target)
+        Ok(Self::new(wire.value, wire.unit))
     }
 }
 
@@ -116,7 +206,7 @@ where
         let value = Decimal::from_str(value_text).map_err(|_| {
             MeasurementError::InvalidMeasurement(input.to_owned())
         })?;
-        let unit = U::from_str(unit_text)?;
+        let unit = U::parse_lenient(unit_text)?;
         Ok(Self::new(value, unit))
     }
 }

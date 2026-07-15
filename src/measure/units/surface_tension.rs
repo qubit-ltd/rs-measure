@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted surface tension measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::SurfaceTension as UomSurfaceTension;
 use uom::si::surface_tension::{
     dyne_per_centimeter,
@@ -16,16 +16,16 @@ use uom::si::surface_tension::{
     newton_per_meter,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` surface tension quantities.
-    pub enum SurfaceTension for UomSurfaceTension, "surface tension" {
+    pub enum SurfaceTension for "surface_tension", uom = UomSurfaceTension {
         /// Millinewton per meter (`mN/m`).
-        MillinewtonPerMeter => "mN/m", millinewton_per_meter;
+        MillinewtonPerMeter => { symbol: "mN/m"; coefficient: 1 / 1000; uom: millinewton_per_meter; }
         /// Newton per meter (`N/m`).
-        NewtonPerMeter => "N/m", newton_per_meter;
+        NewtonPerMeter => { symbol: "N/m"; coefficient: 1; uom: newton_per_meter; }
         /// Dyne per centimeter (`dyn/cm`).
-        DynePerCentimeter => "dyn/cm", dyne_per_centimeter;
+        DynePerCentimeter => { symbol: "dyn/cm"; coefficient: 1 / 1000; uom: dyne_per_centimeter; }
         /// Joule per square meter (`J/m²`).
-        JoulePerSquareMeter => "J/m²" | "J/m2" | "J/m^2", joule_per_square_meter;
+        JoulePerSquareMeter => { symbol: "J/m²"; coefficient: 1; aliases: ["J/m2", "J/m^2"]; uom: joule_per_square_meter; }
     }
 }

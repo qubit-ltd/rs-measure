@@ -7,22 +7,39 @@
 // =============================================================================
 
 use qubit_measure::{
+    ConversionOptions,
+    Decimal,
+    RoundingStrategy,
     measurement,
     unit,
 };
-use rust_decimal::Decimal;
+use serde_json::json;
 use uom::si::length::meter;
 
-/// Demonstrates persisted measurements and `uom` conversion.
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let persisted =
-        measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
-    let meters = persisted.to_uom().get::<meter>();
-    let kilograms =
-        measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram)
-            .convert_to(unit::Mass::Kilogram)?;
+/// Demonstrates exact conversion, persistence, and the approximate `uom`
+/// bridge.
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let centimeters = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
+    let meters = centimeters.convert_to_with_options(
+        unit::Length::Meter,
+        ConversionOptions::fixed_scale(
+            4,
+            RoundingStrategy::MidpointNearestEven,
+        )?,
+    )?;
+    let json_value = serde_json::to_value(centimeters)?;
+    let approximate_meters = centimeters.to_uom_approx().get::<meter>();
 
-    println!("{persisted} = {meters} m");
-    println!("{kilograms}");
+    assert_eq!(meters.value.to_string(), "0.5000");
+    assert_eq!(
+        json_value,
+        json!({"quantity": "length", "value": "50.0", "unit": "cm"}),
+    );
+    println!(
+        "{centimeters} = {meters}; approximately {approximate_meters} m in uom"
+    );
     Ok(())
 }

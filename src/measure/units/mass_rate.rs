@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted mass rate measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MassRate as UomMassRate;
 use uom::si::mass_rate::{
     gram_per_second,
@@ -18,20 +18,20 @@ use uom::si::mass_rate::{
     ton_per_hour,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` mass rate quantities.
-    pub enum MassRate for UomMassRate, "mass rate" {
+    pub enum MassRate for "mass_rate", uom = UomMassRate {
         /// Milligram per second (`mg/s`).
-        MilligramPerSecond => "mg/s", milligram_per_second;
+        MilligramPerSecond => { symbol: "mg/s"; coefficient: 1 / 1000000; uom: milligram_per_second; }
         /// Gram per second (`g/s`).
-        GramPerSecond => "g/s", gram_per_second;
+        GramPerSecond => { symbol: "g/s"; coefficient: 1 / 1000; uom: gram_per_second; }
         /// Kilogram per second (`kg/s`).
-        KilogramPerSecond => "kg/s", kilogram_per_second;
+        KilogramPerSecond => { symbol: "kg/s"; coefficient: 1; uom: kilogram_per_second; }
         /// Kilogram per hour (`kg/h`).
-        KilogramPerHour => "kg/h", kilogram_per_hour;
+        KilogramPerHour => { symbol: "kg/h"; coefficient: 1 / 3600; uom: kilogram_per_hour; }
         /// Tonne per hour (`t/h`).
-        TonnePerHour => "t/h", ton_per_hour;
+        TonnePerHour => { symbol: "t/h"; coefficient: 5 / 18; uom: ton_per_hour; }
         /// Pound per hour (`lb/h`).
-        PoundPerHour => "lb/h", pound_per_hour;
+        PoundPerHour => { symbol: "lb/h"; coefficient: 45359237 / 360000000000; uom: pound_per_hour; }
     }
 }

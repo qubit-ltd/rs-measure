@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted electrical resistance measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electrical_resistance::{
     gigaohm,
     kiloohm,
@@ -18,20 +18,20 @@ use uom::si::electrical_resistance::{
 };
 use uom::si::f64::ElectricalResistance as UomElectricalResistance;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electrical resistance quantities.
-    pub enum ElectricalResistance for UomElectricalResistance, "electrical resistance" {
+    pub enum ElectricalResistance for "electrical_resistance", uom = UomElectricalResistance {
         /// Microohm (`µΩ`).
-        Microohm => "µΩ" | "uΩ" | "μΩ" | "uOhm", microohm;
+        Microohm => { symbol: "µΩ"; coefficient: 1 / 1000000; aliases: ["uΩ", "μΩ", "uOhm"]; uom: microohm; }
         /// Milliohm (`mΩ`).
-        Milliohm => "mΩ" | "mOhm", milliohm;
+        Milliohm => { symbol: "mΩ"; coefficient: 1 / 1000; aliases: ["mOhm"]; uom: milliohm; }
         /// Ohm (`Ω`).
-        Ohm => "Ω" | "ohm" | "Ohm", ohm;
+        Ohm => { symbol: "Ω"; coefficient: 1; aliases: ["ohm", "Ohm"]; uom: ohm; }
         /// Kiloohm (`kΩ`).
-        Kiloohm => "kΩ" | "kOhm", kiloohm;
+        Kiloohm => { symbol: "kΩ"; coefficient: 1000; aliases: ["kOhm"]; uom: kiloohm; }
         /// Megaohm (`MΩ`).
-        Megaohm => "MΩ" | "MOhm", megaohm;
+        Megaohm => { symbol: "MΩ"; coefficient: 1000000; aliases: ["MOhm"]; uom: megaohm; }
         /// Gigaohm (`GΩ`).
-        Gigaohm => "GΩ" | "GOhm", gigaohm;
+        Gigaohm => { symbol: "GΩ"; coefficient: 1000000000; aliases: ["GOhm"]; uom: gigaohm; }
     }
 }

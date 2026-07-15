@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted molar concentration measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MolarConcentration as UomMolarConcentration;
 use uom::si::molar_concentration::{
     micromole_per_liter,
@@ -18,20 +18,20 @@ use uom::si::molar_concentration::{
     particle_per_milliliter,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` molar concentration quantities.
-    pub enum MolarConcentration for UomMolarConcentration, "molar concentration" {
+    pub enum MolarConcentration for "molar_concentration", uom = UomMolarConcentration {
         /// Nanomole per liter (`nmol/L`).
-        NanomolePerLiter => "nmol/L", nanomole_per_liter;
+        NanomolePerLiter => { symbol: "nmol/L"; coefficient: 1 / 1000000; uom: nanomole_per_liter; }
         /// Micromole per liter (`µmol/L`).
-        MicromolePerLiter => "µmol/L" | "umol/L" | "μmol/L", micromole_per_liter;
+        MicromolePerLiter => { symbol: "µmol/L"; coefficient: 1 / 1000; aliases: ["umol/L", "μmol/L"]; uom: micromole_per_liter; }
         /// Millimole per liter (`mmol/L`).
-        MillimolePerLiter => "mmol/L", millimole_per_liter;
+        MillimolePerLiter => { symbol: "mmol/L"; coefficient: 1; uom: millimole_per_liter; }
         /// Mole per liter (`mol/L`).
-        MolePerLiter => "mol/L" | "M", mole_per_liter;
+        MolePerLiter => { symbol: "mol/L"; coefficient: 1000; aliases: ["M"]; uom: mole_per_liter; }
         /// Mole per cubic meter (`mol/m³`).
-        MolePerCubicMeter => "mol/m³" | "mol/m3" | "mol/m^3", mole_per_cubic_meter;
+        MolePerCubicMeter => { symbol: "mol/m³"; coefficient: 1; aliases: ["mol/m3", "mol/m^3"]; uom: mole_per_cubic_meter; }
         /// Particle per milliliter (`particle/mL`).
-        ParticlePerMilliliter => "particle/mL", particle_per_milliliter;
+        ParticlePerMilliliter => { symbol: "particle/mL"; coefficient: 1 / 602214076000000000; uom: particle_per_milliliter; }
     }
 }

@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted electric potential measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electric_potential::{
     kilovolt,
     megavolt,
@@ -18,22 +18,22 @@ use uom::si::electric_potential::{
 };
 use uom::si::f64::ElectricPotential as UomElectricPotential;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electric potential quantities.
     ///
     /// Electric potential is the SI quantity commonly called voltage.
-    pub enum ElectricPotential for UomElectricPotential, "electric potential" {
+    pub enum ElectricPotential for "electric_potential", uom = UomElectricPotential {
         /// Nanovolt (`nV`).
-        Nanovolt => "nV", nanovolt;
+        Nanovolt => { symbol: "nV"; coefficient: 1 / 1000000000; uom: nanovolt; }
         /// Microvolt (`µV`).
-        Microvolt => "µV" | "uV" | "μV", microvolt;
+        Microvolt => { symbol: "µV"; coefficient: 1 / 1000000; aliases: ["uV", "μV"]; uom: microvolt; }
         /// Millivolt (`mV`).
-        Millivolt => "mV", millivolt;
+        Millivolt => { symbol: "mV"; coefficient: 1 / 1000; uom: millivolt; }
         /// Volt (`V`).
-        Volt => "V" | "volt", volt;
+        Volt => { symbol: "V"; coefficient: 1; aliases: ["volt"]; uom: volt; }
         /// Kilovolt (`kV`).
-        Kilovolt => "kV", kilovolt;
+        Kilovolt => { symbol: "kV"; coefficient: 1000; uom: kilovolt; }
         /// Megavolt (`MV`).
-        Megavolt => "MV", megavolt;
+        Megavolt => { symbol: "MV"; coefficient: 1000000; uom: megavolt; }
     }
 }

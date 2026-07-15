@@ -7,6 +7,13 @@
 // =============================================================================
 //! Unit families supported by persisted measurements.
 
+pub use crate::{
+    ConversionFactor,
+    Unit,
+    UnitDefinition,
+    UomUnit,
+};
+
 pub use crate::measure::{
     Acceleration,
     AmountOfSubstance,

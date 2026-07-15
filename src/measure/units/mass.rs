@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted mass measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Mass as UomMass;
 use uom::si::mass::{
     carat,
@@ -22,28 +22,28 @@ use uom::si::mass::{
     ton_short,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` mass quantities.
-    pub enum Mass for UomMass, "mass" {
+    pub enum Mass for "mass", uom = UomMass {
         /// Microgram (`µg`).
-        Microgram => "µg" | "ug" | "μg", microgram;
+        Microgram => { symbol: "µg"; coefficient: 1 / 1000000000; aliases: ["ug", "μg"]; uom: microgram; }
         /// Milligram (`mg`).
-        Milligram => "mg", milligram;
+        Milligram => { symbol: "mg"; coefficient: 1 / 1000000; uom: milligram; }
         /// Gram (`g`).
-        Gram => "g", gram;
+        Gram => { symbol: "g"; coefficient: 1 / 1000; uom: gram; }
         /// Kilogram (`kg`).
-        Kilogram => "kg", kilogram;
+        Kilogram => { symbol: "kg"; coefficient: 1; uom: kilogram; }
         /// Metric tonne (`t`).
-        Tonne => "t", ton;
+        Tonne => { symbol: "t"; coefficient: 1000; uom: ton; }
         /// Carat (`ct`).
-        Carat => "ct", carat;
+        Carat => { symbol: "ct"; coefficient: 1 / 5000; uom: carat; }
         /// Ounce (`oz`).
-        Ounce => "oz", ounce;
+        Ounce => { symbol: "oz"; coefficient: 45359237 / 1600000000; uom: ounce; }
         /// Pound (`lb`).
-        Pound => "lb", pound;
+        Pound => { symbol: "lb"; coefficient: 45359237 / 100000000; uom: pound; }
         /// Short ton (`2000 lb`).
-        TonShort => "2000 lb", ton_short;
+        TonShort => { symbol: "2000 lb"; coefficient: 45359237 / 50000; uom: ton_short; }
         /// Long ton (`2240 lb`).
-        TonLong => "2240 lb", ton_long;
+        TonLong => { symbol: "2240 lb"; coefficient: 317514659 / 312500; uom: ton_long; }
     }
 }

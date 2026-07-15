@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted area measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::area::{
     acre,
     hectare,
@@ -22,28 +22,28 @@ use uom::si::area::{
 };
 use uom::si::f64::Area as UomArea;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` area quantities.
-    pub enum Area for UomArea, "area" {
+    pub enum Area for "area", uom = UomArea {
         /// Square millimeter (`mm²`).
-        SquareMillimeter => "mm²" | "mm2" | "mm^2", square_millimeter;
+        SquareMillimeter => { symbol: "mm²"; coefficient: 1 / 1000000; aliases: ["mm2", "mm^2"]; uom: square_millimeter; }
         /// Square centimeter (`cm²`).
-        SquareCentimeter => "cm²" | "cm2" | "cm^2", square_centimeter;
+        SquareCentimeter => { symbol: "cm²"; coefficient: 1 / 10000; aliases: ["cm2", "cm^2"]; uom: square_centimeter; }
         /// Square meter (`m²`).
-        SquareMeter => "m²" | "m2" | "m^2", square_meter;
+        SquareMeter => { symbol: "m²"; coefficient: 1; aliases: ["m2", "m^2"]; uom: square_meter; }
         /// Square kilometer (`km²`).
-        SquareKilometer => "km²" | "km2" | "km^2", square_kilometer;
+        SquareKilometer => { symbol: "km²"; coefficient: 1000000; aliases: ["km2", "km^2"]; uom: square_kilometer; }
         /// Hectare (`ha`).
-        Hectare => "ha", hectare;
+        Hectare => { symbol: "ha"; coefficient: 10000; uom: hectare; }
         /// Acre (`ac`).
-        Acre => "ac", acre;
+        Acre => { symbol: "ac"; coefficient: 316160658 / 78125; uom: acre; }
         /// Square inch (`in²`).
-        SquareInch => "in²" | "in2" | "in^2", square_inch;
+        SquareInch => { symbol: "in²"; coefficient: 16129 / 25000000; aliases: ["in2", "in^2"]; uom: square_inch; }
         /// Square foot (`ft²`).
-        SquareFoot => "ft²" | "ft2" | "ft^2", square_foot;
+        SquareFoot => { symbol: "ft²"; coefficient: 145161 / 1562500; aliases: ["ft2", "ft^2"]; uom: square_foot; }
         /// Square yard (`yd²`).
-        SquareYard => "yd²" | "yd2" | "yd^2", square_yard;
+        SquareYard => { symbol: "yd²"; coefficient: 1306449 / 1562500; aliases: ["yd2", "yd^2"]; uom: square_yard; }
         /// Square mile (`mi²`).
-        SquareMile => "mi²" | "mi2" | "mi^2", square_mile;
+        SquareMile => { symbol: "mi²"; coefficient: 40468564224 / 15625; aliases: ["mi2", "mi^2"]; uom: square_mile; }
     }
 }

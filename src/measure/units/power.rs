@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted power measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Power as UomPower;
 use uom::si::power::{
     horsepower,
@@ -19,22 +19,22 @@ use uom::si::power::{
     watt,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` power quantities.
-    pub enum Power for UomPower, "power" {
+    pub enum Power for "power", uom = UomPower {
         /// Nanowatt (`nW`).
-        Nanowatt => "nW", nanowatt;
+        Nanowatt => { symbol: "nW"; coefficient: 1 / 1000000000; uom: nanowatt; }
         /// Microwatt (`µW`).
-        Microwatt => "µW" | "uW" | "μW", microwatt;
+        Microwatt => { symbol: "µW"; coefficient: 1 / 1000000; aliases: ["uW", "μW"]; uom: microwatt; }
         /// Milliwatt (`mW`).
-        Milliwatt => "mW", milliwatt;
+        Milliwatt => { symbol: "mW"; coefficient: 1 / 1000; uom: milliwatt; }
         /// Watt (`W`).
-        Watt => "W", watt;
+        Watt => { symbol: "W"; coefficient: 1; uom: watt; }
         /// Kilowatt (`kW`).
-        Kilowatt => "kW", kilowatt;
+        Kilowatt => { symbol: "kW"; coefficient: 1000; uom: kilowatt; }
         /// Megawatt (`MW`).
-        Megawatt => "MW", megawatt;
+        Megawatt => { symbol: "MW"; coefficient: 1000000; uom: megawatt; }
         /// Horsepower (`hp`).
-        Horsepower => "hp", horsepower;
+        MechanicalHorsepower => { symbol: "hp (mechanical)"; coefficient: 37284993579113511 / 50000000000000; aliases: ["hp"]; uom: horsepower; }
     }
 }
