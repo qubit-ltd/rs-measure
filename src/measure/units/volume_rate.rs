@@ -22,16 +22,16 @@ define_unit_family! {
     /// Units for persisted `uom` volume rate quantities.
     pub enum VolumeRate for "volume_rate", uom = UomVolumeRate {
         /// Cubic meter per second (`m³/s`).
-        CubicMeterPerSecond => { symbol: "m³/s"; coefficient: 1; aliases: ["m3/s", "m^3/s"]; uom: cubic_meter_per_second; }
+        CubicMeterPerSecond => { symbol: "m³/s"; definition: crate::consts::volume_rate::CUBIC_METER_PER_SECOND; aliases: ["m3/s", "m^3/s"]; uom: cubic_meter_per_second; }
         /// Cubic meter per hour (`m³/h`).
-        CubicMeterPerHour => { symbol: "m³/h"; coefficient: 1 / 3600; aliases: ["m3/h", "m^3/h"]; uom: cubic_meter_per_hour; }
+        CubicMeterPerHour => { symbol: "m³/h"; definition: crate::consts::volume_rate::CUBIC_METER_PER_HOUR; aliases: ["m3/h", "m^3/h"]; uom: cubic_meter_per_hour; }
         /// Milliliter per second (`mL/s`).
-        MilliliterPerSecond => { symbol: "mL/s"; coefficient: 1 / 1000000; uom: milliliter_per_second; }
+        MilliliterPerSecond => { symbol: "mL/s"; definition: crate::consts::volume_rate::MILLILITER_PER_SECOND; uom: milliliter_per_second; }
         /// Liter per second (`L/s`).
-        LiterPerSecond => { symbol: "L/s"; coefficient: 1 / 1000; uom: liter_per_second; }
+        LiterPerSecond => { symbol: "L/s"; definition: crate::consts::volume_rate::LITER_PER_SECOND; uom: liter_per_second; }
         /// Liter per minute (`L/min`).
-        LiterPerMinute => { symbol: "L/min"; coefficient: 1 / 60000; uom: liter_per_minute; }
+        LiterPerMinute => { symbol: "L/min"; definition: crate::consts::volume_rate::LITER_PER_MINUTE; uom: liter_per_minute; }
         /// US gallon per minute (`gal/min`).
-        UsGallonPerMinute => { symbol: "gal (US)/min"; coefficient: 157725491 / 2500000000000; aliases: ["gal/min"]; uom: gallon_per_minute; }
+        UsGallonPerMinute => { symbol: "gal (US)/min"; definition: crate::consts::volume_rate::US_GALLON_PER_MINUTE; aliases: ["gal/min"]; uom: gallon_per_minute; }
     }
 }

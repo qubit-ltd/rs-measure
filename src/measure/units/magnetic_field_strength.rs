@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` magnetic field strength quantities.
     pub enum MagneticFieldStrength for "magnetic_field_strength", uom = UomMagneticFieldStrength {
         /// Ampere per meter (`A/m`).
-        AmperePerMeter => { symbol: "A/m"; coefficient: 1; uom: ampere_per_meter; }
+        AmperePerMeter => { symbol: "A/m"; definition: crate::consts::magnetic_field_strength::AMPERE_PER_METER; uom: ampere_per_meter; }
         /// Ampere per centimeter (`A/cm`).
-        AmperePerCentimeter => { symbol: "A/cm"; coefficient: 100; uom: ampere_per_centimeter; }
+        AmperePerCentimeter => { symbol: "A/cm"; definition: crate::consts::magnetic_field_strength::AMPERE_PER_CENTIMETER; uom: ampere_per_centimeter; }
         /// Oersted (`Oe`).
-        Oersted => { symbol: "Oe"; coefficient: 7957747154594767 / 100000000000000; uom: oersted; }
+        Oersted => { symbol: "Oe"; definition: crate::consts::magnetic_field_strength::OERSTED; uom: oersted; }
     }
 }

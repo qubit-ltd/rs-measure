@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` solid angle quantities.
     pub enum SolidAngle for "solid_angle", uom = UomSolidAngle {
         /// Steradian (`sr`).
-        Steradian => { symbol: "sr"; coefficient: 1; uom: steradian; }
+        Steradian => { symbol: "sr"; definition: crate::consts::solid_angle::STERADIAN; uom: steradian; }
         /// Spat (`sp`).
-        Spat => { symbol: "sp"; coefficient: 12566370614359173 / 1000000000000000; uom: spat; }
+        Spat => { symbol: "sp"; definition: crate::consts::solid_angle::SPAT; uom: spat; }
         /// Square degree (`°²`).
-        SquareDegree => { symbol: "°²"; coefficient: 1523087098933543 / 5000000000000000000; aliases: ["deg2", "deg^2"]; uom: square_degree; }
+        SquareDegree => { symbol: "°²"; definition: crate::consts::solid_angle::SQUARE_DEGREE; aliases: ["deg2", "deg^2"]; uom: square_degree; }
     }
 }

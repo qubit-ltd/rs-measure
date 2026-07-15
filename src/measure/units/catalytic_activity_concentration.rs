@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` catalytic activity concentration quantities.
     pub enum CatalyticActivityConcentration for "catalytic_activity_concentration", uom = UomCatalyticActivityConcentration {
         /// Katal per cubic meter (`kat/m³`).
-        KatalPerCubicMeter => { symbol: "kat/m³"; coefficient: 1; aliases: ["kat/m3", "kat/m^3"]; uom: katal_per_cubic_meter; }
+        KatalPerCubicMeter => { symbol: "kat/m³"; definition: crate::consts::catalytic_activity_concentration::KATAL_PER_CUBIC_METER; aliases: ["kat/m3", "kat/m^3"]; uom: katal_per_cubic_meter; }
         /// Enzyme unit per liter (`U/L`).
-        EnzymeUnitPerLiter => { symbol: "U/L"; coefficient: 1 / 60000; uom: enzyme_unit_per_liter; }
+        EnzymeUnitPerLiter => { symbol: "U/L"; definition: crate::consts::catalytic_activity_concentration::ENZYME_UNIT_PER_LITER; uom: enzyme_unit_per_liter; }
         /// Milli enzyme unit per milliliter (`mU/mL`).
-        MilliEnzymeUnitPerMilliliter => { symbol: "mU/mL"; coefficient: 1 / 60000; uom: milli_enzyme_unit_per_milliliter; }
+        MilliEnzymeUnitPerMilliliter => { symbol: "mU/mL"; definition: crate::consts::catalytic_activity_concentration::MILLI_ENZYME_UNIT_PER_MILLILITER; uom: milli_enzyme_unit_per_milliliter; }
     }
 }

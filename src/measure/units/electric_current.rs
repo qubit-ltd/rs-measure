@@ -23,18 +23,18 @@ define_unit_family! {
     /// Units for persisted `uom` electric current quantities.
     pub enum ElectricCurrent for "electric_current", uom = UomElectricCurrent {
         /// Picoampere (`pA`).
-        Picoampere => { symbol: "pA"; coefficient: 1 / 1000000000000; uom: picoampere; }
+        Picoampere => { symbol: "pA"; definition: crate::consts::electric_current::PICOAMPERE; uom: picoampere; }
         /// Nanoampere (`nA`).
-        Nanoampere => { symbol: "nA"; coefficient: 1 / 1000000000; uom: nanoampere; }
+        Nanoampere => { symbol: "nA"; definition: crate::consts::electric_current::NANOAMPERE; uom: nanoampere; }
         /// Microampere (`µA`).
-        Microampere => { symbol: "µA"; coefficient: 1 / 1000000; aliases: ["uA", "μA"]; uom: microampere; }
+        Microampere => { symbol: "µA"; definition: crate::consts::electric_current::MICROAMPERE; aliases: ["uA", "μA"]; uom: microampere; }
         /// Milliampere (`mA`).
-        Milliampere => { symbol: "mA"; coefficient: 1 / 1000; uom: milliampere; }
+        Milliampere => { symbol: "mA"; definition: crate::consts::electric_current::MILLIAMPERE; uom: milliampere; }
         /// Ampere (`A`).
-        Ampere => { symbol: "A"; coefficient: 1; uom: ampere; }
+        Ampere => { symbol: "A"; definition: crate::consts::electric_current::AMPERE; uom: ampere; }
         /// Kiloampere (`kA`).
-        Kiloampere => { symbol: "kA"; coefficient: 1000; uom: kiloampere; }
+        Kiloampere => { symbol: "kA"; definition: crate::consts::electric_current::KILOAMPERE; uom: kiloampere; }
         /// Megaampere (`MA`).
-        Megaampere => { symbol: "MA"; coefficient: 1000000; uom: megaampere; }
+        Megaampere => { symbol: "MA"; definition: crate::consts::electric_current::MEGAAMPERE; uom: megaampere; }
     }
 }

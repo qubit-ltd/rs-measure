@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` luminance quantities.
     pub enum Luminance for "luminance", uom = UomLuminance {
         /// Candela per square meter (`cd/m²`).
-        CandelaPerSquareMeter => { symbol: "cd/m²"; coefficient: 1; aliases: ["cd/m2", "cd/m^2"]; uom: candela_per_square_meter; }
+        CandelaPerSquareMeter => { symbol: "cd/m²"; definition: crate::consts::luminance::CANDELA_PER_SQUARE_METER; aliases: ["cd/m2", "cd/m^2"]; uom: candela_per_square_meter; }
         /// Candela per square centimeter (`cd/cm²`).
-        CandelaPerSquareCentimeter => { symbol: "cd/cm²"; coefficient: 10000; aliases: ["cd/cm2", "cd/cm^2"]; uom: candela_per_square_centimeter; }
+        CandelaPerSquareCentimeter => { symbol: "cd/cm²"; definition: crate::consts::luminance::CANDELA_PER_SQUARE_CENTIMETER; aliases: ["cd/cm2", "cd/cm^2"]; uom: candela_per_square_centimeter; }
         /// Candela per square foot (`cd/ft²`).
-        CandelaPerSquareFoot => { symbol: "cd/ft²"; coefficient: 1562500 / 145161; aliases: ["cd/ft2", "cd/ft^2"]; uom: candela_per_square_foot; }
+        CandelaPerSquareFoot => { symbol: "cd/ft²"; definition: crate::consts::luminance::CANDELA_PER_SQUARE_FOOT; aliases: ["cd/ft2", "cd/ft^2"]; uom: candela_per_square_foot; }
         /// Foot-lambert (`fl`).
-        Footlambert => { symbol: "fl"; coefficient: 6852518199270781 / 2000000000000000; uom: footlambert; }
+        Footlambert => { symbol: "fl"; definition: crate::consts::luminance::FOOTLAMBERT; uom: footlambert; }
         /// Stilb (`sb`).
-        Stilb => { symbol: "sb"; coefficient: 10000; uom: stilb; }
+        Stilb => { symbol: "sb"; definition: crate::consts::luminance::STILB; uom: stilb; }
     }
 }

@@ -23,18 +23,18 @@ define_unit_family! {
     /// Units for persisted `uom` power quantities.
     pub enum Power for "power", uom = UomPower {
         /// Nanowatt (`nW`).
-        Nanowatt => { symbol: "nW"; coefficient: 1 / 1000000000; uom: nanowatt; }
+        Nanowatt => { symbol: "nW"; definition: crate::consts::power::NANOWATT; uom: nanowatt; }
         /// Microwatt (`µW`).
-        Microwatt => { symbol: "µW"; coefficient: 1 / 1000000; aliases: ["uW", "μW"]; uom: microwatt; }
+        Microwatt => { symbol: "µW"; definition: crate::consts::power::MICROWATT; aliases: ["uW", "μW"]; uom: microwatt; }
         /// Milliwatt (`mW`).
-        Milliwatt => { symbol: "mW"; coefficient: 1 / 1000; uom: milliwatt; }
+        Milliwatt => { symbol: "mW"; definition: crate::consts::power::MILLIWATT; uom: milliwatt; }
         /// Watt (`W`).
-        Watt => { symbol: "W"; coefficient: 1; uom: watt; }
+        Watt => { symbol: "W"; definition: crate::consts::power::WATT; uom: watt; }
         /// Kilowatt (`kW`).
-        Kilowatt => { symbol: "kW"; coefficient: 1000; uom: kilowatt; }
+        Kilowatt => { symbol: "kW"; definition: crate::consts::power::KILOWATT; uom: kilowatt; }
         /// Megawatt (`MW`).
-        Megawatt => { symbol: "MW"; coefficient: 1000000; uom: megawatt; }
+        Megawatt => { symbol: "MW"; definition: crate::consts::power::MEGAWATT; uom: megawatt; }
         /// Horsepower (`hp`).
-        MechanicalHorsepower => { symbol: "hp (mechanical)"; coefficient: 37284993579113511 / 50000000000000; aliases: ["hp"]; uom: horsepower; }
+        MechanicalHorsepower => { symbol: "hp (mechanical)"; definition: crate::consts::power::MECHANICAL_HORSEPOWER; aliases: ["hp"]; uom: horsepower; }
     }
 }

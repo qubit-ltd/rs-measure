@@ -20,12 +20,12 @@ define_unit_family! {
     /// Units for persisted `uom` frequency quantities.
     pub enum Frequency for "frequency", uom = UomFrequency {
         /// Hertz (`Hz`).
-        Hertz => { symbol: "Hz"; coefficient: 1; uom: hertz; }
+        Hertz => { symbol: "Hz"; definition: crate::consts::frequency::HERTZ; uom: hertz; }
         /// Kilohertz (`kHz`).
-        Kilohertz => { symbol: "kHz"; coefficient: 1000; uom: kilohertz; }
+        Kilohertz => { symbol: "kHz"; definition: crate::consts::frequency::KILOHERTZ; uom: kilohertz; }
         /// Megahertz (`MHz`).
-        Megahertz => { symbol: "MHz"; coefficient: 1000000; uom: megahertz; }
+        Megahertz => { symbol: "MHz"; definition: crate::consts::frequency::MEGAHERTZ; uom: megahertz; }
         /// Gigahertz (`GHz`).
-        Gigahertz => { symbol: "GHz"; coefficient: 1000000000; uom: gigahertz; }
+        Gigahertz => { symbol: "GHz"; definition: crate::consts::frequency::GIGAHERTZ; uom: gigahertz; }
     }
 }

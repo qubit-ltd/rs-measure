@@ -24,16 +24,16 @@ define_unit_family! {
     /// Electric potential is the SI quantity commonly called voltage.
     pub enum ElectricPotential for "electric_potential", uom = UomElectricPotential {
         /// Nanovolt (`nV`).
-        Nanovolt => { symbol: "nV"; coefficient: 1 / 1000000000; uom: nanovolt; }
+        Nanovolt => { symbol: "nV"; definition: crate::consts::electric_potential::NANOVOLT; uom: nanovolt; }
         /// Microvolt (`µV`).
-        Microvolt => { symbol: "µV"; coefficient: 1 / 1000000; aliases: ["uV", "μV"]; uom: microvolt; }
+        Microvolt => { symbol: "µV"; definition: crate::consts::electric_potential::MICROVOLT; aliases: ["uV", "μV"]; uom: microvolt; }
         /// Millivolt (`mV`).
-        Millivolt => { symbol: "mV"; coefficient: 1 / 1000; uom: millivolt; }
+        Millivolt => { symbol: "mV"; definition: crate::consts::electric_potential::MILLIVOLT; uom: millivolt; }
         /// Volt (`V`).
-        Volt => { symbol: "V"; coefficient: 1; aliases: ["volt"]; uom: volt; }
+        Volt => { symbol: "V"; definition: crate::consts::electric_potential::VOLT; aliases: ["volt"]; uom: volt; }
         /// Kilovolt (`kV`).
-        Kilovolt => { symbol: "kV"; coefficient: 1000; uom: kilovolt; }
+        Kilovolt => { symbol: "kV"; definition: crate::consts::electric_potential::KILOVOLT; uom: kilovolt; }
         /// Megavolt (`MV`).
-        Megavolt => { symbol: "MV"; coefficient: 1000000; uom: megavolt; }
+        Megavolt => { symbol: "MV"; definition: crate::consts::electric_potential::MEGAVOLT; uom: megavolt; }
     }
 }

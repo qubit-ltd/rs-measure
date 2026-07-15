@@ -28,28 +28,28 @@ define_unit_family! {
     /// Units for persisted `uom` pressure quantities.
     pub enum Pressure for "pressure", uom = UomPressure {
         /// Nanopascal (`nPa`).
-        Nanopascal => { symbol: "nPa"; coefficient: 1 / 1000000000; uom: nanopascal; }
+        Nanopascal => { symbol: "nPa"; definition: crate::consts::pressure::NANOPASCAL; uom: nanopascal; }
         /// Micropascal (`µPa`).
-        Micropascal => { symbol: "µPa"; coefficient: 1 / 1000000; aliases: ["uPa", "μPa"]; uom: micropascal; }
+        Micropascal => { symbol: "µPa"; definition: crate::consts::pressure::MICROPASCAL; aliases: ["uPa", "μPa"]; uom: micropascal; }
         /// Millipascal (`mPa`).
-        Millipascal => { symbol: "mPa"; coefficient: 1 / 1000; uom: millipascal; }
+        Millipascal => { symbol: "mPa"; definition: crate::consts::pressure::MILLIPASCAL; uom: millipascal; }
         /// Pascal (`Pa`).
-        Pascal => { symbol: "Pa"; coefficient: 1; uom: pascal; }
+        Pascal => { symbol: "Pa"; definition: crate::consts::pressure::PASCAL; uom: pascal; }
         /// Hectopascal (`hPa`).
-        Hectopascal => { symbol: "hPa"; coefficient: 100; uom: hectopascal; }
+        Hectopascal => { symbol: "hPa"; definition: crate::consts::pressure::HECTOPASCAL; uom: hectopascal; }
         /// Kilopascal (`kPa`).
-        Kilopascal => { symbol: "kPa"; coefficient: 1000; uom: kilopascal; }
+        Kilopascal => { symbol: "kPa"; definition: crate::consts::pressure::KILOPASCAL; uom: kilopascal; }
         /// Megapascal (`MPa`).
-        Megapascal => { symbol: "MPa"; coefficient: 1000000; uom: megapascal; }
+        Megapascal => { symbol: "MPa"; definition: crate::consts::pressure::MEGAPASCAL; uom: megapascal; }
         /// Bar (`bar`).
-        Bar => { symbol: "bar"; coefficient: 100000; uom: bar; }
+        Bar => { symbol: "bar"; definition: crate::consts::pressure::BAR; uom: bar; }
         /// Millibar (`mbar`).
-        Millibar => { symbol: "mbar"; coefficient: 100; uom: millibar; }
+        Millibar => { symbol: "mbar"; definition: crate::consts::pressure::MILLIBAR; uom: millibar; }
         /// Standard atmosphere (`atm`).
-        Atmosphere => { symbol: "atm"; coefficient: 101325; uom: atmosphere; }
+        Atmosphere => { symbol: "atm"; definition: crate::consts::pressure::ATMOSPHERE; uom: atmosphere; }
         /// Millimeter of mercury (`mm Hg`).
-        MillimeterOfMercury => { symbol: "mm Hg"; coefficient: 20265 / 152; aliases: ["mmHg"]; uom: millimeter_of_mercury; }
+        MillimeterOfMercury => { symbol: "mm Hg"; definition: crate::consts::pressure::MILLIMETER_OF_MERCURY; aliases: ["mmHg"]; uom: millimeter_of_mercury; }
         /// Pound-force per square inch (`psi`).
-        Psi => { symbol: "psi"; coefficient: 8896443230521 / 1290320000; uom: psi; }
+        Psi => { symbol: "psi"; definition: crate::consts::pressure::PSI; uom: psi; }
     }
 }

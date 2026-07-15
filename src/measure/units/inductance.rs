@@ -20,12 +20,12 @@ define_unit_family! {
     /// Units for persisted `uom` inductance quantities.
     pub enum Inductance for "inductance", uom = UomInductance {
         /// Nanohenry (`nH`).
-        Nanohenry => { symbol: "nH"; coefficient: 1 / 1000000000; uom: nanohenry; }
+        Nanohenry => { symbol: "nH"; definition: crate::consts::inductance::NANOHENRY; uom: nanohenry; }
         /// Microhenry (`µH`).
-        Microhenry => { symbol: "µH"; coefficient: 1 / 1000000; aliases: ["uH", "μH"]; uom: microhenry; }
+        Microhenry => { symbol: "µH"; definition: crate::consts::inductance::MICROHENRY; aliases: ["uH", "μH"]; uom: microhenry; }
         /// Millihenry (`mH`).
-        Millihenry => { symbol: "mH"; coefficient: 1 / 1000; uom: millihenry; }
+        Millihenry => { symbol: "mH"; definition: crate::consts::inductance::MILLIHENRY; uom: millihenry; }
         /// Henry (`H`).
-        Henry => { symbol: "H"; coefficient: 1; uom: henry; }
+        Henry => { symbol: "H"; definition: crate::consts::inductance::HENRY; uom: henry; }
     }
 }

@@ -23,18 +23,18 @@ define_unit_family! {
     /// Units for persisted `uom` radioactivity quantities.
     pub enum Radioactivity for "radioactivity", uom = UomRadioactivity {
         /// Becquerel (`Bq`).
-        Becquerel => { symbol: "Bq"; coefficient: 1; uom: becquerel; }
+        Becquerel => { symbol: "Bq"; definition: crate::consts::radioactivity::BECQUEREL; uom: becquerel; }
         /// Kilobecquerel (`kBq`).
-        Kilobecquerel => { symbol: "kBq"; coefficient: 1000; uom: kilobecquerel; }
+        Kilobecquerel => { symbol: "kBq"; definition: crate::consts::radioactivity::KILOBECQUEREL; uom: kilobecquerel; }
         /// Megabecquerel (`MBq`).
-        Megabecquerel => { symbol: "MBq"; coefficient: 1000000; uom: megabecquerel; }
+        Megabecquerel => { symbol: "MBq"; definition: crate::consts::radioactivity::MEGABECQUEREL; uom: megabecquerel; }
         /// Curie (`Ci`).
-        Curie => { symbol: "Ci"; coefficient: 37000000000; uom: curie; }
+        Curie => { symbol: "Ci"; definition: crate::consts::radioactivity::CURIE; uom: curie; }
         /// Millicurie (`mCi`).
-        Millicurie => { symbol: "mCi"; coefficient: 37000000; uom: millicurie; }
+        Millicurie => { symbol: "mCi"; definition: crate::consts::radioactivity::MILLICURIE; uom: millicurie; }
         /// Microcurie (`µCi`).
-        Microcurie => { symbol: "µCi"; coefficient: 37000; aliases: ["uCi", "μCi"]; uom: microcurie; }
+        Microcurie => { symbol: "µCi"; definition: crate::consts::radioactivity::MICROCURIE; aliases: ["uCi", "μCi"]; uom: microcurie; }
         /// Disintegrations per minute (`dpm`).
-        DisintegrationsPerMinute => { symbol: "dpm"; coefficient: 1 / 60; uom: disintegrations_per_minute; }
+        DisintegrationsPerMinute => { symbol: "dpm"; definition: crate::consts::radioactivity::DISINTEGRATIONS_PER_MINUTE; uom: disintegrations_per_minute; }
     }
 }

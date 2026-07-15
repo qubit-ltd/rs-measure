@@ -161,8 +161,7 @@ macro_rules! __define_unit_family_core {
                 $(#[$variant_attr:meta])*
                 $variant:ident => {
                     symbol: $symbol:literal;
-                    coefficient: $numerator:literal $(/ $denominator:literal)?;
-                    $(offset: $offset:literal;)?
+                    definition: $definition:expr;
                     $(aliases: [$($alias:literal),* $(,)?];)?
                 }
             )+
@@ -203,17 +202,7 @@ macro_rules! __define_unit_family_core {
             #[inline]
             fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
                 match self {
-                    $(
-                        Self::$variant => {
-                            let factor = $crate::__unit_factor!(
-                                $numerator $(/ $denominator)?
-                            )?;
-                            Ok($crate::UnitDefinition::new(
-                                factor,
-                                $crate::__unit_offset!($($offset)?),
-                            ))
-                        }
-                    )+
+                    $(Self::$variant => $definition,)+
                 }
             }
         }
@@ -274,6 +263,57 @@ macro_rules! define_unit_family {
                 $(#[$variant_attr:meta])*
                 $variant:ident => {
                     symbol: $symbol:literal;
+                    definition: $definition:path;
+                    $(aliases: [$($alias:literal),* $(,)?];)?
+                    uom: $uom_unit:ty;
+                }
+            )+
+        }
+    ) => {
+        $crate::__define_unit_family_core! {
+            $(#[$enum_attr])*
+            $visibility enum $unit for $quantity_name {
+                $(
+                    $(#[$variant_attr])*
+                    $variant => {
+                        symbol: $symbol;
+                        definition: Ok($definition);
+                        $(aliases: [$($alias),*];)?
+                    }
+                )+
+            }
+        }
+
+        impl $crate::UomUnit for $unit {
+            type Quantity = $quantity_ty;
+
+            #[inline(always)]
+            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
+                let value = $crate::__private::decimal_to_f64_approx(value);
+                match self {
+                    $(Self::$variant => <$quantity_ty>::new::<$uom_unit>(value),)+
+                }
+            }
+
+            #[inline(always)]
+            fn value_from_uom_approx(
+                self,
+                quantity: Self::Quantity,
+            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
+                let value = match self {
+                    $(Self::$variant => quantity.get::<$uom_unit>(),)+
+                };
+                $crate::__private::decimal_from_f64_approx(value)
+            }
+        }
+    };
+    (
+        $(#[$enum_attr:meta])*
+        $visibility:vis enum $unit:ident for $quantity_name:literal, uom = $quantity_ty:ty {
+            $(
+                $(#[$variant_attr:meta])*
+                $variant:ident => {
+                    symbol: $symbol:literal;
                     coefficient: $numerator:literal $(/ $denominator:literal)?;
                     $(offset: $offset:literal;)?
                     $(aliases: [$($alias:literal),* $(,)?];)?
@@ -289,8 +329,15 @@ macro_rules! define_unit_family {
                     $(#[$variant_attr])*
                     $variant => {
                         symbol: $symbol;
-                        coefficient: $numerator $(/ $denominator)?;
-                        $(offset: $offset;)?
+                        definition: {
+                            let factor = $crate::__unit_factor!(
+                                $numerator $(/ $denominator)?
+                            )?;
+                            Ok($crate::UnitDefinition::new(
+                                factor,
+                                $crate::__unit_offset!($($offset)?),
+                            ))
+                        };
                         $(aliases: [$($alias),*];)?
                     }
                 )+
@@ -327,6 +374,33 @@ macro_rules! define_unit_family {
                 $(#[$variant_attr:meta])*
                 $variant:ident => {
                     symbol: $symbol:literal;
+                    definition: $definition:path;
+                    $(aliases: [$($alias:literal),* $(,)?];)?
+                }
+            )+
+        }
+    ) => {
+        $crate::__define_unit_family_core! {
+            $(#[$enum_attr])*
+            $visibility enum $unit for $quantity_name {
+                $(
+                    $(#[$variant_attr])*
+                    $variant => {
+                        symbol: $symbol;
+                        definition: Ok($definition);
+                        $(aliases: [$($alias),*];)?
+                    }
+                )+
+            }
+        }
+    };
+    (
+        $(#[$enum_attr:meta])*
+        $visibility:vis enum $unit:ident for $quantity_name:literal {
+            $(
+                $(#[$variant_attr:meta])*
+                $variant:ident => {
+                    symbol: $symbol:literal;
                     coefficient: $numerator:literal $(/ $denominator:literal)?;
                     $(offset: $offset:literal;)?
                     $(aliases: [$($alias:literal),* $(,)?];)?
@@ -341,8 +415,15 @@ macro_rules! define_unit_family {
                     $(#[$variant_attr])*
                     $variant => {
                         symbol: $symbol;
-                        coefficient: $numerator $(/ $denominator)?;
-                        $(offset: $offset;)?
+                        definition: {
+                            let factor = $crate::__unit_factor!(
+                                $numerator $(/ $denominator)?
+                            )?;
+                            Ok($crate::UnitDefinition::new(
+                                factor,
+                                $crate::__unit_offset!($($offset)?),
+                            ))
+                        };
                         $(aliases: [$($alias),*];)?
                     }
                 )+

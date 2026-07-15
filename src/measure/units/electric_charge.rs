@@ -22,16 +22,16 @@ define_unit_family! {
     /// Units for persisted `uom` electric charge quantities.
     pub enum ElectricCharge for "electric_charge", uom = UomElectricCharge {
         /// Microcoulomb (`µC`).
-        Microcoulomb => { symbol: "µC"; coefficient: 1 / 1000000; aliases: ["uC", "μC"]; uom: microcoulomb; }
+        Microcoulomb => { symbol: "µC"; definition: crate::consts::electric_charge::MICROCOULOMB; aliases: ["uC", "μC"]; uom: microcoulomb; }
         /// Millicoulomb (`mC`).
-        Millicoulomb => { symbol: "mC"; coefficient: 1 / 1000; uom: millicoulomb; }
+        Millicoulomb => { symbol: "mC"; definition: crate::consts::electric_charge::MILLICOULOMB; uom: millicoulomb; }
         /// Coulomb (`C`).
-        Coulomb => { symbol: "C"; coefficient: 1; uom: coulomb; }
+        Coulomb => { symbol: "C"; definition: crate::consts::electric_charge::COULOMB; uom: coulomb; }
         /// Kilocoulomb (`kC`).
-        Kilocoulomb => { symbol: "kC"; coefficient: 1000; uom: kilocoulomb; }
+        Kilocoulomb => { symbol: "kC"; definition: crate::consts::electric_charge::KILOCOULOMB; uom: kilocoulomb; }
         /// Ampere hour (`A · h`).
-        AmpereHour => { symbol: "A · h"; coefficient: 3600; aliases: ["Ah", "A h"]; uom: ampere_hour; }
+        AmpereHour => { symbol: "A · h"; definition: crate::consts::electric_charge::AMPERE_HOUR; aliases: ["Ah", "A h"]; uom: ampere_hour; }
         /// Milliampere hour (`mA · h`).
-        MilliampereHour => { symbol: "mA · h"; coefficient: 18 / 5; aliases: ["mAh", "mA h"]; uom: milliampere_hour; }
+        MilliampereHour => { symbol: "mA · h"; definition: crate::consts::electric_charge::MILLIAMPERE_HOUR; aliases: ["mAh", "mA h"]; uom: milliampere_hour; }
     }
 }

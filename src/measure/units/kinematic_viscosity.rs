@@ -20,12 +20,12 @@ define_unit_family! {
     /// Units for persisted `uom` kinematic viscosity quantities.
     pub enum KinematicViscosity for "kinematic_viscosity", uom = UomKinematicViscosity {
         /// Square millimeter per second (`mm²/s`).
-        SquareMillimeterPerSecond => { symbol: "mm²/s"; coefficient: 1 / 1000000; aliases: ["mm2/s", "mm^2/s"]; uom: square_millimeter_per_second; }
+        SquareMillimeterPerSecond => { symbol: "mm²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_MILLIMETER_PER_SECOND; aliases: ["mm2/s", "mm^2/s"]; uom: square_millimeter_per_second; }
         /// Square meter per second (`m²/s`).
-        SquareMeterPerSecond => { symbol: "m²/s"; coefficient: 1; aliases: ["m2/s", "m^2/s"]; uom: square_meter_per_second; }
+        SquareMeterPerSecond => { symbol: "m²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_METER_PER_SECOND; aliases: ["m2/s", "m^2/s"]; uom: square_meter_per_second; }
         /// Stokes (`St`).
-        Stokes => { symbol: "St"; coefficient: 1 / 10000; uom: stokes; }
+        Stokes => { symbol: "St"; definition: crate::consts::kinematic_viscosity::STOKES; uom: stokes; }
         /// Centistokes (`cSt`).
-        Centistokes => { symbol: "cSt"; coefficient: 1 / 1000000; uom: centistokes; }
+        Centistokes => { symbol: "cSt"; definition: crate::consts::kinematic_viscosity::CENTISTOKES; uom: centistokes; }
     }
 }

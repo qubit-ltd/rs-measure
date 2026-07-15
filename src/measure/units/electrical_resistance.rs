@@ -22,16 +22,16 @@ define_unit_family! {
     /// Units for persisted `uom` electrical resistance quantities.
     pub enum ElectricalResistance for "electrical_resistance", uom = UomElectricalResistance {
         /// Microohm (`µΩ`).
-        Microohm => { symbol: "µΩ"; coefficient: 1 / 1000000; aliases: ["uΩ", "μΩ", "uOhm"]; uom: microohm; }
+        Microohm => { symbol: "µΩ"; definition: crate::consts::electrical_resistance::MICROOHM; aliases: ["uΩ", "μΩ", "uOhm"]; uom: microohm; }
         /// Milliohm (`mΩ`).
-        Milliohm => { symbol: "mΩ"; coefficient: 1 / 1000; aliases: ["mOhm"]; uom: milliohm; }
+        Milliohm => { symbol: "mΩ"; definition: crate::consts::electrical_resistance::MILLIOHM; aliases: ["mOhm"]; uom: milliohm; }
         /// Ohm (`Ω`).
-        Ohm => { symbol: "Ω"; coefficient: 1; aliases: ["ohm", "Ohm"]; uom: ohm; }
+        Ohm => { symbol: "Ω"; definition: crate::consts::electrical_resistance::OHM; aliases: ["ohm", "Ohm"]; uom: ohm; }
         /// Kiloohm (`kΩ`).
-        Kiloohm => { symbol: "kΩ"; coefficient: 1000; aliases: ["kOhm"]; uom: kiloohm; }
+        Kiloohm => { symbol: "kΩ"; definition: crate::consts::electrical_resistance::KILOOHM; aliases: ["kOhm"]; uom: kiloohm; }
         /// Megaohm (`MΩ`).
-        Megaohm => { symbol: "MΩ"; coefficient: 1000000; aliases: ["MOhm"]; uom: megaohm; }
+        Megaohm => { symbol: "MΩ"; definition: crate::consts::electrical_resistance::MEGAOHM; aliases: ["MOhm"]; uom: megaohm; }
         /// Gigaohm (`GΩ`).
-        Gigaohm => { symbol: "GΩ"; coefficient: 1000000000; aliases: ["GOhm"]; uom: gigaohm; }
+        Gigaohm => { symbol: "GΩ"; definition: crate::consts::electrical_resistance::GIGAOHM; aliases: ["GOhm"]; uom: gigaohm; }
     }
 }

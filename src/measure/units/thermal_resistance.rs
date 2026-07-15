@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` thermal resistance quantities.
     pub enum ThermalResistance for "thermal_resistance", uom = UomThermalResistance {
         /// Kelvin per milliwatt (`K/mW`).
-        KelvinPerMilliwatt => { symbol: "K/mW"; coefficient: 1000; uom: kelvin_per_milliwatt; }
+        KelvinPerMilliwatt => { symbol: "K/mW"; definition: crate::consts::thermal_resistance::KELVIN_PER_MILLIWATT; uom: kelvin_per_milliwatt; }
         /// Kelvin per watt (`K/W`).
-        KelvinPerWatt => { symbol: "K/W"; coefficient: 1; uom: kelvin_per_watt; }
+        KelvinPerWatt => { symbol: "K/W"; definition: crate::consts::thermal_resistance::KELVIN_PER_WATT; uom: kelvin_per_watt; }
         /// Kelvin per kilowatt (`K/kW`).
-        KelvinPerKilowatt => { symbol: "K/kW"; coefficient: 1 / 1000; aliases: ["K/kw"]; uom: kelvin_per_kilowatt; }
+        KelvinPerKilowatt => { symbol: "K/kW"; definition: crate::consts::thermal_resistance::KELVIN_PER_KILOWATT; aliases: ["K/kw"]; uom: kelvin_per_kilowatt; }
     }
 }

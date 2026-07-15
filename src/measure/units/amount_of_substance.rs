@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` amount of substance quantities.
     pub enum AmountOfSubstance for "amount_of_substance", uom = UomAmountOfSubstance {
         /// Micromole (`µmol`).
-        Micromole => { symbol: "µmol"; coefficient: 1 / 1000000; aliases: ["umol", "μmol"]; uom: micromole; }
+        Micromole => { symbol: "µmol"; definition: crate::consts::amount_of_substance::MICROMOLE; aliases: ["umol", "μmol"]; uom: micromole; }
         /// Millimole (`mmol`).
-        Millimole => { symbol: "mmol"; coefficient: 1 / 1000; uom: millimole; }
+        Millimole => { symbol: "mmol"; definition: crate::consts::amount_of_substance::MILLIMOLE; uom: millimole; }
         /// Mole (`mol`).
-        Mole => { symbol: "mol"; coefficient: 1; uom: mole; }
+        Mole => { symbol: "mol"; definition: crate::consts::amount_of_substance::MOLE; uom: mole; }
         /// Kilomole (`kmol`).
-        Kilomole => { symbol: "kmol"; coefficient: 1000; uom: kilomole; }
+        Kilomole => { symbol: "kmol"; definition: crate::consts::amount_of_substance::KILOMOLE; uom: kilomole; }
         /// Particle (`particle`).
-        Particle => { symbol: "particle"; coefficient: 1 / 602214076000000000000000; uom: particle; }
+        Particle => { symbol: "particle"; definition: crate::consts::amount_of_substance::PARTICLE; uom: particle; }
     }
 }

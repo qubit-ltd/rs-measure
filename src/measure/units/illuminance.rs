@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` illuminance quantities.
     pub enum Illuminance for "illuminance", uom = UomIlluminance {
         /// Lux (`lx`).
-        Lux => { symbol: "lx"; coefficient: 1; uom: lux; }
+        Lux => { symbol: "lx"; definition: crate::consts::illuminance::LUX; uom: lux; }
         /// Kilolux (`klx`).
-        Kilolux => { symbol: "klx"; coefficient: 1000; uom: kilolux; }
+        Kilolux => { symbol: "klx"; definition: crate::consts::illuminance::KILOLUX; uom: kilolux; }
         /// Foot-candle (`fc`).
-        Footcandle => { symbol: "fc"; coefficient: 1562500 / 145161; uom: footcandle; }
+        Footcandle => { symbol: "fc"; definition: crate::consts::illuminance::FOOTCANDLE; uom: footcandle; }
     }
 }

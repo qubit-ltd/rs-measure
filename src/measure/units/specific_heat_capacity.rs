@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` specific heat capacity quantities.
     pub enum SpecificHeatCapacity for "specific_heat_capacity", uom = UomSpecificHeatCapacity {
         /// Joule per kilogram kelvin (`J/(kg · K)`).
-        JoulePerKilogramKelvin => { symbol: "J/(kg · K)"; coefficient: 1; aliases: ["J/(kg*K)"]; uom: joule_per_kilogram_kelvin; }
+        JoulePerKilogramKelvin => { symbol: "J/(kg · K)"; definition: crate::consts::specific_heat_capacity::JOULE_PER_KILOGRAM_KELVIN; aliases: ["J/(kg*K)"]; uom: joule_per_kilogram_kelvin; }
         /// Kilojoule per kilogram kelvin (`kJ/(kg · K)`).
-        KilojoulePerKilogramKelvin => { symbol: "kJ/(kg · K)"; coefficient: 1000; aliases: ["kJ/(kg*K)"]; uom: kilojoule_per_kilogram_kelvin; }
+        KilojoulePerKilogramKelvin => { symbol: "kJ/(kg · K)"; definition: crate::consts::specific_heat_capacity::KILOJOULE_PER_KILOGRAM_KELVIN; aliases: ["kJ/(kg*K)"]; uom: kilojoule_per_kilogram_kelvin; }
         /// Joule per gram degree Celsius (`J/(g · °C)`).
-        JoulePerGramDegreeCelsius => { symbol: "J/(g · °C)"; coefficient: 1000; aliases: ["J/(g*degC)"]; uom: joule_per_gram_degree_celsius; }
+        JoulePerGramDegreeCelsius => { symbol: "J/(g · °C)"; definition: crate::consts::specific_heat_capacity::JOULE_PER_GRAM_DEGREE_CELSIUS; aliases: ["J/(g*degC)"]; uom: joule_per_gram_degree_celsius; }
         /// Calorie per gram kelvin (`cal/(g · K)`).
-        ThermochemicalCaloriePerGramKelvin => { symbol: "cal (th)/(g · K)"; coefficient: 4184; aliases: ["cal/(g · K)", "cal/(g*K)"]; uom: calorie_per_gram_kelvin; }
+        ThermochemicalCaloriePerGramKelvin => { symbol: "cal (th)/(g · K)"; definition: crate::consts::specific_heat_capacity::THERMOCHEMICAL_CALORIE_PER_GRAM_KELVIN; aliases: ["cal/(g · K)", "cal/(g*K)"]; uom: calorie_per_gram_kelvin; }
         /// British thermal unit per pound degree Fahrenheit (`Btu/(lb · °F)`).
-        BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit => { symbol: "Btu (IT)/(lb · °F)"; coefficient: 189910080000 / 45359237; aliases: ["Btu/(lb · °F)", "Btu/(lb*degF)"]; uom: btu_per_pound_degree_fahrenheit; }
+        BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit => { symbol: "Btu (IT)/(lb · °F)"; definition: crate::consts::specific_heat_capacity::BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_POUND_DEGREE_FAHRENHEIT; aliases: ["Btu/(lb · °F)", "Btu/(lb*degF)"]; uom: btu_per_pound_degree_fahrenheit; }
     }
 }

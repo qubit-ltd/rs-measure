@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` heat capacity quantities.
     pub enum HeatCapacity for "heat_capacity", uom = UomHeatCapacity {
         /// Joule per kelvin (`J/K`).
-        JoulePerKelvin => { symbol: "J/K"; coefficient: 1; uom: joule_per_kelvin; }
+        JoulePerKelvin => { symbol: "J/K"; definition: crate::consts::heat_capacity::JOULE_PER_KELVIN; uom: joule_per_kelvin; }
         /// Kilojoule per kelvin (`kJ/K`).
-        KilojoulePerKelvin => { symbol: "kJ/K"; coefficient: 1000; uom: kilojoule_per_kelvin; }
+        KilojoulePerKelvin => { symbol: "kJ/K"; definition: crate::consts::heat_capacity::KILOJOULE_PER_KELVIN; uom: kilojoule_per_kelvin; }
         /// Joule per degree Celsius (`J/°C`).
-        JoulePerDegreeCelsius => { symbol: "J/°C"; coefficient: 1; aliases: ["J/degC"]; uom: joule_per_degree_celsius; }
+        JoulePerDegreeCelsius => { symbol: "J/°C"; definition: crate::consts::heat_capacity::JOULE_PER_DEGREE_CELSIUS; aliases: ["J/degC"]; uom: joule_per_degree_celsius; }
         /// Calorie per kelvin (`cal/K`).
-        ThermochemicalCaloriePerKelvin => { symbol: "cal (th)/K"; coefficient: 523 / 125; aliases: ["cal/K"]; uom: calorie_per_kelvin; }
+        ThermochemicalCaloriePerKelvin => { symbol: "cal (th)/K"; definition: crate::consts::heat_capacity::THERMOCHEMICAL_CALORIE_PER_KELVIN; aliases: ["cal/K"]; uom: calorie_per_kelvin; }
         /// British thermal unit per degree Fahrenheit (`Btu/°F`).
-        BritishThermalUnitInternationalTablePerDegreeFahrenheit => { symbol: "Btu (IT)/°F"; coefficient: 1186938 / 625; aliases: ["Btu/°F", "Btu/degF"]; uom: btu_per_degree_fahrenheit; }
+        BritishThermalUnitInternationalTablePerDegreeFahrenheit => { symbol: "Btu (IT)/°F"; definition: crate::consts::heat_capacity::BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_DEGREE_FAHRENHEIT; aliases: ["Btu/°F", "Btu/degF"]; uom: btu_per_degree_fahrenheit; }
     }
 }

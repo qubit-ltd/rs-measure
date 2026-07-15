@@ -14,8 +14,11 @@ use crate::measure::MeasurementError;
 /// A positive unit coefficient represented as an unreduced Decimal ratio.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConversionFactor {
-    numerator: Decimal,
-    denominator: Decimal,
+    /// Positive numerator of the exact conversion ratio.
+    pub(crate) numerator: Decimal,
+
+    /// Positive denominator of the exact conversion ratio.
+    pub(crate) denominator: Decimal,
 }
 
 impl ConversionFactor {

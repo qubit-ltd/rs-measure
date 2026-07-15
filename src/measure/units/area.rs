@@ -26,24 +26,24 @@ define_unit_family! {
     /// Units for persisted `uom` area quantities.
     pub enum Area for "area", uom = UomArea {
         /// Square millimeter (`mm²`).
-        SquareMillimeter => { symbol: "mm²"; coefficient: 1 / 1000000; aliases: ["mm2", "mm^2"]; uom: square_millimeter; }
+        SquareMillimeter => { symbol: "mm²"; definition: crate::consts::area::SQUARE_MILLIMETER; aliases: ["mm2", "mm^2"]; uom: square_millimeter; }
         /// Square centimeter (`cm²`).
-        SquareCentimeter => { symbol: "cm²"; coefficient: 1 / 10000; aliases: ["cm2", "cm^2"]; uom: square_centimeter; }
+        SquareCentimeter => { symbol: "cm²"; definition: crate::consts::area::SQUARE_CENTIMETER; aliases: ["cm2", "cm^2"]; uom: square_centimeter; }
         /// Square meter (`m²`).
-        SquareMeter => { symbol: "m²"; coefficient: 1; aliases: ["m2", "m^2"]; uom: square_meter; }
+        SquareMeter => { symbol: "m²"; definition: crate::consts::area::SQUARE_METER; aliases: ["m2", "m^2"]; uom: square_meter; }
         /// Square kilometer (`km²`).
-        SquareKilometer => { symbol: "km²"; coefficient: 1000000; aliases: ["km2", "km^2"]; uom: square_kilometer; }
+        SquareKilometer => { symbol: "km²"; definition: crate::consts::area::SQUARE_KILOMETER; aliases: ["km2", "km^2"]; uom: square_kilometer; }
         /// Hectare (`ha`).
-        Hectare => { symbol: "ha"; coefficient: 10000; uom: hectare; }
+        Hectare => { symbol: "ha"; definition: crate::consts::area::HECTARE; uom: hectare; }
         /// Acre (`ac`).
-        Acre => { symbol: "ac"; coefficient: 316160658 / 78125; uom: acre; }
+        Acre => { symbol: "ac"; definition: crate::consts::area::ACRE; uom: acre; }
         /// Square inch (`in²`).
-        SquareInch => { symbol: "in²"; coefficient: 16129 / 25000000; aliases: ["in2", "in^2"]; uom: square_inch; }
+        SquareInch => { symbol: "in²"; definition: crate::consts::area::SQUARE_INCH; aliases: ["in2", "in^2"]; uom: square_inch; }
         /// Square foot (`ft²`).
-        SquareFoot => { symbol: "ft²"; coefficient: 145161 / 1562500; aliases: ["ft2", "ft^2"]; uom: square_foot; }
+        SquareFoot => { symbol: "ft²"; definition: crate::consts::area::SQUARE_FOOT; aliases: ["ft2", "ft^2"]; uom: square_foot; }
         /// Square yard (`yd²`).
-        SquareYard => { symbol: "yd²"; coefficient: 1306449 / 1562500; aliases: ["yd2", "yd^2"]; uom: square_yard; }
+        SquareYard => { symbol: "yd²"; definition: crate::consts::area::SQUARE_YARD; aliases: ["yd2", "yd^2"]; uom: square_yard; }
         /// Square mile (`mi²`).
-        SquareMile => { symbol: "mi²"; coefficient: 40468564224 / 15625; aliases: ["mi2", "mi^2"]; uom: square_mile; }
+        SquareMile => { symbol: "mi²"; definition: crate::consts::area::SQUARE_MILE; aliases: ["mi2", "mi^2"]; uom: square_mile; }
     }
 }

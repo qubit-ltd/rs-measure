@@ -20,12 +20,12 @@ define_unit_family! {
     /// Units for persisted `uom` thermodynamic temperature quantities.
     pub enum Temperature for "temperature", uom = UomTemperature {
         /// Kelvin (`K`).
-        Kelvin => { symbol: "K"; coefficient: 1; uom: kelvin; }
+        Kelvin => { symbol: "K"; definition: crate::consts::temperature::KELVIN; uom: kelvin; }
         /// Degree Celsius (`°C`).
-        Celsius => { symbol: "°C"; coefficient: 1; offset: 273.15; aliases: ["degC"]; uom: degree_celsius; }
+        Celsius => { symbol: "°C"; definition: crate::consts::temperature::CELSIUS; aliases: ["degC"]; uom: degree_celsius; }
         /// Degree Fahrenheit (`°F`).
-        Fahrenheit => { symbol: "°F"; coefficient: 5 / 9; offset: 459.67; aliases: ["degF"]; uom: degree_fahrenheit; }
+        Fahrenheit => { symbol: "°F"; definition: crate::consts::temperature::FAHRENHEIT; aliases: ["degF"]; uom: degree_fahrenheit; }
         /// Degree Rankine (`°R`).
-        Rankine => { symbol: "°R"; coefficient: 5 / 9; aliases: ["degR"]; uom: degree_rankine; }
+        Rankine => { symbol: "°R"; definition: crate::consts::temperature::RANKINE; aliases: ["degR"]; uom: degree_rankine; }
     }
 }

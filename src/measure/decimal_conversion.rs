@@ -25,8 +25,8 @@ pub(crate) fn convert_decimal(
     target: UnitDefinition,
     options: ConversionOptions,
 ) -> Result<Decimal, MeasurementError> {
-    if source == target && options.scale().is_none() {
-        return Ok(value);
+    if source == target {
+        return apply_output_scale(value, options);
     }
 
     let adjusted = value.checked_add(source.offset()).ok_or(
@@ -44,7 +44,9 @@ pub(crate) fn convert_decimal(
             .denominator()
             .checked_mul(target_factor.numerator()),
     ) {
-        (Some(numerator), Some(denominator)) => {
+        (Some(numerator), Some(denominator))
+            if numerator != Decimal::ZERO && denominator != Decimal::ZERO =>
+        {
             apply_ratio(adjusted, numerator, denominator)?
         }
         _ => {

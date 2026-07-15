@@ -26,24 +26,24 @@ define_unit_family! {
     /// Units for persisted `uom` mass quantities.
     pub enum Mass for "mass", uom = UomMass {
         /// Microgram (`µg`).
-        Microgram => { symbol: "µg"; coefficient: 1 / 1000000000; aliases: ["ug", "μg"]; uom: microgram; }
+        Microgram => { symbol: "µg"; definition: crate::consts::mass::MICROGRAM; aliases: ["ug", "μg"]; uom: microgram; }
         /// Milligram (`mg`).
-        Milligram => { symbol: "mg"; coefficient: 1 / 1000000; uom: milligram; }
+        Milligram => { symbol: "mg"; definition: crate::consts::mass::MILLIGRAM; uom: milligram; }
         /// Gram (`g`).
-        Gram => { symbol: "g"; coefficient: 1 / 1000; uom: gram; }
+        Gram => { symbol: "g"; definition: crate::consts::mass::GRAM; uom: gram; }
         /// Kilogram (`kg`).
-        Kilogram => { symbol: "kg"; coefficient: 1; uom: kilogram; }
+        Kilogram => { symbol: "kg"; definition: crate::consts::mass::KILOGRAM; uom: kilogram; }
         /// Metric tonne (`t`).
-        Tonne => { symbol: "t"; coefficient: 1000; uom: ton; }
+        Tonne => { symbol: "t"; definition: crate::consts::mass::TONNE; uom: ton; }
         /// Carat (`ct`).
-        Carat => { symbol: "ct"; coefficient: 1 / 5000; uom: carat; }
+        Carat => { symbol: "ct"; definition: crate::consts::mass::CARAT; uom: carat; }
         /// Ounce (`oz`).
-        Ounce => { symbol: "oz"; coefficient: 45359237 / 1600000000; uom: ounce; }
+        Ounce => { symbol: "oz"; definition: crate::consts::mass::OUNCE; uom: ounce; }
         /// Pound (`lb`).
-        Pound => { symbol: "lb"; coefficient: 45359237 / 100000000; uom: pound; }
+        Pound => { symbol: "lb"; definition: crate::consts::mass::POUND; uom: pound; }
         /// Short ton (`2000 lb`).
-        TonShort => { symbol: "2000 lb"; coefficient: 45359237 / 50000; uom: ton_short; }
+        TonShort => { symbol: "2000 lb"; definition: crate::consts::mass::TON_SHORT; uom: ton_short; }
         /// Long ton (`2240 lb`).
-        TonLong => { symbol: "2240 lb"; coefficient: 317514659 / 312500; uom: ton_long; }
+        TonLong => { symbol: "2240 lb"; definition: crate::consts::mass::TON_LONG; uom: ton_long; }
     }
 }

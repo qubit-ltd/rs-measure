@@ -24,20 +24,20 @@ define_unit_family! {
     /// Units for persisted `uom` time quantities.
     pub enum Time for "time", uom = UomTime {
         /// Nanosecond (`ns`).
-        Nanosecond => { symbol: "ns"; coefficient: 1 / 1000000000; uom: nanosecond; }
+        Nanosecond => { symbol: "ns"; definition: crate::consts::time::NANOSECOND; uom: nanosecond; }
         /// Microsecond (`µs`).
-        Microsecond => { symbol: "µs"; coefficient: 1 / 1000000; aliases: ["us", "μs"]; uom: microsecond; }
+        Microsecond => { symbol: "µs"; definition: crate::consts::time::MICROSECOND; aliases: ["us", "μs"]; uom: microsecond; }
         /// Millisecond (`ms`).
-        Millisecond => { symbol: "ms"; coefficient: 1 / 1000; uom: millisecond; }
+        Millisecond => { symbol: "ms"; definition: crate::consts::time::MILLISECOND; uom: millisecond; }
         /// Second (`s`).
-        Second => { symbol: "s"; coefficient: 1; uom: second; }
+        Second => { symbol: "s"; definition: crate::consts::time::SECOND; uom: second; }
         /// Minute (`min`).
-        Minute => { symbol: "min"; coefficient: 60; uom: minute; }
+        Minute => { symbol: "min"; definition: crate::consts::time::MINUTE; uom: minute; }
         /// Hour (`h`).
-        Hour => { symbol: "h"; coefficient: 3600; uom: hour; }
+        Hour => { symbol: "h"; definition: crate::consts::time::HOUR; uom: hour; }
         /// Day (`d`).
-        Day => { symbol: "d"; coefficient: 86400; uom: day; }
+        Day => { symbol: "d"; definition: crate::consts::time::DAY; uom: day; }
         /// Year (`a`).
-        CommonYear365 => { symbol: "a (365 d)"; coefficient: 31536000; aliases: ["a", "yr", "year"]; uom: year; }
+        CommonYear365 => { symbol: "a (365 d)"; definition: crate::consts::time::COMMON_YEAR365; aliases: ["a", "yr", "year"]; uom: year; }
     }
 }

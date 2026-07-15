@@ -22,16 +22,16 @@ define_unit_family! {
     /// Units for persisted `uom` molar concentration quantities.
     pub enum MolarConcentration for "molar_concentration", uom = UomMolarConcentration {
         /// Nanomole per liter (`nmol/L`).
-        NanomolePerLiter => { symbol: "nmol/L"; coefficient: 1 / 1000000; uom: nanomole_per_liter; }
+        NanomolePerLiter => { symbol: "nmol/L"; definition: crate::consts::molar_concentration::NANOMOLE_PER_LITER; uom: nanomole_per_liter; }
         /// Micromole per liter (`µmol/L`).
-        MicromolePerLiter => { symbol: "µmol/L"; coefficient: 1 / 1000; aliases: ["umol/L", "μmol/L"]; uom: micromole_per_liter; }
+        MicromolePerLiter => { symbol: "µmol/L"; definition: crate::consts::molar_concentration::MICROMOLE_PER_LITER; aliases: ["umol/L", "μmol/L"]; uom: micromole_per_liter; }
         /// Millimole per liter (`mmol/L`).
-        MillimolePerLiter => { symbol: "mmol/L"; coefficient: 1; uom: millimole_per_liter; }
+        MillimolePerLiter => { symbol: "mmol/L"; definition: crate::consts::molar_concentration::MILLIMOLE_PER_LITER; uom: millimole_per_liter; }
         /// Mole per liter (`mol/L`).
-        MolePerLiter => { symbol: "mol/L"; coefficient: 1000; aliases: ["M"]; uom: mole_per_liter; }
+        MolePerLiter => { symbol: "mol/L"; definition: crate::consts::molar_concentration::MOLE_PER_LITER; aliases: ["M"]; uom: mole_per_liter; }
         /// Mole per cubic meter (`mol/m³`).
-        MolePerCubicMeter => { symbol: "mol/m³"; coefficient: 1; aliases: ["mol/m3", "mol/m^3"]; uom: mole_per_cubic_meter; }
+        MolePerCubicMeter => { symbol: "mol/m³"; definition: crate::consts::molar_concentration::MOLE_PER_CUBIC_METER; aliases: ["mol/m3", "mol/m^3"]; uom: mole_per_cubic_meter; }
         /// Particle per milliliter (`particle/mL`).
-        ParticlePerMilliliter => { symbol: "particle/mL"; coefficient: 1 / 602214076000000000; uom: particle_per_milliliter; }
+        ParticlePerMilliliter => { symbol: "particle/mL"; definition: crate::consts::molar_concentration::PARTICLE_PER_MILLILITER; uom: particle_per_milliliter; }
     }
 }

@@ -15,6 +15,6 @@ define_unit_family! {
     /// Units for persisted `uom` molality quantities.
     pub enum Molality for "molality", uom = UomMolality {
         /// Mole per kilogram (`mol/kg`).
-        MolePerKilogram => { symbol: "mol/kg"; coefficient: 1; uom: mole_per_kilogram; }
+        MolePerKilogram => { symbol: "mol/kg"; definition: crate::consts::molality::MOLE_PER_KILOGRAM; uom: mole_per_kilogram; }
     }
 }

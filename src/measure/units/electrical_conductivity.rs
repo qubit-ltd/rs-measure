@@ -18,8 +18,8 @@ define_unit_family! {
     /// Units for persisted `uom` electrical conductivity quantities.
     pub enum ElectricalConductivity for "electrical_conductivity", uom = UomElectricalConductivity {
         /// Siemens per meter (`S/m`).
-        SiemensPerMeter => { symbol: "S/m"; coefficient: 1; uom: siemens_per_meter; }
+        SiemensPerMeter => { symbol: "S/m"; definition: crate::consts::electrical_conductivity::SIEMENS_PER_METER; uom: siemens_per_meter; }
         /// Siemens per centimeter (`S/cm`).
-        SiemensPerCentimeter => { symbol: "S/cm"; coefficient: 100; uom: siemens_per_centimeter; }
+        SiemensPerCentimeter => { symbol: "S/cm"; definition: crate::consts::electrical_conductivity::SIEMENS_PER_CENTIMETER; uom: siemens_per_centimeter; }
     }
 }

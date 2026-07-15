@@ -20,12 +20,12 @@ define_unit_family! {
     /// Units for persisted `uom` magnetic flux quantities.
     pub enum MagneticFlux for "magnetic_flux", uom = UomMagneticFlux {
         /// Microweber (`µWb`).
-        Microweber => { symbol: "µWb"; coefficient: 1 / 1000000; aliases: ["uWb", "μWb"]; uom: microweber; }
+        Microweber => { symbol: "µWb"; definition: crate::consts::magnetic_flux::MICROWEBER; aliases: ["uWb", "μWb"]; uom: microweber; }
         /// Milliweber (`mWb`).
-        Milliweber => { symbol: "mWb"; coefficient: 1 / 1000; uom: milliweber; }
+        Milliweber => { symbol: "mWb"; definition: crate::consts::magnetic_flux::MILLIWEBER; uom: milliweber; }
         /// Weber (`Wb`).
-        Weber => { symbol: "Wb"; coefficient: 1; uom: weber; }
+        Weber => { symbol: "Wb"; definition: crate::consts::magnetic_flux::WEBER; uom: weber; }
         /// Maxwell (`Mx`).
-        Maxwell => { symbol: "Mx"; coefficient: 1 / 100000000; uom: maxwell; }
+        Maxwell => { symbol: "Mx"; definition: crate::consts::magnetic_flux::MAXWELL; uom: maxwell; }
     }
 }

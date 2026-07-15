@@ -23,18 +23,18 @@ define_unit_family! {
     /// Units for persisted `uom` force quantities.
     pub enum Force for "force", uom = UomForce {
         /// Millinewton (`mN`).
-        Millinewton => { symbol: "mN"; coefficient: 1 / 1000; uom: millinewton; }
+        Millinewton => { symbol: "mN"; definition: crate::consts::force::MILLINEWTON; uom: millinewton; }
         /// Newton (`N`).
-        Newton => { symbol: "N"; coefficient: 1; uom: newton; }
+        Newton => { symbol: "N"; definition: crate::consts::force::NEWTON; uom: newton; }
         /// Kilonewton (`kN`).
-        Kilonewton => { symbol: "kN"; coefficient: 1000; uom: kilonewton; }
+        Kilonewton => { symbol: "kN"; definition: crate::consts::force::KILONEWTON; uom: kilonewton; }
         /// Meganewton (`MN`).
-        Meganewton => { symbol: "MN"; coefficient: 1000000; uom: meganewton; }
+        Meganewton => { symbol: "MN"; definition: crate::consts::force::MEGANEWTON; uom: meganewton; }
         /// Gram-force (`gf`).
-        GramForce => { symbol: "gf"; coefficient: 196133 / 20000000; uom: gram_force; }
+        GramForce => { symbol: "gf"; definition: crate::consts::force::GRAM_FORCE; uom: gram_force; }
         /// Kilogram-force (`kgf`).
-        KilogramForce => { symbol: "kgf"; coefficient: 196133 / 20000; uom: kilogram_force; }
+        KilogramForce => { symbol: "kgf"; definition: crate::consts::force::KILOGRAM_FORCE; uom: kilogram_force; }
         /// Pound-force (`lbf`).
-        PoundForce => { symbol: "lbf"; coefficient: 8896443230521 / 2000000000000; uom: pound_force; }
+        PoundForce => { symbol: "lbf"; definition: crate::consts::force::POUND_FORCE; uom: pound_force; }
     }
 }

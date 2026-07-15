@@ -73,6 +73,19 @@ fn test_conversion_factor_rejects_non_positive_terms() {
 }
 
 #[test]
+fn test_conversion_factor_from_integer_uses_identity_denominator() {
+    let factor = ConversionFactor::from_integer(dec!(2.5))
+        .expect("positive finite decimal factor should be valid");
+
+    assert_eq!(factor.numerator(), dec!(2.5));
+    assert_eq!(factor.denominator(), Decimal::ONE);
+    assert!(matches!(
+        ConversionFactor::from_integer(Decimal::ZERO),
+        Err(MeasurementError::InvalidUnitDefinition { .. }),
+    ));
+}
+
+#[test]
 fn test_identical_definition_preserves_or_applies_scale() {
     let definition = UnitDefinition::base();
     let value = dec!(12.3400);
@@ -96,6 +109,49 @@ fn test_identical_definition_preserves_or_applies_scale() {
     assert_eq!(preserved.scale(), 4);
     assert_eq!(rounded, dec!(12.34));
     assert_eq!(rounded.scale(), 2);
+}
+
+#[test]
+fn test_identical_tiny_definition_applies_scale_without_ratio_underflow() {
+    let tiny_factor =
+        ConversionFactor::new(dec!(0.000000000000001), dec!(0.000000000000002))
+            .expect("tiny factor should be valid");
+    let definition = UnitDefinition::new(tiny_factor, Decimal::ZERO);
+    let options = ConversionOptions::fixed_scale(
+        2,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
+
+    let converted = definition
+        .convert_value_to(dec!(12.345), definition, options)
+        .expect("identical tiny definition should only apply output scale");
+
+    assert_eq!(converted, dec!(12.34));
+    assert_eq!(converted.scale(), 2);
+}
+
+#[test]
+fn test_equivalent_tiny_definitions_avoid_combined_ratio_underflow() {
+    let source = UnitDefinition::new(
+        ConversionFactor::new(dec!(0.000000000000001), dec!(0.000000000000002))
+            .expect("source factor should be valid"),
+        Decimal::ZERO,
+    );
+    let target = UnitDefinition::new(
+        ConversionFactor::new(dec!(0.000000000000002), dec!(0.000000000000004))
+            .expect("target factor should be valid"),
+        Decimal::ZERO,
+    );
+
+    assert_eq!(
+        source.convert_value_to(
+            dec!(12.345),
+            target,
+            ConversionOptions::default(),
+        ),
+        Ok(dec!(12.345)),
+    );
 }
 
 #[test]

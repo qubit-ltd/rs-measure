@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` electrical conductance quantities.
     pub enum ElectricalConductance for "electrical_conductance", uom = UomElectricalConductance {
         /// Microsiemens (`µS`).
-        Microsiemens => { symbol: "µS"; coefficient: 1 / 1000000; aliases: ["uS", "μS"]; uom: microsiemens; }
+        Microsiemens => { symbol: "µS"; definition: crate::consts::electrical_conductance::MICROSIEMENS; aliases: ["uS", "μS"]; uom: microsiemens; }
         /// Millisiemens (`mS`).
-        Millisiemens => { symbol: "mS"; coefficient: 1 / 1000; uom: millisiemens; }
+        Millisiemens => { symbol: "mS"; definition: crate::consts::electrical_conductance::MILLISIEMENS; uom: millisiemens; }
         /// Siemens (`S`).
-        Siemens => { symbol: "S"; coefficient: 1; uom: siemens; }
+        Siemens => { symbol: "S"; definition: crate::consts::electrical_conductance::SIEMENS; uom: siemens; }
     }
 }

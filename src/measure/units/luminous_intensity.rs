@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` luminous intensity quantities.
     pub enum LuminousIntensity for "luminous_intensity", uom = UomLuminousIntensity {
         /// Millicandela (`mcd`).
-        Millicandela => { symbol: "mcd"; coefficient: 1 / 1000; uom: millicandela; }
+        Millicandela => { symbol: "mcd"; definition: crate::consts::luminous_intensity::MILLICANDELA; uom: millicandela; }
         /// Candela (`cd`).
-        Candela => { symbol: "cd"; coefficient: 1; uom: candela; }
+        Candela => { symbol: "cd"; definition: crate::consts::luminous_intensity::CANDELA; uom: candela; }
         /// Kilocandela (`kcd`).
-        Kilocandela => { symbol: "kcd"; coefficient: 1000; uom: kilocandela; }
+        Kilocandela => { symbol: "kcd"; definition: crate::consts::luminous_intensity::KILOCANDELA; uom: kilocandela; }
     }
 }

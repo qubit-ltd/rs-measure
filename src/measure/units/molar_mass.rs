@@ -19,10 +19,10 @@ define_unit_family! {
     /// Units for persisted `uom` molar mass quantities.
     pub enum MolarMass for "molar_mass", uom = UomMolarMass {
         /// Milligram per mole (`mg/mol`).
-        MilligramPerMole => { symbol: "mg/mol"; coefficient: 1 / 1000000; uom: milligram_per_mole; }
+        MilligramPerMole => { symbol: "mg/mol"; definition: crate::consts::molar_mass::MILLIGRAM_PER_MOLE; uom: milligram_per_mole; }
         /// Gram per mole (`g/mol`).
-        GramPerMole => { symbol: "g/mol"; coefficient: 1 / 1000; uom: gram_per_mole; }
+        GramPerMole => { symbol: "g/mol"; definition: crate::consts::molar_mass::GRAM_PER_MOLE; uom: gram_per_mole; }
         /// Kilogram per mole (`kg/mol`).
-        KilogramPerMole => { symbol: "kg/mol"; coefficient: 1; uom: kilogram_per_mole; }
+        KilogramPerMole => { symbol: "kg/mol"; definition: crate::consts::molar_mass::KILOGRAM_PER_MOLE; uom: kilogram_per_mole; }
     }
 }

@@ -8,6 +8,8 @@
 //! # qubit-measure
 //!
 //! Persistent typed measurement values with explicit units and `uom` adapters.
+//! Built-in exact conversion definitions share crate-wide constants grouped by
+//! quantity.
 
 #![deny(missing_docs)]
 #![deny(unsafe_op_in_unsafe_fn)]
@@ -15,6 +17,7 @@
 #[doc(hidden)]
 #[path = "private.rs"]
 pub mod __private;
+mod consts;
 mod measure;
 pub mod measurement;
 pub mod unit;

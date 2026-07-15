@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` magnetic flux density quantities.
     pub enum MagneticFluxDensity for "magnetic_flux_density", uom = UomMagneticFluxDensity {
         /// Nanotesla (`nT`).
-        Nanotesla => { symbol: "nT"; coefficient: 1 / 1000000000; uom: nanotesla; }
+        Nanotesla => { symbol: "nT"; definition: crate::consts::magnetic_flux_density::NANOTESLA; uom: nanotesla; }
         /// Microtesla (`µT`).
-        Microtesla => { symbol: "µT"; coefficient: 1 / 1000000; aliases: ["uT", "μT"]; uom: microtesla; }
+        Microtesla => { symbol: "µT"; definition: crate::consts::magnetic_flux_density::MICROTESLA; aliases: ["uT", "μT"]; uom: microtesla; }
         /// Millitesla (`mT`).
-        Millitesla => { symbol: "mT"; coefficient: 1 / 1000; uom: millitesla; }
+        Millitesla => { symbol: "mT"; definition: crate::consts::magnetic_flux_density::MILLITESLA; uom: millitesla; }
         /// Tesla (`T`).
-        Tesla => { symbol: "T"; coefficient: 1; uom: tesla; }
+        Tesla => { symbol: "T"; definition: crate::consts::magnetic_flux_density::TESLA; uom: tesla; }
         /// Gauss (`G`).
-        Gauss => { symbol: "G"; coefficient: 1 / 10000; uom: gauss; }
+        Gauss => { symbol: "G"; definition: crate::consts::magnetic_flux_density::GAUSS; uom: gauss; }
     }
 }

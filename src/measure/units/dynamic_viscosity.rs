@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` dynamic viscosity quantities.
     pub enum DynamicViscosity for "dynamic_viscosity", uom = UomDynamicViscosity {
         /// Micropascal second (`µPa · s`).
-        MicropascalSecond => { symbol: "µPa · s"; coefficient: 1 / 1000000; aliases: ["uPa · s", "μPa · s", "uPa*s"]; uom: micropascal_second; }
+        MicropascalSecond => { symbol: "µPa · s"; definition: crate::consts::dynamic_viscosity::MICROPASCAL_SECOND; aliases: ["uPa · s", "μPa · s", "uPa*s"]; uom: micropascal_second; }
         /// Millipascal second (`mPa · s`).
-        MillipascalSecond => { symbol: "mPa · s"; coefficient: 1 / 1000; aliases: ["mPa*s"]; uom: millipascal_second; }
+        MillipascalSecond => { symbol: "mPa · s"; definition: crate::consts::dynamic_viscosity::MILLIPASCAL_SECOND; aliases: ["mPa*s"]; uom: millipascal_second; }
         /// Pascal second (`Pa · s`).
-        PascalSecond => { symbol: "Pa · s"; coefficient: 1; aliases: ["Pa*s", "Pa s"]; uom: pascal_second; }
+        PascalSecond => { symbol: "Pa · s"; definition: crate::consts::dynamic_viscosity::PASCAL_SECOND; aliases: ["Pa*s", "Pa s"]; uom: pascal_second; }
         /// Poise (`P`).
-        Poise => { symbol: "P"; coefficient: 1 / 10; uom: poise; }
+        Poise => { symbol: "P"; definition: crate::consts::dynamic_viscosity::POISE; uom: poise; }
         /// Centipoise (`cP`).
-        Centipoise => { symbol: "cP"; coefficient: 1 / 1000; uom: centipoise; }
+        Centipoise => { symbol: "cP"; definition: crate::consts::dynamic_viscosity::CENTIPOISE; uom: centipoise; }
     }
 }

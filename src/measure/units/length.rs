@@ -26,24 +26,24 @@ define_unit_family! {
     /// Units for persisted `uom` length quantities.
     pub enum Length for "length", uom = UomLength {
         /// Nanometer (`nm`).
-        Nanometer => { symbol: "nm"; coefficient: 1 / 1000000000; uom: nanometer; }
+        Nanometer => { symbol: "nm"; definition: crate::consts::length::NANOMETER; uom: nanometer; }
         /// Micrometer (`µm`).
-        Micrometer => { symbol: "µm"; coefficient: 1 / 1000000; aliases: ["um", "μm"]; uom: micrometer; }
+        Micrometer => { symbol: "µm"; definition: crate::consts::length::MICROMETER; aliases: ["um", "μm"]; uom: micrometer; }
         /// Millimeter (`mm`).
-        Millimeter => { symbol: "mm"; coefficient: 1 / 1000; uom: millimeter; }
+        Millimeter => { symbol: "mm"; definition: crate::consts::length::MILLIMETER; uom: millimeter; }
         /// Centimeter (`cm`).
-        Centimeter => { symbol: "cm"; coefficient: 1 / 100; uom: centimeter; }
+        Centimeter => { symbol: "cm"; definition: crate::consts::length::CENTIMETER; uom: centimeter; }
         /// Meter (`m`).
-        Meter => { symbol: "m"; coefficient: 1; uom: meter; }
+        Meter => { symbol: "m"; definition: crate::consts::length::METER; uom: meter; }
         /// Kilometer (`km`).
-        Kilometer => { symbol: "km"; coefficient: 1000; uom: kilometer; }
+        Kilometer => { symbol: "km"; definition: crate::consts::length::KILOMETER; uom: kilometer; }
         /// Inch (`in`).
-        Inch => { symbol: "in"; coefficient: 127 / 5000; uom: inch; }
+        Inch => { symbol: "in"; definition: crate::consts::length::INCH; uom: inch; }
         /// Foot (`ft`).
-        Foot => { symbol: "ft"; coefficient: 381 / 1250; uom: foot; }
+        Foot => { symbol: "ft"; definition: crate::consts::length::FOOT; uom: foot; }
         /// Yard (`yd`).
-        Yard => { symbol: "yd"; coefficient: 1143 / 1250; uom: yard; }
+        Yard => { symbol: "yd"; definition: crate::consts::length::YARD; uom: yard; }
         /// Mile (`mi`).
-        Mile => { symbol: "mi"; coefficient: 201168 / 125; uom: mile; }
+        Mile => { symbol: "mi"; definition: crate::consts::length::MILE; uom: mile; }
     }
 }

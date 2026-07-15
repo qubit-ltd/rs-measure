@@ -25,22 +25,22 @@ define_unit_family! {
     /// Units for persisted `uom` energy quantities.
     pub enum Energy for "energy", uom = UomEnergy {
         /// Joule (`J`).
-        Joule => { symbol: "J"; coefficient: 1; uom: joule; }
+        Joule => { symbol: "J"; definition: crate::consts::energy::JOULE; uom: joule; }
         /// Kilojoule (`kJ`).
-        Kilojoule => { symbol: "kJ"; coefficient: 1000; uom: kilojoule; }
+        Kilojoule => { symbol: "kJ"; definition: crate::consts::energy::KILOJOULE; uom: kilojoule; }
         /// Megajoule (`MJ`).
-        Megajoule => { symbol: "MJ"; coefficient: 1000000; uom: megajoule; }
+        Megajoule => { symbol: "MJ"; definition: crate::consts::energy::MEGAJOULE; uom: megajoule; }
         /// Watt hour (`W · h`).
-        WattHour => { symbol: "W · h"; coefficient: 3600; aliases: ["Wh"]; uom: watt_hour; }
+        WattHour => { symbol: "W · h"; definition: crate::consts::energy::WATT_HOUR; aliases: ["Wh"]; uom: watt_hour; }
         /// Kilowatt hour (`kW · h`).
-        KilowattHour => { symbol: "kW · h"; coefficient: 3600000; aliases: ["kWh"]; uom: kilowatt_hour; }
+        KilowattHour => { symbol: "kW · h"; definition: crate::consts::energy::KILOWATT_HOUR; aliases: ["kWh"]; uom: kilowatt_hour; }
         /// Electronvolt (`eV`).
-        Electronvolt => { symbol: "eV"; coefficient: 801088317 / 5000000000000000000000000000; uom: electronvolt; }
+        Electronvolt => { symbol: "eV"; definition: crate::consts::energy::ELECTRONVOLT; uom: electronvolt; }
         /// Calorie (`cal`).
-        ThermochemicalCalorie => { symbol: "cal (th)"; coefficient: 523 / 125; aliases: ["cal"]; uom: calorie; }
+        ThermochemicalCalorie => { symbol: "cal (th)"; definition: crate::consts::energy::THERMOCHEMICAL_CALORIE; aliases: ["cal"]; uom: calorie; }
         /// Kilocalorie (`kcal`).
-        ThermochemicalKilocalorie => { symbol: "kcal (th)"; coefficient: 4184; aliases: ["kcal"]; uom: kilocalorie; }
+        ThermochemicalKilocalorie => { symbol: "kcal (th)"; definition: crate::consts::energy::THERMOCHEMICAL_KILOCALORIE; aliases: ["kcal"]; uom: kilocalorie; }
         /// British thermal unit (`Btu`).
-        BritishThermalUnitInternationalTable => { symbol: "Btu (IT)"; coefficient: 131882 / 125; aliases: ["Btu", "BTU"]; uom: btu; }
+        BritishThermalUnitInternationalTable => { symbol: "Btu (IT)"; definition: crate::consts::energy::BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE; aliases: ["Btu", "BTU"]; uom: btu; }
     }
 }

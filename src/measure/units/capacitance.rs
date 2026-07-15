@@ -21,14 +21,14 @@ define_unit_family! {
     /// Units for persisted `uom` capacitance quantities.
     pub enum Capacitance for "capacitance", uom = UomCapacitance {
         /// Picofarad (`pF`).
-        Picofarad => { symbol: "pF"; coefficient: 1 / 1000000000000; uom: picofarad; }
+        Picofarad => { symbol: "pF"; definition: crate::consts::capacitance::PICOFARAD; uom: picofarad; }
         /// Nanofarad (`nF`).
-        Nanofarad => { symbol: "nF"; coefficient: 1 / 1000000000; uom: nanofarad; }
+        Nanofarad => { symbol: "nF"; definition: crate::consts::capacitance::NANOFARAD; uom: nanofarad; }
         /// Microfarad (`µF`).
-        Microfarad => { symbol: "µF"; coefficient: 1 / 1000000; aliases: ["uF", "μF"]; uom: microfarad; }
+        Microfarad => { symbol: "µF"; definition: crate::consts::capacitance::MICROFARAD; aliases: ["uF", "μF"]; uom: microfarad; }
         /// Millifarad (`mF`).
-        Millifarad => { symbol: "mF"; coefficient: 1 / 1000; uom: millifarad; }
+        Millifarad => { symbol: "mF"; definition: crate::consts::capacitance::MILLIFARAD; uom: millifarad; }
         /// Farad (`F`).
-        Farad => { symbol: "F"; coefficient: 1; uom: farad; }
+        Farad => { symbol: "F"; definition: crate::consts::capacitance::FARAD; uom: farad; }
     }
 }

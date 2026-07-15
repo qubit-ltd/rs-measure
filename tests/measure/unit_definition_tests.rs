@@ -35,16 +35,22 @@ where
             definition.factor().numerator(),
             Decimal::from_str(case.numerator)
                 .expect("numerator should be valid Decimal"),
+            "unexpected numerator for {:?}",
+            case.unit,
         );
         assert_eq!(
             definition.factor().denominator(),
             Decimal::from_str(case.denominator)
                 .expect("denominator should be valid Decimal"),
+            "unexpected denominator for {:?}",
+            case.unit,
         );
         assert_eq!(
             definition.offset(),
             Decimal::from_str(case.offset)
                 .expect("offset should be valid Decimal"),
+            "unexpected offset for {:?}",
+            case.unit,
         );
     }
 }
@@ -558,26 +564,26 @@ fn test_angle_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::Angle::Degree,
-            numerator: "3490658503988659",
-            denominator: "200000000000000000",
+            numerator: "3141592653589793",
+            denominator: "180000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::Angle::Revolution,
-            numerator: "3141592653589793",
-            denominator: "500000000000000",
+            numerator: "6283185307179586",
+            denominator: "1000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::Angle::Minute,
-            numerator: "45451282604019",
-            denominator: "156250000000000000",
+            numerator: "3141592653589793",
+            denominator: "10800000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::Angle::Second,
-            numerator: "15150427534673",
-            denominator: "3125000000000000000",
+            numerator: "3141592653589793",
+            denominator: "648000000000000000000",
             offset: "0",
         },
     ]);
@@ -594,20 +600,20 @@ fn test_angular_velocity_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::AngularVelocity::DegreePerSecond,
-            numerator: "3490658503988659",
-            denominator: "200000000000000000",
+            numerator: "3141592653589793",
+            denominator: "180000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::AngularVelocity::RevolutionPerSecond,
-            numerator: "3141592653589793",
-            denominator: "500000000000000",
+            numerator: "6283185307179586",
+            denominator: "1000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::AngularVelocity::RevolutionPerMinute,
-            numerator: "10471975511965977",
-            denominator: "100000000000000000",
+            numerator: "6283185307179586",
+            denominator: "60000000000000000",
             offset: "0",
         },
     ]);
@@ -1637,7 +1643,7 @@ fn test_solid_angle_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::SolidAngle::Spat,
-            numerator: "12566370614359173",
+            numerator: "12566370614359172",
             denominator: "1000000000000000",
             offset: "0",
         },
