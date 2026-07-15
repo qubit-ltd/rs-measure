@@ -1,5 +1,12 @@
 # rs-measure Decimal Conversion Implementation Plan
 
+> **Historical plan:** The implemented design was subsequently revised. The
+> current crate has no mutable process-wide conversion default or `parking_lot`
+> dependency; `convert_to` always uses `ConversionOptions::DEFAULT`. Built-in
+> factors now live in `src/consts.rs`, Measurement owns its string unit wire
+> contract, and canonical symbols take precedence over aliases. Treat current
+> source and README files as authoritative.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: use `superpowers:executing-plans` to implement this plan task-by-task. Do not dispatch subagents unless the user explicitly authorizes delegation.
 
 **Goal:** Release `qubit-measure` 0.3.0 with Decimal-only persisted unit conversion, configurable rounding, quantity-aware JSON, explicit ambiguous-unit semantics, and public compile-time unit extension.

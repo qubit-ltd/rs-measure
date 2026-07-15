@@ -50,7 +50,11 @@ type. Extra fields are ignored for forward-compatible metadata additions.
 `convert_to` never converts the persisted value, factors, offsets, or intermediate
 results through `f64`. Unit coefficients are validated Decimal ratios, so definitions
 such as `5 / 9`, exact SI prefixes, and exact customary units are not rounded when
-declared.
+declared. Built-in factors and offsets live in one crate-internal `consts.rs`, grouped
+by quantity. Mathematical values use Rust standard-library constants when available;
+for example, angle conversions derive from `std::f64::consts::PI` and
+`std::f64::consts::TAU`, with compile-time checks keeping their finite Decimal
+representations coherent.
 
 ```rust
 use qubit_measure::{
@@ -73,36 +77,19 @@ decimal places. Decimal still has a finite 96-bit mantissa: repeating fractions,
 irrational constants, and results outside its range cannot have infinite precision.
 Arithmetic and unrepresentable scale requests return `MeasurementError`.
 
-## 4. Process-wide defaults
+## 4. Deterministic defaults
 
-`convert_to` snapshots a process-wide default protected by `parking_lot::Mutex`.
-The initial value is maximum precision with `MidpointNearestEven`. Deterministic
-code and tests should normally pass explicit options.
-
-```rust
-use qubit_measure::{
-    ConversionOptions, RoundingStrategy, default_conversion_options,
-    set_default_conversion_options,
-};
-
-let original = default_conversion_options();
-let replacement = ConversionOptions::fixed_scale(
-    6,
-    RoundingStrategy::MidpointNearestEven,
-)?;
-set_default_conversion_options(replacement);
-// Perform conversions that intentionally use the process default.
-set_default_conversion_options(original);
-# Ok::<(), qubit_measure::MeasurementError>(())
-```
-
-The setter atomically replaces the complete configuration and returns its old value.
+`convert_to` always uses the immutable `ConversionOptions::DEFAULT`: maximum
+precision with `MidpointNearestEven`. There is no process-wide mutable conversion
+state. Code that needs a fixed output scale or another rounding strategy uses
+`convert_to_with_options` explicitly.
 
 ## 5. Strict and lenient parsing
 
 `Unit::parse_strict` accepts canonical symbols only. A recognized alias produces
 `NonCanonicalUnit` with the canonical replacement. `Unit::parse_lenient`, `FromStr`,
 `Measurement::from_str`, and default Serde deserialization accept documented aliases.
+Canonical symbols always take precedence when they collide with another unit's alias.
 `Measurement::parse_strict` provides strict parsing for complete values.
 
 ```rust
@@ -162,7 +149,9 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 ```
 
 The macro generates canonical display, strict and lenient parsing, Serde, enumeration,
-and exact definitions. External code may also implement `Unit` manually.
+and exact definitions. External code may also implement `Unit` manually. Measurement
+Serde uses the `Unit` symbol and parsing contract directly, so a manual unit does not
+need separate `Serialize` or `Deserialize` implementations.
 
 ## 8. Approximate `uom` bridge
 

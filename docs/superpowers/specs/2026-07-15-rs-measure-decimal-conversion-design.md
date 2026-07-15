@@ -1,5 +1,10 @@
 # rs-measure Decimal 精确换算与可扩展单位设计
 
+> **修订说明：** 当前实现已取消进程级可变默认配置和 `parking_lot` 依赖，
+> `convert_to` 固定使用 `ConversionOptions::DEFAULT`；内建换算常数统一位于
+> `src/consts.rs`，Measurement 自主管理字符串单位 wire contract，宽松解析始终优先
+> 匹配规范符号。本文后续相关旧章节仅保留为历史设计记录，以当前源码和 README 为准。
+
 日期：2026-07-15  
 状态：已确认
 

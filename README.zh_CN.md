@@ -47,7 +47,10 @@ Serde 使用带 quantity 校验的 wire format：
 ## 3. Decimal 精度与舍入
 
 `convert_to` 不会把持久化值、系数、偏移或中间结果转换成 `f64`。单位系数使用经过校验的
-Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不会在声明时被舍入。
+Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不会在声明时被舍入。所有
+内建换算系数和偏移统一放在 crate 内部的 `consts.rs`，并按 quantity 分组；标准库已有的
+数学常数优先采用标准库定义，例如角度换算来自 `std::f64::consts::PI` 和
+`std::f64::consts::TAU`，并通过编译期检查保证两者的有限 Decimal 表示彼此一致。
 
 ```rust
 use qubit_measure::{
@@ -69,34 +72,17 @@ assert_eq!(feet.value.to_string(), "3.2808");
 有限的 96 位 mantissa：循环小数、无理常数和超出范围的结果不可能获得数学无限精度。
 算术溢出或无法保留指定 scale 时返回 `MeasurementError`。
 
-## 4. 进程级默认配置
+## 4. 确定性默认配置
 
-`convert_to` 会快照读取由 `parking_lot::Mutex` 保护的进程级默认值。初始值是最大精度与
-`MidpointNearestEven`。需要可重复结果的业务代码和测试通常应传入显式配置。
-
-```rust
-use qubit_measure::{
-    ConversionOptions, RoundingStrategy, default_conversion_options,
-    set_default_conversion_options,
-};
-
-let original = default_conversion_options();
-let replacement = ConversionOptions::fixed_scale(
-    6,
-    RoundingStrategy::MidpointNearestEven,
-)?;
-set_default_conversion_options(replacement);
-// 执行有意使用进程默认配置的换算。
-set_default_conversion_options(original);
-# Ok::<(), qubit_measure::MeasurementError>(())
-```
-
-setter 会原子替换完整配置并返回旧值，方便调用方恢复。
+`convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：最大精度与
+`MidpointNearestEven`。crate 不再包含进程级可变换算状态。需要固定输出 scale 或其他
+舍入策略时，应显式调用 `convert_to_with_options`。
 
 ## 5. 严格与宽松解析
 
 `Unit::parse_strict` 只接受规范符号；遇到已知别名时返回 `NonCanonicalUnit` 并给出规范替代。
 `Unit::parse_lenient`、`FromStr`、`Measurement::from_str` 和默认 Serde 反序列化接受已声明别名。
+当某个规范符号与另一单位的别名冲突时，始终优先匹配规范符号。
 `Measurement::parse_strict` 为完整 measurement 提供严格解析。
 
 ```rust
@@ -154,7 +140,8 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 ```
 
 宏会生成规范显示、严格和宽松解析、Serde、枚举遍历及精确定义。外部代码也可以手工实现
-`Unit`。
+`Unit`。Measurement Serde 直接使用 `Unit` 的符号和解析契约，因此手工单位无需另外实现
+`Serialize` 或 `Deserialize`。
 
 ## 8. 近似 `uom` 桥接
 
