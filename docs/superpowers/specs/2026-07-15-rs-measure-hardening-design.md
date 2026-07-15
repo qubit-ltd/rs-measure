@@ -2,7 +2,7 @@
 
 日期：2026-07-15
 
-状态：待书面审核
+状态：已确认
 
 ## 1. 背景
 
@@ -99,7 +99,7 @@ btu_it_per_pound_degree_fahrenheit。保留 rs-measure 自身的 Decimal 定义�
 
 - ConversionFactor::new(2, 2) 与 identity 定义之间转换 Decimal::MAX，结果必须精确
   等于 Decimal::MAX。
-- 4/6 和 2/3 构造出的 ConversionFactor 必须具有相同的规范表示。
+- 4/6 和 2/3 构造出的 ConversionFactor 必须具有相同的约分表示。
 - 源、目标因子存在可交叉消去项时，在组合乘法前消去公共因子，并保留期望结果。
 - 原有 5/9、offset、循环小数和显式 scale 行为不得改变。
 
@@ -114,12 +114,12 @@ ConversionFactor::new 在正数校验后规范化两个 Decimal：
 3. 从两边 scale 中减去共同的最小 scale。
 4. 用约分后的 mantissa 和剩余 scale 重建 Decimal。
 
-该过程不需要把一边乘以十的高次幂，因此不会为了获得规范表示而引入新的中间溢出。
+该过程不需要把一边乘以十的高次幂，因此不会为了获得约分表示而引入新的中间溢出。
 例如 2/2 变为 1/1，4/6 变为 2/3，0.4/0.1 也变为 4/1；1/0.1 可以保持为
 1/0.1，因为它已经没有可同时消去的 mantissa 或 scale。
 
-ConversionFactor 的 Rustdoc 从未约分比例改为构造时规范化的正 Decimal 比例，并说明
-PartialEq 比较规范表示。
+ConversionFactor 的 Rustdoc 从未约分比例改为构造时约分的正 Decimal 比例，并说明
+PartialEq 比较保存的约分项，不承诺在 Decimal 表示极限下判定所有数学等价比例。
 
 ### 6.4 转换期交叉约分
 
@@ -347,7 +347,7 @@ all-features、Clippy、rustdoc、doctest、格式化及项目自定义风格检
 
 1. 三个 BTU IT 桥接使用 uom 对应的 IT 单位，并有直接 SI 基准回归测试。
 2. Decimal::MAX 经 2/2 转换精确返回原值，不出现虚假 ArithmeticOverflow。
-3. ConversionFactor 文档与实现都采用规范表示，组合比例先交叉约分。
+3. ConversionFactor 文档与实现都采用约分表示，组合比例先交叉约分。
 4. 默认 Cargo 构建不包含 uom；启用 uom feature 后所有近似 API 和测试可用。
 5. 宏对 quantity、规范符号和别名执行编译期检查。
 6. 手工 Unit 实现可通过公开测试辅助函数验证可观察不变量。
