@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted frequency measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Frequency as UomFrequency;
 use uom::si::frequency::{
     gigahertz,
@@ -16,16 +16,16 @@ use uom::si::frequency::{
     megahertz,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` frequency quantities.
-    pub enum Frequency for UomFrequency, "frequency" {
+    pub enum Frequency for "frequency", uom = UomFrequency {
         /// Hertz (`Hz`).
-        Hertz => "Hz", hertz;
+        Hertz => { symbol: "Hz"; coefficient: 1; uom: hertz; }
         /// Kilohertz (`kHz`).
-        Kilohertz => "kHz", kilohertz;
+        Kilohertz => { symbol: "kHz"; coefficient: 1000; uom: kilohertz; }
         /// Megahertz (`MHz`).
-        Megahertz => "MHz", megahertz;
+        Megahertz => { symbol: "MHz"; coefficient: 1000000; uom: megahertz; }
         /// Gigahertz (`GHz`).
-        Gigahertz => "GHz", gigahertz;
+        Gigahertz => { symbol: "GHz"; coefficient: 1000000000; uom: gigahertz; }
     }
 }

@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted magnetic field strength measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MagneticFieldStrength as UomMagneticFieldStrength;
 use uom::si::magnetic_field_strength::{
     ampere_per_centimeter,
@@ -15,14 +15,14 @@ use uom::si::magnetic_field_strength::{
     oersted,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` magnetic field strength quantities.
-    pub enum MagneticFieldStrength for UomMagneticFieldStrength, "magnetic field strength" {
+    pub enum MagneticFieldStrength for "magnetic_field_strength", uom = UomMagneticFieldStrength {
         /// Ampere per meter (`A/m`).
-        AmperePerMeter => "A/m", ampere_per_meter;
+        AmperePerMeter => { symbol: "A/m"; coefficient: 1; uom: ampere_per_meter; }
         /// Ampere per centimeter (`A/cm`).
-        AmperePerCentimeter => "A/cm", ampere_per_centimeter;
+        AmperePerCentimeter => { symbol: "A/cm"; coefficient: 100; uom: ampere_per_centimeter; }
         /// Oersted (`Oe`).
-        Oersted => "Oe", oersted;
+        Oersted => { symbol: "Oe"; coefficient: 7957747154594767 / 100000000000000; uom: oersted; }
     }
 }

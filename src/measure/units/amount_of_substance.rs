@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted amount of substance measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::amount_of_substance::{
     kilomole,
     micromole,
@@ -17,18 +17,18 @@ use uom::si::amount_of_substance::{
 };
 use uom::si::f64::AmountOfSubstance as UomAmountOfSubstance;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` amount of substance quantities.
-    pub enum AmountOfSubstance for UomAmountOfSubstance, "amount of substance" {
+    pub enum AmountOfSubstance for "amount_of_substance", uom = UomAmountOfSubstance {
         /// Micromole (`µmol`).
-        Micromole => "µmol" | "umol" | "μmol", micromole;
+        Micromole => { symbol: "µmol"; coefficient: 1 / 1000000; aliases: ["umol", "μmol"]; uom: micromole; }
         /// Millimole (`mmol`).
-        Millimole => "mmol", millimole;
+        Millimole => { symbol: "mmol"; coefficient: 1 / 1000; uom: millimole; }
         /// Mole (`mol`).
-        Mole => "mol", mole;
+        Mole => { symbol: "mol"; coefficient: 1; uom: mole; }
         /// Kilomole (`kmol`).
-        Kilomole => "kmol", kilomole;
+        Kilomole => { symbol: "kmol"; coefficient: 1000; uom: kilomole; }
         /// Particle (`particle`).
-        Particle => "particle", particle;
+        Particle => { symbol: "particle"; coefficient: 1 / 602214076000000000000000; uom: particle; }
     }
 }

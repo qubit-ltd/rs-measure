@@ -7,14 +7,14 @@
 // =============================================================================
 //! Units for persisted molality measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Molality as UomMolality;
 use uom::si::molality::mole_per_kilogram;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` molality quantities.
-    pub enum Molality for UomMolality, "molality" {
+    pub enum Molality for "molality", uom = UomMolality {
         /// Mole per kilogram (`mol/kg`).
-        MolePerKilogram => "mol/kg", mole_per_kilogram;
+        MolePerKilogram => { symbol: "mol/kg"; coefficient: 1; uom: mole_per_kilogram; }
     }
 }

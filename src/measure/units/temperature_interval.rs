@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted temperature interval measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::TemperatureInterval as UomTemperatureInterval;
 use uom::si::temperature_interval::{
     degree_celsius,
@@ -16,16 +16,16 @@ use uom::si::temperature_interval::{
     kelvin,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` temperature interval quantities.
-    pub enum TemperatureInterval for UomTemperatureInterval, "temperature interval" {
+    pub enum TemperatureInterval for "temperature_interval", uom = UomTemperatureInterval {
         /// Kelvin (`K`).
-        Kelvin => "K", kelvin;
+        Kelvin => { symbol: "K"; coefficient: 1; uom: kelvin; }
         /// Degree Celsius (`°C`).
-        Celsius => "°C" | "degC", degree_celsius;
+        Celsius => { symbol: "°C"; coefficient: 1; aliases: ["degC"]; uom: degree_celsius; }
         /// Degree Fahrenheit (`°F`).
-        Fahrenheit => "°F" | "degF", degree_fahrenheit;
+        Fahrenheit => { symbol: "°F"; coefficient: 5 / 9; aliases: ["degF"]; uom: degree_fahrenheit; }
         /// Degree Rankine (`°R`).
-        Rankine => "°R" | "degR", degree_rankine;
+        Rankine => { symbol: "°R"; coefficient: 5 / 9; aliases: ["degR"]; uom: degree_rankine; }
     }
 }

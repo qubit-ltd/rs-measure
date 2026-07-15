@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted torque measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Torque as UomTorque;
 use uom::si::torque::{
     kilonewton_meter,
@@ -17,18 +17,18 @@ use uom::si::torque::{
     pound_force_inch,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` torque quantities.
-    pub enum Torque for UomTorque, "torque" {
+    pub enum Torque for "torque", uom = UomTorque {
         /// Millinewton meter (`mN · m`).
-        MillinewtonMeter => "mN · m" | "mN m" | "mN*m", millinewton_meter;
+        MillinewtonMeter => { symbol: "mN · m"; coefficient: 1 / 1000; aliases: ["mN m", "mN*m"]; uom: millinewton_meter; }
         /// Newton meter (`N · m`).
-        NewtonMeter => "N · m" | "N m" | "N*m" | "Nm", newton_meter;
+        NewtonMeter => { symbol: "N · m"; coefficient: 1; aliases: ["N m", "N*m", "Nm"]; uom: newton_meter; }
         /// Kilonewton meter (`kN · m`).
-        KilonewtonMeter => "kN · m" | "kN m" | "kN*m" | "kNm", kilonewton_meter;
+        KilonewtonMeter => { symbol: "kN · m"; coefficient: 1000; aliases: ["kN m", "kN*m", "kNm"]; uom: kilonewton_meter; }
         /// Pound-force foot (`lbf · ft`).
-        PoundForceFoot => "lbf · ft" | "lbf ft", pound_force_foot;
+        PoundForceFoot => { symbol: "lbf · ft"; coefficient: 3389544870828501 / 2500000000000000; aliases: ["lbf ft"]; uom: pound_force_foot; }
         /// Pound-force inch (`lbf · in`).
-        PoundForceInch => "lbf · in" | "lbf in", pound_force_inch;
+        PoundForceInch => { symbol: "lbf · in"; coefficient: 1129848290276167 / 10000000000000000; aliases: ["lbf in"]; uom: pound_force_inch; }
     }
 }

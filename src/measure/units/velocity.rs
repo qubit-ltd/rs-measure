@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted velocity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Velocity as UomVelocity;
 use uom::si::velocity::{
     centimeter_per_second,
@@ -20,24 +20,24 @@ use uom::si::velocity::{
     millimeter_per_second,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` velocity quantities.
-    pub enum Velocity for UomVelocity, "velocity" {
+    pub enum Velocity for "velocity", uom = UomVelocity {
         /// Micrometer per second (`µm/s`).
-        MicrometerPerSecond => "µm/s" | "um/s" | "μm/s", micrometer_per_second;
+        MicrometerPerSecond => { symbol: "µm/s"; coefficient: 1 / 1000000; aliases: ["um/s", "μm/s"]; uom: micrometer_per_second; }
         /// Millimeter per second (`mm/s`).
-        MillimeterPerSecond => "mm/s", millimeter_per_second;
+        MillimeterPerSecond => { symbol: "mm/s"; coefficient: 1 / 1000; uom: millimeter_per_second; }
         /// Centimeter per second (`cm/s`).
-        CentimeterPerSecond => "cm/s", centimeter_per_second;
+        CentimeterPerSecond => { symbol: "cm/s"; coefficient: 1 / 100; uom: centimeter_per_second; }
         /// Meter per second (`m/s`).
-        MeterPerSecond => "m/s", meter_per_second;
+        MeterPerSecond => { symbol: "m/s"; coefficient: 1; uom: meter_per_second; }
         /// Kilometer per hour (`km/h`).
-        KilometerPerHour => "km/h" | "km/hr" | "kph", kilometer_per_hour;
+        KilometerPerHour => { symbol: "km/h"; coefficient: 5 / 18; aliases: ["km/hr", "kph"]; uom: kilometer_per_hour; }
         /// Foot per second (`ft/s`).
-        FootPerSecond => "ft/s", foot_per_second;
+        FootPerSecond => { symbol: "ft/s"; coefficient: 381 / 1250; uom: foot_per_second; }
         /// Mile per hour (`mi/h`).
-        MilePerHour => "mi/h" | "mi/hr" | "mph", mile_per_hour;
+        MilePerHour => { symbol: "mi/h"; coefficient: 1397 / 3125; aliases: ["mi/hr", "mph"]; uom: mile_per_hour; }
         /// Knot (`kn`).
-        Knot => "kn", knot;
+        Knot => { symbol: "kn"; coefficient: 463 / 900; uom: knot; }
     }
 }

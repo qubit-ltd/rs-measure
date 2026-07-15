@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted inductance measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Inductance as UomInductance;
 use uom::si::inductance::{
     henry,
@@ -16,16 +16,16 @@ use uom::si::inductance::{
     nanohenry,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` inductance quantities.
-    pub enum Inductance for UomInductance, "inductance" {
+    pub enum Inductance for "inductance", uom = UomInductance {
         /// Nanohenry (`nH`).
-        Nanohenry => "nH", nanohenry;
+        Nanohenry => { symbol: "nH"; coefficient: 1 / 1000000000; uom: nanohenry; }
         /// Microhenry (`µH`).
-        Microhenry => "µH" | "uH" | "μH", microhenry;
+        Microhenry => { symbol: "µH"; coefficient: 1 / 1000000; aliases: ["uH", "μH"]; uom: microhenry; }
         /// Millihenry (`mH`).
-        Millihenry => "mH", millihenry;
+        Millihenry => { symbol: "mH"; coefficient: 1 / 1000; uom: millihenry; }
         /// Henry (`H`).
-        Henry => "H", henry;
+        Henry => { symbol: "H"; coefficient: 1; uom: henry; }
     }
 }

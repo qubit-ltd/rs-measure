@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted thermodynamic temperature measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::ThermodynamicTemperature as UomTemperature;
 use uom::si::thermodynamic_temperature::{
     degree_celsius,
@@ -16,16 +16,16 @@ use uom::si::thermodynamic_temperature::{
     kelvin,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` thermodynamic temperature quantities.
-    pub enum Temperature for UomTemperature, "temperature" {
+    pub enum Temperature for "temperature", uom = UomTemperature {
         /// Kelvin (`K`).
-        Kelvin => "K", kelvin;
+        Kelvin => { symbol: "K"; coefficient: 1; uom: kelvin; }
         /// Degree Celsius (`°C`).
-        Celsius => "°C" | "degC", degree_celsius;
+        Celsius => { symbol: "°C"; coefficient: 1; offset: 273.15; aliases: ["degC"]; uom: degree_celsius; }
         /// Degree Fahrenheit (`°F`).
-        Fahrenheit => "°F" | "degF", degree_fahrenheit;
+        Fahrenheit => { symbol: "°F"; coefficient: 5 / 9; offset: 459.67; aliases: ["degF"]; uom: degree_fahrenheit; }
         /// Degree Rankine (`°R`).
-        Rankine => "°R" | "degR", degree_rankine;
+        Rankine => { symbol: "°R"; coefficient: 5 / 9; aliases: ["degR"]; uom: degree_rankine; }
     }
 }

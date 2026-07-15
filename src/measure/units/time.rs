@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted time measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Time as UomTime;
 use uom::si::time::{
     day,
@@ -20,24 +20,24 @@ use uom::si::time::{
     year,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` time quantities.
-    pub enum Time for UomTime, "time" {
+    pub enum Time for "time", uom = UomTime {
         /// Nanosecond (`ns`).
-        Nanosecond => "ns", nanosecond;
+        Nanosecond => { symbol: "ns"; coefficient: 1 / 1000000000; uom: nanosecond; }
         /// Microsecond (`µs`).
-        Microsecond => "µs" | "us" | "μs", microsecond;
+        Microsecond => { symbol: "µs"; coefficient: 1 / 1000000; aliases: ["us", "μs"]; uom: microsecond; }
         /// Millisecond (`ms`).
-        Millisecond => "ms", millisecond;
+        Millisecond => { symbol: "ms"; coefficient: 1 / 1000; uom: millisecond; }
         /// Second (`s`).
-        Second => "s", second;
+        Second => { symbol: "s"; coefficient: 1; uom: second; }
         /// Minute (`min`).
-        Minute => "min", minute;
+        Minute => { symbol: "min"; coefficient: 60; uom: minute; }
         /// Hour (`h`).
-        Hour => "h", hour;
+        Hour => { symbol: "h"; coefficient: 3600; uom: hour; }
         /// Day (`d`).
-        Day => "d", day;
+        Day => { symbol: "d"; coefficient: 86400; uom: day; }
         /// Year (`a`).
-        Year => "a" | "yr" | "year", year;
+        CommonYear365 => { symbol: "a (365 d)"; coefficient: 31536000; aliases: ["a", "yr", "year"]; uom: year; }
     }
 }

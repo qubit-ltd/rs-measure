@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted specific radioactivity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::SpecificRadioactivity as UomSpecificRadioactivity;
 use uom::si::specific_radioactivity::{
     becquerel_per_kilogram,
@@ -15,14 +15,14 @@ use uom::si::specific_radioactivity::{
     disintegrations_per_minute_per_kilogram,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` specific radioactivity quantities.
-    pub enum SpecificRadioactivity for UomSpecificRadioactivity, "specific radioactivity" {
+    pub enum SpecificRadioactivity for "specific_radioactivity", uom = UomSpecificRadioactivity {
         /// Becquerel per kilogram (`Bq/kg`).
-        BecquerelPerKilogram => "Bq/kg", becquerel_per_kilogram;
+        BecquerelPerKilogram => { symbol: "Bq/kg"; coefficient: 1; uom: becquerel_per_kilogram; }
         /// Curie per kilogram (`Ci/kg`).
-        CuriePerKilogram => "Ci/kg", curie_per_kilogram;
+        CuriePerKilogram => { symbol: "Ci/kg"; coefficient: 37000000000; uom: curie_per_kilogram; }
         /// Disintegrations per minute per kilogram (`dpm/kg`).
-        DisintegrationsPerMinutePerKilogram => "dpm/kg", disintegrations_per_minute_per_kilogram;
+        DisintegrationsPerMinutePerKilogram => { symbol: "dpm/kg"; coefficient: 1 / 60; uom: disintegrations_per_minute_per_kilogram; }
     }
 }

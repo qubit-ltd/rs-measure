@@ -1,426 +1,191 @@
 # Qubit Measure
 
 [![Rust CI](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml/badge.svg)](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml)
-[![Coverage](https://img.shields.io/endpoint?url=https://qubit-ltd.github.io/rs-measure/coverage-badge.json)](https://qubit-ltd.github.io/rs-measure/coverage/)
 [![Crates.io](https://img.shields.io/crates/v/qubit-measure.svg?color=blue)](https://crates.io/crates/qubit-measure)
 [![Rust](https://img.shields.io/badge/rust-1.94+-blue.svg?logo=rust)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![English Document](https://img.shields.io/badge/Document-English-blue.svg)](README.md)
 
-为 Rust 提供可持久化的类型化 measurement：显式保存数值和单位，并和
-`uom` 的 quantity 类型互相转换。
+为 Rust 提供可持久化的类型化 measurement：使用纯 Decimal 单位换算、显式单位，
+并提供可选的近似 `uom` 桥接。
 
-## 概述
+## 1. 安装与快速开始
 
-Qubit Measure 是围绕 [`uom`](https://crates.io/crates/uom) 的持久化边界
-wrapper。`uom` 很适合做类型安全的量纲分析，但一个 `uom` quantity 本身不是完整的
-持久化契约：创建后，数值会归一到该 quantity 的基准单位，用户或来源数据原本选择的
-单位不会继续留在值里。
+```toml
+[dependencies]
+qubit-measure = "0.3"
+```
 
-很多 API、数据库、电子表格、表单和审计边界需要精确保留以下事实：
+```rust
+use qubit_measure::{Decimal, measurement, unit};
+
+let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+let meters = length.convert_to(unit::Length::Meter)?;
+assert_eq!(meters.value, Decimal::new(5, 1));
+# Ok::<(), qubit_measure::MeasurementError>(())
+```
+
+`Measurement<U>` 保存一个 `Decimal` 和一个类型化单位。`measurement::*` 中的别名与
+`unit::*` 中的枚举覆盖 56 个物理 quantity family。
+
+## 2. 三字段 JSON 契约
+
+Serde 使用带 quantity 校验的 wire format：
 
 ```json
 {
+  "quantity": "length",
   "value": "50.0",
   "unit": "cm"
 }
 ```
 
-Qubit Measure 把这个边界表示显式建模为 `Decimal + typed unit`，同时把所有物理
-单位换算都交给 `uom`。
+三个字段都必须存在。`quantity` 是稳定的 `snake_case` 标识，`value` 是 Decimal 字符串，
+`unit` 序列化时始终使用规范符号。如果 quantity 与目标 Rust 类型不匹配，反序列化会失败。
+额外字段会被忽略，允许未来添加元数据。
 
-## 设计目标
+## 3. Decimal 精度与舍入
 
-- **以 `uom` 为换算真相**：单位换算通过 `uom` 完成，本 crate 不维护第二份比例表。
-- **数值和单位一起持久化**：序列化数据保留用户选择的单位，而不是只保留基准单位值。
-- **quantity 类型显式**：`measurement::Length` 和 `unit::Length` 在 Rust 类型层面表达 quantity family。
-- **边界值使用 decimal**：持久化值使用 `rust_decimal`，避免文本边界上的二进制浮点往返误差。
-- **区分物理 measurement 和业务计数**：件、张、箱、批、包装数量不属于这套物理单位系统。
-- **保持公开 API 小而清楚**：本 crate 提供类型化 wrapper 和 unit family；计算代码仍可直接使用 `uom`。
-
-## 特性
-
-### 类型化持久化 measurement
-
-- **泛型 wrapper**：`Measurement<U>` 保存 `Decimal` 数值和类型化 unit family 成员。
-- **quantity 别名**：`measurement::Length`、`measurement::Mass`、`measurement::Pressure` 等别名提供更方便的字段类型。
-- **unit family**：`unit::Length`、`unit::Mass`、`unit::Pressure` 等枚举暴露稳定的序列化符号。
-- **类型安全解析**：解析长度 measurement 时只会解析长度单位；`kg` 这类质量单位会在长度上下文中被拒绝。
-
-### `uom` 桥接
-
-- **不可失败的 `to_uom()`**：持久化 measurement 可以转换成类型化 `uom` quantity 用于计算。
-- **可失败的 `from_uom()`**：`uom` quantity 可以按指定目标单位持久化；转回 `Decimal` 时会报告精度错误。
-- **可失败的 `convert_to()`**：同一 quantity family 内的单位换算通过 `uom` 完成。
-
-### 稳定序列化
-
-- **Serde 支持**：值序列化为 `{ "value": "...", "unit": "..." }`。
-- **字符串 decimal**：decimal 使用 `rust_decimal::serde::str`，保留稳定的十进制文本值。
-- **稳定单位符号**：单位序列化为 `cm`、`kg`、`kPa`、`mW`、`cm/s` 等紧凑符号。
-- **输入别名**：解析时接受 `um`、`m2`、`m^3`、`mmHg`、`mph`、`year`
-  等别名；序列化时保持 `µm`、`m²`、`m³`、`mm Hg`、`mi/h`、`a` 等规范符号。
-
-### 聚焦的公开 API
-
-- **`Measurement<U>`**：泛型持久化 measurement wrapper。
-- **`Unit`**：每个支持的 unit family 实现的 trait。
-- **`measurement::*`**：`measurement::Length` 这类 quantity-specific 别名。
-- **`unit::*`**：`unit::Length` 这类 quantity-specific unit family。
-- **`MeasurementError`**：解析、未知单位和 decimal 转换的类型化错误。
-
-## 安装
-
-在 `Cargo.toml` 中添加：
-
-```toml
-[dependencies]
-qubit-measure = "0.2"
-```
-
-## 快速开始
-
-### 创建类型化 measurement
+`convert_to` 不会把持久化值、系数、偏移或中间结果转换成 `f64`。单位系数使用经过校验的
+Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不会在声明时被舍入。
 
 ```rust
 use qubit_measure::{
-    Unit,
-    measurement,
-    unit,
+    ConversionOptions, Decimal, RoundingStrategy, measurement, unit,
 };
-use rust_decimal::Decimal;
 
-let thickness = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-
-assert_eq!(thickness.value.to_string(), "50.0");
-assert_eq!(thickness.unit.symbol(), "cm");
-assert_eq!(thickness.quantity_name(), "length");
+let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+let options = ConversionOptions::fixed_scale(
+    4,
+    RoundingStrategy::MidpointNearestEven,
+)?;
+let feet = value.convert_to_with_options(unit::Length::Foot, options)?;
+assert_eq!(feet.value.to_string(), "3.2808");
+# Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-### 序列化持久化值
+`ConversionOptions::maximum_precision(strategy)` 不额外降低最终 scale。
+`fixed_scale(0..=28, strategy)` 会按指定策略舍入并保留恰好指定的小数位数。Decimal 仍只有
+有限的 96 位 mantissa：循环小数、无理常数和超出范围的结果不可能获得数学无限精度。
+算术溢出或无法保留指定 scale 时返回 `MeasurementError`。
+
+## 4. 进程级默认配置
+
+`convert_to` 会快照读取由 `parking_lot::Mutex` 保护的进程级默认值。初始值是最大精度与
+`MidpointNearestEven`。需要可重复结果的业务代码和测试通常应传入显式配置。
 
 ```rust
 use qubit_measure::{
-    measurement,
-    unit,
+    ConversionOptions, RoundingStrategy, default_conversion_options,
+    set_default_conversion_options,
 };
-use rust_decimal::Decimal;
-use serde_json::json;
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-    let value = serde_json::to_value(length)?;
+let original = default_conversion_options();
+let replacement = ConversionOptions::fixed_scale(
+    6,
+    RoundingStrategy::MidpointNearestEven,
+)?;
+set_default_conversion_options(replacement);
+// 执行有意使用进程默认配置的换算。
+set_default_conversion_options(original);
+# Ok::<(), qubit_measure::MeasurementError>(())
+```
 
-    assert_eq!(value, json!({
-        "value": "50.0",
-        "unit": "cm"
-    }));
-    Ok(())
+setter 会原子替换完整配置并返回旧值，方便调用方恢复。
+
+## 5. 严格与宽松解析
+
+`Unit::parse_strict` 只接受规范符号；遇到已知别名时返回 `NonCanonicalUnit` 并给出规范替代。
+`Unit::parse_lenient`、`FromStr`、`Measurement::from_str` 和默认 Serde 反序列化接受已声明别名。
+`Measurement::parse_strict` 为完整 measurement 提供严格解析。
+
+```rust
+use qubit_measure::{Unit, unit};
+
+assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
+assert!(unit::Time::parse_strict("year").is_err());
+assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
+# Ok::<(), qubit_measure::MeasurementError>(())
+```
+
+## 6. 歧义单位别名
+
+有歧义的概念使用带限定词的枚举名和规范符号。常见输入字符串只在宽松解析中保留。
+
+| Quantity | 显式变体 | 规范符号 | 宽松别名 |
+| --- | --- | --- | --- |
+| 时间 | `CommonYear365` | `a (365 d)` | `a`, `yr`, `year` |
+| 能量 | `ThermochemicalCalorie` | `cal (th)` | `cal` |
+| 能量 | `ThermochemicalKilocalorie` | `kcal (th)` | `kcal` |
+| 能量 | `BritishThermalUnitInternationalTable` | `Btu (IT)` | `Btu`, `BTU` |
+| 功率 | `MechanicalHorsepower` | `hp (mechanical)` | `hp` |
+| 体积 | `UsFluidOunce` | `fl oz (US)` | `fl oz` |
+| 体积 | `UsCustomaryCup` | `cup (US customary)` | `cup` |
+| 体积 | `UsLiquidPint` | `pt (US liq)` | `liq pt` |
+| 体积 | `UsLiquidQuart` | `qt (US liq)` | `liq qt` |
+| 体积 | `UsLiquidGallon` | `gal (US)` | `gal` |
+| 体积流量 | `UsGallonPerMinute` | `gal (US)/min` | `gal/min` |
+| 质量密度 | `PoundPerUsGallon` | `lb/gal (US)` | `lb/gal` |
+
+热容和比热容中的 calorie、Btu 变体使用相同的 thermochemical 和 International Table 限定。
+`CommonYear365` 精确等于 31,536,000 秒，是固定时长而不是日历模型。
+
+## 7. 外部单位族
+
+`Unit`、`ConversionFactor` 和 `UnitDefinition` 均为公开 API。导出的宏支持编译期扩展，
+不引入运行时注册表，也不强制要求 `uom` 映射。
+
+```rust
+use qubit_measure::{Unit, define_unit_family};
+
+define_unit_family! {
+    pub enum CustomLength for "custom_length" {
+        Base => { symbol: "cu"; coefficient: 1; }
+        Half => {
+            symbol: "hcu";
+            coefficient: 1 / 2;
+            aliases: ["half-cu"];
+        }
+    }
 }
+
+assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
+# Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-### 解析类型化 measurement
+宏会生成规范显示、严格和宽松解析、Serde、枚举遍历及精确定义。外部代码也可以手工实现
+`Unit`。
+
+## 8. 近似 `uom` 桥接
+
+映射到 `uom` 的 family 会实现 `UomUnit`，并提供 `to_uom_approx` / `from_uom_approx`。
+`_approx` 后缀是有意设计：这些适配器会跨越 `Decimal <-> f64`，因此可能损失精度。
+持久化单位换算 `convert_to` 不使用该桥接。
 
 ```rust
-use qubit_measure::{
-    measurement,
-    unit,
-};
-use rust_decimal::Decimal;
-use std::str::FromStr;
-
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let length = measurement::Length::from_str("12.5 cm")?;
-
-    assert_eq!(length.value, Decimal::new(125, 1));
-    assert_eq!(length.unit, unit::Length::Centimeter);
-    Ok(())
-}
-```
-
-### 通过 `uom` 换算单位
-
-```rust
-use qubit_measure::{
-    measurement,
-    unit,
-};
-use rust_decimal::Decimal;
-
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let grams = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
-    let kilograms = grams.convert_to(unit::Mass::Kilogram)?;
-
-    assert_eq!(kilograms.value, Decimal::new(1, 4));
-    assert_eq!(kilograms.unit, unit::Mass::Kilogram);
-    Ok(())
-}
-```
-
-### 把值传入 `uom`
-
-```rust
-use qubit_measure::{
-    measurement,
-    unit,
-};
-use rust_decimal::Decimal;
+use qubit_measure::{Decimal, measurement, unit};
 use uom::si::length::meter;
 
-let persisted = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
-let length = persisted.to_uom();
-
-assert_eq!(length.get::<meter>(), 0.5);
+let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
+assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 ```
 
-### 按目标单位持久化 `uom` quantity
+适合二进制浮点语义的量纲计算仍可使用 `uom`，然后在持久化边界显式适配结果。
 
-```rust
-use qubit_measure::{
-    measurement,
-    unit,
-};
-use uom::si::f64::Length;
-use uom::si::length::meter;
+## 9. 从 0.2 迁移到 0.3
 
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let length = Length::new::<meter>(0.5);
-    let persisted = measurement::Length::from_uom(length, unit::Length::Centimeter)?;
+| 0.2 | 0.3 |
+| --- | --- |
+| JSON `{value, unit}` | JSON `{quantity, value, unit}` |
+| `convert_to` 经过 `uom/f64` | 使用精确系数的纯 Decimal 换算 |
+| `to_uom` / `from_uom` | `to_uom_approx` / `from_uom_approx` |
+| `Year`、`Gallon`、`Horsepower` 等歧义变体 | 上表列出的带限定词变体 |
+| 歧义短写是规范符号 | 限定后的规范符号；短写仅为宽松别名 |
+| `Unit` 包含 `uom` 方法 | 精确 `Unit` 加可选 `UomUnit` |
+| 单位族仅 crate 内部可定义 | 公开 `define_unit_family!` 并允许手工实现 |
 
-    assert_eq!(persisted.to_string(), "50 cm");
-    Ok(())
-}
-```
+本版本有意破坏 0.2 wire format 和相关 Rust API。
 
-### 使用生产常用单位
+## License
 
-```rust
-use qubit_measure::{
-    measurement,
-    unit,
-};
-use rust_decimal::Decimal;
-use uom::si::pressure::pascal;
-use uom::si::velocity::meter_per_second;
-
-let pressure = measurement::Pressure::new(Decimal::new(2500, 0), unit::Pressure::Millipascal);
-let speed = measurement::Velocity::new(Decimal::new(100, 0), unit::Velocity::CentimeterPerSecond);
-
-assert_eq!(pressure.to_uom().get::<pascal>(), 2.5);
-assert_eq!(speed.to_uom().get::<meter_per_second>(), 1.0);
-```
-
-## API 参考
-
-### 核心类型
-
-| 类型 | 描述 |
-|------|------|
-| `Measurement<U>` | 泛型持久化值和类型化单位 |
-| `Unit` | 支持的 unit family 实现的 trait |
-| `MeasurementError` | 解析、未知单位和 decimal 转换错误 |
-| `measurement::*` | `measurement::Length` 这类类型别名 |
-| `unit::*` | `unit::Length` 这类单位枚举 |
-
-### `Measurement<U>` 操作
-
-| 方法 | 描述 | 错误行为 |
-|------|------|----------|
-| `new(value, unit)` | 创建持久化 measurement | 不失败 |
-| `quantity_name()` | 返回小写 quantity 名称 | 不失败 |
-| `to_uom()` | 转换成类型化 `uom` quantity | 不失败 |
-| `from_uom(quantity, unit)` | 用指定单位持久化 `uom` quantity | 结果 `f64` 不能表示成 `Decimal` 时失败 |
-| `convert_to(target)` | 换算到同 family 的另一个单位 | 同 `from_uom()` |
-| `to_string()` | 格式化为 `<value> <unit>` | 不失败 |
-| `FromStr` | 解析 `<decimal><unit>` 或 `<decimal> <unit>` | decimal 无效或单位不属于该 typed family 时失败 |
-
-### `Unit` 操作
-
-| 方法 | 描述 |
-|------|------|
-| `all()` | 返回该 family 支持的所有单位 |
-| `symbol()` | 返回规范序列化符号 |
-| `to_uom(value)` | 用当前单位中的 decimal 值创建 `uom` quantity |
-| `value_from_uom(quantity)` | 从 `uom` quantity 中按当前单位取出 decimal 值 |
-
-## 已支持的 Quantity Family
-
-电压按 SI 的 electric potential quantity 建模：unit family 使用
-`unit::ElectricPotential`；`measurement::Voltage` 是
-`measurement::ElectricPotential` 的易用别名。
-
-| Measurement 别名 | Unit family | 示例单位 |
-|------------------|-------------|----------|
-| `measurement::Length` | `unit::Length` | `µm`、`mm`、`cm`、`m`、`km`、`in`、`ft`、`mi` |
-| `measurement::Area` | `unit::Area` | `mm²`、`cm²`、`m²`、`km²`、`ha`、`ac`、`ft²` |
-| `measurement::Volume` | `unit::Volume` | `mm³`、`cm³`、`m³`、`µL`、`mL`、`L`、`gal` |
-| `measurement::Mass` | `unit::Mass` | `µg`、`mg`、`g`、`kg`、`t`、`oz`、`lb` |
-| `measurement::Time` | `unit::Time` | `ns`、`µs`、`ms`、`s`、`min`、`h`、`d`、`a` |
-| `measurement::Pressure` | `unit::Pressure` | `nPa`、`µPa`、`mPa`、`Pa`、`hPa`、`kPa`、`MPa`、`bar`、`psi` |
-| `measurement::Energy` | `unit::Energy` | `J`、`kJ`、`MJ`、`W · h`、`kW · h`、`eV`、`cal`、`Btu` |
-| `measurement::Power` | `unit::Power` | `nW`、`µW`、`mW`、`W`、`kW`、`MW`、`hp` |
-| `measurement::Velocity` | `unit::Velocity` | `µm/s`、`mm/s`、`cm/s`、`m/s`、`km/h`、`ft/s`、`kn` |
-| `measurement::Frequency` | `unit::Frequency` | `Hz`、`kHz`、`MHz`、`GHz` |
-| `measurement::MassDensity` | `unit::MassDensity` | `kg/m³`、`g/m³`、`g/cm³`、`lb/ft³`、`lb/gal` |
-| `measurement::Temperature` | `unit::Temperature` | `K`、`°C`、`°F`、`°R` |
-| `measurement::TemperatureInterval` | `unit::TemperatureInterval` | `K`、`°C`、`°F`、`°R` |
-| `measurement::ElectricCurrent` | `unit::ElectricCurrent` | `pA`、`nA`、`µA`、`mA`、`A`、`kA`、`MA` |
-| `measurement::ElectricPotential` / `measurement::Voltage` | `unit::ElectricPotential` | `nV`、`µV`、`mV`、`V`、`kV`、`MV` |
-| `measurement::ElectricCharge` | `unit::ElectricCharge` | `µC`、`mC`、`C`、`kC`、`A · h`、`mA · h` |
-| `measurement::Capacitance` | `unit::Capacitance` | `pF`、`nF`、`µF`、`mF`、`F` |
-| `measurement::ElectricalResistance` | `unit::ElectricalResistance` | `µΩ`、`mΩ`、`Ω`、`kΩ`、`MΩ`、`GΩ` |
-| `measurement::ElectricalConductance` | `unit::ElectricalConductance` | `µS`、`mS`、`S` |
-| `measurement::Inductance` | `unit::Inductance` | `nH`、`µH`、`mH`、`H` |
-| `measurement::Force` | `unit::Force` | `mN`、`N`、`kN`、`MN`、`gf`、`kgf`、`lbf` |
-| `measurement::Acceleration` | `unit::Acceleration` | `mm/s²`、`m/s²`、`ft/s²`、`g₀` |
-| `measurement::Torque` | `unit::Torque` | `mN · m`、`N · m`、`kN · m`、`lbf · ft`、`lbf · in` |
-| `measurement::Angle` | `unit::Angle` | `rad`、`°`、`r`、`′`、`″` |
-| `measurement::AngularVelocity` | `unit::AngularVelocity` | `rad/s`、`°/s`、`rps`、`rpm` |
-| `measurement::VolumeRate` | `unit::VolumeRate` | `m³/s`、`m³/h`、`mL/s`、`L/s`、`L/min`、`gal/min` |
-| `measurement::MassRate` | `unit::MassRate` | `mg/s`、`g/s`、`kg/s`、`kg/h`、`t/h`、`lb/h` |
-| `measurement::DynamicViscosity` | `unit::DynamicViscosity` | `µPa · s`、`mPa · s`、`Pa · s`、`P`、`cP` |
-| `measurement::KinematicViscosity` | `unit::KinematicViscosity` | `mm²/s`、`m²/s`、`St`、`cSt` |
-| `measurement::AmountOfSubstance` | `unit::AmountOfSubstance` | `µmol`、`mmol`、`mol`、`kmol`、`particle` |
-| `measurement::MolarConcentration` | `unit::MolarConcentration` | `nmol/L`、`µmol/L`、`mmol/L`、`mol/L`、`M`、`mol/m³` |
-| `measurement::MassConcentration` | `unit::MassConcentration` | `µg/L`、`mg/L`、`g/L`、`kg/m³`、`mg/dL`、`g/dL` |
-| `measurement::CatalyticActivity` | `unit::CatalyticActivity` | `µkat`、`mkat`、`kat`、`U`、`mU` |
-| `measurement::Radioactivity` | `unit::Radioactivity` | `Bq`、`kBq`、`MBq`、`Ci`、`mCi`、`µCi`、`dpm` |
-| `measurement::ElectricField` | `unit::ElectricField` | `V/m`、`V/cm`、`V/mm`、`V/µm`、`kV/mm`、`MV/m` |
-| `measurement::ElectricCurrentDensity` | `unit::ElectricCurrentDensity` | `A/m²`、`A/cm²`、`A/mm²` |
-| `measurement::ElectricalConductivity` | `unit::ElectricalConductivity` | `S/m`、`S/cm` |
-| `measurement::ElectricalResistivity` | `unit::ElectricalResistivity` | `mΩ · m`、`Ω · m`、`Ω · cm`、`Ω · mm²/m` |
-| `measurement::MagneticFluxDensity` | `unit::MagneticFluxDensity` | `nT`、`µT`、`mT`、`T`、`G` |
-| `measurement::MagneticFlux` | `unit::MagneticFlux` | `µWb`、`mWb`、`Wb`、`Mx` |
-| `measurement::MagneticFieldStrength` | `unit::MagneticFieldStrength` | `A/m`、`A/cm`、`Oe` |
-| `measurement::HeatCapacity` | `unit::HeatCapacity` | `J/K`、`kJ/K`、`J/°C`、`cal/K`、`Btu/°F` |
-| `measurement::SpecificHeatCapacity` | `unit::SpecificHeatCapacity` | `J/(kg · K)`、`kJ/(kg · K)`、`J/(g · °C)`、`cal/(g · K)`、`Btu/(lb · °F)` |
-| `measurement::ThermalConductivity` | `unit::ThermalConductivity` | `mW/(m · K)`、`W/(m · K)`、`kW/(m · K)`、`W/(m · °C)` |
-| `measurement::ThermalResistance` | `unit::ThermalResistance` | `K/mW`、`K/W`、`K/kW` |
-| `measurement::HeatFluxDensity` | `unit::HeatFluxDensity` | `mW/m²`、`W/m²`、`kW/m²`、`W/cm²` |
-| `measurement::SurfaceTension` | `unit::SurfaceTension` | `mN/m`、`N/m`、`dyn/cm`、`J/m²` |
-| `measurement::LuminousIntensity` | `unit::LuminousIntensity` | `mcd`、`cd`、`kcd` |
-| `measurement::Illuminance` | `unit::Illuminance` | `lx`、`klx`、`fc` |
-| `measurement::Luminance` | `unit::Luminance` | `cd/m²`、`cd/cm²`、`cd/ft²`、`fl`、`sb` |
-| `measurement::SolidAngle` | `unit::SolidAngle` | `sr`、`sp`、`°²` |
-| `measurement::Molality` | `unit::Molality` | `mol/kg` |
-| `measurement::MolarMass` | `unit::MolarMass` | `mg/mol`、`g/mol`、`kg/mol` |
-| `measurement::MolarVolume` | `unit::MolarVolume` | `cm³/mol`、`dm³/mol`、`m³/mol` |
-| `measurement::CatalyticActivityConcentration` | `unit::CatalyticActivityConcentration` | `kat/m³`、`U/L`、`mU/mL` |
-| `measurement::SpecificRadioactivity` | `unit::SpecificRadioactivity` | `Bq/kg`、`Ci/kg`、`dpm/kg` |
-
-## 持久化策略
-
-### 应该持久化什么
-
-当用户选择的单位本身有业务含义时，使用 Qubit Measure 持久化：
-
-- 数据库记录；
-- JSON API；
-- 电子表格导入导出；
-- UI 表单值；
-- 规则配置；
-- 审计记录；
-- 来源数据对账。
-
-### 不应该作为物理 measurement 持久化什么
-
-除非概念能映射到固定的 `uom` 物理 quantity，否则业务计数和日历概念应放在本 crate 外部：
-
-- 件、张、箱、卷、批、批号、包装数量；
-- 日历月份或业务周期；
-- 领域专用包装规格。
-
-例如，`month` 不是固定物理时长，因此不是 `unit::Time` 变体。它应由日历或业务周期模型表达。
-
-### 与 `uom` 的关系
-
-计算密集的内部代码直接使用 `uom`。当值跨越运行时边界，且需要保留用户选择或来源数据中的单位时，使用 Qubit Measure。
-本 crate 是 `uom` 的 wrapper，而不是替代性的量纲系统。
-
-## 精度与换算说明
-
-| 方向 | 数值表示 | 说明 |
-|------|----------|------|
-| 持久化值 | `rust_decimal::Decimal` | 适合稳定文本持久化 |
-| `to_uom()` | `f64` `uom` quantity | 不失败，因为 `Decimal` 有限且处在 `f64` 指数范围内 |
-| `from_uom()` | `f64` 到 `Decimal` | NaN、无穷大或无法表示为 `Decimal` 的值会失败 |
-| `convert_to()` | `Decimal -> uom -> Decimal` | 使用 `uom` 作为换算真相源 |
-
-## 测试与代码覆盖率
-
-本项目通过集成测试和本地 CI 脚本覆盖核心行为。
-
-### 运行测试
-
-```bash
-# 运行所有测试
-cargo test --all-features
-
-# 运行集成测试入口
-cargo test --test mod
-
-# 运行风格检查
-./style-check.sh
-
-# 运行覆盖率
-./coverage.sh
-
-# 运行完整本地 CI
-./ci-check.sh
-```
-
-### 覆盖率指标
-
-`./coverage.sh` 会在 `target/llvm-cov/` 下生成覆盖率报告。README 顶部的覆盖率徽章链接到 GitHub Pages 覆盖率报告。
-
-## 依赖项
-
-运行时依赖保持聚焦：
-
-- `uom` 提供类型安全的 SI quantity 系统和单位换算。
-- `rust_decimal` 保存稳定的 decimal 边界值。
-- `serde` 负责序列化 measurement 和单位符号。
-- `thiserror` 定义公开错误类型。
-
-## 许可证
-
-Copyright (c) 2026 Haixing Hu.
-
-根据 Apache 许可证 2.0 版（"许可证"）授权；
-除非遵守许可证，否则您不得使用此文件。
-您可以在以下位置获取许可证副本：
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-除非适用法律要求或书面同意，否则根据许可证分发的软件
-按"原样"分发，不附带任何明示或暗示的担保或条件。
-有关许可证下的特定语言管理权限和限制，请参阅许可证。
-
-完整的许可证文本请参阅 [LICENSE](LICENSE)。
-
-## 贡献
-
-欢迎贡献。提交 Pull Request 前请运行本地检查：
-
-```bash
-./align-ci.sh
-./ci-check.sh
-```
-
-### 开发指南
-
-- 保持 `uom` 作为换算真相源。
-- 新增物理 quantity family 时，按类型化 `Measurement<U>` 别名和 `unit::*` family 添加。
-- unit enum 是非穷尽的。下游 `match` 应保留通配分支；本 crate 后续扩展 unit 时，
-  只需要在对应 `unit::*` 宏调用中追加规范符号和解析别名。
-- 不要把业务计数单位混入物理 measurement family。
-- 为符号、解析、serde 和 `uom` 桥接行为补充聚焦的集成测试。
-
-## 作者
-
-Haixing Hu
-
-## 相关项目
-
-- [`uom`](https://crates.io/crates/uom)：类型安全、零成本的量纲分析库。
-- [`rust_decimal`](https://crates.io/crates/rust_decimal)：用于稳定边界值的 decimal 算术库。
+使用 Apache License 2.0，详见 [LICENSE](LICENSE)。

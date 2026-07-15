@@ -121,43 +121,69 @@ pub use velocity::Velocity;
 pub use volume::Volume;
 pub use volume_rate::VolumeRate;
 
-use crate::measure::MeasurementError;
-use rust_decimal::Decimal;
-use rust_decimal::prelude::{
-    FromPrimitive,
-    ToPrimitive,
-};
+/// Builds a validated Decimal conversion factor for an exported unit macro.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __unit_factor {
+    ($numerator:literal) => {
+        $crate::ConversionFactor::from_integer(
+            $crate::__private::rust_decimal::dec!($numerator),
+        )
+    };
+    ($numerator:literal / $denominator:literal) => {
+        $crate::ConversionFactor::new(
+            $crate::__private::rust_decimal::dec!($numerator),
+            $crate::__private::rust_decimal::dec!($denominator),
+        )
+    };
+}
 
-macro_rules! define_measurement_unit {
+/// Produces an optional Decimal offset for an exported unit macro.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __unit_offset {
+    () => {
+        $crate::Decimal::ZERO
+    };
+    ($offset:literal) => {
+        $crate::__private::rust_decimal::dec!($offset)
+    };
+}
+
+/// Implements the exact unit metadata shared by public macro variants.
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __define_unit_family_core {
     (
         $(#[$enum_attr:meta])*
-        pub enum $unit:ident for $quantity_ty:ty, $quantity_name:literal {
+        $visibility:vis enum $unit:ident for $quantity_name:literal {
             $(
                 $(#[$variant_attr:meta])*
-                $variant:ident => $symbol:literal $(| $alias:literal)*, $uom_unit:ty;
+                $variant:ident => {
+                    symbol: $symbol:literal;
+                    coefficient: $numerator:literal $(/ $denominator:literal)?;
+                    $(offset: $offset:literal;)?
+                    $(aliases: [$($alias:literal),* $(,)?];)?
+                }
             )+
         }
     ) => {
         $(#[$enum_attr])*
         #[non_exhaustive]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-        pub enum $unit {
+        $visibility enum $unit {
             $(
                 $(#[$variant_attr])*
                 $variant,
             )+
         }
 
-        impl crate::measure::Unit for $unit {
-            type Quantity = $quantity_ty;
-
+        impl $crate::Unit for $unit {
             const QUANTITY: &'static str = $quantity_name;
 
             #[inline(always)]
             fn all() -> &'static [Self] {
-                &[
-                    $(Self::$variant,)+
-                ]
+                &[$(Self::$variant,)+]
             }
 
             #[inline(always)]
@@ -168,82 +194,159 @@ macro_rules! define_measurement_unit {
             }
 
             #[inline(always)]
-            fn to_uom(self, value: rust_decimal::Decimal) -> Self::Quantity {
-                let value = super::decimal_to_f64(value);
+            fn aliases(self) -> &'static [&'static str] {
+                match self {
+                    $(Self::$variant => &[$($($alias,)*)?],)+
+                }
+            }
+
+            #[inline]
+            fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
+                match self {
+                    $(
+                        Self::$variant => {
+                            let factor = $crate::__unit_factor!(
+                                $numerator $(/ $denominator)?
+                            )?;
+                            Ok($crate::UnitDefinition::new(
+                                factor,
+                                $crate::__unit_offset!($($offset)?),
+                            ))
+                        }
+                    )+
+                }
+            }
+        }
+
+        impl ::std::fmt::Display for $unit {
+            #[inline]
+            fn fmt(&self, formatter: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
+                formatter.write_str(<Self as $crate::Unit>::symbol(*self))
+            }
+        }
+
+        impl ::std::str::FromStr for $unit {
+            type Err = $crate::MeasurementError;
+
+            #[inline]
+            fn from_str(input: &str) -> Result<Self, Self::Err> {
+                <Self as $crate::Unit>::parse_lenient(input)
+            }
+        }
+
+        impl $crate::__private::serde::Serialize for $unit {
+            #[inline]
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: $crate::__private::serde::Serializer,
+            {
+                serializer.serialize_str(<Self as $crate::Unit>::symbol(*self))
+            }
+        }
+
+        impl<'de> $crate::__private::serde::Deserialize<'de> for $unit {
+            #[inline]
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: $crate::__private::serde::Deserializer<'de>,
+            {
+                let symbol = <::std::string::String as
+                    $crate::__private::serde::Deserialize>::deserialize(deserializer)?;
+                <Self as ::std::str::FromStr>::from_str(&symbol)
+                    .map_err($crate::__private::serde::de::Error::custom)
+            }
+        }
+    };
+}
+
+/// Defines an externally extensible unit family with exact Decimal factors.
+///
+/// The generated type implements [`Unit`](crate::Unit), display, lenient
+/// `FromStr`, and canonical string Serde. Supplying `uom = Quantity` plus a
+/// `uom` type for every variant also implements the optional approximate
+/// [`UomUnit`](crate::UomUnit) bridge.
+#[macro_export]
+macro_rules! define_unit_family {
+    (
+        $(#[$enum_attr:meta])*
+        $visibility:vis enum $unit:ident for $quantity_name:literal, uom = $quantity_ty:ty {
+            $(
+                $(#[$variant_attr:meta])*
+                $variant:ident => {
+                    symbol: $symbol:literal;
+                    coefficient: $numerator:literal $(/ $denominator:literal)?;
+                    $(offset: $offset:literal;)?
+                    $(aliases: [$($alias:literal),* $(,)?];)?
+                    uom: $uom_unit:ty;
+                }
+            )+
+        }
+    ) => {
+        $crate::__define_unit_family_core! {
+            $(#[$enum_attr])*
+            $visibility enum $unit for $quantity_name {
+                $(
+                    $(#[$variant_attr])*
+                    $variant => {
+                        symbol: $symbol;
+                        coefficient: $numerator $(/ $denominator)?;
+                        $(offset: $offset;)?
+                        $(aliases: [$($alias),*];)?
+                    }
+                )+
+            }
+        }
+
+        impl $crate::UomUnit for $unit {
+            type Quantity = $quantity_ty;
+
+            #[inline(always)]
+            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
+                let value = $crate::__private::decimal_to_f64_approx(value);
                 match self {
                     $(Self::$variant => <$quantity_ty>::new::<$uom_unit>(value),)+
                 }
             }
 
             #[inline(always)]
-            fn value_from_uom(self, quantity: Self::Quantity) -> Result<rust_decimal::Decimal, crate::measure::MeasurementError> {
+            fn value_from_uom_approx(
+                self,
+                quantity: Self::Quantity,
+            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
                 let value = match self {
                     $(Self::$variant => quantity.get::<$uom_unit>(),)+
                 };
-                super::decimal_from_f64(value)
-            }
-        }
-
-        impl std::fmt::Display for $unit {
-            #[inline]
-            fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-                formatter.write_str(crate::measure::Unit::symbol(*self))
-            }
-        }
-
-        impl std::str::FromStr for $unit {
-            type Err = crate::measure::MeasurementError;
-
-            #[inline]
-            fn from_str(input: &str) -> Result<Self, Self::Err> {
-                match input.trim() {
-                    $($symbol $(| $alias)* => Ok(Self::$variant),)+
-                    unit => Err(crate::measure::MeasurementError::UnknownUnit {
-                        quantity: <Self as crate::measure::Unit>::QUANTITY.to_owned(),
-                        unit: unit.to_owned(),
-                    }),
-                }
-            }
-        }
-
-        impl serde::Serialize for $unit {
-            #[inline]
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-            where
-                S: serde::Serializer,
-            {
-                serializer.serialize_str(crate::measure::Unit::symbol(*self))
-            }
-        }
-
-        impl<'de> serde::Deserialize<'de> for $unit {
-            #[inline]
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-            where
-                D: serde::Deserializer<'de>,
-            {
-                let symbol = String::deserialize(deserializer)?;
-                <Self as std::str::FromStr>::from_str(&symbol).map_err(serde::de::Error::custom)
+                $crate::__private::decimal_from_f64_approx(value)
             }
         }
     };
-}
-
-pub(super) use define_measurement_unit;
-
-/// Converts a decimal value into a finite `f64` for `uom`.
-#[inline(always)]
-fn decimal_to_f64(value: Decimal) -> f64 {
-    value.to_f64().expect(
-        "rust_decimal::Decimal is finite and within the f64 exponent range",
-    )
-}
-
-/// Converts a finite `f64` value from `uom` into `Decimal`.
-#[inline(always)]
-fn decimal_from_f64(value: f64) -> Result<Decimal, MeasurementError> {
-    match Decimal::from_f64(value) {
-        Some(value) => Ok(value),
-        None => Err(MeasurementError::DecimalConversion(value.to_string())),
-    }
+    (
+        $(#[$enum_attr:meta])*
+        $visibility:vis enum $unit:ident for $quantity_name:literal {
+            $(
+                $(#[$variant_attr:meta])*
+                $variant:ident => {
+                    symbol: $symbol:literal;
+                    coefficient: $numerator:literal $(/ $denominator:literal)?;
+                    $(offset: $offset:literal;)?
+                    $(aliases: [$($alias:literal),* $(,)?];)?
+                }
+            )+
+        }
+    ) => {
+        $crate::__define_unit_family_core! {
+            $(#[$enum_attr])*
+            $visibility enum $unit for $quantity_name {
+                $(
+                    $(#[$variant_attr])*
+                    $variant => {
+                        symbol: $symbol;
+                        coefficient: $numerator $(/ $denominator)?;
+                        $(offset: $offset;)?
+                        $(aliases: [$($alias),*];)?
+                    }
+                )+
+            }
+        }
+    };
 }

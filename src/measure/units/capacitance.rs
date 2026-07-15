@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted capacitance measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::capacitance::{
     farad,
     microfarad,
@@ -17,18 +17,18 @@ use uom::si::capacitance::{
 };
 use uom::si::f64::Capacitance as UomCapacitance;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` capacitance quantities.
-    pub enum Capacitance for UomCapacitance, "capacitance" {
+    pub enum Capacitance for "capacitance", uom = UomCapacitance {
         /// Picofarad (`pF`).
-        Picofarad => "pF", picofarad;
+        Picofarad => { symbol: "pF"; coefficient: 1 / 1000000000000; uom: picofarad; }
         /// Nanofarad (`nF`).
-        Nanofarad => "nF", nanofarad;
+        Nanofarad => { symbol: "nF"; coefficient: 1 / 1000000000; uom: nanofarad; }
         /// Microfarad (`µF`).
-        Microfarad => "µF" | "uF" | "μF", microfarad;
+        Microfarad => { symbol: "µF"; coefficient: 1 / 1000000; aliases: ["uF", "μF"]; uom: microfarad; }
         /// Millifarad (`mF`).
-        Millifarad => "mF", millifarad;
+        Millifarad => { symbol: "mF"; coefficient: 1 / 1000; uom: millifarad; }
         /// Farad (`F`).
-        Farad => "F", farad;
+        Farad => { symbol: "F"; coefficient: 1; uom: farad; }
     }
 }

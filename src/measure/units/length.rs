@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted length measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Length as UomLength;
 use uom::si::length::{
     centimeter,
@@ -22,28 +22,28 @@ use uom::si::length::{
     yard,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` length quantities.
-    pub enum Length for UomLength, "length" {
+    pub enum Length for "length", uom = UomLength {
         /// Nanometer (`nm`).
-        Nanometer => "nm", nanometer;
+        Nanometer => { symbol: "nm"; coefficient: 1 / 1000000000; uom: nanometer; }
         /// Micrometer (`µm`).
-        Micrometer => "µm" | "um" | "μm", micrometer;
+        Micrometer => { symbol: "µm"; coefficient: 1 / 1000000; aliases: ["um", "μm"]; uom: micrometer; }
         /// Millimeter (`mm`).
-        Millimeter => "mm", millimeter;
+        Millimeter => { symbol: "mm"; coefficient: 1 / 1000; uom: millimeter; }
         /// Centimeter (`cm`).
-        Centimeter => "cm", centimeter;
+        Centimeter => { symbol: "cm"; coefficient: 1 / 100; uom: centimeter; }
         /// Meter (`m`).
-        Meter => "m", meter;
+        Meter => { symbol: "m"; coefficient: 1; uom: meter; }
         /// Kilometer (`km`).
-        Kilometer => "km", kilometer;
+        Kilometer => { symbol: "km"; coefficient: 1000; uom: kilometer; }
         /// Inch (`in`).
-        Inch => "in", inch;
+        Inch => { symbol: "in"; coefficient: 127 / 5000; uom: inch; }
         /// Foot (`ft`).
-        Foot => "ft", foot;
+        Foot => { symbol: "ft"; coefficient: 381 / 1250; uom: foot; }
         /// Yard (`yd`).
-        Yard => "yd", yard;
+        Yard => { symbol: "yd"; coefficient: 1143 / 1250; uom: yard; }
         /// Mile (`mi`).
-        Mile => "mi", mile;
+        Mile => { symbol: "mi"; coefficient: 201168 / 125; uom: mile; }
     }
 }

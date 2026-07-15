@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted energy measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::energy::{
     btu,
     calorie,
@@ -21,26 +21,26 @@ use uom::si::energy::{
 };
 use uom::si::f64::Energy as UomEnergy;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` energy quantities.
-    pub enum Energy for UomEnergy, "energy" {
+    pub enum Energy for "energy", uom = UomEnergy {
         /// Joule (`J`).
-        Joule => "J", joule;
+        Joule => { symbol: "J"; coefficient: 1; uom: joule; }
         /// Kilojoule (`kJ`).
-        Kilojoule => "kJ", kilojoule;
+        Kilojoule => { symbol: "kJ"; coefficient: 1000; uom: kilojoule; }
         /// Megajoule (`MJ`).
-        Megajoule => "MJ", megajoule;
+        Megajoule => { symbol: "MJ"; coefficient: 1000000; uom: megajoule; }
         /// Watt hour (`W · h`).
-        WattHour => "W · h" | "Wh", watt_hour;
+        WattHour => { symbol: "W · h"; coefficient: 3600; aliases: ["Wh"]; uom: watt_hour; }
         /// Kilowatt hour (`kW · h`).
-        KilowattHour => "kW · h" | "kWh", kilowatt_hour;
+        KilowattHour => { symbol: "kW · h"; coefficient: 3600000; aliases: ["kWh"]; uom: kilowatt_hour; }
         /// Electronvolt (`eV`).
-        Electronvolt => "eV", electronvolt;
+        Electronvolt => { symbol: "eV"; coefficient: 801088317 / 5000000000000000000000000000; uom: electronvolt; }
         /// Calorie (`cal`).
-        Calorie => "cal", calorie;
+        ThermochemicalCalorie => { symbol: "cal (th)"; coefficient: 523 / 125; aliases: ["cal"]; uom: calorie; }
         /// Kilocalorie (`kcal`).
-        Kilocalorie => "kcal", kilocalorie;
+        ThermochemicalKilocalorie => { symbol: "kcal (th)"; coefficient: 4184; aliases: ["kcal"]; uom: kilocalorie; }
         /// British thermal unit (`Btu`).
-        BritishThermalUnit => "Btu", btu;
+        BritishThermalUnitInternationalTable => { symbol: "Btu (IT)"; coefficient: 131882 / 125; aliases: ["Btu", "BTU"]; uom: btu; }
     }
 }
