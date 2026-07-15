@@ -10,11 +10,14 @@ use std::fmt;
 use std::str::FromStr;
 
 use qubit_measure::{
+    Measurement,
     MeasurementError,
     Unit,
     UnitDefinition,
     define_unit_family,
 };
+use rust_decimal::dec;
+use serde_json::json;
 
 define_unit_family! {
     pub enum CustomLength for "custom_length" {
@@ -26,6 +29,20 @@ define_unit_family! {
             symbol: "hcu";
             coefficient: 1 / 2;
             aliases: ["half-cu"];
+        }
+    }
+}
+
+define_unit_family! {
+    enum CanonicalPriorityUnit for "canonical_priority" {
+        AliasOwner => {
+            symbol: "alias-owner";
+            coefficient: 1;
+            aliases: ["canonical"];
+        }
+        CanonicalOwner => {
+            symbol: "canonical";
+            coefficient: 2;
         }
     }
 }
@@ -91,5 +108,33 @@ fn test_unit_trait_supports_manual_external_implementations() {
             .definition()
             .expect("manual definition should be valid"),
         UnitDefinition::base(),
+    );
+}
+
+#[test]
+fn test_measurement_serde_uses_manual_unit_contract() {
+    let measurement = Measurement::new(dec!(1.25), ManualUnit::Base);
+
+    assert_eq!(
+        serde_json::to_value(measurement)
+            .expect("manual-unit measurement should serialize"),
+        json!({"quantity": "manual", "value": "1.25", "unit": "manual"}),
+    );
+
+    let deserialized: Measurement<ManualUnit> = serde_json::from_value(json!({
+        "quantity": "manual",
+        "value": "1.25",
+        "unit": "mnl",
+    }))
+    .expect("manual-unit measurement alias should deserialize");
+    assert_eq!(deserialized, measurement);
+}
+
+#[test]
+fn test_lenient_parsing_prefers_canonical_symbol_over_earlier_alias() {
+    assert_eq!(
+        CanonicalPriorityUnit::parse_lenient("canonical")
+            .expect("canonical symbol should parse"),
+        CanonicalPriorityUnit::CanonicalOwner,
     );
 }

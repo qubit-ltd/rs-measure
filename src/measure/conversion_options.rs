@@ -7,7 +7,6 @@
 // =============================================================================
 //! Decimal conversion precision and rounding configuration.
 
-use parking_lot::Mutex;
 use rust_decimal::{
     Decimal,
     RoundingStrategy,
@@ -23,7 +22,9 @@ pub struct ConversionOptions {
 }
 
 impl ConversionOptions {
-    /// The initial process-wide conversion options.
+    /// The deterministic options used by [`Measurement::convert_to`].
+    ///
+    /// [`Measurement::convert_to`]: crate::Measurement::convert_to
     pub const DEFAULT: Self = Self {
         scale: None,
         rounding: RoundingStrategy::MidpointNearestEven,
@@ -92,24 +93,4 @@ impl Default for ConversionOptions {
     fn default() -> Self {
         Self::DEFAULT
     }
-}
-
-static DEFAULT_CONVERSION_OPTIONS: Mutex<ConversionOptions> =
-    Mutex::new(ConversionOptions::DEFAULT);
-
-/// Returns a snapshot of the process-wide default conversion options.
-///
-/// The mutex is held only while copying the current value.
-#[must_use]
-pub fn default_conversion_options() -> ConversionOptions {
-    *DEFAULT_CONVERSION_OPTIONS.lock()
-}
-
-/// Atomically replaces the process-wide default conversion options.
-///
-/// Returns the previous value so callers can restore it after a scoped change.
-pub fn set_default_conversion_options(
-    options: ConversionOptions,
-) -> ConversionOptions {
-    std::mem::replace(&mut *DEFAULT_CONVERSION_OPTIONS.lock(), options)
 }

@@ -76,18 +76,26 @@ pub trait Unit:
 
     /// Parses canonical symbols and documented aliases.
     ///
+    /// Canonical symbols are searched first, so they win over an earlier
+    /// unit variant that declares the same text as an alias.
+    ///
     /// # Errors
     ///
     /// Returns [`MeasurementError::UnknownUnit`] if the trimmed input is not
     /// recognized by this unit family.
     fn parse_lenient(input: &str) -> Result<Self, MeasurementError> {
         let input = input.trim();
+        if let Some(unit) = Self::all()
+            .iter()
+            .copied()
+            .find(|unit| unit.symbol() == input)
+        {
+            return Ok(unit);
+        }
         Self::all()
             .iter()
             .copied()
-            .find(|unit| {
-                unit.symbol() == input || unit.aliases().contains(&input)
-            })
+            .find(|unit| unit.aliases().contains(&input))
             .ok_or_else(|| MeasurementError::UnknownUnit {
                 quantity: Self::QUANTITY.to_owned(),
                 unit: input.to_owned(),

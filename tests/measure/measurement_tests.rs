@@ -242,6 +242,21 @@ fn test_measurement_convert_to_keeps_same_unit() {
 }
 
 #[test]
+fn test_measurement_convert_to_uses_immutable_default_options() {
+    let measurement =
+        measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+
+    let implicit = measurement
+        .convert_to(unit::Length::Foot)
+        .expect("default conversion should succeed");
+    let explicit = measurement
+        .convert_to_with_options(unit::Length::Foot, ConversionOptions::DEFAULT)
+        .expect("explicit default conversion should succeed");
+
+    assert_eq!(implicit, explicit);
+}
+
+#[test]
 fn test_measurement_convert_to_converts_length_area_volume_and_time_units() {
     let millimeters = measurement::Length::new(
         Decimal::new(1000, 0),
@@ -294,6 +309,37 @@ fn test_measurement_convert_to_converts_length_area_volume_and_time_units() {
             .expect("minute should convert to second"),
         measurement::Time::new(Decimal::new(120, 0), unit::Time::Second),
     );
+}
+
+#[test]
+fn test_angle_conversion_constants_preserve_full_revolution_identity() {
+    let degrees = measurement::Angle::new(dec!(360), unit::Angle::Degree);
+
+    let revolution = degrees
+        .convert_to_with_options(
+            unit::Angle::Revolution,
+            ConversionOptions::default(),
+        )
+        .expect("degrees should convert to revolutions");
+
+    assert_eq!(revolution.value, Decimal::ONE);
+}
+
+#[test]
+fn test_angular_velocity_constants_preserve_minute_second_identity() {
+    let revolutions_per_minute = measurement::AngularVelocity::new(
+        dec!(60),
+        unit::AngularVelocity::RevolutionPerMinute,
+    );
+
+    let revolutions_per_second = revolutions_per_minute
+        .convert_to_with_options(
+            unit::AngularVelocity::RevolutionPerSecond,
+            ConversionOptions::default(),
+        )
+        .expect("revolutions per minute should convert per second");
+
+    assert_eq!(revolutions_per_second.value, Decimal::ONE);
 }
 
 #[test]

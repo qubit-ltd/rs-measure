@@ -18,11 +18,7 @@ mod units;
 mod uom_unit;
 
 pub use conversion_factor::ConversionFactor;
-pub use conversion_options::{
-    ConversionOptions,
-    default_conversion_options,
-    set_default_conversion_options,
-};
+pub use conversion_options::ConversionOptions;
 pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
 pub use unit::Unit;

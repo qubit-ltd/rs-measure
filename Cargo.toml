@@ -26,7 +26,6 @@ include = [
 name = "qubit_measure"
 
 [dependencies]
-parking_lot = "0.12"
 rust_decimal = { version = "1.39", features = ["macros", "serde-with-str"] }
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"

@@ -30,8 +30,6 @@ pub use measure::{
     Unit,
     UnitDefinition,
     UomUnit,
-    default_conversion_options,
-    set_default_conversion_options,
 };
 pub use rust_decimal::{
     Decimal,

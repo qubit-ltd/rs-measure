@@ -12,7 +12,6 @@ use crate::measure::{
     MeasurementError,
     Unit,
     UomUnit,
-    default_conversion_options,
 };
 use rust_decimal::Decimal;
 use serde::ser::SerializeStruct;
@@ -31,6 +30,8 @@ use std::str::FromStr;
 /// stores the unit family member alongside it. Calculations can cross into
 /// `uom` with [`Measurement::to_uom_approx`], while persistence keeps the
 /// original user-facing unit instead of only the normalized base-unit value.
+/// Its Serde contract encodes units through [`Unit::symbol`] and decodes them
+/// through [`Unit::parse_lenient`], without requiring unit-specific Serde.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Measurement<U>
 where
@@ -59,14 +60,14 @@ where
         U::QUANTITY
     }
 
-    /// Converts this measurement using the process-wide Decimal options.
+    /// Converts this measurement using [`ConversionOptions::DEFAULT`].
     ///
     /// # Errors
     ///
     /// Returns unit-definition or Decimal arithmetic errors from the exact
     /// conversion engine.
     pub fn convert_to(self, target: U) -> Result<Self, MeasurementError> {
-        self.convert_to_with_options(target, default_conversion_options())
+        self.convert_to_with_options(target, ConversionOptions::DEFAULT)
     }
 
     /// Converts this measurement using explicit Decimal options.
@@ -132,7 +133,7 @@ where
 
 impl<U> Serialize for Measurement<U>
 where
-    U: Unit + Serialize,
+    U: Unit,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -141,29 +142,32 @@ where
         let mut state = serializer.serialize_struct("Measurement", 3)?;
         state.serialize_field("quantity", U::QUANTITY)?;
         state.serialize_field("value", &self.value.to_string())?;
-        state.serialize_field("unit", &self.unit)?;
+        state.serialize_field("unit", self.unit.symbol())?;
         state.end()
     }
 }
 
+/// String-based persistence representation owned by [`Measurement`].
 #[derive(Deserialize)]
-#[serde(bound(deserialize = "U: Deserialize<'de>"))]
-struct MeasurementWire<U> {
+struct MeasurementWire {
+    /// Stable quantity identifier used to reject cross-quantity data.
     quantity: String,
+    /// Exact decimal value encoded as a string.
     #[serde(with = "rust_decimal::serde::str")]
     value: Decimal,
-    unit: U,
+    /// Canonical unit symbol or a documented input alias.
+    unit: String,
 }
 
 impl<'de, U> Deserialize<'de> for Measurement<U>
 where
-    U: Unit + Deserialize<'de>,
+    U: Unit,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
-        let wire = MeasurementWire::<U>::deserialize(deserializer)?;
+        let wire = MeasurementWire::deserialize(deserializer)?;
         if wire.quantity != U::QUANTITY {
             return Err(serde::de::Error::custom(
                 MeasurementError::QuantityMismatch {
@@ -172,7 +176,9 @@ where
                 },
             ));
         }
-        Ok(Self::new(wire.value, wire.unit))
+        let unit =
+            U::parse_lenient(&wire.unit).map_err(serde::de::Error::custom)?;
+        Ok(Self::new(wire.value, unit))
     }
 }
 
