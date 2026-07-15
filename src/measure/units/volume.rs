@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted volume measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Volume as UomVolume;
 use uom::si::volume::{
     cubic_centimeter,
@@ -26,36 +26,36 @@ use uom::si::volume::{
     quart_liquid,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` volume quantities.
-    pub enum Volume for UomVolume, "volume" {
+    pub enum Volume for "volume", uom = UomVolume {
         /// Cubic millimeter (`mm³`).
-        CubicMillimeter => "mm³" | "mm3" | "mm^3", cubic_millimeter;
+        CubicMillimeter => { symbol: "mm³"; coefficient: 1 / 1000000000; aliases: ["mm3", "mm^3"]; uom: cubic_millimeter; }
         /// Cubic centimeter (`cm³`).
-        CubicCentimeter => "cm³" | "cm3" | "cm^3", cubic_centimeter;
+        CubicCentimeter => { symbol: "cm³"; coefficient: 1 / 1000000; aliases: ["cm3", "cm^3"]; uom: cubic_centimeter; }
         /// Cubic meter (`m³`).
-        CubicMeter => "m³" | "m3" | "m^3", cubic_meter;
+        CubicMeter => { symbol: "m³"; coefficient: 1; aliases: ["m3", "m^3"]; uom: cubic_meter; }
         /// Microliter (`µL`).
-        Microliter => "µL" | "uL" | "μL", microliter;
+        Microliter => { symbol: "µL"; coefficient: 1 / 1000000000; aliases: ["uL", "μL"]; uom: microliter; }
         /// Milliliter (`mL`).
-        Milliliter => "mL", milliliter;
+        Milliliter => { symbol: "mL"; coefficient: 1 / 1000000; uom: milliliter; }
         /// Liter (`L`).
-        Liter => "L", liter;
+        Liter => { symbol: "L"; coefficient: 1 / 1000; uom: liter; }
         /// Cubic inch (`in³`).
-        CubicInch => "in³" | "in3" | "in^3", cubic_inch;
+        CubicInch => { symbol: "in³"; coefficient: 2048383 / 125000000000; aliases: ["in3", "in^3"]; uom: cubic_inch; }
         /// Cubic foot (`ft³`).
-        CubicFoot => "ft³" | "ft3" | "ft^3", cubic_foot;
+        CubicFoot => { symbol: "ft³"; coefficient: 55306341 / 1953125000; aliases: ["ft3", "ft^3"]; uom: cubic_foot; }
         /// Cubic yard (`yd³`).
-        CubicYard => "yd³" | "yd3" | "yd^3", cubic_yard;
+        CubicYard => { symbol: "yd³"; coefficient: 1493271207 / 1953125000; aliases: ["yd3", "yd^3"]; uom: cubic_yard; }
         /// US fluid ounce (`fl oz`).
-        FluidOunce => "fl oz", fluid_ounce;
+        UsFluidOunce => { symbol: "fl oz (US)"; coefficient: 473176473 / 16000000000000; aliases: ["fl oz"]; uom: fluid_ounce; }
         /// US cup (`cup`).
-        Cup => "cup", cup;
+        UsCustomaryCup => { symbol: "cup (US customary)"; coefficient: 473176473 / 2000000000000; aliases: ["cup"]; uom: cup; }
         /// US liquid pint (`liq pt`).
-        PintLiquid => "liq pt", pint_liquid;
+        UsLiquidPint => { symbol: "pt (US liq)"; coefficient: 473176473 / 1000000000000; aliases: ["liq pt"]; uom: pint_liquid; }
         /// US liquid quart (`liq qt`).
-        QuartLiquid => "liq qt", quart_liquid;
+        UsLiquidQuart => { symbol: "qt (US liq)"; coefficient: 473176473 / 500000000000; aliases: ["liq qt"]; uom: quart_liquid; }
         /// Gallon (`gal`).
-        Gallon => "gal", gallon;
+        UsLiquidGallon => { symbol: "gal (US)"; coefficient: 473176473 / 125000000000; aliases: ["gal"]; uom: gallon; }
     }
 }

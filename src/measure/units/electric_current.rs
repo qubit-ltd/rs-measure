@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted electric current measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electric_current::{
     ampere,
     kiloampere,
@@ -19,22 +19,22 @@ use uom::si::electric_current::{
 };
 use uom::si::f64::ElectricCurrent as UomElectricCurrent;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electric current quantities.
-    pub enum ElectricCurrent for UomElectricCurrent, "electric current" {
+    pub enum ElectricCurrent for "electric_current", uom = UomElectricCurrent {
         /// Picoampere (`pA`).
-        Picoampere => "pA", picoampere;
+        Picoampere => { symbol: "pA"; coefficient: 1 / 1000000000000; uom: picoampere; }
         /// Nanoampere (`nA`).
-        Nanoampere => "nA", nanoampere;
+        Nanoampere => { symbol: "nA"; coefficient: 1 / 1000000000; uom: nanoampere; }
         /// Microampere (`µA`).
-        Microampere => "µA" | "uA" | "μA", microampere;
+        Microampere => { symbol: "µA"; coefficient: 1 / 1000000; aliases: ["uA", "μA"]; uom: microampere; }
         /// Milliampere (`mA`).
-        Milliampere => "mA", milliampere;
+        Milliampere => { symbol: "mA"; coefficient: 1 / 1000; uom: milliampere; }
         /// Ampere (`A`).
-        Ampere => "A", ampere;
+        Ampere => { symbol: "A"; coefficient: 1; uom: ampere; }
         /// Kiloampere (`kA`).
-        Kiloampere => "kA", kiloampere;
+        Kiloampere => { symbol: "kA"; coefficient: 1000; uom: kiloampere; }
         /// Megaampere (`MA`).
-        Megaampere => "MA", megaampere;
+        Megaampere => { symbol: "MA"; coefficient: 1000000; uom: megaampere; }
     }
 }

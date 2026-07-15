@@ -12,12 +12,25 @@
 #![deny(missing_docs)]
 #![deny(unsafe_op_in_unsafe_fn)]
 
+#[doc(hidden)]
+#[path = "private.rs"]
+pub mod __private;
 mod measure;
 pub mod measurement;
 pub mod unit;
 
 pub use measure::{
+    ConversionFactor,
+    ConversionOptions,
     Measurement,
     MeasurementError,
     Unit,
+    UnitDefinition,
+    UomUnit,
+    default_conversion_options,
+    set_default_conversion_options,
+};
+pub use rust_decimal::{
+    Decimal,
+    RoundingStrategy,
 };

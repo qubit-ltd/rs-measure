@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted catalytic activity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::catalytic_activity::{
     enzyme_unit,
     katal,
@@ -17,18 +17,18 @@ use uom::si::catalytic_activity::{
 };
 use uom::si::f64::CatalyticActivity as UomCatalyticActivity;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` catalytic activity quantities.
-    pub enum CatalyticActivity for UomCatalyticActivity, "catalytic activity" {
+    pub enum CatalyticActivity for "catalytic_activity", uom = UomCatalyticActivity {
         /// Microkatal (`µkat`).
-        Microkatal => "µkat" | "ukat" | "μkat", microkatal;
+        Microkatal => { symbol: "µkat"; coefficient: 1 / 1000000; aliases: ["ukat", "μkat"]; uom: microkatal; }
         /// Millikatal (`mkat`).
-        Millikatal => "mkat", millikatal;
+        Millikatal => { symbol: "mkat"; coefficient: 1 / 1000; uom: millikatal; }
         /// Katal (`kat`).
-        Katal => "kat", katal;
+        Katal => { symbol: "kat"; coefficient: 1; uom: katal; }
         /// Enzyme unit (`U`).
-        EnzymeUnit => "U", enzyme_unit;
+        EnzymeUnit => { symbol: "U"; coefficient: 1 / 60000000; uom: enzyme_unit; }
         /// Milli enzyme unit (`mU`).
-        MilliEnzymeUnit => "mU", milli_enzyme_unit;
+        MilliEnzymeUnit => { symbol: "mU"; coefficient: 1 / 60000000000; uom: milli_enzyme_unit; }
     }
 }

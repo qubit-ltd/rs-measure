@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted molar volume measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MolarVolume as UomMolarVolume;
 use uom::si::molar_volume::{
     cubic_centimeter_per_mole,
@@ -15,14 +15,14 @@ use uom::si::molar_volume::{
     cubic_meter_per_mole,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` molar volume quantities.
-    pub enum MolarVolume for UomMolarVolume, "molar volume" {
+    pub enum MolarVolume for "molar_volume", uom = UomMolarVolume {
         /// Cubic centimeter per mole (`cm³/mol`).
-        CubicCentimeterPerMole => "cm³/mol" | "cm3/mol" | "cm^3/mol", cubic_centimeter_per_mole;
+        CubicCentimeterPerMole => { symbol: "cm³/mol"; coefficient: 1 / 1000000; aliases: ["cm3/mol", "cm^3/mol"]; uom: cubic_centimeter_per_mole; }
         /// Cubic decimeter per mole (`dm³/mol`).
-        CubicDecimeterPerMole => "dm³/mol" | "dm3/mol" | "dm^3/mol", cubic_decimeter_per_mole;
+        CubicDecimeterPerMole => { symbol: "dm³/mol"; coefficient: 1 / 1000; aliases: ["dm3/mol", "dm^3/mol"]; uom: cubic_decimeter_per_mole; }
         /// Cubic meter per mole (`m³/mol`).
-        CubicMeterPerMole => "m³/mol" | "m3/mol" | "m^3/mol", cubic_meter_per_mole;
+        CubicMeterPerMole => { symbol: "m³/mol"; coefficient: 1; aliases: ["m3/mol", "m^3/mol"]; uom: cubic_meter_per_mole; }
     }
 }

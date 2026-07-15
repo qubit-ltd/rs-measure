@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted luminous intensity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::LuminousIntensity as UomLuminousIntensity;
 use uom::si::luminous_intensity::{
     candela,
@@ -15,14 +15,14 @@ use uom::si::luminous_intensity::{
     millicandela,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` luminous intensity quantities.
-    pub enum LuminousIntensity for UomLuminousIntensity, "luminous intensity" {
+    pub enum LuminousIntensity for "luminous_intensity", uom = UomLuminousIntensity {
         /// Millicandela (`mcd`).
-        Millicandela => "mcd", millicandela;
+        Millicandela => { symbol: "mcd"; coefficient: 1 / 1000; uom: millicandela; }
         /// Candela (`cd`).
-        Candela => "cd", candela;
+        Candela => { symbol: "cd"; coefficient: 1; uom: candela; }
         /// Kilocandela (`kcd`).
-        Kilocandela => "kcd", kilocandela;
+        Kilocandela => { symbol: "kcd"; coefficient: 1000; uom: kilocandela; }
     }
 }

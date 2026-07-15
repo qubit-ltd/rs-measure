@@ -7,42 +7,90 @@
 // =============================================================================
 //! Traits shared by persisted measurement units.
 
-use crate::measure::MeasurementError;
-use rust_decimal::Decimal;
 use std::fmt;
 use std::str::FromStr;
 
-/// A persisted unit marker for one concrete `uom` quantity.
-///
-/// Implementations bridge stable serialized unit symbols, decimal persistence
-/// values, and the strongly typed `uom` quantity used for calculation.
+use crate::measure::{
+    MeasurementError,
+    UnitDefinition,
+};
+
+/// Exact metadata and Decimal conversion definition for one unit family.
 pub trait Unit:
     Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static
 {
-    /// The `uom` quantity type represented by this unit family.
-    type Quantity: Copy;
-
-    /// Stable lower-case quantity name used in diagnostics.
+    /// Stable lower-case quantity identifier used in persistence and errors.
     const QUANTITY: &'static str;
 
-    /// Returns all unit variants supported by this crate version.
+    /// Returns all unit variants supported by this family.
     #[must_use]
     fn all() -> &'static [Self];
 
-    /// Returns the stable symbol used when serializing this unit.
+    /// Returns the canonical symbol used for display and serialization.
     #[must_use]
     fn symbol(self) -> &'static str;
 
-    /// Creates a `uom` quantity from a decimal value expressed in this unit.
+    /// Returns accepted non-canonical aliases for lenient parsing.
     #[must_use]
-    fn to_uom(self, value: Decimal) -> Self::Quantity;
+    fn aliases(self) -> &'static [&'static str];
 
-    /// Extracts a decimal value from a `uom` quantity in this unit.
+    /// Returns this unit's exact Decimal definition relative to its base unit.
     ///
-    /// Returns [`MeasurementError::DecimalConversion`] when the `uom` value
-    /// cannot be represented as [`Decimal`].
-    fn value_from_uom(
-        self,
-        quantity: Self::Quantity,
-    ) -> Result<Decimal, MeasurementError>;
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when a manually
+    /// implemented external unit cannot provide a valid definition.
+    fn definition(self) -> Result<UnitDefinition, MeasurementError>;
+
+    /// Parses only canonical unit symbols.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::NonCanonicalUnit`] for a recognized alias,
+    /// or [`MeasurementError::UnknownUnit`] for an unrecognized symbol.
+    fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
+        let input = input.trim();
+        if let Some(unit) = Self::all()
+            .iter()
+            .copied()
+            .find(|unit| unit.symbol() == input)
+        {
+            return Ok(unit);
+        }
+        if let Some(unit) = Self::all()
+            .iter()
+            .copied()
+            .find(|unit| unit.aliases().contains(&input))
+        {
+            return Err(MeasurementError::NonCanonicalUnit {
+                quantity: Self::QUANTITY.to_owned(),
+                unit: input.to_owned(),
+                canonical: unit.symbol().to_owned(),
+            });
+        }
+        Err(MeasurementError::UnknownUnit {
+            quantity: Self::QUANTITY.to_owned(),
+            unit: input.to_owned(),
+        })
+    }
+
+    /// Parses canonical symbols and documented aliases.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::UnknownUnit`] if the trimmed input is not
+    /// recognized by this unit family.
+    fn parse_lenient(input: &str) -> Result<Self, MeasurementError> {
+        let input = input.trim();
+        Self::all()
+            .iter()
+            .copied()
+            .find(|unit| {
+                unit.symbol() == input || unit.aliases().contains(&input)
+            })
+            .ok_or_else(|| MeasurementError::UnknownUnit {
+                quantity: Self::QUANTITY.to_owned(),
+                unit: input.to_owned(),
+            })
+    }
 }

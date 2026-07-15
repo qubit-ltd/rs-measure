@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted solid angle measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::SolidAngle as UomSolidAngle;
 use uom::si::solid_angle::{
     spat,
@@ -15,14 +15,14 @@ use uom::si::solid_angle::{
     steradian,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` solid angle quantities.
-    pub enum SolidAngle for UomSolidAngle, "solid angle" {
+    pub enum SolidAngle for "solid_angle", uom = UomSolidAngle {
         /// Steradian (`sr`).
-        Steradian => "sr", steradian;
+        Steradian => { symbol: "sr"; coefficient: 1; uom: steradian; }
         /// Spat (`sp`).
-        Spat => "sp", spat;
+        Spat => { symbol: "sp"; coefficient: 12566370614359173 / 1000000000000000; uom: spat; }
         /// Square degree (`°²`).
-        SquareDegree => "°²" | "deg2" | "deg^2", square_degree;
+        SquareDegree => { symbol: "°²"; coefficient: 1523087098933543 / 5000000000000000000; aliases: ["deg2", "deg^2"]; uom: square_degree; }
     }
 }

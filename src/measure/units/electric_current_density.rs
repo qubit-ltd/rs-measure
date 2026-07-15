@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted electric current density measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electric_current_density::{
     ampere_per_square_centimeter,
     ampere_per_square_meter,
@@ -15,14 +15,14 @@ use uom::si::electric_current_density::{
 };
 use uom::si::f64::ElectricCurrentDensity as UomElectricCurrentDensity;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electric current density quantities.
-    pub enum ElectricCurrentDensity for UomElectricCurrentDensity, "electric current density" {
+    pub enum ElectricCurrentDensity for "electric_current_density", uom = UomElectricCurrentDensity {
         /// Ampere per square meter (`A/m²`).
-        AmperePerSquareMeter => "A/m²" | "A/m2" | "A/m^2", ampere_per_square_meter;
+        AmperePerSquareMeter => { symbol: "A/m²"; coefficient: 1; aliases: ["A/m2", "A/m^2"]; uom: ampere_per_square_meter; }
         /// Ampere per square centimeter (`A/cm²`).
-        AmperePerSquareCentimeter => "A/cm²" | "A/cm2" | "A/cm^2", ampere_per_square_centimeter;
+        AmperePerSquareCentimeter => { symbol: "A/cm²"; coefficient: 10000; aliases: ["A/cm2", "A/cm^2"]; uom: ampere_per_square_centimeter; }
         /// Ampere per square millimeter (`A/mm²`).
-        AmperePerSquareMillimeter => "A/mm²" | "A/mm2" | "A/mm^2", ampere_per_square_millimeter;
+        AmperePerSquareMillimeter => { symbol: "A/mm²"; coefficient: 1000000; aliases: ["A/mm2", "A/mm^2"]; uom: ampere_per_square_millimeter; }
     }
 }

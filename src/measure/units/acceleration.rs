@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted acceleration measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::acceleration::{
     foot_per_second_squared,
     meter_per_second_squared,
@@ -16,16 +16,16 @@ use uom::si::acceleration::{
 };
 use uom::si::f64::Acceleration as UomAcceleration;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` acceleration quantities.
-    pub enum Acceleration for UomAcceleration, "acceleration" {
+    pub enum Acceleration for "acceleration", uom = UomAcceleration {
         /// Millimeter per second squared (`mm/s²`).
-        MillimeterPerSecondSquared => "mm/s²" | "mm/s2" | "mm/s^2", millimeter_per_second_squared;
+        MillimeterPerSecondSquared => { symbol: "mm/s²"; coefficient: 1 / 1000; aliases: ["mm/s2", "mm/s^2"]; uom: millimeter_per_second_squared; }
         /// Meter per second squared (`m/s²`).
-        MeterPerSecondSquared => "m/s²" | "m/s2" | "m/s^2", meter_per_second_squared;
+        MeterPerSecondSquared => { symbol: "m/s²"; coefficient: 1; aliases: ["m/s2", "m/s^2"]; uom: meter_per_second_squared; }
         /// Foot per second squared (`ft/s²`).
-        FootPerSecondSquared => "ft/s²" | "ft/s2" | "ft/s^2", foot_per_second_squared;
+        FootPerSecondSquared => { symbol: "ft/s²"; coefficient: 381 / 1250; aliases: ["ft/s2", "ft/s^2"]; uom: foot_per_second_squared; }
         /// Standard gravity (`g₀`).
-        StandardGravity => "g₀" | "g0" | "g", standard_gravity;
+        StandardGravity => { symbol: "g₀"; coefficient: 196133 / 20000; aliases: ["g0", "g"]; uom: standard_gravity; }
     }
 }

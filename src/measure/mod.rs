@@ -7,14 +7,26 @@
 // =============================================================================
 //! Persisted typed measurements, unit families, and `uom` adapters.
 
+mod conversion_factor;
+mod conversion_options;
+mod decimal_conversion;
 mod measurement;
 mod measurement_error;
 mod unit;
+mod unit_definition;
 mod units;
+mod uom_unit;
 
+pub use conversion_factor::ConversionFactor;
+pub use conversion_options::{
+    ConversionOptions,
+    default_conversion_options,
+    set_default_conversion_options,
+};
 pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
 pub use unit::Unit;
+pub use unit_definition::UnitDefinition;
 pub use units::{
     Acceleration,
     AmountOfSubstance,
@@ -73,3 +85,4 @@ pub use units::{
     Volume,
     VolumeRate,
 };
+pub use uom_unit::UomUnit;

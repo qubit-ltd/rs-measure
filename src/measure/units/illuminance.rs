@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted illuminance measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::Illuminance as UomIlluminance;
 use uom::si::illuminance::{
     footcandle,
@@ -15,14 +15,14 @@ use uom::si::illuminance::{
     lux,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` illuminance quantities.
-    pub enum Illuminance for UomIlluminance, "illuminance" {
+    pub enum Illuminance for "illuminance", uom = UomIlluminance {
         /// Lux (`lx`).
-        Lux => "lx", lux;
+        Lux => { symbol: "lx"; coefficient: 1; uom: lux; }
         /// Kilolux (`klx`).
-        Kilolux => "klx", kilolux;
+        Kilolux => { symbol: "klx"; coefficient: 1000; uom: kilolux; }
         /// Foot-candle (`fc`).
-        Footcandle => "fc", footcandle;
+        Footcandle => { symbol: "fc"; coefficient: 1562500 / 145161; uom: footcandle; }
     }
 }

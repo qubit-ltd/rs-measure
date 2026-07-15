@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted magnetic flux density measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MagneticFluxDensity as UomMagneticFluxDensity;
 use uom::si::magnetic_flux_density::{
     gauss,
@@ -17,18 +17,18 @@ use uom::si::magnetic_flux_density::{
     tesla,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` magnetic flux density quantities.
-    pub enum MagneticFluxDensity for UomMagneticFluxDensity, "magnetic flux density" {
+    pub enum MagneticFluxDensity for "magnetic_flux_density", uom = UomMagneticFluxDensity {
         /// Nanotesla (`nT`).
-        Nanotesla => "nT", nanotesla;
+        Nanotesla => { symbol: "nT"; coefficient: 1 / 1000000000; uom: nanotesla; }
         /// Microtesla (`µT`).
-        Microtesla => "µT" | "uT" | "μT", microtesla;
+        Microtesla => { symbol: "µT"; coefficient: 1 / 1000000; aliases: ["uT", "μT"]; uom: microtesla; }
         /// Millitesla (`mT`).
-        Millitesla => "mT", millitesla;
+        Millitesla => { symbol: "mT"; coefficient: 1 / 1000; uom: millitesla; }
         /// Tesla (`T`).
-        Tesla => "T", tesla;
+        Tesla => { symbol: "T"; coefficient: 1; uom: tesla; }
         /// Gauss (`G`).
-        Gauss => "G", gauss;
+        Gauss => { symbol: "G"; coefficient: 1 / 10000; uom: gauss; }
     }
 }

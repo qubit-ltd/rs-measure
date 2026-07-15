@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted mass density measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MassDensity as UomMassDensity;
 use uom::si::mass_density::{
     gram_per_cubic_centimeter,
@@ -17,18 +17,18 @@ use uom::si::mass_density::{
     pound_per_gallon,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` mass density quantities.
-    pub enum MassDensity for UomMassDensity, "mass density" {
+    pub enum MassDensity for "mass_density", uom = UomMassDensity {
         /// Kilogram per cubic meter (`kg/m³`).
-        KilogramPerCubicMeter => "kg/m³" | "kg/m3" | "kg/m^3", kilogram_per_cubic_meter;
+        KilogramPerCubicMeter => { symbol: "kg/m³"; coefficient: 1; aliases: ["kg/m3", "kg/m^3"]; uom: kilogram_per_cubic_meter; }
         /// Gram per cubic meter (`g/m³`).
-        GramPerCubicMeter => "g/m³" | "g/m3" | "g/m^3", gram_per_cubic_meter;
+        GramPerCubicMeter => { symbol: "g/m³"; coefficient: 1 / 1000; aliases: ["g/m3", "g/m^3"]; uom: gram_per_cubic_meter; }
         /// Gram per cubic centimeter (`g/cm³`).
-        GramPerCubicCentimeter => "g/cm³" | "g/cm3" | "g/cm^3", gram_per_cubic_centimeter;
+        GramPerCubicCentimeter => { symbol: "g/cm³"; coefficient: 1000; aliases: ["g/cm3", "g/cm^3"]; uom: gram_per_cubic_centimeter; }
         /// Pound per cubic foot (`lb/ft³`).
-        PoundPerCubicFoot => "lb/ft³" | "lb/ft3" | "lb/ft^3", pound_per_cubic_foot;
+        PoundPerCubicFoot => { symbol: "lb/ft³"; coefficient: 28349523125 / 1769802912; aliases: ["lb/ft3", "lb/ft^3"]; uom: pound_per_cubic_foot; }
         /// Pound per gallon (`lb/gal`).
-        PoundPerGallon => "lb/gal", pound_per_gallon;
+        PoundPerUsGallon => { symbol: "lb/gal (US)"; coefficient: 736351250 / 6145149; aliases: ["lb/gal"]; uom: pound_per_gallon; }
     }
 }

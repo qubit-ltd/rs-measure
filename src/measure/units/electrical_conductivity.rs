@@ -7,19 +7,19 @@
 // =============================================================================
 //! Units for persisted electrical conductivity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electrical_conductivity::{
     siemens_per_centimeter,
     siemens_per_meter,
 };
 use uom::si::f64::ElectricalConductivity as UomElectricalConductivity;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electrical conductivity quantities.
-    pub enum ElectricalConductivity for UomElectricalConductivity, "electrical conductivity" {
+    pub enum ElectricalConductivity for "electrical_conductivity", uom = UomElectricalConductivity {
         /// Siemens per meter (`S/m`).
-        SiemensPerMeter => "S/m", siemens_per_meter;
+        SiemensPerMeter => { symbol: "S/m"; coefficient: 1; uom: siemens_per_meter; }
         /// Siemens per centimeter (`S/cm`).
-        SiemensPerCentimeter => "S/cm", siemens_per_centimeter;
+        SiemensPerCentimeter => { symbol: "S/cm"; coefficient: 100; uom: siemens_per_centimeter; }
     }
 }

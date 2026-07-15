@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted magnetic flux measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::f64::MagneticFlux as UomMagneticFlux;
 use uom::si::magnetic_flux::{
     maxwell,
@@ -16,16 +16,16 @@ use uom::si::magnetic_flux::{
     weber,
 };
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` magnetic flux quantities.
-    pub enum MagneticFlux for UomMagneticFlux, "magnetic flux" {
+    pub enum MagneticFlux for "magnetic_flux", uom = UomMagneticFlux {
         /// Microweber (`µWb`).
-        Microweber => "µWb" | "uWb" | "μWb", microweber;
+        Microweber => { symbol: "µWb"; coefficient: 1 / 1000000; aliases: ["uWb", "μWb"]; uom: microweber; }
         /// Milliweber (`mWb`).
-        Milliweber => "mWb", milliweber;
+        Milliweber => { symbol: "mWb"; coefficient: 1 / 1000; uom: milliweber; }
         /// Weber (`Wb`).
-        Weber => "Wb", weber;
+        Weber => { symbol: "Wb"; coefficient: 1; uom: weber; }
         /// Maxwell (`Mx`).
-        Maxwell => "Mx", maxwell;
+        Maxwell => { symbol: "Mx"; coefficient: 1 / 100000000; uom: maxwell; }
     }
 }

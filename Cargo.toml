@@ -1,6 +1,6 @@
 [package]
 name = "qubit-measure"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2024"
 rust-version = "1.94"
 authors = ["Haixing Hu <starfish.hu@gmail.com>"]
@@ -26,7 +26,8 @@ include = [
 name = "qubit_measure"
 
 [dependencies]
-rust_decimal = { version = "1.39", features = ["serde-with-str"] }
+parking_lot = "0.12"
+rust_decimal = { version = "1.39", features = ["macros", "serde-with-str"] }
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }

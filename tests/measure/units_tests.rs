@@ -82,8 +82,20 @@ fn test_area_and_volume_unit_all_lists_supported_units() {
     assert_eq!(
         volume_symbols,
         vec![
-            "mm³", "cm³", "m³", "µL", "mL", "L", "in³", "ft³", "yd³", "fl oz",
-            "cup", "liq pt", "liq qt", "gal",
+            "mm³",
+            "cm³",
+            "m³",
+            "µL",
+            "mL",
+            "L",
+            "in³",
+            "ft³",
+            "yd³",
+            "fl oz (US)",
+            "cup (US customary)",
+            "pt (US liq)",
+            "qt (US liq)",
+            "gal (US)",
         ],
     );
 }
@@ -103,7 +115,7 @@ fn test_mass_and_time_unit_all_lists_supported_units() {
     );
     assert_eq!(
         time_symbols,
-        vec!["ns", "µs", "ms", "s", "min", "h", "d", "a"]
+        vec!["ns", "µs", "ms", "s", "min", "h", "d", "a (365 d)"]
     );
 }
 
@@ -152,10 +164,21 @@ fn test_production_quantity_family_units_are_available() {
     assert_eq!(
         energy_symbols,
         vec![
-            "J", "kJ", "MJ", "W · h", "kW · h", "eV", "cal", "kcal", "Btu"
+            "J",
+            "kJ",
+            "MJ",
+            "W · h",
+            "kW · h",
+            "eV",
+            "cal (th)",
+            "kcal (th)",
+            "Btu (IT)"
         ]
     );
-    assert_eq!(power_symbols, vec!["nW", "µW", "mW", "W", "kW", "MW", "hp"]);
+    assert_eq!(
+        power_symbols,
+        vec!["nW", "µW", "mW", "W", "kW", "MW", "hp (mechanical)"]
+    );
     assert_eq!(
         velocity_symbols,
         vec!["µm/s", "mm/s", "cm/s", "m/s", "km/h", "ft/s", "mi/h", "kn"]
@@ -163,7 +186,7 @@ fn test_production_quantity_family_units_are_available() {
     assert_eq!(frequency_symbols, vec!["Hz", "kHz", "MHz", "GHz"]);
     assert_eq!(
         density_symbols,
-        vec!["kg/m³", "g/m³", "g/cm³", "lb/ft³", "lb/gal"],
+        vec!["kg/m³", "g/m³", "g/cm³", "lb/ft³", "lb/gal (US)"],
     );
     assert_eq!(temperature_symbols, vec!["K", "°C", "°F", "°R"]);
     assert_eq!(interval_symbols, vec!["K", "°C", "°F", "°R"]);
@@ -268,7 +291,7 @@ fn test_mechanical_and_process_quantity_family_units_are_available() {
     assert_eq!(angular_velocity_symbols, vec!["rad/s", "°/s", "rps", "rpm"]);
     assert_eq!(
         volume_rate_symbols,
-        vec!["m³/s", "m³/h", "mL/s", "L/s", "L/min", "gal/min"],
+        vec!["m³/s", "m³/h", "mL/s", "L/s", "L/min", "gal (US)/min"],
     );
     assert_eq!(
         mass_rate_symbols,
@@ -454,7 +477,7 @@ fn test_electromagnetic_thermal_optical_and_chemical_extension_units_are_availab
     assert_eq!(magnetic_field_strength_symbols, vec!["A/m", "A/cm", "Oe"]);
     assert_eq!(
         heat_capacity_symbols,
-        vec!["J/K", "kJ/K", "J/°C", "cal/K", "Btu/°F"]
+        vec!["J/K", "kJ/K", "J/°C", "cal (th)/K", "Btu (IT)/°F"]
     );
     assert_eq!(
         specific_heat_capacity_symbols,
@@ -462,8 +485,8 @@ fn test_electromagnetic_thermal_optical_and_chemical_extension_units_are_availab
             "J/(kg · K)",
             "kJ/(kg · K)",
             "J/(g · °C)",
-            "cal/(g · K)",
-            "Btu/(lb · °F)"
+            "cal (th)/(g · K)",
+            "Btu (IT)/(lb · °F)"
         ],
     );
     assert_eq!(
@@ -723,11 +746,11 @@ fn test_unit_from_str_accepts_common_input_aliases() {
     );
     assert_eq!(
         unit::Time::from_str("year").expect("year alias should parse"),
-        unit::Time::Year
+        unit::Time::CommonYear365
     );
     assert_eq!(
         unit::Time::from_str("yr").expect("year abbreviation should parse"),
-        unit::Time::Year
+        unit::Time::CommonYear365
     );
     assert_eq!(
         unit::ElectricPotential::from_str("volt")

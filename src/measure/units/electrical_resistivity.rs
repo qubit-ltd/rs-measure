@@ -7,7 +7,7 @@
 // =============================================================================
 //! Units for persisted electrical resistivity measurements.
 
-use super::define_measurement_unit;
+use crate::define_unit_family;
 use uom::si::electrical_resistivity::{
     milliohm_meter,
     ohm_centimeter,
@@ -16,16 +16,16 @@ use uom::si::electrical_resistivity::{
 };
 use uom::si::f64::ElectricalResistivity as UomElectricalResistivity;
 
-define_measurement_unit! {
+define_unit_family! {
     /// Units for persisted `uom` electrical resistivity quantities.
-    pub enum ElectricalResistivity for UomElectricalResistivity, "electrical resistivity" {
+    pub enum ElectricalResistivity for "electrical_resistivity", uom = UomElectricalResistivity {
         /// Milliohm meter (`mΩ · m`).
-        MilliohmMeter => "mΩ · m" | "mOhm m" | "mΩ*m", milliohm_meter;
+        MilliohmMeter => { symbol: "mΩ · m"; coefficient: 1 / 1000; aliases: ["mOhm m", "mΩ*m"]; uom: milliohm_meter; }
         /// Ohm meter (`Ω · m`).
-        OhmMeter => "Ω · m" | "ohm m" | "Ω*m", ohm_meter;
+        OhmMeter => { symbol: "Ω · m"; coefficient: 1; aliases: ["ohm m", "Ω*m"]; uom: ohm_meter; }
         /// Ohm centimeter (`Ω · cm`).
-        OhmCentimeter => "Ω · cm" | "ohm cm" | "Ω*cm", ohm_centimeter;
+        OhmCentimeter => { symbol: "Ω · cm"; coefficient: 1 / 100; aliases: ["ohm cm", "Ω*cm"]; uom: ohm_centimeter; }
         /// Ohm square millimeter per meter (`Ω · mm²/m`).
-        OhmSquareMillimeterPerMeter => "Ω · mm²/m" | "Ω mm2/m" | "ohm mm2/m", ohm_square_millimeter_per_meter;
+        OhmSquareMillimeterPerMeter => { symbol: "Ω · mm²/m"; coefficient: 1 / 1000000; aliases: ["Ω mm2/m", "ohm mm2/m"]; uom: ohm_square_millimeter_per_meter; }
     }
 }
