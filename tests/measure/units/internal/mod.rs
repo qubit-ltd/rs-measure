@@ -5,9 +5,6 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! # Measurement Tests
-//!
-//! Integration tests for persistent measurements and unit conversions.
+//! Mirrored tests for private built-in unit helpers.
 
-mod measure;
-mod measurement;
+mod exact_torr_equivalent_tests;

@@ -5,6 +5,7 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
+//! Hidden macro-helper contract tests.
 
 use qubit_measure::__private::{
     assert_unit_family_metadata,

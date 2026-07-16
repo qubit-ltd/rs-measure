@@ -5,9 +5,8 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! # Measurement Tests
-//!
-//! Integration tests for persistent measurements and unit conversions.
+//! Path mirror test for the `ElectricalConductance` measurement alias.
 
-mod measure;
-mod measurement;
+use crate::measurement::support::assert_measurement_alias;
+
+assert_measurement_alias!(ElectricalConductance, ElectricalConductance);

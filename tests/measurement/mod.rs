@@ -5,7 +5,7 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Mirrored exact-definition and contract tests for built-in unit families.
+//! Mirrored tests for persisted measurement aliases.
 
 mod acceleration_tests;
 mod amount_of_substance_tests;
@@ -32,8 +32,6 @@ mod heat_capacity_tests;
 mod heat_flux_density_tests;
 mod illuminance_tests;
 mod inductance_tests;
-mod internal;
-mod internal_tests;
 mod kinematic_viscosity_tests;
 mod length_tests;
 mod luminance_tests;
@@ -55,6 +53,7 @@ mod radioactivity_tests;
 mod solid_angle_tests;
 mod specific_heat_capacity_tests;
 mod specific_radioactivity_tests;
+mod support;
 mod surface_tension_tests;
 mod temperature_interval_tests;
 mod temperature_tests;
@@ -63,5 +62,6 @@ mod thermal_resistance_tests;
 mod time_tests;
 mod torque_tests;
 mod velocity_tests;
+mod voltage_tests;
 mod volume_rate_tests;
 mod volume_tests;

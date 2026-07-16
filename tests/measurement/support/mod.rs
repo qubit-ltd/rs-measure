@@ -5,9 +5,8 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! # Measurement Tests
-//!
-//! Integration tests for persistent measurements and unit conversions.
+//! Shared support for persisted measurement alias tests.
 
-mod measure;
-mod measurement;
+mod alias_assertions;
+
+pub(crate) use alias_assertions::assert_measurement_alias;
