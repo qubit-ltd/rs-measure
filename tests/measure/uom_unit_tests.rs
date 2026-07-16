@@ -10,10 +10,12 @@ use qubit_measure::{
     Decimal,
     Measurement,
     MeasurementError,
-    UomUnit,
+    Unit,
+    UnitDefinition,
     measurement,
     unit,
 };
+use rust_decimal::prelude::ToPrimitive;
 use uom::si::area::square_meter;
 use uom::si::electric_current::ampere;
 use uom::si::electric_potential::volt;
@@ -67,22 +69,89 @@ fn assert_approx_eq(actual: f64, expected: f64) {
     );
 }
 
-/// Checks that every variant in a unit family round-trips through `uom`.
+/// Checks an oracle result with the tolerance allowed for upstream uom
+/// conversion factors.
+///
+/// # Arguments
+///
+/// * `actual` - The bridge result.
+/// * `expected` - The independently computed SI oracle value.
 ///
 /// # Panics
 ///
-/// Panics if any unit cannot convert one to `uom` and back into Decimal.
-fn assert_all_unit_variants_bridge_uom<U>()
-where
-    U: UomUnit,
-{
-    for unit in U::all() {
-        let measurement = Measurement::<U>::new(Decimal::ONE, *unit);
-        let quantity = measurement.to_uom_approx();
+/// Panics when either value is non-finite, the expected value is zero, or the
+/// relative error exceeds five parts per million.
+fn assert_uom_oracle_relative_eq(actual: f64, expected: f64) {
+    assert!(actual.is_finite(), "actual value must be finite: {actual}");
+    assert!(
+        expected.is_finite(),
+        "expected value must be finite: {expected}",
+    );
+    assert_ne!(expected, 0.0, "expected value must be non-zero");
 
-        Measurement::<U>::from_uom_approx(quantity, *unit)
-            .expect("uom quantity should convert back");
-    }
+    let relative_error = (actual - expected).abs() / expected.abs();
+    assert!(
+        relative_error <= 5.0E-6,
+        "expected {actual} to approximately equal {expected}; relative error \
+         {relative_error} exceeds 0.000005",
+    );
+}
+
+/// Checks every variant against an independently computed SI base value.
+macro_rules! assert_unit_family_matches_uom_base {
+    ($unit:ty) => {{
+        let identity_unit = <$unit>::all()
+            .iter()
+            .copied()
+            .find(|unit| {
+                unit.definition()
+                    .expect("unit definition should be valid")
+                    == UnitDefinition::base()
+            })
+            .expect("unit family should contain an identity definition");
+
+        for unit in <$unit>::all() {
+            let source = Measurement::<$unit>::new(Decimal::ONE, *unit);
+            let definition = unit
+                .definition()
+                .expect("unit definition should be valid");
+            let factor = definition.factor();
+            let offset = definition
+                .offset()
+                .to_f64()
+                .expect("unit offset should fit f64 for the oracle");
+            let numerator = factor
+                .numerator()
+                .to_f64()
+                .expect("factor numerator should fit f64 for the oracle");
+            let denominator = factor
+                .denominator()
+                .to_f64()
+                .expect("factor denominator should fit f64 for the oracle");
+            let expected_base =
+                (1.0 + offset) * numerator / denominator;
+            let quantity = source.to_uom_approx();
+
+            assert_uom_oracle_relative_eq(quantity.value, expected_base);
+
+            let mut independent_base =
+                Measurement::<$unit>::new(Decimal::ZERO, identity_unit)
+                    .to_uom_approx();
+            independent_base.value = expected_base;
+            let round_trip = Measurement::<$unit>::from_uom_approx(
+                independent_base,
+                *unit,
+            )
+            .expect("independent SI base value should convert to the unit");
+            assert_uom_oracle_relative_eq(
+                round_trip
+                    .value
+                    .to_f64()
+                    .expect("round-trip Decimal should fit f64"),
+                1.0,
+            );
+        }
+    }};
 }
 
 #[test]
@@ -282,63 +351,62 @@ fn test_electrical_measurements_to_uom_approx_convert_units() {
 
 #[test]
 fn test_all_supported_unit_variants_bridge_through_uom() {
-    assert_all_unit_variants_bridge_uom::<unit::Length>();
-    assert_all_unit_variants_bridge_uom::<unit::Area>();
-    assert_all_unit_variants_bridge_uom::<unit::Volume>();
-    assert_all_unit_variants_bridge_uom::<unit::Mass>();
-    assert_all_unit_variants_bridge_uom::<unit::Time>();
-    assert_all_unit_variants_bridge_uom::<unit::Pressure>();
-    assert_all_unit_variants_bridge_uom::<unit::Energy>();
-    assert_all_unit_variants_bridge_uom::<unit::Power>();
-    assert_all_unit_variants_bridge_uom::<unit::Velocity>();
-    assert_all_unit_variants_bridge_uom::<unit::Frequency>();
-    assert_all_unit_variants_bridge_uom::<unit::MassDensity>();
-    assert_all_unit_variants_bridge_uom::<unit::Temperature>();
-    assert_all_unit_variants_bridge_uom::<unit::TemperatureInterval>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricCurrent>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricPotential>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricCharge>();
-    assert_all_unit_variants_bridge_uom::<unit::Capacitance>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricalResistance>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricalConductance>();
-    assert_all_unit_variants_bridge_uom::<unit::Inductance>();
-    assert_all_unit_variants_bridge_uom::<unit::Force>();
-    assert_all_unit_variants_bridge_uom::<unit::Acceleration>();
-    assert_all_unit_variants_bridge_uom::<unit::Torque>();
-    assert_all_unit_variants_bridge_uom::<unit::Angle>();
-    assert_all_unit_variants_bridge_uom::<unit::AngularVelocity>();
-    assert_all_unit_variants_bridge_uom::<unit::VolumeRate>();
-    assert_all_unit_variants_bridge_uom::<unit::MassRate>();
-    assert_all_unit_variants_bridge_uom::<unit::DynamicViscosity>();
-    assert_all_unit_variants_bridge_uom::<unit::KinematicViscosity>();
-    assert_all_unit_variants_bridge_uom::<unit::AmountOfSubstance>();
-    assert_all_unit_variants_bridge_uom::<unit::MolarConcentration>();
-    assert_all_unit_variants_bridge_uom::<unit::MassConcentration>();
-    assert_all_unit_variants_bridge_uom::<unit::CatalyticActivity>();
-    assert_all_unit_variants_bridge_uom::<unit::Radioactivity>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricField>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricCurrentDensity>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricalConductivity>();
-    assert_all_unit_variants_bridge_uom::<unit::ElectricalResistivity>();
-    assert_all_unit_variants_bridge_uom::<unit::MagneticFluxDensity>();
-    assert_all_unit_variants_bridge_uom::<unit::MagneticFlux>();
-    assert_all_unit_variants_bridge_uom::<unit::MagneticFieldStrength>();
-    assert_all_unit_variants_bridge_uom::<unit::HeatCapacity>();
-    assert_all_unit_variants_bridge_uom::<unit::SpecificHeatCapacity>();
-    assert_all_unit_variants_bridge_uom::<unit::ThermalConductivity>();
-    assert_all_unit_variants_bridge_uom::<unit::ThermalResistance>();
-    assert_all_unit_variants_bridge_uom::<unit::HeatFluxDensity>();
-    assert_all_unit_variants_bridge_uom::<unit::SurfaceTension>();
-    assert_all_unit_variants_bridge_uom::<unit::LuminousIntensity>();
-    assert_all_unit_variants_bridge_uom::<unit::Illuminance>();
-    assert_all_unit_variants_bridge_uom::<unit::Luminance>();
-    assert_all_unit_variants_bridge_uom::<unit::SolidAngle>();
-    assert_all_unit_variants_bridge_uom::<unit::Molality>();
-    assert_all_unit_variants_bridge_uom::<unit::MolarMass>();
-    assert_all_unit_variants_bridge_uom::<unit::MolarVolume>();
-    assert_all_unit_variants_bridge_uom::<unit::CatalyticActivityConcentration>(
-    );
-    assert_all_unit_variants_bridge_uom::<unit::SpecificRadioactivity>();
+    assert_unit_family_matches_uom_base!(unit::Length);
+    assert_unit_family_matches_uom_base!(unit::Area);
+    assert_unit_family_matches_uom_base!(unit::Volume);
+    assert_unit_family_matches_uom_base!(unit::Mass);
+    assert_unit_family_matches_uom_base!(unit::Time);
+    assert_unit_family_matches_uom_base!(unit::Pressure);
+    assert_unit_family_matches_uom_base!(unit::Energy);
+    assert_unit_family_matches_uom_base!(unit::Power);
+    assert_unit_family_matches_uom_base!(unit::Velocity);
+    assert_unit_family_matches_uom_base!(unit::Frequency);
+    assert_unit_family_matches_uom_base!(unit::MassDensity);
+    assert_unit_family_matches_uom_base!(unit::Temperature);
+    assert_unit_family_matches_uom_base!(unit::TemperatureInterval);
+    assert_unit_family_matches_uom_base!(unit::ElectricCurrent);
+    assert_unit_family_matches_uom_base!(unit::ElectricPotential);
+    assert_unit_family_matches_uom_base!(unit::ElectricCharge);
+    assert_unit_family_matches_uom_base!(unit::Capacitance);
+    assert_unit_family_matches_uom_base!(unit::ElectricalResistance);
+    assert_unit_family_matches_uom_base!(unit::ElectricalConductance);
+    assert_unit_family_matches_uom_base!(unit::Inductance);
+    assert_unit_family_matches_uom_base!(unit::Force);
+    assert_unit_family_matches_uom_base!(unit::Acceleration);
+    assert_unit_family_matches_uom_base!(unit::Torque);
+    assert_unit_family_matches_uom_base!(unit::Angle);
+    assert_unit_family_matches_uom_base!(unit::AngularVelocity);
+    assert_unit_family_matches_uom_base!(unit::VolumeRate);
+    assert_unit_family_matches_uom_base!(unit::MassRate);
+    assert_unit_family_matches_uom_base!(unit::DynamicViscosity);
+    assert_unit_family_matches_uom_base!(unit::KinematicViscosity);
+    assert_unit_family_matches_uom_base!(unit::AmountOfSubstance);
+    assert_unit_family_matches_uom_base!(unit::MolarConcentration);
+    assert_unit_family_matches_uom_base!(unit::MassConcentration);
+    assert_unit_family_matches_uom_base!(unit::CatalyticActivity);
+    assert_unit_family_matches_uom_base!(unit::Radioactivity);
+    assert_unit_family_matches_uom_base!(unit::ElectricField);
+    assert_unit_family_matches_uom_base!(unit::ElectricCurrentDensity);
+    assert_unit_family_matches_uom_base!(unit::ElectricalConductivity);
+    assert_unit_family_matches_uom_base!(unit::ElectricalResistivity);
+    assert_unit_family_matches_uom_base!(unit::MagneticFluxDensity);
+    assert_unit_family_matches_uom_base!(unit::MagneticFlux);
+    assert_unit_family_matches_uom_base!(unit::MagneticFieldStrength);
+    assert_unit_family_matches_uom_base!(unit::HeatCapacity);
+    assert_unit_family_matches_uom_base!(unit::SpecificHeatCapacity);
+    assert_unit_family_matches_uom_base!(unit::ThermalConductivity);
+    assert_unit_family_matches_uom_base!(unit::ThermalResistance);
+    assert_unit_family_matches_uom_base!(unit::HeatFluxDensity);
+    assert_unit_family_matches_uom_base!(unit::SurfaceTension);
+    assert_unit_family_matches_uom_base!(unit::LuminousIntensity);
+    assert_unit_family_matches_uom_base!(unit::Illuminance);
+    assert_unit_family_matches_uom_base!(unit::Luminance);
+    assert_unit_family_matches_uom_base!(unit::SolidAngle);
+    assert_unit_family_matches_uom_base!(unit::Molality);
+    assert_unit_family_matches_uom_base!(unit::MolarMass);
+    assert_unit_family_matches_uom_base!(unit::MolarVolume);
+    assert_unit_family_matches_uom_base!(unit::CatalyticActivityConcentration);
+    assert_unit_family_matches_uom_base!(unit::SpecificRadioactivity);
 }
 
 #[test]
