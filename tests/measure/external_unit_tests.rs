@@ -37,6 +37,23 @@ fn test_external_family_supports_strict_and_lenient_parsing() {
 }
 
 #[test]
+fn test_spaced_measurement_round_trips_reserved_unit_prefix() {
+    let measurement = Measurement::new(dec!(1.25), CustomLength::Signed);
+    let text = measurement.to_string();
+
+    assert_eq!(text, "1.25 +cu");
+    assert_eq!(text.parse::<Measurement<CustomLength>>(), Ok(measurement));
+    assert_eq!(
+        serde_json::from_value::<Measurement<CustomLength>>(
+            serde_json::to_value(measurement)
+                .expect("measurement should serialize"),
+        )
+        .expect("measurement should deserialize"),
+        measurement,
+    );
+}
+
+#[test]
 fn test_unit_trait_supports_manual_external_implementations() {
     assert_eq!(ManualUnit::parse_lenient("mnl"), Ok(ManualUnit::Base));
     assert_eq!(

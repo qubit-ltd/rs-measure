@@ -23,5 +23,10 @@ define_unit_family! {
             coefficient: 1 / 2;
             aliases: ["half-cu"];
         }
+        /// Signed custom unit used to verify spaced measurement parsing.
+        Signed => {
+            symbol: "+cu";
+            coefficient: 1;
+        }
     }
 }

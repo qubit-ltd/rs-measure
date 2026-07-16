@@ -335,13 +335,18 @@ where
 /// # Returns
 ///
 /// `Some((value, unit))` when a syntactically valid Decimal prefix and a
-/// non-empty plausible unit suffix are present; otherwise, `None`.
+/// non-empty plausible unit suffix are present. Space-separated suffixes may
+/// start with `.`, `+`, or `-`; compact suffixes starting with those reserved
+/// characters return `None` to avoid accepting malformed Decimal text.
 fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let trimmed = input.trim();
     let value_len = decimal_prefix_len(trimmed)?;
-    let (value_text, unit_text) = trimmed.split_at(value_len);
-    let unit_text = unit_text.trim();
-    if unit_text.is_empty() || unit_text.starts_with(['.', '+', '-']) {
+    let (value_text, unit_suffix) = trimmed.split_at(value_len);
+    let is_separated = unit_suffix.trim_start().len() != unit_suffix.len();
+    let unit_text = unit_suffix.trim();
+    if unit_text.is_empty()
+        || (!is_separated && unit_text.starts_with(['.', '+', '-']))
+    {
         None
     } else {
         Some((value_text, unit_text))

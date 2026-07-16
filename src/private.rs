@@ -34,7 +34,8 @@ use rust_decimal::prelude::{
 /// # Panics
 ///
 /// Panics when the quantity is not non-empty ASCII `snake_case`, the family or
-/// a symbol is empty, canonical symbols repeat, or aliases are empty or repeat.
+/// a symbol is empty, a symbol or alias contains surrounding Unicode
+/// whitespace, canonical symbols repeat, or aliases are empty or repeat.
 #[doc(hidden)]
 pub const fn assert_unit_family_metadata(
     quantity: &str,
@@ -49,14 +50,20 @@ pub const fn assert_unit_family_metadata(
 
     let mut index = 0;
     while index < symbols.len() {
+        let symbol = symbols[index];
         assert!(
-            !symbols[index].is_empty(),
+            !symbol.is_empty(),
             "canonical unit symbol must not be empty",
+        );
+        assert!(
+            !has_leading_unit_whitespace(symbol)
+                && !has_trailing_unit_whitespace(symbol),
+            "canonical unit symbol must not contain surrounding whitespace",
         );
         let mut other = index + 1;
         while other < symbols.len() {
             assert!(
-                !str_eq(symbols[index], symbols[other]),
+                !str_eq(symbol, symbols[other]),
                 "canonical unit symbols must be unique",
             );
             other += 1;
@@ -66,17 +73,107 @@ pub const fn assert_unit_family_metadata(
 
     index = 0;
     while index < aliases.len() {
-        assert!(!aliases[index].is_empty(), "unit alias must not be empty",);
+        let alias = aliases[index];
+        assert!(!alias.is_empty(), "unit alias must not be empty",);
+        assert!(
+            !has_leading_unit_whitespace(alias)
+                && !has_trailing_unit_whitespace(alias),
+            "unit alias must not contain surrounding whitespace",
+        );
         let mut other = index + 1;
         while other < aliases.len() {
             assert!(
-                !str_eq(aliases[index], aliases[other]),
+                !str_eq(alias, aliases[other]),
                 "unit aliases must be unique",
             );
             other += 1;
         }
         index += 1;
     }
+}
+
+/// Reports whether text starts with a Unicode White_Space character.
+///
+/// # Arguments
+///
+/// * `value` - Text whose first scalar value is inspected.
+///
+/// # Returns
+///
+/// `true` when the first scalar has the Unicode White_Space property.
+const fn has_leading_unit_whitespace(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    if bytes.is_empty() {
+        return false;
+    }
+    if matches!(bytes[0], b'\t'..=b'\r' | b' ') {
+        return true;
+    }
+    if bytes.len() >= 2
+        && bytes[0] == 0xC2
+        && matches!(bytes[1], 0x85 | 0xA0)
+    {
+        return true;
+    }
+    if bytes.len() >= 3 {
+        return (bytes[0] == 0xE1
+            && bytes[1] == 0x9A
+            && bytes[2] == 0x80)
+            || (bytes[0] == 0xE2
+                && bytes[1] == 0x80
+                && matches!(bytes[2], 0x80..=0x8A | 0xA8 | 0xA9 | 0xAF))
+            || (bytes[0] == 0xE2
+                && bytes[1] == 0x81
+                && bytes[2] == 0x9F)
+            || (bytes[0] == 0xE3
+                && bytes[1] == 0x80
+                && bytes[2] == 0x80);
+    }
+    false
+}
+
+/// Reports whether text ends with a Unicode White_Space character.
+///
+/// # Arguments
+///
+/// * `value` - Text whose final scalar value is inspected.
+///
+/// # Returns
+///
+/// `true` when the final scalar has the Unicode White_Space property.
+const fn has_trailing_unit_whitespace(value: &str) -> bool {
+    let bytes = value.as_bytes();
+    let length = bytes.len();
+    if length == 0 {
+        return false;
+    }
+    if matches!(bytes[length - 1], b'\t'..=b'\r' | b' ') {
+        return true;
+    }
+    if length >= 2
+        && bytes[length - 2] == 0xC2
+        && matches!(bytes[length - 1], 0x85 | 0xA0)
+    {
+        return true;
+    }
+    if length >= 3 {
+        return (bytes[length - 3] == 0xE1
+            && bytes[length - 2] == 0x9A
+            && bytes[length - 1] == 0x80)
+            || (bytes[length - 3] == 0xE2
+                && bytes[length - 2] == 0x80
+                && matches!(
+                    bytes[length - 1],
+                    0x80..=0x8A | 0xA8 | 0xA9 | 0xAF
+                ))
+            || (bytes[length - 3] == 0xE2
+                && bytes[length - 2] == 0x81
+                && bytes[length - 1] == 0x9F)
+            || (bytes[length - 3] == 0xE3
+                && bytes[length - 2] == 0x80
+                && bytes[length - 1] == 0x80);
+    }
+    false
 }
 
 /// Reports whether a value is non-empty ASCII `snake_case`.

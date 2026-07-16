@@ -176,8 +176,10 @@ Every unit family follows this metadata contract:
 
 - `quantity` is non-empty ASCII `snake_case`, begins with a lowercase letter,
   and has no leading, trailing, or repeated underscores;
-- canonical symbols are non-empty and unique;
-- aliases are non-empty and unique among aliases;
+- canonical symbols are non-empty, unique, and contain no leading or trailing
+  Unicode whitespace;
+- aliases are non-empty, unique among aliases, and contain no leading or
+  trailing Unicode whitespace;
 - an alias may equal another variant's canonical symbol;
 - canonical symbols are checked first and therefore win;
 - macro-generated families are checked at compilation;

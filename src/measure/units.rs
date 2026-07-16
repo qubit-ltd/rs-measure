@@ -363,8 +363,10 @@ macro_rules! __define_uom_unit {
 /// - the quantity is non-empty ASCII `snake_case`, starts with a lowercase
 ///   letter, and has no leading, trailing, or repeated underscores;
 /// - the family is non-empty;
-/// - canonical symbols are non-empty and unique;
-/// - aliases are non-empty and unique among aliases;
+/// - canonical symbols are non-empty, unique, and contain no leading or
+///   trailing Unicode whitespace;
+/// - aliases are non-empty, unique among aliases, and contain no leading or
+///   trailing Unicode whitespace;
 /// - an alias may equal another variant's canonical symbol;
 /// - canonical symbols are searched first and therefore win during parsing.
 ///
@@ -448,6 +450,41 @@ macro_rules! __define_uom_unit {
 ///             symbol: "second";
 ///             coefficient: 1;
 ///             aliases: ["duplicate"];
+///         }
+///     }
+/// }
+/// ```
+///
+/// Canonical symbols with surrounding whitespace are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with surrounding canonical whitespace.
+///     enum WhitespaceSymbolUnit for "whitespace_symbol_unit" {
+///         /// Invalid canonical owner.
+///         Invalid => {
+///             symbol: " m";
+///             coefficient: 1;
+///         }
+///     }
+/// }
+/// ```
+///
+/// Aliases with surrounding whitespace are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with surrounding alias whitespace.
+///     enum WhitespaceAliasUnit for "whitespace_alias_unit" {
+///         /// Invalid alias owner.
+///         Invalid => {
+///             symbol: "m";
+///             coefficient: 1;
+///             aliases: ["meter "];
 ///         }
 ///     }
 /// }

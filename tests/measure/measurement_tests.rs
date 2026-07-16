@@ -407,13 +407,15 @@ fn test_measurement_from_str_rejects_missing_value() {
 
 #[test]
 fn test_measurement_from_str_rejects_invalid_value() {
-    let error = measurement::Length::from_str("1..2cm")
-        .expect_err("invalid decimal should fail");
+    for input in ["1..2cm", "1+2", "1.2.3m"] {
+        let error = measurement::Length::from_str(input)
+            .expect_err("invalid decimal should fail");
 
-    assert_eq!(
-        error,
-        MeasurementError::InvalidMeasurement("1..2cm".to_owned())
-    );
+        assert_eq!(
+            error,
+            MeasurementError::InvalidMeasurement(input.to_owned()),
+        );
+    }
 }
 
 #[test]

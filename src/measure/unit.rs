@@ -23,8 +23,10 @@ use crate::measure::{
 ///   lowercase letter, and has no leading, trailing, or repeated underscores;
 /// - [`Unit::all`] is non-empty, contains every family member exactly once, and
 ///   contains no duplicate value;
-/// - canonical symbols are non-empty and unique;
-/// - aliases are non-empty and unique among aliases;
+/// - canonical symbols are non-empty, unique, and contain no leading or
+///   trailing Unicode whitespace;
+/// - aliases are non-empty, unique among aliases, and contain no leading or
+///   trailing Unicode whitespace;
 /// - an alias may equal another member's canonical symbol, but canonical
 ///   symbols are searched first and therefore win;
 /// - every member supplies a valid exact definition and obeys the documented
@@ -56,7 +58,8 @@ pub trait Unit:
 
     /// Returns the canonical symbol used for display and serialization.
     ///
-    /// Canonical symbols must be non-empty and unique within the family.
+    /// Canonical symbols must be non-empty, unique within the family, and
+    /// contain no leading or trailing Unicode whitespace.
     ///
     /// # Arguments
     ///
@@ -70,8 +73,9 @@ pub trait Unit:
 
     /// Returns accepted non-canonical aliases for lenient parsing.
     ///
-    /// Aliases must be non-empty and unique among all family aliases. An alias
-    /// may equal another member's canonical symbol; that canonical owner wins.
+    /// Aliases must be non-empty, unique among all family aliases, and contain
+    /// no leading or trailing Unicode whitespace. An alias may equal another
+    /// member's canonical symbol; that canonical owner wins.
     ///
     /// # Arguments
     ///
@@ -197,9 +201,10 @@ pub trait Unit:
 /// # Panics
 ///
 /// Panics if the family is empty, its quantity is not non-empty ASCII
-/// `snake_case`, `all()` repeats an entry, a canonical symbol or alias is empty
-/// or duplicated within its own set, a definition is invalid, or strict or
-/// lenient parsing violates the documented canonical-priority contract.
+/// `snake_case`, `all()` repeats an entry, a canonical symbol or alias is
+/// empty, contains surrounding Unicode whitespace, or is duplicated within
+/// its own set, a definition is invalid, or strict or lenient parsing violates
+/// the documented canonical-priority contract.
 ///
 /// # Examples
 ///
@@ -231,6 +236,10 @@ where
         let symbol = unit.symbol();
         assert!(!symbol.is_empty(), "canonical symbol must not be empty");
         assert!(
+            symbol.trim() == symbol,
+            "canonical symbol must not contain surrounding whitespace: {symbol:?}",
+        );
+        assert!(
             !units[..index].iter().any(|other| other.symbol() == symbol),
             "duplicate canonical symbol: {symbol}",
         );
@@ -249,15 +258,19 @@ where
 
     let mut seen_aliases: Vec<&str> = Vec::new();
     for unit in units.iter().copied() {
-        for alias in unit.aliases() {
+        for &alias in unit.aliases() {
             assert!(!alias.is_empty(), "unit alias must not be empty");
-            assert!(!seen_aliases.contains(alias), "duplicate alias: {alias}");
+            assert!(
+                alias.trim() == alias,
+                "unit alias must not contain surrounding whitespace: {alias:?}",
+            );
+            assert!(!seen_aliases.contains(&alias), "duplicate alias: {alias}");
             seen_aliases.push(alias);
 
             if let Some(owner) = units
                 .iter()
                 .copied()
-                .find(|candidate| candidate.symbol() == *alias)
+                .find(|candidate| candidate.symbol() == alias)
             {
                 assert!(
                     U::parse_strict(alias) == Ok(owner),
