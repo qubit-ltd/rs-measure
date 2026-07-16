@@ -9,6 +9,7 @@
 
 use rust_decimal::Decimal;
 
+use crate::measure::conversion_factor::reduce_ratio_terms;
 use crate::measure::{
     ConversionOptions,
     MeasurementError,
@@ -17,8 +18,21 @@ use crate::measure::{
 
 /// Converts a value between validated unit definitions without using floats.
 ///
-/// Returns an arithmetic error if any intermediate or requested final scale is
-/// outside the Decimal representation.
+/// # Arguments
+///
+/// * `value` - Decimal value expressed by `source`.
+/// * `source` - Definition of the input unit.
+/// * `target` - Definition of the requested output unit.
+/// * `options` - Final scale and rounding configuration.
+///
+/// # Returns
+///
+/// The converted Decimal value expressed by `target`.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::ArithmeticOverflow`] if any intermediate or
+/// requested final scale is outside the Decimal representation.
 pub(crate) fn convert_decimal(
     value: Decimal,
     source: UnitDefinition,
@@ -36,30 +50,25 @@ pub(crate) fn convert_decimal(
     )?;
     let source_factor = source.factor();
     let target_factor = target.factor();
+    let (source_numerator, target_numerator) = reduce_ratio_terms(
+        source_factor.numerator(),
+        target_factor.numerator(),
+    );
+    let (target_denominator, source_denominator) = reduce_ratio_terms(
+        target_factor.denominator(),
+        source_factor.denominator(),
+    );
     let converted = match (
-        source_factor
-            .numerator()
-            .checked_mul(target_factor.denominator()),
-        source_factor
-            .denominator()
-            .checked_mul(target_factor.numerator()),
+        checked_mul_exact(source_numerator, target_denominator),
+        checked_mul_exact(source_denominator, target_numerator),
     ) {
-        (Some(numerator), Some(denominator))
-            if numerator != Decimal::ZERO && denominator != Decimal::ZERO =>
-        {
+        (Some(numerator), Some(denominator)) => {
             apply_ratio(adjusted, numerator, denominator)?
         }
         _ => {
-            let base = apply_ratio(
-                adjusted,
-                source_factor.numerator(),
-                source_factor.denominator(),
-            )?;
-            apply_ratio(
-                base,
-                target_factor.denominator(),
-                target_factor.numerator(),
-            )?
+            let base =
+                apply_ratio(adjusted, source_numerator, source_denominator)?;
+            apply_ratio(base, target_denominator, target_numerator)?
         }
     };
     let result = converted.checked_sub(target.offset()).ok_or(
@@ -70,10 +79,48 @@ pub(crate) fn convert_decimal(
     apply_output_scale(result, options)
 }
 
+/// Multiplies two positive ratio terms only when no rounding is required.
+///
+/// # Arguments
+///
+/// * `lhs` - The first positive Decimal term.
+/// * `rhs` - The second positive Decimal term.
+///
+/// # Returns
+///
+/// The exact product when its normalized mantissas and combined scale fit in
+/// Decimal, or `None` when multiplication would overflow or require rounding.
+#[inline]
+fn checked_mul_exact(lhs: Decimal, rhs: Decimal) -> Option<Decimal> {
+    let lhs = lhs.normalize();
+    let rhs = rhs.normalize();
+    let scale = lhs.scale() + rhs.scale();
+    if scale > Decimal::MAX_SCALE {
+        return None;
+    }
+    let mantissa = lhs.mantissa().checked_mul(rhs.mantissa())?;
+    Decimal::try_from_i128_with_scale(mantissa, scale).ok()
+}
+
 /// Applies a positive ratio while preferring multiplication before division.
 ///
 /// If multiplication overflows, division is attempted first so a
 /// mathematically representable result can still succeed.
+///
+/// # Arguments
+///
+/// * `value` - Decimal value to scale.
+/// * `numerator` - Positive reduced numerator.
+/// * `denominator` - Positive reduced denominator.
+///
+/// # Returns
+///
+/// `value * numerator / denominator` when representable.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::ArithmeticOverflow`] if neither checked
+/// operation order can represent the result.
 fn apply_ratio(
     value: Decimal,
     numerator: Decimal,
@@ -100,6 +147,21 @@ fn apply_ratio(
 }
 
 /// Applies explicit final rounding and retains exactly the requested scale.
+///
+/// # Arguments
+///
+/// * `value` - Converted Decimal before final output rounding.
+/// * `options` - Optional output scale and rounding strategy.
+///
+/// # Returns
+///
+/// The unchanged value for maximum precision, or a value with exactly the
+/// requested scale.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::ArithmeticOverflow`] when Decimal cannot retain
+/// the requested scale.
 fn apply_output_scale(
     mut value: Decimal,
     options: ConversionOptions,

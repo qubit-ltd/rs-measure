@@ -9,6 +9,7 @@
 //!
 //! Tests for persisted measurements and unit conversions.
 
+mod conversion_factor_tests;
 mod conversion_options_tests;
 mod decimal_conversion_tests;
 mod external_unit_tests;

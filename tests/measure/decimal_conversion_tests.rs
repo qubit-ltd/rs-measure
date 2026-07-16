@@ -155,6 +155,86 @@ fn test_equivalent_tiny_definitions_avoid_combined_ratio_underflow() {
 }
 
 #[test]
+fn test_decimal_conversion_falls_back_when_combined_numerator_underflows() {
+    let tiny = Decimal::new(1, 28);
+    let source = UnitDefinition::new(
+        ConversionFactor::new(tiny, Decimal::ONE)
+            .expect("source factor should be valid"),
+        Decimal::ZERO,
+    );
+    let target = UnitDefinition::new(
+        ConversionFactor::new(Decimal::ONE, tiny)
+            .expect("target factor should be valid"),
+        Decimal::ZERO,
+    );
+    let expected = Decimal::MAX
+        .checked_mul(tiny)
+        .and_then(|value| value.checked_mul(tiny))
+        .expect("sequential products should be representable");
+    assert_ne!(expected, Decimal::ZERO);
+
+    assert_eq!(
+        source.convert_value_to(
+            Decimal::MAX,
+            target,
+            ConversionOptions::default(),
+        ),
+        Ok(expected),
+    );
+}
+
+#[test]
+fn test_decimal_conversion_falls_back_when_combined_denominator_underflows() {
+    let tiny = Decimal::new(1, 28);
+    let source = UnitDefinition::new(
+        ConversionFactor::new(Decimal::ONE, tiny)
+            .expect("source factor should be valid"),
+        Decimal::ZERO,
+    );
+    let target = UnitDefinition::new(
+        ConversionFactor::new(tiny, Decimal::ONE)
+            .expect("target factor should be valid"),
+        Decimal::ZERO,
+    );
+    let expected = Decimal::ONE
+        .checked_div(tiny)
+        .expect("inverse tiny factor should be representable");
+
+    assert_eq!(
+        source.convert_value_to(tiny, target, ConversionOptions::default()),
+        Ok(expected),
+    );
+}
+
+#[test]
+fn test_decimal_conversion_falls_back_when_combined_factor_would_round() {
+    let factor = dec!(0.000000000000012);
+    let source = UnitDefinition::new(
+        ConversionFactor::new(factor, Decimal::ONE)
+            .expect("source factor should be valid"),
+        Decimal::ZERO,
+    );
+    let target = UnitDefinition::new(
+        ConversionFactor::new(Decimal::ONE, factor)
+            .expect("target factor should be valid"),
+        Decimal::ZERO,
+    );
+    let expected = Decimal::MAX
+        .checked_mul(factor)
+        .and_then(|value| value.checked_mul(factor))
+        .expect("sequential products should be representable");
+
+    assert_eq!(
+        source.convert_value_to(
+            Decimal::MAX,
+            target,
+            ConversionOptions::default(),
+        ),
+        Ok(expected),
+    );
+}
+
+#[test]
 fn test_decimal_conversion_reports_unrepresentable_requested_scale() {
     let definition = UnitDefinition::base();
     let options = ConversionOptions::fixed_scale(
@@ -224,6 +304,30 @@ fn test_decimal_conversion_falls_back_when_combined_factor_overflows() {
 }
 
 #[test]
+fn test_decimal_conversion_falls_back_when_combined_mantissa_exceeds_decimal() {
+    let large = dec!(1000000000000000);
+    let source = UnitDefinition::new(
+        ConversionFactor::new(large, Decimal::ONE)
+            .expect("source factor should be valid"),
+        Decimal::ZERO,
+    );
+    let target = UnitDefinition::new(
+        ConversionFactor::new(Decimal::ONE, large)
+            .expect("target factor should be valid"),
+        Decimal::ZERO,
+    );
+
+    assert_eq!(
+        source.convert_value_to(
+            dec!(0.01),
+            target,
+            ConversionOptions::default(),
+        ),
+        Ok(dec!(10000000000000000000000000000)),
+    );
+}
+
+#[test]
 fn test_decimal_conversion_divides_first_after_multiplication_overflow() {
     let reducible = UnitDefinition::new(
         ConversionFactor::new(dec!(10), dec!(10))
@@ -273,5 +377,43 @@ fn test_decimal_conversion_reports_ratio_overflow() {
         Err(MeasurementError::ArithmeticOverflow {
             operation: "multiply conversion ratio",
         }),
+    );
+}
+
+#[test]
+fn test_decimal_conversion_reduces_two_over_two_before_max_arithmetic() {
+    let identity = UnitDefinition::new(
+        ConversionFactor::new(dec!(2), dec!(2))
+            .expect("factor should be valid"),
+        Decimal::ZERO,
+    );
+
+    assert_eq!(
+        identity.convert_value_to(
+            Decimal::MAX,
+            UnitDefinition::base(),
+            ConversionOptions::default(),
+        ),
+        Ok(Decimal::MAX),
+    );
+}
+
+#[test]
+fn test_decimal_conversion_cross_cancels_equal_large_factors() {
+    let factor = ConversionFactor::new(Decimal::MAX, dec!(2))
+        .expect("factor should be valid");
+    let source = UnitDefinition::new(factor, Decimal::ZERO);
+    let target = UnitDefinition::new(factor, Decimal::ONE);
+    let expected = Decimal::MAX
+        .checked_sub(Decimal::ONE)
+        .expect("MAX minus one should be representable");
+
+    assert_eq!(
+        source.convert_value_to(
+            Decimal::MAX,
+            target,
+            ConversionOptions::default(),
+        ),
+        Ok(expected),
     );
 }

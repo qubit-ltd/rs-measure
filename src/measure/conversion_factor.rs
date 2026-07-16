@@ -11,7 +11,11 @@ use rust_decimal::Decimal;
 
 use crate::measure::MeasurementError;
 
-/// A positive unit coefficient represented as an unreduced Decimal ratio.
+/// A positive unit coefficient represented as reduced Decimal ratio terms.
+///
+/// [`ConversionFactor::new`] removes common mantissa factors and common scale
+/// from its inputs. Equality compares the stored reduced terms; it is not a
+/// general mathematical-equivalence solver at Decimal's representation limits.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConversionFactor {
     /// Positive numerator of the exact conversion ratio.
@@ -29,6 +33,18 @@ impl ConversionFactor {
     };
 
     /// Creates a positive conversion factor from a numerator and denominator.
+    ///
+    /// Common mantissa factors and common scale are removed before the factor
+    /// is stored.
+    ///
+    /// # Arguments
+    ///
+    /// * `numerator` - The positive numerator of the conversion ratio.
+    /// * `denominator` - The positive denominator of the conversion ratio.
+    ///
+    /// # Returns
+    ///
+    /// The validated factor with reduced ratio terms.
     ///
     /// # Errors
     ///
@@ -50,6 +66,8 @@ impl ConversionFactor {
                     .to_owned(),
             });
         }
+        let (numerator, denominator) =
+            reduce_ratio_terms(numerator, denominator);
         Ok(Self {
             numerator,
             denominator,
@@ -58,23 +76,96 @@ impl ConversionFactor {
 
     /// Creates a positive integer or finite-Decimal conversion factor.
     ///
+    /// # Arguments
+    ///
+    /// * `value` - Positive finite Decimal coefficient.
+    ///
+    /// # Returns
+    ///
+    /// A validated factor equivalent to `value / 1`.
+    ///
     /// # Errors
     ///
     /// Returns [`MeasurementError::InvalidUnitDefinition`] if `value` is zero
     /// or negative.
+    #[inline(always)]
     pub fn from_integer(value: Decimal) -> Result<Self, MeasurementError> {
         Self::new(value, Decimal::ONE)
     }
 
     /// Returns the numerator of this conversion factor.
+    ///
+    /// # Returns
+    ///
+    /// The positive reduced numerator.
     #[must_use]
+    #[inline(always)]
     pub const fn numerator(self) -> Decimal {
         self.numerator
     }
 
     /// Returns the denominator of this conversion factor.
+    ///
+    /// # Returns
+    ///
+    /// The positive reduced denominator.
     #[must_use]
+    #[inline(always)]
     pub const fn denominator(self) -> Decimal {
         self.denominator
     }
+}
+
+/// Reduces a positive Decimal ratio without multiplying either term.
+///
+/// # Arguments
+///
+/// * `numerator` - The positive ratio numerator.
+/// * `denominator` - The positive ratio denominator.
+///
+/// # Returns
+///
+/// An equivalent numerator and denominator with their mantissa GCD and common
+/// scale removed.
+pub(crate) fn reduce_ratio_terms(
+    numerator: Decimal,
+    denominator: Decimal,
+) -> (Decimal, Decimal) {
+    let numerator_scale = numerator.scale();
+    let denominator_scale = denominator.scale();
+    let common_scale = numerator_scale.min(denominator_scale);
+    let numerator_mantissa = numerator.mantissa();
+    let denominator_mantissa = denominator.mantissa();
+    let divisor =
+        greatest_common_divisor(numerator_mantissa, denominator_mantissa);
+
+    (
+        Decimal::from_i128_with_scale(
+            numerator_mantissa / divisor,
+            numerator_scale - common_scale,
+        ),
+        Decimal::from_i128_with_scale(
+            denominator_mantissa / divisor,
+            denominator_scale - common_scale,
+        ),
+    )
+}
+
+/// Computes the greatest common divisor of two positive integers.
+///
+/// # Arguments
+///
+/// * `lhs` - The first positive integer.
+/// * `rhs` - The second positive integer.
+///
+/// # Returns
+///
+/// The positive greatest common divisor.
+fn greatest_common_divisor(mut lhs: i128, mut rhs: i128) -> i128 {
+    while rhs != 0 {
+        let remainder = lhs % rhs;
+        lhs = rhs;
+        rhs = remainder;
+    }
+    lhs
 }
