@@ -11,9 +11,18 @@ and an optional approximate `uom` bridge.
 
 ## 1. Installation and quick start
 
+The exact Decimal core is the default and does not compile `uom`:
+
 ```toml
 [dependencies]
 qubit-measure = "0.3"
+```
+
+Enable the approximate `f64` bridge explicitly:
+
+```toml
+[dependencies]
+qubit-measure = { version = "0.3", features = ["uom"] }
 ```
 
 ```rust
@@ -125,6 +134,16 @@ Calorie and Btu variants in heat-capacity families use the same thermochemical
 and International Table qualifiers. `CommonYear365` is exactly 31,536,000 seconds;
 it is a fixed duration, not a calendar model.
 
+`MillimeterOfMercury` uses the exact Torr-equivalent definition
+`101325 / 760 Pa` (`20265 / 152 Pa`). Its canonical symbol is `mm Hg`, and
+`mmHg` is accepted as a lenient alias. This differs from the conventional
+rounded `133.3224 Pa` value used by some conversion tables. Applications that
+require that conventional value must define an external unit instead of
+assuming this variant uses it. The optional `uom` bridge uses a private
+Torr-equivalent marker instead of `uom`'s conventional millimeter-of-mercury
+coefficient, so the bridge preserves the same semantic. See [NIST SP 811 Chapter 5](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-5-units-outside-si)
+and [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9).
+
 ## 7. External unit families
 
 `Unit`, `ConversionFactor`, and `UnitDefinition` are public. The exported macro
@@ -153,12 +172,25 @@ and exact definitions. External code may also implement `Unit` manually. Measure
 Serde uses the `Unit` symbol and parsing contract directly, so a manual unit does not
 need separate `Serialize` or `Deserialize` implementations.
 
+Every unit family follows this metadata contract:
+
+- `quantity` is non-empty ASCII `snake_case`, begins with a lowercase letter,
+  and has no leading, trailing, or repeated underscores;
+- canonical symbols are non-empty and unique;
+- aliases are non-empty and unique among aliases;
+- an alias may equal another variant's canonical symbol;
+- canonical symbols are checked first and therefore win;
+- macro-generated families are checked at compilation;
+- manual `Unit` implementations should call `assert_unit_family_valid` in tests;
+- stable Rust cannot prove that a manual enum omitted no variant from `all()`.
+
 ## 8. Approximate `uom` bridge
 
-Families mapped to `uom` implement `UomUnit` and expose
-`to_uom_approx` / `from_uom_approx`. The `_approx` suffix is intentional:
-these adapters cross `Decimal <-> f64` and may lose precision. Persisted unit
-conversion through `convert_to` does not use this bridge.
+This bridge is available only with the default-off `uom` Cargo feature. Without
+that feature, `UomUnit`, `to_uom_approx`, and `from_uom_approx` are absent.
+Families mapped to `uom` implement `UomUnit` when enabled. The `_approx` suffix
+is intentional: these adapters cross `Decimal <-> f64` and may lose precision.
+Persisted unit conversion through `convert_to` does not use this bridge.
 
 ```rust
 use qubit_measure::{Decimal, measurement, unit};

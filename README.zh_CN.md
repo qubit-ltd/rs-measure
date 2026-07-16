@@ -11,9 +11,18 @@
 
 ## 1. 安装与快速开始
 
+默认构建只包含精确 Decimal 核心，不编译 `uom`：
+
 ```toml
 [dependencies]
 qubit-measure = "0.3"
+```
+
+需要近似 `f64` 桥接时显式启用：
+
+```toml
+[dependencies]
+qubit-measure = { version = "0.3", features = ["uom"] }
 ```
 
 ```rust
@@ -116,6 +125,15 @@ assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 热容和比热容中的 calorie、Btu 变体使用相同的 thermochemical 和 International Table 限定。
 `CommonYear365` 精确等于 31,536,000 秒，是固定时长而不是日历模型。
 
+`MillimeterOfMercury` 采用精确的 Torr 等价值 `101325 / 760 Pa`
+（`20265 / 152 Pa`）。其规范符号为 `mm Hg`，宽松解析也接受 `mmHg`。该值不同于
+部分换算表采用的 conventional `133.3224 Pa` 舍入值。若应用需要该 conventional
+值，应定义外部单位，不能假定当前变体采用该值。可选 `uom` 桥接使用私有的 Torr
+等价标记单位，而不采用 `uom` 的 conventional millimeter-of-mercury 系数，因此桥接也
+保持相同语义。参见
+[NIST SP 811 Chapter 5](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-5-units-outside-si)
+和 [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9)。
+
 ## 7. 外部单位族
 
 `Unit`、`ConversionFactor` 和 `UnitDefinition` 均为公开 API。导出的宏支持编译期扩展，
@@ -143,11 +161,23 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 `Unit`。Measurement Serde 直接使用 `Unit` 的符号和解析契约，因此手工单位无需另外实现
 `Serialize` 或 `Deserialize`。
 
+每个单位族都遵守以下元数据契约：
+
+- `quantity` 是非空 ASCII `snake_case`，以小写字母开头，且没有开头、结尾或连续下划线；
+- 规范符号非空且互不重复；
+- 别名非空，且别名之间互不重复；
+- 别名可以等于另一变体的规范符号；
+- 解析时先检查规范符号，因此规范符号优先；
+- 宏生成的单位族在编译期接受检查；
+- 手工 `Unit` 实现应在测试中调用 `assert_unit_family_valid`；
+- stable Rust 无法证明手工枚举的 `all()` 没有遗漏任何变体。
+
 ## 8. 近似 `uom` 桥接
 
-映射到 `uom` 的 family 会实现 `UomUnit`，并提供 `to_uom_approx` / `from_uom_approx`。
-`_approx` 后缀是有意设计：这些适配器会跨越 `Decimal <-> f64`，因此可能损失精度。
-持久化单位换算 `convert_to` 不使用该桥接。
+该桥接只在显式启用默认关闭的 `uom` Cargo feature 后存在。未启用时，`UomUnit`、
+`to_uom_approx` 和 `from_uom_approx` 均不在 API 中。启用后，映射到 `uom` 的 family
+会实现 `UomUnit`。`_approx` 后缀是有意设计：这些适配器会跨越
+`Decimal <-> f64`，因此可能损失精度。持久化单位换算 `convert_to` 不使用该桥接。
 
 ```rust
 use qubit_measure::{Decimal, measurement, unit};
