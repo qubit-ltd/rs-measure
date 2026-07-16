@@ -254,6 +254,7 @@ macro_rules! __define_unit_family_core {
         impl ::std::str::FromStr for $unit {
             type Err = $crate::MeasurementError;
 
+            #[inline(always)]
             fn from_str(input: &str) -> Result<Self, Self::Err> {
                 <Self as $crate::Unit>::parse_lenient(input)
             }
@@ -316,7 +317,7 @@ macro_rules! __define_uom_unit {
                 }
             }
 
-            #[inline(always)]
+            #[inline]
             fn value_from_uom_approx(
                 self,
                 quantity: Self::Quantity,

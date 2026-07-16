@@ -338,6 +338,7 @@ where
 /// non-empty plausible unit suffix are present. Space-separated suffixes may
 /// start with `.`, `+`, or `-`; compact suffixes starting with those reserved
 /// characters return `None` to avoid accepting malformed Decimal text.
+#[inline]
 fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let trimmed = input.trim();
     let value_len = decimal_prefix_len(trimmed)?;
