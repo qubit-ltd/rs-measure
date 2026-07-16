@@ -35,6 +35,12 @@ where
     for case in cases {
         let definition =
             case.unit.definition().expect("definition should be valid");
+        let normalized = qubit_measure::ConversionFactor::new(
+            definition.factor().numerator(),
+            definition.factor().denominator(),
+        )
+        .expect("built-in factor should be positive");
+        assert_eq!(definition.factor(), normalized);
         assert_eq!(
             definition.factor().numerator(),
             Decimal::from_str(case.numerator)

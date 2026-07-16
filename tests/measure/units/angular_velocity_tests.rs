@@ -35,14 +35,14 @@ fn test_angular_velocity_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::AngularVelocity::RevolutionPerSecond,
-            numerator: "6283185307179586",
-            denominator: "1000000000000000",
+            numerator: "3141592653589793",
+            denominator: "500000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::AngularVelocity::RevolutionPerMinute,
-            numerator: "6283185307179586",
-            denominator: "60000000000000000",
+            numerator: "3141592653589793",
+            denominator: "30000000000000000",
             offset: "0",
         },
     ]);

@@ -9,4 +9,5 @@
 //!
 //! Integration tests for persistent measurements and unit conversions.
 
+mod consts_tests;
 mod measure;

@@ -66,6 +66,12 @@ impl ConversionFactor {
                     .to_owned(),
             });
         }
+        if numerator.scale() == 0 && denominator.scale() == 0 {
+            return Ok(Self::from_const_integers(
+                numerator.mantissa(),
+                denominator.mantissa(),
+            ));
+        }
         let (numerator, denominator) =
             reduce_ratio_terms(numerator, denominator);
         Ok(Self {
@@ -91,6 +97,36 @@ impl ConversionFactor {
     #[inline(always)]
     pub fn from_integer(value: Decimal) -> Result<Self, MeasurementError> {
         Self::new(value, Decimal::ONE)
+    }
+
+    /// Creates a reduced conversion factor from positive integer terms in const
+    /// contexts.
+    ///
+    /// # Arguments
+    ///
+    /// * `numerator` - Positive integer numerator.
+    /// * `denominator` - Positive integer denominator.
+    ///
+    /// # Returns
+    ///
+    /// A factor whose integer terms have no common divisor.
+    ///
+    /// # Panics
+    ///
+    /// Panics if either term is non-positive or a reduced term exceeds
+    /// Decimal's 96-bit coefficient range.
+    #[inline]
+    pub(crate) const fn from_const_integers(
+        numerator: i128,
+        denominator: i128,
+    ) -> Self {
+        assert!(numerator > 0);
+        assert!(denominator > 0);
+        let divisor = greatest_common_divisor(numerator, denominator);
+        Self {
+            numerator: decimal_from_positive_integer(numerator / divisor),
+            denominator: decimal_from_positive_integer(denominator / divisor),
+        }
     }
 
     /// Returns the numerator of this conversion factor.
@@ -161,11 +197,39 @@ pub(crate) fn reduce_ratio_terms(
 /// # Returns
 ///
 /// The positive greatest common divisor.
-fn greatest_common_divisor(mut lhs: i128, mut rhs: i128) -> i128 {
+const fn greatest_common_divisor(mut lhs: i128, mut rhs: i128) -> i128 {
     while rhs != 0 {
         let remainder = lhs % rhs;
         lhs = rhs;
         rhs = remainder;
     }
     lhs
+}
+
+/// Converts a positive integer to an unscaled Decimal constant.
+///
+/// # Arguments
+///
+/// * `value` - The positive integer to convert.
+///
+/// # Returns
+///
+/// The equivalent unscaled Decimal value.
+///
+/// # Panics
+///
+/// Panics if `value` is non-positive or exceeds Decimal's 96-bit coefficient
+/// range.
+#[inline]
+const fn decimal_from_positive_integer(value: i128) -> Decimal {
+    assert!(value > 0);
+    let magnitude = value as u128;
+    assert!(magnitude >> 96 == 0);
+    Decimal::from_parts(
+        magnitude as u32,
+        (magnitude >> 32) as u32,
+        (magnitude >> 64) as u32,
+        false,
+        0,
+    )
 }

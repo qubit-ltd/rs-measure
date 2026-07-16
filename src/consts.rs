@@ -61,13 +61,12 @@ macro_rules! definition {
     ($numerator:expr, $denominator:expr, $offset_mantissa:expr, $offset_scale:expr $(,)?) => {{
         let numerator: i128 = $numerator;
         let denominator: i128 = $denominator;
-        assert!(numerator > 0);
-        assert!(denominator > 0);
+        let factor = crate::measure::ConversionFactor::from_const_integers(
+            numerator,
+            denominator,
+        );
         crate::measure::UnitDefinition::new(
-            crate::measure::ConversionFactor {
-                numerator: decimal!(numerator, 0),
-                denominator: decimal!(denominator, 0),
-            },
+            factor,
             decimal!($offset_mantissa, $offset_scale),
         )
     }};

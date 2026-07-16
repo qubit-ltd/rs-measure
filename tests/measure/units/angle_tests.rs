@@ -35,8 +35,8 @@ fn test_angle_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::Angle::Revolution,
-            numerator: "6283185307179586",
-            denominator: "1000000000000000",
+            numerator: "3141592653589793",
+            denominator: "500000000000000",
             offset: "0",
         },
         DefinitionCase {

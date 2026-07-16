@@ -29,8 +29,8 @@ fn test_solid_angle_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::SolidAngle::Spat,
-            numerator: "12566370614359172",
-            denominator: "1000000000000000",
+            numerator: "3141592653589793",
+            denominator: "250000000000000",
             offset: "0",
         },
         DefinitionCase {
