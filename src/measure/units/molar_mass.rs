@@ -8,7 +8,9 @@
 //! Units for persisted molar mass measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MolarMass as UomMolarMass;
+#[cfg(feature = "uom")]
 use uom::si::molar_mass::{
     gram_per_mole,
     kilogram_per_mole,
@@ -16,7 +18,7 @@ use uom::si::molar_mass::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` molar mass quantities.
+    /// Units for persisted molar mass measurements.
     pub enum MolarMass for "molar_mass", uom = UomMolarMass {
         /// Milligram per mole (`mg/mol`).
         MilligramPerMole => { symbol: "mg/mol"; definition: crate::consts::molar_mass::MILLIGRAM_PER_MOLE; uom: milligram_per_mole; }

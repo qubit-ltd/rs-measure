@@ -8,7 +8,9 @@
 //! Units for persisted length measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Length as UomLength;
+#[cfg(feature = "uom")]
 use uom::si::length::{
     centimeter,
     foot,
@@ -23,7 +25,7 @@ use uom::si::length::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` length quantities.
+    /// Units for persisted length measurements.
     pub enum Length for "length", uom = UomLength {
         /// Nanometer (`nm`).
         Nanometer => { symbol: "nm"; definition: crate::consts::length::NANOMETER; uom: nanometer; }

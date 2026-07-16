@@ -8,7 +8,9 @@
 //! Units for persisted molar volume measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MolarVolume as UomMolarVolume;
+#[cfg(feature = "uom")]
 use uom::si::molar_volume::{
     cubic_centimeter_per_mole,
     cubic_decimeter_per_mole,
@@ -16,7 +18,7 @@ use uom::si::molar_volume::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` molar volume quantities.
+    /// Units for persisted molar volume measurements.
     pub enum MolarVolume for "molar_volume", uom = UomMolarVolume {
         /// Cubic centimeter per mole (`cm³/mol`).
         CubicCentimeterPerMole => { symbol: "cm³/mol"; definition: crate::consts::molar_volume::CUBIC_CENTIMETER_PER_MOLE; aliases: ["cm3/mol", "cm^3/mol"]; uom: cubic_centimeter_per_mole; }

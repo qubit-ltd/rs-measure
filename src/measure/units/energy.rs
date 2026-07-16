@@ -8,8 +8,9 @@
 //! Units for persisted energy measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::energy::{
-    btu,
+    btu_it,
     calorie,
     electronvolt,
     joule,
@@ -19,10 +20,11 @@ use uom::si::energy::{
     megajoule,
     watt_hour,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::Energy as UomEnergy;
 
 define_unit_family! {
-    /// Units for persisted `uom` energy quantities.
+    /// Units for persisted energy measurements.
     pub enum Energy for "energy", uom = UomEnergy {
         /// Joule (`J`).
         Joule => { symbol: "J"; definition: crate::consts::energy::JOULE; uom: joule; }
@@ -36,11 +38,12 @@ define_unit_family! {
         KilowattHour => { symbol: "kW · h"; definition: crate::consts::energy::KILOWATT_HOUR; aliases: ["kWh"]; uom: kilowatt_hour; }
         /// Electronvolt (`eV`).
         Electronvolt => { symbol: "eV"; definition: crate::consts::energy::ELECTRONVOLT; uom: electronvolt; }
-        /// Calorie (`cal`).
+        /// Thermochemical calorie with canonical symbol `cal (th)`.
         ThermochemicalCalorie => { symbol: "cal (th)"; definition: crate::consts::energy::THERMOCHEMICAL_CALORIE; aliases: ["cal"]; uom: calorie; }
-        /// Kilocalorie (`kcal`).
+        /// Thermochemical kilocalorie with canonical symbol `kcal (th)`.
         ThermochemicalKilocalorie => { symbol: "kcal (th)"; definition: crate::consts::energy::THERMOCHEMICAL_KILOCALORIE; aliases: ["kcal"]; uom: kilocalorie; }
-        /// British thermal unit (`Btu`).
-        BritishThermalUnitInternationalTable => { symbol: "Btu (IT)"; definition: crate::consts::energy::BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE; aliases: ["Btu", "BTU"]; uom: btu; }
+        /// International Table British thermal unit with canonical symbol
+        /// `Btu (IT)`.
+        BritishThermalUnitInternationalTable => { symbol: "Btu (IT)"; definition: crate::consts::energy::BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE; aliases: ["Btu", "BTU"]; uom: btu_it; }
     }
 }

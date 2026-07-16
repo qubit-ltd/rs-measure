@@ -8,14 +8,16 @@
 //! Units for persisted electrical conductivity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electrical_conductivity::{
     siemens_per_centimeter,
     siemens_per_meter,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricalConductivity as UomElectricalConductivity;
 
 define_unit_family! {
-    /// Units for persisted `uom` electrical conductivity quantities.
+    /// Units for persisted electrical conductivity measurements.
     pub enum ElectricalConductivity for "electrical_conductivity", uom = UomElectricalConductivity {
         /// Siemens per meter (`S/m`).
         SiemensPerMeter => { symbol: "S/m"; definition: crate::consts::electrical_conductivity::SIEMENS_PER_METER; uom: siemens_per_meter; }

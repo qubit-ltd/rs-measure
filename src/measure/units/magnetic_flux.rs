@@ -8,7 +8,9 @@
 //! Units for persisted magnetic flux measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MagneticFlux as UomMagneticFlux;
+#[cfg(feature = "uom")]
 use uom::si::magnetic_flux::{
     maxwell,
     microweber,
@@ -17,7 +19,7 @@ use uom::si::magnetic_flux::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` magnetic flux quantities.
+    /// Units for persisted magnetic flux measurements.
     pub enum MagneticFlux for "magnetic_flux", uom = UomMagneticFlux {
         /// Microweber (`µWb`).
         Microweber => { symbol: "µWb"; definition: crate::consts::magnetic_flux::MICROWEBER; aliases: ["uWb", "μWb"]; uom: microweber; }

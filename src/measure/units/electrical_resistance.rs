@@ -8,6 +8,7 @@
 //! Units for persisted electrical resistance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electrical_resistance::{
     gigaohm,
     kiloohm,
@@ -16,10 +17,11 @@ use uom::si::electrical_resistance::{
     milliohm,
     ohm,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricalResistance as UomElectricalResistance;
 
 define_unit_family! {
-    /// Units for persisted `uom` electrical resistance quantities.
+    /// Units for persisted electrical resistance measurements.
     pub enum ElectricalResistance for "electrical_resistance", uom = UomElectricalResistance {
         /// Microohm (`µΩ`).
         Microohm => { symbol: "µΩ"; definition: crate::consts::electrical_resistance::MICROOHM; aliases: ["uΩ", "μΩ", "uOhm"]; uom: microohm; }

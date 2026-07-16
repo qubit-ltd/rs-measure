@@ -8,7 +8,9 @@
 //! Units for persisted thermal resistance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::ThermalResistance as UomThermalResistance;
+#[cfg(feature = "uom")]
 use uom::si::thermal_resistance::{
     kelvin_per_kilowatt,
     kelvin_per_milliwatt,
@@ -16,7 +18,7 @@ use uom::si::thermal_resistance::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` thermal resistance quantities.
+    /// Units for persisted thermal resistance measurements.
     pub enum ThermalResistance for "thermal_resistance", uom = UomThermalResistance {
         /// Kelvin per milliwatt (`K/mW`).
         KelvinPerMilliwatt => { symbol: "K/mW"; definition: crate::consts::thermal_resistance::KELVIN_PER_MILLIWATT; uom: kelvin_per_milliwatt; }

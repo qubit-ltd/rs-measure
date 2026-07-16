@@ -8,7 +8,9 @@
 //! Units for persisted time measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Time as UomTime;
+#[cfg(feature = "uom")]
 use uom::si::time::{
     day,
     hour,
@@ -21,7 +23,7 @@ use uom::si::time::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` time quantities.
+    /// Units for persisted time measurements.
     pub enum Time for "time", uom = UomTime {
         /// Nanosecond (`ns`).
         Nanosecond => { symbol: "ns"; definition: crate::consts::time::NANOSECOND; uom: nanosecond; }
@@ -37,7 +39,7 @@ define_unit_family! {
         Hour => { symbol: "h"; definition: crate::consts::time::HOUR; uom: hour; }
         /// Day (`d`).
         Day => { symbol: "d"; definition: crate::consts::time::DAY; uom: day; }
-        /// Year (`a`).
+        /// Common 365-day year with canonical symbol `a (365 d)`.
         CommonYear365 => { symbol: "a (365 d)"; definition: crate::consts::time::COMMON_YEAR365; aliases: ["a", "yr", "year"]; uom: year; }
     }
 }

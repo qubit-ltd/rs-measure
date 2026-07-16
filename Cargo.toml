@@ -6,7 +6,7 @@ rust-version = "1.94"
 authors = ["Haixing Hu <starfish.hu@gmail.com>"]
 license = "Apache-2.0"
 repository = "https://github.com/qubit-ltd/rs-measure"
-description = "Persistent typed measurement values with explicit units and uom adapters"
+description = "Persistent typed Decimal measurements with explicit units and optional uom adapters"
 homepage = "https://github.com/qubit-ltd/rs-measure"
 documentation = "https://docs.rs/qubit-measure"
 readme = "README.md"
@@ -22,14 +22,22 @@ include = [
     "/tests/**",
 ]
 
+[features]
+default = []
+uom = ["dep:uom"]
+
 [lib]
 name = "qubit_measure"
+
+[[example]]
+name = "uom_bridge"
+required-features = ["uom"]
 
 [dependencies]
 rust_decimal = { version = "1.39", features = ["macros", "serde-with-str"] }
 serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"
-uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
+uom = { version = "0.38", optional = true, default-features = false, features = ["f64", "si", "std"] }
 
 [dev-dependencies]
 serde_json = "1.0"

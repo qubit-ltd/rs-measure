@@ -8,7 +8,9 @@
 //! Units for persisted molar concentration measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MolarConcentration as UomMolarConcentration;
+#[cfg(feature = "uom")]
 use uom::si::molar_concentration::{
     micromole_per_liter,
     millimole_per_liter,
@@ -19,7 +21,7 @@ use uom::si::molar_concentration::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` molar concentration quantities.
+    /// Units for persisted molar concentration measurements.
     pub enum MolarConcentration for "molar_concentration", uom = UomMolarConcentration {
         /// Nanomole per liter (`nmol/L`).
         NanomolePerLiter => { symbol: "nmol/L"; definition: crate::consts::molar_concentration::NANOMOLE_PER_LITER; uom: nanomole_per_liter; }

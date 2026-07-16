@@ -7,12 +7,19 @@
 // =============================================================================
 //! # qubit-measure
 //!
-//! Persistent typed measurement values with explicit units and `uom` adapters.
+//! Persistent typed Decimal measurement values with explicit units.
+//!
+//! The default build contains the exact Decimal core only. Enable the
+//! default-off `uom` Cargo feature to expose approximate `uom/f64` adapters.
 //! Built-in exact conversion definitions share crate-wide constants grouped by
 //! quantity.
 
 #![deny(missing_docs)]
 #![deny(unsafe_op_in_unsafe_fn)]
+
+#[cfg(feature = "uom")]
+#[macro_use]
+extern crate uom as uom_macros;
 
 #[doc(hidden)]
 #[path = "private.rs"]
@@ -22,6 +29,8 @@ mod measure;
 pub mod measurement;
 pub mod unit;
 
+#[cfg(feature = "uom")]
+pub use measure::UomUnit;
 pub use measure::{
     ConversionFactor,
     ConversionOptions,
@@ -29,7 +38,7 @@ pub use measure::{
     MeasurementError,
     Unit,
     UnitDefinition,
-    UomUnit,
+    assert_unit_family_valid,
 };
 pub use rust_decimal::{
     Decimal,

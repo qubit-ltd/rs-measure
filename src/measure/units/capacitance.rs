@@ -8,6 +8,7 @@
 //! Units for persisted capacitance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::capacitance::{
     farad,
     microfarad,
@@ -15,10 +16,11 @@ use uom::si::capacitance::{
     nanofarad,
     picofarad,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::Capacitance as UomCapacitance;
 
 define_unit_family! {
-    /// Units for persisted `uom` capacitance quantities.
+    /// Units for persisted capacitance measurements.
     pub enum Capacitance for "capacitance", uom = UomCapacitance {
         /// Picofarad (`pF`).
         Picofarad => { symbol: "pF"; definition: crate::consts::capacitance::PICOFARAD; uom: picofarad; }

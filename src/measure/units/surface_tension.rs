@@ -8,7 +8,9 @@
 //! Units for persisted surface tension measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::SurfaceTension as UomSurfaceTension;
+#[cfg(feature = "uom")]
 use uom::si::surface_tension::{
     dyne_per_centimeter,
     joule_per_square_meter,
@@ -17,7 +19,7 @@ use uom::si::surface_tension::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` surface tension quantities.
+    /// Units for persisted surface tension measurements.
     pub enum SurfaceTension for "surface_tension", uom = UomSurfaceTension {
         /// Millinewton per meter (`mN/m`).
         MillinewtonPerMeter => { symbol: "mN/m"; definition: crate::consts::surface_tension::MILLINEWTON_PER_METER; uom: millinewton_per_meter; }

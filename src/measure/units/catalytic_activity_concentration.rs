@@ -8,15 +8,17 @@
 //! Units for persisted catalytic activity concentration measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::catalytic_activity_concentration::{
     enzyme_unit_per_liter,
     katal_per_cubic_meter,
     milli_enzyme_unit_per_milliliter,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::CatalyticActivityConcentration as UomCatalyticActivityConcentration;
 
 define_unit_family! {
-    /// Units for persisted `uom` catalytic activity concentration quantities.
+    /// Units for persisted catalytic activity concentration measurements.
     pub enum CatalyticActivityConcentration for "catalytic_activity_concentration", uom = UomCatalyticActivityConcentration {
         /// Katal per cubic meter (`kat/m³`).
         KatalPerCubicMeter => { symbol: "kat/m³"; definition: crate::consts::catalytic_activity_concentration::KATAL_PER_CUBIC_METER; aliases: ["kat/m3", "kat/m^3"]; uom: katal_per_cubic_meter; }

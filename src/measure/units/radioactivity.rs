@@ -8,7 +8,9 @@
 //! Units for persisted radioactivity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Radioactivity as UomRadioactivity;
+#[cfg(feature = "uom")]
 use uom::si::radioactivity::{
     becquerel,
     curie,
@@ -20,7 +22,7 @@ use uom::si::radioactivity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` radioactivity quantities.
+    /// Units for persisted radioactivity measurements.
     pub enum Radioactivity for "radioactivity", uom = UomRadioactivity {
         /// Becquerel (`Bq`).
         Becquerel => { symbol: "Bq"; definition: crate::consts::radioactivity::BECQUEREL; uom: becquerel; }

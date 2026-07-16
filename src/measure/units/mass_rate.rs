@@ -8,7 +8,9 @@
 //! Units for persisted mass rate measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MassRate as UomMassRate;
+#[cfg(feature = "uom")]
 use uom::si::mass_rate::{
     gram_per_second,
     kilogram_per_hour,
@@ -19,7 +21,7 @@ use uom::si::mass_rate::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` mass rate quantities.
+    /// Units for persisted mass rate measurements.
     pub enum MassRate for "mass_rate", uom = UomMassRate {
         /// Milligram per second (`mg/s`).
         MilligramPerSecond => { symbol: "mg/s"; definition: crate::consts::mass_rate::MILLIGRAM_PER_SECOND; uom: milligram_per_second; }

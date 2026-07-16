@@ -8,7 +8,9 @@
 //! Units for persisted thermodynamic temperature measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::ThermodynamicTemperature as UomTemperature;
+#[cfg(feature = "uom")]
 use uom::si::thermodynamic_temperature::{
     degree_celsius,
     degree_fahrenheit,
@@ -17,7 +19,7 @@ use uom::si::thermodynamic_temperature::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` thermodynamic temperature quantities.
+    /// Units for persisted thermodynamic temperature measurements.
     pub enum Temperature for "temperature", uom = UomTemperature {
         /// Kelvin (`K`).
         Kelvin => { symbol: "K"; definition: crate::consts::temperature::KELVIN; uom: kelvin; }

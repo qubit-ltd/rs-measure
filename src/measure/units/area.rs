@@ -8,6 +8,7 @@
 //! Units for persisted area measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::area::{
     acre,
     hectare,
@@ -20,10 +21,11 @@ use uom::si::area::{
     square_millimeter,
     square_yard,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::Area as UomArea;
 
 define_unit_family! {
-    /// Units for persisted `uom` area quantities.
+    /// Units for persisted area measurements.
     pub enum Area for "area", uom = UomArea {
         /// Square millimeter (`mm²`).
         SquareMillimeter => { symbol: "mm²"; definition: crate::consts::area::SQUARE_MILLIMETER; aliases: ["mm2", "mm^2"]; uom: square_millimeter; }

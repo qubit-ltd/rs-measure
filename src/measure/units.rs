@@ -5,7 +5,7 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Unit families backed by `uom` quantities.
+//! Exact unit families with an optional `uom` bridge.
 
 mod acceleration;
 mod amount_of_substance;
@@ -32,6 +32,8 @@ mod heat_capacity;
 mod heat_flux_density;
 mod illuminance;
 mod inductance;
+#[cfg(feature = "uom")]
+mod internal;
 mod kinematic_viscosity;
 mod length;
 mod luminance;
@@ -122,6 +124,12 @@ pub use volume::Volume;
 pub use volume_rate::VolumeRate;
 
 /// Builds a validated Decimal conversion factor for an exported unit macro.
+///
+/// Accepts either one positive Decimal literal or a positive
+/// `numerator / denominator` literal pair. The expansion returns the same
+/// validation result as
+/// [`ConversionFactor::from_integer`](crate::ConversionFactor::from_integer) or
+/// [`ConversionFactor::new`](crate::ConversionFactor::new).
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __unit_factor {
@@ -139,6 +147,9 @@ macro_rules! __unit_factor {
 }
 
 /// Produces an optional Decimal offset for an exported unit macro.
+///
+/// An empty invocation expands to [`Decimal::ZERO`](crate::Decimal::ZERO); one
+/// Decimal literal expands to that exact value.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __unit_offset {
@@ -151,6 +162,10 @@ macro_rules! __unit_offset {
 }
 
 /// Implements the exact unit metadata shared by public macro variants.
+///
+/// The expansion validates quantity, canonical-symbol, and alias metadata at
+/// compilation, then generates the enum, [`Unit`](crate::Unit), display,
+/// lenient `FromStr`, and canonical string Serde implementations.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __define_unit_family_core {
@@ -167,6 +182,22 @@ macro_rules! __define_unit_family_core {
             )+
         }
     ) => {
+        const _: () = {
+            const SYMBOLS: &[&str] = &[
+                $($symbol,)+
+            ];
+            const ALIASES: &[&str] = &[
+                $(
+                    $($($alias,)*)?
+                )+
+            ];
+            $crate::__private::assert_unit_family_metadata(
+                $quantity_name,
+                SYMBOLS,
+                ALIASES,
+            );
+        };
+
         $(#[$enum_attr])*
         #[non_exhaustive]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
@@ -199,7 +230,7 @@ macro_rules! __define_unit_family_core {
                 }
             }
 
-            #[inline]
+            #[inline(always)]
             fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
                 match self {
                     $(Self::$variant => $definition,)+
@@ -217,7 +248,6 @@ macro_rules! __define_unit_family_core {
         impl ::std::str::FromStr for $unit {
             type Err = $crate::MeasurementError;
 
-            #[inline]
             fn from_str(input: &str) -> Result<Self, Self::Err> {
                 <Self as $crate::Unit>::parse_lenient(input)
             }
@@ -248,12 +278,180 @@ macro_rules! __define_unit_family_core {
     };
 }
 
+/// Implements the approximate `uom` bridge when its Cargo feature is enabled.
+///
+/// The expansion maps each exact unit variant to its corresponding
+/// `uom/f64` unit and converts at the explicit approximation boundary.
+#[cfg(feature = "uom")]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __define_uom_unit {
+    (
+        $unit:ident,
+        $quantity_ty:ty,
+        {
+            $($variant:ident => $uom_unit:ty;)+
+        }
+    ) => {
+        impl $crate::UomUnit for $unit {
+            type Quantity = $quantity_ty;
+
+            #[inline(always)]
+            fn to_uom_approx(
+                self,
+                value: $crate::Decimal,
+            ) -> Self::Quantity {
+                let value = $crate::__private::decimal_to_f64_approx(value);
+                match self {
+                    $(
+                        Self::$variant =>
+                            <$quantity_ty>::new::<$uom_unit>(value),
+                    )+
+                }
+            }
+
+            #[inline(always)]
+            fn value_from_uom_approx(
+                self,
+                quantity: Self::Quantity,
+            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
+                let value = match self {
+                    $(
+                        Self::$variant => quantity.get::<$uom_unit>(),
+                    )+
+                };
+                $crate::__private::decimal_from_f64_approx(value)
+            }
+        }
+    };
+}
+
+/// Discards approximate bridge metadata when the `uom` feature is disabled.
+///
+/// This keeps exact unit-family macro invocations valid without compiling or
+/// exposing any `uom` type.
+#[cfg(not(feature = "uom"))]
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __define_uom_unit {
+    ($($tokens:tt)*) => {};
+}
+
 /// Defines an externally extensible unit family with exact Decimal factors.
 ///
 /// The generated type implements [`Unit`](crate::Unit), display, lenient
 /// `FromStr`, and canonical string Serde. Supplying `uom = Quantity` plus a
 /// `uom` type for every variant also implements the optional approximate
-/// [`UomUnit`](crate::UomUnit) bridge.
+/// `UomUnit` bridge when the `uom` Cargo feature is enabled. Exact `Unit`
+/// generation is unconditional.
+///
+/// # Syntax and generated API
+///
+/// Each variant supplies a canonical `symbol` and either an exact `definition`
+/// path or a positive Decimal `coefficient`, optionally written as a ratio and
+/// followed by an `offset`. An optional `aliases` list enables lenient input.
+/// The `uom = Quantity` forms additionally require one `uom` unit type per
+/// variant, but those tokens are used only when the `uom` feature is enabled.
+///
+/// The generated enum is non-exhaustive and implements [`Unit`](crate::Unit),
+/// `Display`, lenient `FromStr`, and canonical string Serde. Its `all()` slice
+/// is generated from every declared variant, so it is complete by
+/// construction.
+///
+/// # Metadata contract
+///
+/// - the quantity is non-empty ASCII `snake_case`, starts with a lowercase
+///   letter, and has no leading, trailing, or repeated underscores;
+/// - the family is non-empty;
+/// - canonical symbols are non-empty and unique;
+/// - aliases are non-empty and unique among aliases;
+/// - an alias may equal another variant's canonical symbol;
+/// - canonical symbols are searched first and therefore win during parsing.
+///
+/// Violating a statically expressible metadata rule fails compilation. A
+/// coefficient still returns
+/// [`MeasurementError::InvalidUnitDefinition`](crate::MeasurementError::InvalidUnitDefinition)
+/// if its Decimal factor is not positive when the generated definition is
+/// requested.
+///
+/// # Examples
+///
+/// An alias-to-canonical collision is valid and the canonical owner wins:
+///
+/// ```
+/// use qubit_measure::{
+///     Unit,
+///     define_unit_family,
+/// };
+///
+/// define_unit_family! {
+///     /// Unit family demonstrating canonical-symbol priority.
+///     enum CollisionUnit for "collision_unit" {
+///         /// Variant that owns the colliding alias.
+///         AliasOwner => {
+///             symbol: "alias-owner";
+///             coefficient: 1;
+///             aliases: ["canonical"];
+///         }
+///         /// Variant that owns the canonical symbol.
+///         CanonicalOwner => {
+///             symbol: "canonical";
+///             coefficient: 1;
+///         }
+///     }
+/// }
+///
+/// assert_eq!(
+///     CollisionUnit::parse_lenient("canonical"),
+///     Ok(CollisionUnit::CanonicalOwner),
+/// );
+/// ```
+///
+/// Duplicate canonical symbols are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with duplicate canonical symbols.
+///     enum DuplicateSymbolUnit for "duplicate_symbol_unit" {
+///         /// First duplicate owner.
+///         First => {
+///             symbol: "x";
+///             coefficient: 1;
+///         }
+///         /// Second duplicate owner.
+///         Second => {
+///             symbol: "x";
+///             coefficient: 1;
+///         }
+///     }
+/// }
+/// ```
+///
+/// Duplicate aliases are also rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with duplicate aliases.
+///     enum DuplicateAliasUnit for "duplicate_alias_unit" {
+///         /// First duplicate alias owner.
+///         First => {
+///             symbol: "first";
+///             coefficient: 1;
+///             aliases: ["duplicate"];
+///         }
+///         /// Second duplicate alias owner.
+///         Second => {
+///             symbol: "second";
+///             coefficient: 1;
+///             aliases: ["duplicate"];
+///         }
+///     }
+/// }
+/// ```
 #[macro_export]
 macro_rules! define_unit_family {
     (
@@ -284,26 +482,11 @@ macro_rules! define_unit_family {
             }
         }
 
-        impl $crate::UomUnit for $unit {
-            type Quantity = $quantity_ty;
-
-            #[inline(always)]
-            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
-                let value = $crate::__private::decimal_to_f64_approx(value);
-                match self {
-                    $(Self::$variant => <$quantity_ty>::new::<$uom_unit>(value),)+
-                }
-            }
-
-            #[inline(always)]
-            fn value_from_uom_approx(
-                self,
-                quantity: Self::Quantity,
-            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
-                let value = match self {
-                    $(Self::$variant => quantity.get::<$uom_unit>(),)+
-                };
-                $crate::__private::decimal_from_f64_approx(value)
+        $crate::__define_uom_unit! {
+            $unit,
+            $quantity_ty,
+            {
+                $($variant => $uom_unit;)+
             }
         }
     };
@@ -344,26 +527,11 @@ macro_rules! define_unit_family {
             }
         }
 
-        impl $crate::UomUnit for $unit {
-            type Quantity = $quantity_ty;
-
-            #[inline(always)]
-            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
-                let value = $crate::__private::decimal_to_f64_approx(value);
-                match self {
-                    $(Self::$variant => <$quantity_ty>::new::<$uom_unit>(value),)+
-                }
-            }
-
-            #[inline(always)]
-            fn value_from_uom_approx(
-                self,
-                quantity: Self::Quantity,
-            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
-                let value = match self {
-                    $(Self::$variant => quantity.get::<$uom_unit>(),)+
-                };
-                $crate::__private::decimal_from_f64_approx(value)
+        $crate::__define_uom_unit! {
+            $unit,
+            $quantity_ty,
+            {
+                $($variant => $uom_unit;)+
             }
         }
     };

@@ -8,7 +8,9 @@
 //! Units for persisted power measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Power as UomPower;
+#[cfg(feature = "uom")]
 use uom::si::power::{
     horsepower,
     kilowatt,
@@ -20,7 +22,7 @@ use uom::si::power::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` power quantities.
+    /// Units for persisted power measurements.
     pub enum Power for "power", uom = UomPower {
         /// Nanowatt (`nW`).
         Nanowatt => { symbol: "nW"; definition: crate::consts::power::NANOWATT; uom: nanowatt; }
@@ -34,7 +36,7 @@ define_unit_family! {
         Kilowatt => { symbol: "kW"; definition: crate::consts::power::KILOWATT; uom: kilowatt; }
         /// Megawatt (`MW`).
         Megawatt => { symbol: "MW"; definition: crate::consts::power::MEGAWATT; uom: megawatt; }
-        /// Horsepower (`hp`).
+        /// Mechanical horsepower with canonical symbol `hp (mechanical)`.
         MechanicalHorsepower => { symbol: "hp (mechanical)"; definition: crate::consts::power::MECHANICAL_HORSEPOWER; aliases: ["hp"]; uom: horsepower; }
     }
 }

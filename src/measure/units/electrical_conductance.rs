@@ -8,15 +8,17 @@
 //! Units for persisted electrical conductance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electrical_conductance::{
     microsiemens,
     millisiemens,
     siemens,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricalConductance as UomElectricalConductance;
 
 define_unit_family! {
-    /// Units for persisted `uom` electrical conductance quantities.
+    /// Units for persisted electrical conductance measurements.
     pub enum ElectricalConductance for "electrical_conductance", uom = UomElectricalConductance {
         /// Microsiemens (`µS`).
         Microsiemens => { symbol: "µS"; definition: crate::consts::electrical_conductance::MICROSIEMENS; aliases: ["uS", "μS"]; uom: microsiemens; }

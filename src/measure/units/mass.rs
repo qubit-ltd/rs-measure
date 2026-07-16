@@ -8,7 +8,9 @@
 //! Units for persisted mass measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Mass as UomMass;
+#[cfg(feature = "uom")]
 use uom::si::mass::{
     carat,
     gram,
@@ -23,7 +25,7 @@ use uom::si::mass::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` mass quantities.
+    /// Units for persisted mass measurements.
     pub enum Mass for "mass", uom = UomMass {
         /// Microgram (`µg`).
         Microgram => { symbol: "µg"; definition: crate::consts::mass::MICROGRAM; aliases: ["ug", "μg"]; uom: microgram; }

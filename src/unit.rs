@@ -7,11 +7,13 @@
 // =============================================================================
 //! Unit families supported by persisted measurements.
 
+#[cfg(feature = "uom")]
+pub use crate::UomUnit;
 pub use crate::{
     ConversionFactor,
     Unit,
     UnitDefinition,
-    UomUnit,
+    assert_unit_family_valid,
 };
 
 pub use crate::measure::{

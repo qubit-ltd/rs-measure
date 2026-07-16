@@ -8,7 +8,9 @@
 //! Units for persisted volume measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Volume as UomVolume;
+#[cfg(feature = "uom")]
 use uom::si::volume::{
     cubic_centimeter,
     cubic_foot,
@@ -27,7 +29,7 @@ use uom::si::volume::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` volume quantities.
+    /// Units for persisted volume measurements.
     pub enum Volume for "volume", uom = UomVolume {
         /// Cubic millimeter (`mm³`).
         CubicMillimeter => { symbol: "mm³"; definition: crate::consts::volume::CUBIC_MILLIMETER; aliases: ["mm3", "mm^3"]; uom: cubic_millimeter; }
@@ -47,15 +49,15 @@ define_unit_family! {
         CubicFoot => { symbol: "ft³"; definition: crate::consts::volume::CUBIC_FOOT; aliases: ["ft3", "ft^3"]; uom: cubic_foot; }
         /// Cubic yard (`yd³`).
         CubicYard => { symbol: "yd³"; definition: crate::consts::volume::CUBIC_YARD; aliases: ["yd3", "yd^3"]; uom: cubic_yard; }
-        /// US fluid ounce (`fl oz`).
+        /// US fluid ounce with canonical symbol `fl oz (US)`.
         UsFluidOunce => { symbol: "fl oz (US)"; definition: crate::consts::volume::US_FLUID_OUNCE; aliases: ["fl oz"]; uom: fluid_ounce; }
-        /// US cup (`cup`).
+        /// US customary cup with canonical symbol `cup (US customary)`.
         UsCustomaryCup => { symbol: "cup (US customary)"; definition: crate::consts::volume::US_CUSTOMARY_CUP; aliases: ["cup"]; uom: cup; }
-        /// US liquid pint (`liq pt`).
+        /// US liquid pint with canonical symbol `pt (US liq)`.
         UsLiquidPint => { symbol: "pt (US liq)"; definition: crate::consts::volume::US_LIQUID_PINT; aliases: ["liq pt"]; uom: pint_liquid; }
-        /// US liquid quart (`liq qt`).
+        /// US liquid quart with canonical symbol `qt (US liq)`.
         UsLiquidQuart => { symbol: "qt (US liq)"; definition: crate::consts::volume::US_LIQUID_QUART; aliases: ["liq qt"]; uom: quart_liquid; }
-        /// Gallon (`gal`).
+        /// US liquid gallon with canonical symbol `gal (US)`.
         UsLiquidGallon => { symbol: "gal (US)"; definition: crate::consts::volume::US_LIQUID_GALLON; aliases: ["gal"]; uom: gallon; }
     }
 }

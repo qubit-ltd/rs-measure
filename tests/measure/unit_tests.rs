@@ -9,10 +9,21 @@
 use qubit_measure::{
     MeasurementError,
     Unit,
+    assert_unit_family_valid,
     measurement,
     unit,
 };
 use rust_decimal::Decimal;
+
+use crate::measure::support::{
+    DUPLICATE_ALIAS,
+    DUPLICATE_ALL,
+    DUPLICATE_SYMBOL,
+    INVALID_DEFINITION,
+    INVALID_QUANTITY,
+    ManualValidationUnit,
+    VALID,
+};
 
 #[test]
 fn test_unit_trait_exposes_typed_quantity_metadata() {
@@ -56,4 +67,39 @@ fn test_strict_unit_parser_rejects_unknown_unit() {
         unit::Time::parse_strict("fortnight"),
         Err(MeasurementError::UnknownUnit { .. }),
     ));
+}
+
+#[test]
+fn test_assert_unit_family_valid_accepts_valid_manual_family() {
+    assert_unit_family_valid::<ManualValidationUnit<VALID>>();
+}
+
+#[test]
+#[should_panic(expected = "duplicate all() entry")]
+fn test_assert_unit_family_valid_rejects_duplicate_all_entry() {
+    assert_unit_family_valid::<ManualValidationUnit<DUPLICATE_ALL>>();
+}
+
+#[test]
+#[should_panic(expected = "duplicate canonical symbol")]
+fn test_assert_unit_family_valid_rejects_duplicate_symbol() {
+    assert_unit_family_valid::<ManualValidationUnit<DUPLICATE_SYMBOL>>();
+}
+
+#[test]
+#[should_panic(expected = "duplicate alias")]
+fn test_assert_unit_family_valid_rejects_duplicate_alias() {
+    assert_unit_family_valid::<ManualValidationUnit<DUPLICATE_ALIAS>>();
+}
+
+#[test]
+#[should_panic(expected = "ASCII snake_case")]
+fn test_assert_unit_family_valid_rejects_invalid_quantity() {
+    assert_unit_family_valid::<ManualValidationUnit<INVALID_QUANTITY>>();
+}
+
+#[test]
+#[should_panic(expected = "invalid definition for base")]
+fn test_assert_unit_family_valid_rejects_invalid_definition() {
+    assert_unit_family_valid::<ManualValidationUnit<INVALID_DEFINITION>>();
 }

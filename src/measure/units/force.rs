@@ -8,7 +8,9 @@
 //! Units for persisted force measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Force as UomForce;
+#[cfg(feature = "uom")]
 use uom::si::force::{
     gram_force,
     kilogram_force,
@@ -20,7 +22,7 @@ use uom::si::force::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` force quantities.
+    /// Units for persisted force measurements.
     pub enum Force for "force", uom = UomForce {
         /// Millinewton (`mN`).
         Millinewton => { symbol: "mN"; definition: crate::consts::force::MILLINEWTON; uom: millinewton; }

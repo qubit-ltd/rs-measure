@@ -9,12 +9,19 @@
 //!
 //! Tests for persisted measurements and unit conversions.
 
+mod fixtures;
+mod support;
+
 mod conversion_factor_tests;
 mod conversion_options_tests;
 mod decimal_conversion_tests;
 mod external_unit_tests;
 mod measurement_error_tests;
 mod measurement_tests;
+mod private_tests;
 mod unit_definition_tests;
 mod unit_tests;
+mod units;
 mod units_tests;
+#[cfg(feature = "uom")]
+mod uom_unit_tests;

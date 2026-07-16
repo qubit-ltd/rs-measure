@@ -8,7 +8,9 @@
 //! Units for persisted luminance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Luminance as UomLuminance;
+#[cfg(feature = "uom")]
 use uom::si::luminance::{
     candela_per_square_centimeter,
     candela_per_square_foot,
@@ -18,7 +20,7 @@ use uom::si::luminance::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` luminance quantities.
+    /// Units for persisted luminance measurements.
     pub enum Luminance for "luminance", uom = UomLuminance {
         /// Candela per square meter (`cd/m²`).
         CandelaPerSquareMeter => { symbol: "cd/m²"; definition: crate::consts::luminance::CANDELA_PER_SQUARE_METER; aliases: ["cd/m2", "cd/m^2"]; uom: candela_per_square_meter; }

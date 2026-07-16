@@ -8,6 +8,7 @@
 //! Units for persisted electric current measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electric_current::{
     ampere,
     kiloampere,
@@ -17,10 +18,11 @@ use uom::si::electric_current::{
     nanoampere,
     picoampere,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricCurrent as UomElectricCurrent;
 
 define_unit_family! {
-    /// Units for persisted `uom` electric current quantities.
+    /// Units for persisted electric current measurements.
     pub enum ElectricCurrent for "electric_current", uom = UomElectricCurrent {
         /// Picoampere (`pA`).
         Picoampere => { symbol: "pA"; definition: crate::consts::electric_current::PICOAMPERE; uom: picoampere; }

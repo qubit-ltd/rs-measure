@@ -8,7 +8,9 @@
 //! Units for persisted thermal conductivity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::ThermalConductivity as UomThermalConductivity;
+#[cfg(feature = "uom")]
 use uom::si::thermal_conductivity::{
     kilowatt_per_meter_kelvin,
     milliwatt_per_meter_kelvin,
@@ -17,7 +19,7 @@ use uom::si::thermal_conductivity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` thermal conductivity quantities.
+    /// Units for persisted thermal conductivity measurements.
     pub enum ThermalConductivity for "thermal_conductivity", uom = UomThermalConductivity {
         /// Milliwatt per meter kelvin (`mW/(m · K)`).
         MilliwattPerMeterKelvin => { symbol: "mW/(m · K)"; definition: crate::consts::thermal_conductivity::MILLIWATT_PER_METER_KELVIN; aliases: ["mW/(m*K)"]; uom: milliwatt_per_meter_kelvin; }

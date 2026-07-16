@@ -8,7 +8,9 @@
 //! Units for persisted magnetic flux density measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MagneticFluxDensity as UomMagneticFluxDensity;
+#[cfg(feature = "uom")]
 use uom::si::magnetic_flux_density::{
     gauss,
     microtesla,
@@ -18,7 +20,7 @@ use uom::si::magnetic_flux_density::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` magnetic flux density quantities.
+    /// Units for persisted magnetic flux density measurements.
     pub enum MagneticFluxDensity for "magnetic_flux_density", uom = UomMagneticFluxDensity {
         /// Nanotesla (`nT`).
         Nanotesla => { symbol: "nT"; definition: crate::consts::magnetic_flux_density::NANOTESLA; uom: nanotesla; }

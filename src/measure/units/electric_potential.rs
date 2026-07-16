@@ -8,6 +8,7 @@
 //! Units for persisted electric potential measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electric_potential::{
     kilovolt,
     megavolt,
@@ -16,10 +17,11 @@ use uom::si::electric_potential::{
     nanovolt,
     volt,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricPotential as UomElectricPotential;
 
 define_unit_family! {
-    /// Units for persisted `uom` electric potential quantities.
+    /// Units for persisted electric potential measurements.
     ///
     /// Electric potential is the SI quantity commonly called voltage.
     pub enum ElectricPotential for "electric_potential", uom = UomElectricPotential {

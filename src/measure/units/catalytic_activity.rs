@@ -8,6 +8,7 @@
 //! Units for persisted catalytic activity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::catalytic_activity::{
     enzyme_unit,
     katal,
@@ -15,10 +16,11 @@ use uom::si::catalytic_activity::{
     milli_enzyme_unit,
     millikatal,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::CatalyticActivity as UomCatalyticActivity;
 
 define_unit_family! {
-    /// Units for persisted `uom` catalytic activity quantities.
+    /// Units for persisted catalytic activity measurements.
     pub enum CatalyticActivity for "catalytic_activity", uom = UomCatalyticActivity {
         /// Microkatal (`µkat`).
         Microkatal => { symbol: "µkat"; definition: crate::consts::catalytic_activity::MICROKATAL; aliases: ["ukat", "μkat"]; uom: microkatal; }

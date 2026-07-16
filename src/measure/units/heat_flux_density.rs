@@ -8,7 +8,9 @@
 //! Units for persisted heat flux density measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::HeatFluxDensity as UomHeatFluxDensity;
+#[cfg(feature = "uom")]
 use uom::si::heat_flux_density::{
     kilowatt_per_square_meter,
     milliwatt_per_square_meter,
@@ -17,7 +19,7 @@ use uom::si::heat_flux_density::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` heat flux density quantities.
+    /// Units for persisted heat flux density measurements.
     pub enum HeatFluxDensity for "heat_flux_density", uom = UomHeatFluxDensity {
         /// Milliwatt per square meter (`mW/m²`).
         MilliwattPerSquareMeter => { symbol: "mW/m²"; definition: crate::consts::heat_flux_density::MILLIWATT_PER_SQUARE_METER; aliases: ["mW/m2", "mW/m^2"]; uom: milliwatt_per_square_meter; }

@@ -8,7 +8,9 @@
 //! Units for persisted luminous intensity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::LuminousIntensity as UomLuminousIntensity;
+#[cfg(feature = "uom")]
 use uom::si::luminous_intensity::{
     candela,
     kilocandela,
@@ -16,7 +18,7 @@ use uom::si::luminous_intensity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` luminous intensity quantities.
+    /// Units for persisted luminous intensity measurements.
     pub enum LuminousIntensity for "luminous_intensity", uom = UomLuminousIntensity {
         /// Millicandela (`mcd`).
         Millicandela => { symbol: "mcd"; definition: crate::consts::luminous_intensity::MILLICANDELA; uom: millicandela; }

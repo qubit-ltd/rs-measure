@@ -8,7 +8,9 @@
 //! Units for persisted specific radioactivity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::SpecificRadioactivity as UomSpecificRadioactivity;
+#[cfg(feature = "uom")]
 use uom::si::specific_radioactivity::{
     becquerel_per_kilogram,
     curie_per_kilogram,
@@ -16,7 +18,7 @@ use uom::si::specific_radioactivity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` specific radioactivity quantities.
+    /// Units for persisted specific radioactivity measurements.
     pub enum SpecificRadioactivity for "specific_radioactivity", uom = UomSpecificRadioactivity {
         /// Becquerel per kilogram (`Bq/kg`).
         BecquerelPerKilogram => { symbol: "Bq/kg"; definition: crate::consts::specific_radioactivity::BECQUEREL_PER_KILOGRAM; uom: becquerel_per_kilogram; }

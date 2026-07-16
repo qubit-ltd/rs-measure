@@ -8,7 +8,9 @@
 //! Units for persisted solid angle measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::SolidAngle as UomSolidAngle;
+#[cfg(feature = "uom")]
 use uom::si::solid_angle::{
     spat,
     square_degree,
@@ -16,7 +18,7 @@ use uom::si::solid_angle::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` solid angle quantities.
+    /// Units for persisted solid angle measurements.
     pub enum SolidAngle for "solid_angle", uom = UomSolidAngle {
         /// Steradian (`sr`).
         Steradian => { symbol: "sr"; definition: crate::consts::solid_angle::STERADIAN; uom: steradian; }

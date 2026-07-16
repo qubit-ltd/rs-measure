@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "checks": [
+    {
+      "name": "default-core",
+      "commands": ["check", "test", "doc", "doc-test", "clippy"],
+      "defaultFeatures": true
+    },
+    {
+      "name": "uom",
+      "commands": ["check", "test", "doc", "doc-test", "clippy"],
+      "defaultFeatures": false,
+      "features": ["uom"]
+    }
+  ]
+}

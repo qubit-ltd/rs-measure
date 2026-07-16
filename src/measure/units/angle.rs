@@ -8,6 +8,7 @@
 //! Units for persisted angle measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::angle::{
     degree,
     minute,
@@ -15,10 +16,11 @@ use uom::si::angle::{
     revolution,
     second,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::Angle as UomAngle;
 
 define_unit_family! {
-    /// Units for persisted `uom` angle quantities.
+    /// Units for persisted angle measurements.
     pub enum Angle for "angle", uom = UomAngle {
         /// Radian (`rad`).
         Radian => { symbol: "rad"; definition: crate::consts::angle::RADIAN; uom: radian; }

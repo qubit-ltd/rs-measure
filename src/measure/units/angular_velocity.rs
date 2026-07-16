@@ -8,16 +8,18 @@
 //! Units for persisted angular velocity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::angular_velocity::{
     degree_per_second,
     radian_per_second,
     revolution_per_minute,
     revolution_per_second,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::AngularVelocity as UomAngularVelocity;
 
 define_unit_family! {
-    /// Units for persisted `uom` angular velocity quantities.
+    /// Units for persisted angular velocity measurements.
     pub enum AngularVelocity for "angular_velocity", uom = UomAngularVelocity {
         /// Radian per second (`rad/s`).
         RadianPerSecond => { symbol: "rad/s"; definition: crate::consts::angular_velocity::RADIAN_PER_SECOND; uom: radian_per_second; }

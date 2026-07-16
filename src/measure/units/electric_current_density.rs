@@ -8,15 +8,17 @@
 //! Units for persisted electric current density measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electric_current_density::{
     ampere_per_square_centimeter,
     ampere_per_square_meter,
     ampere_per_square_millimeter,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricCurrentDensity as UomElectricCurrentDensity;
 
 define_unit_family! {
-    /// Units for persisted `uom` electric current density quantities.
+    /// Units for persisted electric current density measurements.
     pub enum ElectricCurrentDensity for "electric_current_density", uom = UomElectricCurrentDensity {
         /// Ampere per square meter (`A/m²`).
         AmperePerSquareMeter => { symbol: "A/m²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_METER; aliases: ["A/m2", "A/m^2"]; uom: ampere_per_square_meter; }

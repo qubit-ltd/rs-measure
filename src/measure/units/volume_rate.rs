@@ -8,7 +8,9 @@
 //! Units for persisted volume rate measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::VolumeRate as UomVolumeRate;
+#[cfg(feature = "uom")]
 use uom::si::volume_rate::{
     cubic_meter_per_hour,
     cubic_meter_per_second,
@@ -19,7 +21,7 @@ use uom::si::volume_rate::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` volume rate quantities.
+    /// Units for persisted volume rate measurements.
     pub enum VolumeRate for "volume_rate", uom = UomVolumeRate {
         /// Cubic meter per second (`m³/s`).
         CubicMeterPerSecond => { symbol: "m³/s"; definition: crate::consts::volume_rate::CUBIC_METER_PER_SECOND; aliases: ["m3/s", "m^3/s"]; uom: cubic_meter_per_second; }
@@ -31,7 +33,7 @@ define_unit_family! {
         LiterPerSecond => { symbol: "L/s"; definition: crate::consts::volume_rate::LITER_PER_SECOND; uom: liter_per_second; }
         /// Liter per minute (`L/min`).
         LiterPerMinute => { symbol: "L/min"; definition: crate::consts::volume_rate::LITER_PER_MINUTE; uom: liter_per_minute; }
-        /// US gallon per minute (`gal/min`).
+        /// US liquid gallon per minute with canonical symbol `gal (US)/min`.
         UsGallonPerMinute => { symbol: "gal (US)/min"; definition: crate::consts::volume_rate::US_GALLON_PER_MINUTE; aliases: ["gal/min"]; uom: gallon_per_minute; }
     }
 }

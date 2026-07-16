@@ -8,6 +8,7 @@
 //! Units for persisted electric charge measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electric_charge::{
     ampere_hour,
     coulomb,
@@ -16,10 +17,11 @@ use uom::si::electric_charge::{
     milliampere_hour,
     millicoulomb,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricCharge as UomElectricCharge;
 
 define_unit_family! {
-    /// Units for persisted `uom` electric charge quantities.
+    /// Units for persisted electric charge measurements.
     pub enum ElectricCharge for "electric_charge", uom = UomElectricCharge {
         /// Microcoulomb (`µC`).
         Microcoulomb => { symbol: "µC"; definition: crate::consts::electric_charge::MICROCOULOMB; aliases: ["uC", "μC"]; uom: microcoulomb; }

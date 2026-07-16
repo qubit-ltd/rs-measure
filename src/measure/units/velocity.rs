@@ -8,7 +8,9 @@
 //! Units for persisted velocity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Velocity as UomVelocity;
+#[cfg(feature = "uom")]
 use uom::si::velocity::{
     centimeter_per_second,
     foot_per_second,
@@ -21,7 +23,7 @@ use uom::si::velocity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` velocity quantities.
+    /// Units for persisted velocity measurements.
     pub enum Velocity for "velocity", uom = UomVelocity {
         /// Micrometer per second (`µm/s`).
         MicrometerPerSecond => { symbol: "µm/s"; definition: crate::consts::velocity::MICROMETER_PER_SECOND; aliases: ["um/s", "μm/s"]; uom: micrometer_per_second; }

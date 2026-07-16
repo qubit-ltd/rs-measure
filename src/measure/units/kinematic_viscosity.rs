@@ -8,7 +8,9 @@
 //! Units for persisted kinematic viscosity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::KinematicViscosity as UomKinematicViscosity;
+#[cfg(feature = "uom")]
 use uom::si::kinematic_viscosity::{
     centistokes,
     square_meter_per_second,
@@ -17,7 +19,7 @@ use uom::si::kinematic_viscosity::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` kinematic viscosity quantities.
+    /// Units for persisted kinematic viscosity measurements.
     pub enum KinematicViscosity for "kinematic_viscosity", uom = UomKinematicViscosity {
         /// Square millimeter per second (`mm²/s`).
         SquareMillimeterPerSecond => { symbol: "mm²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_MILLIMETER_PER_SECOND; aliases: ["mm2/s", "mm^2/s"]; uom: square_millimeter_per_second; }

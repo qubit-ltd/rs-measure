@@ -5,23 +5,28 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Persisted typed measurements, unit families, and `uom` adapters.
+//! Persisted typed measurements, exact unit families, and optional adapters.
 
 mod conversion_factor;
 mod conversion_options;
 mod decimal_conversion;
+mod internal;
 mod measurement;
 mod measurement_error;
 mod unit;
 mod unit_definition;
 mod units;
+#[cfg(feature = "uom")]
 mod uom_unit;
 
 pub use conversion_factor::ConversionFactor;
 pub use conversion_options::ConversionOptions;
 pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
-pub use unit::Unit;
+pub use unit::{
+    Unit,
+    assert_unit_family_valid,
+};
 pub use unit_definition::UnitDefinition;
 pub use units::{
     Acceleration,
@@ -81,4 +86,5 @@ pub use units::{
     Volume,
     VolumeRate,
 };
+#[cfg(feature = "uom")]
 pub use uom_unit::UomUnit;

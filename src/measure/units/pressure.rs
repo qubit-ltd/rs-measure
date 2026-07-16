@@ -7,8 +7,12 @@
 // =============================================================================
 //! Units for persisted pressure measurements.
 
+#[cfg(feature = "uom")]
+use super::internal::ExactTorrEquivalent;
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Pressure as UomPressure;
+#[cfg(feature = "uom")]
 use uom::si::pressure::{
     atmosphere,
     bar,
@@ -17,7 +21,6 @@ use uom::si::pressure::{
     megapascal,
     micropascal,
     millibar,
-    millimeter_of_mercury,
     millipascal,
     nanopascal,
     pascal,
@@ -25,7 +28,7 @@ use uom::si::pressure::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` pressure quantities.
+    /// Units for persisted pressure measurements.
     pub enum Pressure for "pressure", uom = UomPressure {
         /// Nanopascal (`nPa`).
         Nanopascal => { symbol: "nPa"; definition: crate::consts::pressure::NANOPASCAL; uom: nanopascal; }
@@ -47,8 +50,15 @@ define_unit_family! {
         Millibar => { symbol: "mbar"; definition: crate::consts::pressure::MILLIBAR; uom: millibar; }
         /// Standard atmosphere (`atm`).
         Atmosphere => { symbol: "atm"; definition: crate::consts::pressure::ATMOSPHERE; uom: atmosphere; }
-        /// Millimeter of mercury (`mm Hg`).
-        MillimeterOfMercury => { symbol: "mm Hg"; definition: crate::consts::pressure::MILLIMETER_OF_MERCURY; aliases: ["mmHg"]; uom: millimeter_of_mercury; }
+        /// Millimeter of mercury using the exact Torr-equivalent definition
+        /// 101325/760 Pa (20265/152 Pa), with canonical symbol `mm Hg`.
+        ///
+        /// The lenient alias is `mmHg`. This definition differs from the
+        /// conventional rounded 133.3224 Pa value used by some conversion
+        /// tables. The optional `uom` bridge uses an internal Torr-equivalent
+        /// marker so it preserves this unit's Torr-equivalent semantic instead
+        /// of using `uom`'s conventional millimeter-of-mercury coefficient.
+        MillimeterOfMercury => { symbol: "mm Hg"; definition: crate::consts::pressure::MILLIMETER_OF_MERCURY; aliases: ["mmHg"]; uom: ExactTorrEquivalent; }
         /// Pound-force per square inch (`psi`).
         Psi => { symbol: "psi"; definition: crate::consts::pressure::PSI; uom: psi; }
     }

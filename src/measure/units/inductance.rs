@@ -8,7 +8,9 @@
 //! Units for persisted inductance measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Inductance as UomInductance;
+#[cfg(feature = "uom")]
 use uom::si::inductance::{
     henry,
     microhenry,
@@ -17,7 +19,7 @@ use uom::si::inductance::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` inductance quantities.
+    /// Units for persisted inductance measurements.
     pub enum Inductance for "inductance", uom = UomInductance {
         /// Nanohenry (`nH`).
         Nanohenry => { symbol: "nH"; definition: crate::consts::inductance::NANOHENRY; uom: nanohenry; }

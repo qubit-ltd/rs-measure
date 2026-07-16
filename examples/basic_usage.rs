@@ -14,10 +14,8 @@ use qubit_measure::{
     unit,
 };
 use serde_json::json;
-use uom::si::length::meter;
 
-/// Demonstrates exact conversion, persistence, and the approximate `uom`
-/// bridge.
+/// Demonstrates exact conversion and persistence.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let centimeters = measurement::Length::new(
         Decimal::new(500, 1),
@@ -31,15 +29,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         )?,
     )?;
     let json_value = serde_json::to_value(centimeters)?;
-    let approximate_meters = centimeters.to_uom_approx().get::<meter>();
 
     assert_eq!(meters.value.to_string(), "0.5000");
     assert_eq!(
         json_value,
         json!({"quantity": "length", "value": "50.0", "unit": "cm"}),
     );
-    println!(
-        "{centimeters} = {meters}; approximately {approximate_meters} m in uom"
-    );
+    println!("{centimeters} = {meters}");
     Ok(())
 }

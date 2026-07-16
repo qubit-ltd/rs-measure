@@ -8,7 +8,9 @@
 //! Units for persisted torque measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Torque as UomTorque;
+#[cfg(feature = "uom")]
 use uom::si::torque::{
     kilonewton_meter,
     millinewton_meter,
@@ -18,7 +20,7 @@ use uom::si::torque::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` torque quantities.
+    /// Units for persisted torque measurements.
     pub enum Torque for "torque", uom = UomTorque {
         /// Millinewton meter (`mN · m`).
         MillinewtonMeter => { symbol: "mN · m"; definition: crate::consts::torque::MILLINEWTON_METER; aliases: ["mN m", "mN*m"]; uom: millinewton_meter; }

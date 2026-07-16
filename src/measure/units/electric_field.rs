@@ -8,6 +8,7 @@
 //! Units for persisted electric field measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electric_field::{
     kilovolt_per_millimeter,
     megavolt_per_meter,
@@ -16,10 +17,11 @@ use uom::si::electric_field::{
     volt_per_micrometer,
     volt_per_millimeter,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricField as UomElectricField;
 
 define_unit_family! {
-    /// Units for persisted `uom` electric field quantities.
+    /// Units for persisted electric field measurements.
     pub enum ElectricField for "electric_field", uom = UomElectricField {
         /// Volt per meter (`V/m`).
         VoltPerMeter => { symbol: "V/m"; definition: crate::consts::electric_field::VOLT_PER_METER; uom: volt_per_meter; }

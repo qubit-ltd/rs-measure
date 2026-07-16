@@ -5,183 +5,122 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Persisted measurement aliases for supported `uom` quantity families.
+//! Persisted measurement aliases for supported quantity families.
 
-use crate::Measurement;
-use crate::unit;
+mod acceleration;
+mod amount_of_substance;
+mod angle;
+mod angular_velocity;
+mod area;
+mod capacitance;
+mod catalytic_activity;
+mod catalytic_activity_concentration;
+mod dynamic_viscosity;
+mod electric_charge;
+mod electric_current;
+mod electric_current_density;
+mod electric_field;
+mod electric_potential;
+mod voltage;
 
-/// A persisted acceleration measurement.
-pub type Acceleration = Measurement<unit::Acceleration>;
+mod electrical_conductance;
+mod electrical_conductivity;
+mod electrical_resistance;
+mod electrical_resistivity;
+mod energy;
+mod force;
+mod frequency;
+mod heat_capacity;
+mod heat_flux_density;
+mod illuminance;
+mod inductance;
+mod kinematic_viscosity;
+mod length;
+mod luminance;
+mod luminous_intensity;
+mod magnetic_field_strength;
+mod magnetic_flux;
+mod magnetic_flux_density;
+mod mass;
+mod mass_concentration;
+mod mass_density;
+mod mass_rate;
+mod molality;
+mod molar_concentration;
+mod molar_mass;
+mod molar_volume;
+mod power;
+mod pressure;
+mod radioactivity;
+mod solid_angle;
+mod specific_heat_capacity;
+mod specific_radioactivity;
+mod surface_tension;
+mod temperature;
+mod temperature_interval;
+mod thermal_conductivity;
+mod thermal_resistance;
+mod time;
+mod torque;
+mod velocity;
+mod volume;
+mod volume_rate;
 
-/// A persisted amount of substance measurement.
-pub type AmountOfSubstance = Measurement<unit::AmountOfSubstance>;
+pub use acceleration::Acceleration;
+pub use amount_of_substance::AmountOfSubstance;
+pub use angle::Angle;
+pub use angular_velocity::AngularVelocity;
+pub use area::Area;
+pub use capacitance::Capacitance;
+pub use catalytic_activity::CatalyticActivity;
+pub use catalytic_activity_concentration::CatalyticActivityConcentration;
+pub use dynamic_viscosity::DynamicViscosity;
+pub use electric_charge::ElectricCharge;
+pub use electric_current::ElectricCurrent;
+pub use electric_current_density::ElectricCurrentDensity;
+pub use electric_field::ElectricField;
+pub use electric_potential::ElectricPotential;
+pub use voltage::Voltage;
 
-/// A persisted angle measurement.
-pub type Angle = Measurement<unit::Angle>;
-
-/// A persisted angular velocity measurement.
-pub type AngularVelocity = Measurement<unit::AngularVelocity>;
-
-/// A persisted area measurement.
-pub type Area = Measurement<unit::Area>;
-
-/// A persisted capacitance measurement.
-pub type Capacitance = Measurement<unit::Capacitance>;
-
-/// A persisted catalytic activity measurement.
-pub type CatalyticActivity = Measurement<unit::CatalyticActivity>;
-
-/// A persisted catalytic activity concentration measurement.
-pub type CatalyticActivityConcentration =
-    Measurement<unit::CatalyticActivityConcentration>;
-
-/// A persisted dynamic viscosity measurement.
-pub type DynamicViscosity = Measurement<unit::DynamicViscosity>;
-
-/// A persisted electric charge measurement.
-pub type ElectricCharge = Measurement<unit::ElectricCharge>;
-
-/// A persisted electric current measurement.
-pub type ElectricCurrent = Measurement<unit::ElectricCurrent>;
-
-/// A persisted electric current density measurement.
-pub type ElectricCurrentDensity = Measurement<unit::ElectricCurrentDensity>;
-
-/// A persisted electric field measurement.
-pub type ElectricField = Measurement<unit::ElectricField>;
-
-/// A persisted electric potential measurement.
-///
-/// This is the SI quantity commonly called voltage.
-pub type ElectricPotential = Measurement<unit::ElectricPotential>;
-
-/// A persisted voltage measurement.
-///
-/// This is an ergonomic alias for [`ElectricPotential`].
-pub type Voltage = ElectricPotential;
-
-/// A persisted electrical conductance measurement.
-pub type ElectricalConductance = Measurement<unit::ElectricalConductance>;
-
-/// A persisted electrical conductivity measurement.
-pub type ElectricalConductivity = Measurement<unit::ElectricalConductivity>;
-
-/// A persisted electrical resistance measurement.
-pub type ElectricalResistance = Measurement<unit::ElectricalResistance>;
-
-/// A persisted electrical resistivity measurement.
-pub type ElectricalResistivity = Measurement<unit::ElectricalResistivity>;
-
-/// A persisted energy measurement.
-pub type Energy = Measurement<unit::Energy>;
-
-/// A persisted frequency measurement.
-pub type Frequency = Measurement<unit::Frequency>;
-
-/// A persisted force measurement.
-pub type Force = Measurement<unit::Force>;
-
-/// A persisted heat capacity measurement.
-pub type HeatCapacity = Measurement<unit::HeatCapacity>;
-
-/// A persisted heat flux density measurement.
-pub type HeatFluxDensity = Measurement<unit::HeatFluxDensity>;
-
-/// A persisted illuminance measurement.
-pub type Illuminance = Measurement<unit::Illuminance>;
-
-/// A persisted inductance measurement.
-pub type Inductance = Measurement<unit::Inductance>;
-
-/// A persisted kinematic viscosity measurement.
-pub type KinematicViscosity = Measurement<unit::KinematicViscosity>;
-
-/// A persisted length measurement.
-pub type Length = Measurement<unit::Length>;
-
-/// A persisted luminance measurement.
-pub type Luminance = Measurement<unit::Luminance>;
-
-/// A persisted luminous intensity measurement.
-pub type LuminousIntensity = Measurement<unit::LuminousIntensity>;
-
-/// A persisted magnetic field strength measurement.
-pub type MagneticFieldStrength = Measurement<unit::MagneticFieldStrength>;
-
-/// A persisted magnetic flux measurement.
-pub type MagneticFlux = Measurement<unit::MagneticFlux>;
-
-/// A persisted magnetic flux density measurement.
-pub type MagneticFluxDensity = Measurement<unit::MagneticFluxDensity>;
-
-/// A persisted mass measurement.
-pub type Mass = Measurement<unit::Mass>;
-
-/// A persisted mass concentration measurement.
-pub type MassConcentration = Measurement<unit::MassConcentration>;
-
-/// A persisted mass density measurement.
-pub type MassDensity = Measurement<unit::MassDensity>;
-
-/// A persisted mass rate measurement.
-pub type MassRate = Measurement<unit::MassRate>;
-
-/// A persisted molality measurement.
-pub type Molality = Measurement<unit::Molality>;
-
-/// A persisted molar concentration measurement.
-pub type MolarConcentration = Measurement<unit::MolarConcentration>;
-
-/// A persisted molar mass measurement.
-pub type MolarMass = Measurement<unit::MolarMass>;
-
-/// A persisted molar volume measurement.
-pub type MolarVolume = Measurement<unit::MolarVolume>;
-
-/// A persisted power measurement.
-pub type Power = Measurement<unit::Power>;
-
-/// A persisted pressure measurement.
-pub type Pressure = Measurement<unit::Pressure>;
-
-/// A persisted radioactivity measurement.
-pub type Radioactivity = Measurement<unit::Radioactivity>;
-
-/// A persisted solid angle measurement.
-pub type SolidAngle = Measurement<unit::SolidAngle>;
-
-/// A persisted specific heat capacity measurement.
-pub type SpecificHeatCapacity = Measurement<unit::SpecificHeatCapacity>;
-
-/// A persisted specific radioactivity measurement.
-pub type SpecificRadioactivity = Measurement<unit::SpecificRadioactivity>;
-
-/// A persisted surface tension measurement.
-pub type SurfaceTension = Measurement<unit::SurfaceTension>;
-
-/// A persisted thermodynamic temperature measurement.
-pub type Temperature = Measurement<unit::Temperature>;
-
-/// A persisted temperature interval measurement.
-pub type TemperatureInterval = Measurement<unit::TemperatureInterval>;
-
-/// A persisted thermal conductivity measurement.
-pub type ThermalConductivity = Measurement<unit::ThermalConductivity>;
-
-/// A persisted thermal resistance measurement.
-pub type ThermalResistance = Measurement<unit::ThermalResistance>;
-
-/// A persisted time measurement.
-pub type Time = Measurement<unit::Time>;
-
-/// A persisted torque measurement.
-pub type Torque = Measurement<unit::Torque>;
-
-/// A persisted velocity measurement.
-pub type Velocity = Measurement<unit::Velocity>;
-
-/// A persisted volume measurement.
-pub type Volume = Measurement<unit::Volume>;
-
-/// A persisted volume rate measurement.
-pub type VolumeRate = Measurement<unit::VolumeRate>;
+pub use electrical_conductance::ElectricalConductance;
+pub use electrical_conductivity::ElectricalConductivity;
+pub use electrical_resistance::ElectricalResistance;
+pub use electrical_resistivity::ElectricalResistivity;
+pub use energy::Energy;
+pub use force::Force;
+pub use frequency::Frequency;
+pub use heat_capacity::HeatCapacity;
+pub use heat_flux_density::HeatFluxDensity;
+pub use illuminance::Illuminance;
+pub use inductance::Inductance;
+pub use kinematic_viscosity::KinematicViscosity;
+pub use length::Length;
+pub use luminance::Luminance;
+pub use luminous_intensity::LuminousIntensity;
+pub use magnetic_field_strength::MagneticFieldStrength;
+pub use magnetic_flux::MagneticFlux;
+pub use magnetic_flux_density::MagneticFluxDensity;
+pub use mass::Mass;
+pub use mass_concentration::MassConcentration;
+pub use mass_density::MassDensity;
+pub use mass_rate::MassRate;
+pub use molality::Molality;
+pub use molar_concentration::MolarConcentration;
+pub use molar_mass::MolarMass;
+pub use molar_volume::MolarVolume;
+pub use power::Power;
+pub use pressure::Pressure;
+pub use radioactivity::Radioactivity;
+pub use solid_angle::SolidAngle;
+pub use specific_heat_capacity::SpecificHeatCapacity;
+pub use specific_radioactivity::SpecificRadioactivity;
+pub use surface_tension::SurfaceTension;
+pub use temperature::Temperature;
+pub use temperature_interval::TemperatureInterval;
+pub use thermal_conductivity::ThermalConductivity;
+pub use thermal_resistance::ThermalResistance;
+pub use time::Time;
+pub use torque::Torque;
+pub use velocity::Velocity;
+pub use volume::Volume;
+pub use volume_rate::VolumeRate;

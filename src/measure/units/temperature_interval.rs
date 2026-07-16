@@ -8,7 +8,9 @@
 //! Units for persisted temperature interval measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::TemperatureInterval as UomTemperatureInterval;
+#[cfg(feature = "uom")]
 use uom::si::temperature_interval::{
     degree_celsius,
     degree_fahrenheit,
@@ -17,7 +19,7 @@ use uom::si::temperature_interval::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` temperature interval quantities.
+    /// Units for persisted temperature interval measurements.
     pub enum TemperatureInterval for "temperature_interval", uom = UomTemperatureInterval {
         /// Kelvin (`K`).
         Kelvin => { symbol: "K"; definition: crate::consts::temperature_interval::KELVIN; uom: kelvin; }

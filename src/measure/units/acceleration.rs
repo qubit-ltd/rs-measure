@@ -8,16 +8,18 @@
 //! Units for persisted acceleration measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::acceleration::{
     foot_per_second_squared,
     meter_per_second_squared,
     millimeter_per_second_squared,
     standard_gravity,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::Acceleration as UomAcceleration;
 
 define_unit_family! {
-    /// Units for persisted `uom` acceleration quantities.
+    /// Units for persisted acceleration measurements.
     pub enum Acceleration for "acceleration", uom = UomAcceleration {
         /// Millimeter per second squared (`mm/s²`).
         MillimeterPerSecondSquared => { symbol: "mm/s²"; definition: crate::consts::acceleration::MILLIMETER_PER_SECOND_SQUARED; aliases: ["mm/s2", "mm/s^2"]; uom: millimeter_per_second_squared; }

@@ -8,7 +8,9 @@
 //! Units for persisted frequency measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::Frequency as UomFrequency;
+#[cfg(feature = "uom")]
 use uom::si::frequency::{
     gigahertz,
     hertz,
@@ -17,7 +19,7 @@ use uom::si::frequency::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` frequency quantities.
+    /// Units for persisted frequency measurements.
     pub enum Frequency for "frequency", uom = UomFrequency {
         /// Hertz (`Hz`).
         Hertz => { symbol: "Hz"; definition: crate::consts::frequency::HERTZ; uom: hertz; }

@@ -8,16 +8,18 @@
 //! Units for persisted electrical resistivity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::electrical_resistivity::{
     milliohm_meter,
     ohm_centimeter,
     ohm_meter,
     ohm_square_millimeter_per_meter,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::ElectricalResistivity as UomElectricalResistivity;
 
 define_unit_family! {
-    /// Units for persisted `uom` electrical resistivity quantities.
+    /// Units for persisted electrical resistivity measurements.
     pub enum ElectricalResistivity for "electrical_resistivity", uom = UomElectricalResistivity {
         /// Milliohm meter (`mΩ · m`).
         MilliohmMeter => { symbol: "mΩ · m"; definition: crate::consts::electrical_resistivity::MILLIOHM_METER; aliases: ["mOhm m", "mΩ*m"]; uom: milliohm_meter; }

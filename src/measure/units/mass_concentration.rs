@@ -8,7 +8,9 @@
 //! Units for persisted mass concentration measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::f64::MassConcentration as UomMassConcentration;
+#[cfg(feature = "uom")]
 use uom::si::mass_concentration::{
     gram_per_deciliter,
     gram_per_liter,
@@ -19,7 +21,7 @@ use uom::si::mass_concentration::{
 };
 
 define_unit_family! {
-    /// Units for persisted `uom` mass concentration quantities.
+    /// Units for persisted mass concentration measurements.
     pub enum MassConcentration for "mass_concentration", uom = UomMassConcentration {
         /// Microgram per liter (`µg/L`).
         MicrogramPerLiter => { symbol: "µg/L"; definition: crate::consts::mass_concentration::MICROGRAM_PER_LITER; aliases: ["ug/L", "μg/L"]; uom: microgram_per_liter; }

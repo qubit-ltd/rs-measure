@@ -8,6 +8,7 @@
 //! Units for persisted dynamic viscosity measurements.
 
 use crate::define_unit_family;
+#[cfg(feature = "uom")]
 use uom::si::dynamic_viscosity::{
     centipoise,
     micropascal_second,
@@ -15,10 +16,11 @@ use uom::si::dynamic_viscosity::{
     pascal_second,
     poise,
 };
+#[cfg(feature = "uom")]
 use uom::si::f64::DynamicViscosity as UomDynamicViscosity;
 
 define_unit_family! {
-    /// Units for persisted `uom` dynamic viscosity quantities.
+    /// Units for persisted dynamic viscosity measurements.
     pub enum DynamicViscosity for "dynamic_viscosity", uom = UomDynamicViscosity {
         /// Micropascal second (`µPa · s`).
         MicropascalSecond => { symbol: "µPa · s"; definition: crate::consts::dynamic_viscosity::MICROPASCAL_SECOND; aliases: ["uPa · s", "μPa · s", "uPa*s"]; uom: micropascal_second; }
