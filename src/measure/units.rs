@@ -135,13 +135,19 @@ pub use volume_rate::VolumeRate;
 macro_rules! __unit_factor {
     ($numerator:literal) => {
         $crate::ConversionFactor::from_integer(
-            $crate::__private::rust_decimal::dec!($numerator),
+            const {
+                $crate::__private::decimal_from_literal(stringify!($numerator))
+            },
         )
     };
     ($numerator:literal / $denominator:literal) => {
         $crate::ConversionFactor::new(
-            $crate::__private::rust_decimal::dec!($numerator),
-            $crate::__private::rust_decimal::dec!($denominator),
+            const {
+                $crate::__private::decimal_from_literal(stringify!($numerator))
+            },
+            const {
+                $crate::__private::decimal_from_literal(stringify!($denominator))
+            },
         )
     };
 }
@@ -157,7 +163,7 @@ macro_rules! __unit_offset {
         $crate::Decimal::ZERO
     };
     ($offset:literal) => {
-        $crate::__private::rust_decimal::dec!($offset)
+        const { $crate::__private::decimal_from_literal(stringify!($offset)) }
     };
 }
 
@@ -350,6 +356,9 @@ macro_rules! __define_uom_unit {
 /// Each variant supplies a canonical `symbol` and either an exact `definition`
 /// path or a positive Decimal `coefficient`, optionally written as a ratio and
 /// followed by an `offset`. An optional `aliases` list enables lenient input.
+/// Decimal literals support integer, fractional, scientific, digit-separated,
+/// binary, octal, and hexadecimal forms accepted by
+/// `rust_decimal_macros::dec!` through this macro's `$literal` grammar.
 /// The `uom = Quantity` forms additionally require one `uom` unit type per
 /// variant, but those tokens are used only when the `uom` feature is enabled.
 ///
@@ -485,6 +494,41 @@ macro_rules! __define_uom_unit {
 ///             symbol: "m";
 ///             coefficient: 1;
 ///             aliases: ["meter "];
+///         }
+///     }
+/// }
+/// ```
+///
+/// Decimal coefficients that exceed the representable range are rejected at
+/// compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with an unrepresentable coefficient.
+///     enum UnrepresentableCoefficientUnit for "unrepresentable_coefficient_unit" {
+///         /// Unit whose coefficient exceeds Decimal's 96-bit mantissa.
+///         Invalid => {
+///             symbol: "invalid";
+///             coefficient: 79_228_162_514_264_337_593_543_950_336;
+///         }
+///     }
+/// }
+/// ```
+///
+/// Non-numeric literals are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a non-numeric coefficient.
+///     enum NonNumericCoefficientUnit for "non_numeric_coefficient_unit" {
+///         /// Unit whose coefficient is not numeric.
+///         Invalid => {
+///             symbol: "invalid";
+///             coefficient: "not-a-number";
 ///         }
 ///     }
 /// }

@@ -104,17 +104,15 @@ macro_rules! assert_unit_family_matches_uom_base {
             .iter()
             .copied()
             .find(|unit| {
-                unit.definition()
-                    .expect("unit definition should be valid")
+                unit.definition().expect("unit definition should be valid")
                     == UnitDefinition::base()
             })
             .expect("unit family should contain an identity definition");
 
         for unit in <$unit>::all() {
             let source = Measurement::<$unit>::new(Decimal::ONE, *unit);
-            let definition = unit
-                .definition()
-                .expect("unit definition should be valid");
+            let definition =
+                unit.definition().expect("unit definition should be valid");
             let factor = definition.factor();
             let offset = definition
                 .offset()
@@ -128,8 +126,7 @@ macro_rules! assert_unit_family_matches_uom_base {
                 .denominator()
                 .to_f64()
                 .expect("factor denominator should fit f64 for the oracle");
-            let expected_base =
-                (1.0 + offset) * numerator / denominator;
+            let expected_base = (1.0 + offset) * numerator / denominator;
             let quantity = source.to_uom_approx();
 
             assert_uom_oracle_relative_eq(quantity.value, expected_base);
@@ -138,11 +135,11 @@ macro_rules! assert_unit_family_matches_uom_base {
                 Measurement::<$unit>::new(Decimal::ZERO, identity_unit)
                     .to_uom_approx();
             independent_base.value = expected_base;
-            let round_trip = Measurement::<$unit>::from_uom_approx(
-                independent_base,
-                *unit,
-            )
-            .expect("independent SI base value should convert to the unit");
+            let round_trip =
+                Measurement::<$unit>::from_uom_approx(independent_base, *unit)
+                    .expect(
+                        "independent SI base value should convert to the unit",
+                    );
             assert_uom_oracle_relative_eq(
                 round_trip
                     .value
