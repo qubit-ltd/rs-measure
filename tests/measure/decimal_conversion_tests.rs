@@ -25,7 +25,18 @@ use super::fixtures::DecimalConversionUnit;
 use super::support::{
     decimal_as_rational,
     expected_conversion,
+    round_rational,
 };
+
+const ROUNDING_STRATEGIES: [RoundingStrategy; 7] = [
+    RoundingStrategy::MidpointNearestEven,
+    RoundingStrategy::MidpointAwayFromZero,
+    RoundingStrategy::MidpointTowardZero,
+    RoundingStrategy::ToZero,
+    RoundingStrategy::AwayFromZero,
+    RoundingStrategy::ToNegativeInfinity,
+    RoundingStrategy::ToPositiveInfinity,
+];
 
 /// Converts a synthetic typed measurement through the public API.
 fn convert(
@@ -72,6 +83,75 @@ fn test_decimal_conversion_applies_requested_scale() {
     .expect("meter should convert to foot");
     assert_eq!(result, dec!(3.2808));
     assert_eq!(result.scale(), 4);
+}
+
+#[test]
+fn test_fixed_scale_rounding_matches_independent_rational_oracle() {
+    let source = DecimalConversionUnit::Base;
+    let target = DecimalConversionUnit::Foot;
+    let source_definition = source
+        .definition()
+        .expect("source definition should be valid");
+    let target_definition = target
+        .definition()
+        .expect("target definition should be valid");
+
+    for value in [
+        dec!(1),
+        dec!(-1),
+        dec!(0.1524),
+        dec!(-0.1524),
+        dec!(0.4572),
+        dec!(-0.4572),
+    ] {
+        let exact =
+            expected_conversion(value, source_definition, target_definition);
+        for strategy in ROUNDING_STRATEGIES {
+            let options = ConversionOptions::fixed_scale(0, strategy)
+                .expect("scale should be valid");
+            let actual = convert(value, source, target, options)
+                .expect("selected conversion should fit Decimal");
+            let expected = round_rational(&exact, 0, strategy);
+
+            assert_eq!(
+                actual, expected,
+                "value={value}, strategy={strategy:?}"
+            );
+            assert_eq!(actual.scale(), 0);
+        }
+    }
+}
+
+#[test]
+fn test_affine_fixed_scale_rounding_matches_independent_rational_oracle() {
+    let source = DecimalConversionUnit::Fahrenheit;
+    let target = DecimalConversionUnit::Base;
+    let source_definition = source
+        .definition()
+        .expect("source definition should be valid");
+    let target_definition = target
+        .definition()
+        .expect("target definition should be valid");
+
+    for value in [dec!(-459.67), dec!(-40), dec!(0), dec!(32), dec!(212)] {
+        let exact =
+            expected_conversion(value, source_definition, target_definition);
+        for scale in [0, 2, 6] {
+            for strategy in ROUNDING_STRATEGIES {
+                let options = ConversionOptions::fixed_scale(scale, strategy)
+                    .expect("scale should be valid");
+                let actual = convert(value, source, target, options)
+                    .expect("selected affine conversion should fit Decimal");
+                let expected = round_rational(&exact, scale, strategy);
+
+                assert_eq!(
+                    actual, expected,
+                    "value={value}, scale={scale}, strategy={strategy:?}",
+                );
+                assert_eq!(actual.scale(), scale);
+            }
+        }
+    }
 }
 
 #[test]
@@ -390,5 +470,34 @@ proptest! {
         );
 
         prop_assert_eq!(decimal_as_rational(actual), expected);
+    }
+
+    #[test]
+    fn prop_fixed_scale_conversion_matches_independent_rational_oracle(
+        value in -1_000_000_i64..=1_000_000_i64,
+        scale in 0_u32..=6,
+        strategy_index in 0_usize..ROUNDING_STRATEGIES.len(),
+    ) {
+        let value = Decimal::from(value);
+        let source = DecimalConversionUnit::Base;
+        let target = DecimalConversionUnit::Foot;
+        let strategy = ROUNDING_STRATEGIES[strategy_index];
+        let actual = convert(
+            value,
+            source,
+            target,
+            ConversionOptions::fixed_scale(scale, strategy)
+                .expect("generated scale should be valid"),
+        )
+        .expect("generated conversion should fit Decimal");
+        let exact = expected_conversion(
+            value,
+            source.definition().expect("source definition should be valid"),
+            target.definition().expect("target definition should be valid"),
+        );
+        let expected = round_rational(&exact, scale, strategy);
+
+        prop_assert_eq!(actual, expected);
+        prop_assert_eq!(actual.scale(), scale);
     }
 }

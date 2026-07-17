@@ -29,5 +29,6 @@ pub(crate) use manual_validation_unit::{
 pub(crate) use rational_oracle::{
     decimal_as_rational,
     expected_conversion,
+    round_rational,
 };
 pub(crate) use unit_assertions::assert_unit_contract;
