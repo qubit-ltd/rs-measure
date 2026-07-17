@@ -15,6 +15,20 @@ use rust_decimal::{
 use crate::measure::MeasurementError;
 
 /// Controls the final scale and rounding applied to a converted value.
+///
+/// # Examples
+///
+/// Discarding configured options is diagnosed when unused results are denied:
+///
+/// ```compile_fail
+/// #![deny(unused_must_use)]
+/// use qubit_measure::{ConversionOptions, RoundingStrategy};
+///
+/// ConversionOptions::maximum_precision(
+///     RoundingStrategy::MidpointNearestEven,
+/// );
+/// ```
+#[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConversionOptions {
     /// Requested output scale, or `None` to keep maximum precision.
@@ -76,7 +90,6 @@ impl ConversionOptions {
     /// # Returns
     ///
     /// Options that preserve the maximum Decimal precision.
-    #[must_use]
     #[inline(always)]
     pub const fn maximum_precision(rounding: RoundingStrategy) -> Self {
         Self {

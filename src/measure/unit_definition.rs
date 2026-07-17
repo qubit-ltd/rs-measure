@@ -19,6 +19,18 @@ use crate::measure::{
 /// Defines a unit relative to its quantity family's base unit.
 ///
 /// The base value is `(value + offset) * numerator / denominator`.
+///
+/// # Examples
+///
+/// Discarding a definition is diagnosed when unused results are denied:
+///
+/// ```compile_fail
+/// #![deny(unused_must_use)]
+/// use qubit_measure::UnitDefinition;
+///
+/// UnitDefinition::base();
+/// ```
+#[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct UnitDefinition {
     /// Exact positive factor applied after the offset.
@@ -39,7 +51,6 @@ impl UnitDefinition {
     /// # Returns
     ///
     /// A unit definition using `(value + offset) * factor`.
-    #[must_use]
     #[inline(always)]
     pub const fn new(factor: ConversionFactor, offset: Decimal) -> Self {
         Self { factor, offset }
@@ -50,7 +61,6 @@ impl UnitDefinition {
     /// # Returns
     ///
     /// A definition with an identity factor and zero offset.
-    #[must_use]
     #[inline(always)]
     pub const fn base() -> Self {
         Self {
@@ -64,7 +74,6 @@ impl UnitDefinition {
     /// # Returns
     ///
     /// The exact positive factor applied after the offset.
-    #[must_use]
     #[inline(always)]
     pub const fn factor(self) -> ConversionFactor {
         self.factor

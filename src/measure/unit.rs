@@ -243,7 +243,7 @@ where
             !units[..index].iter().any(|other| other.symbol() == symbol),
             "duplicate canonical symbol: {symbol}",
         );
-        unit.definition().unwrap_or_else(|error| {
+        let _ = unit.definition().unwrap_or_else(|error| {
             panic!("invalid definition for {symbol}: {error}")
         });
         assert!(

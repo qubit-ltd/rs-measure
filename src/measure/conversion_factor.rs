@@ -16,6 +16,19 @@ use crate::measure::MeasurementError;
 /// [`ConversionFactor::new`] removes common mantissa factors and common scale
 /// from its inputs. Equality compares the stored reduced terms; it is not a
 /// general mathematical-equivalence solver at Decimal's representation limits.
+///
+/// # Examples
+///
+/// Discarding a validated factor is diagnosed when unused results are denied:
+///
+/// ```compile_fail
+/// #![deny(unused_must_use)]
+/// use qubit_measure::{ConversionFactor, Decimal};
+///
+/// ConversionFactor::new(Decimal::ONE, Decimal::ONE)
+///     .expect("identity factor should be valid");
+/// ```
+#[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConversionFactor {
     /// Positive numerator of the exact conversion ratio.
