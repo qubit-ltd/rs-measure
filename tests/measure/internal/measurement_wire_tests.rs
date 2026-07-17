@@ -55,9 +55,27 @@ fn test_measurement_wire_rejects_numeric_decimal_value() {
         "unexpected error: {error}",
     );
     assert!(
-        message.contains("expected a Decimal type"),
+        message.contains("expected a string"),
         "unexpected error: {error}",
     );
+}
+
+/// Verifies that persisted Decimal text is never rounded during decoding.
+#[test]
+fn test_measurement_wire_rejects_lossy_decimal_text() {
+    for value in ["9.000000000000000000000000000001", "2.5e-28"] {
+        let error = serde_json::from_value::<measurement::Length>(json!({
+            "quantity": "length",
+            "value": value,
+            "unit": "m",
+        }))
+        .expect_err("lossy Decimal text should fail");
+
+        assert!(
+            error.to_string().contains("invalid Decimal value"),
+            "unexpected error for {value:?}: {error}",
+        );
+    }
 }
 
 /// Verifies that unknown units retain their quantity context.

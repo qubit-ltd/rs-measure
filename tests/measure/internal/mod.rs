@@ -7,4 +7,5 @@
 // =============================================================================
 //! Mirrored persistence-boundary tests for measurement internals.
 
+mod decimal_text_tests;
 mod measurement_wire_tests;

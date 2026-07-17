@@ -9,7 +9,10 @@
 
 #[cfg(feature = "uom")]
 use crate::measure::UomUnit;
-use crate::measure::internal::MeasurementWire;
+use crate::measure::internal::{
+    MeasurementWire,
+    parse_decimal_text_exact,
+};
 use crate::measure::{
     ConversionOptions,
     MeasurementError,
@@ -35,6 +38,18 @@ use std::str::FromStr;
 /// normalized base-unit value.
 /// Its Serde contract encodes units through [`Unit::symbol`] and decodes them
 /// through [`Unit::parse_lenient`], without requiring unit-specific Serde.
+///
+/// # Examples
+///
+/// Discarding a measurement is diagnosed when unused results are denied:
+///
+/// ```compile_fail
+/// #![deny(unused_must_use)]
+/// use qubit_measure::{Decimal, Measurement, unit};
+///
+/// Measurement::new(Decimal::ONE, unit::Length::Meter);
+/// ```
+#[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Measurement<U>
 where
@@ -61,7 +76,6 @@ where
     /// # Returns
     ///
     /// A measurement that preserves both supplied fields.
-    #[must_use]
     #[inline(always)]
     pub const fn new(value: Decimal, unit: U) -> Self {
         Self { value, unit }
@@ -88,7 +102,7 @@ where
             .ok_or_else(|| {
                 MeasurementError::InvalidMeasurement(input.to_owned())
             })?;
-        let value = Decimal::from_str(value_text).map_err(|_| {
+        let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
             MeasurementError::InvalidMeasurement(input.to_owned())
         })?;
         let unit = U::parse_strict(unit_text)?;
@@ -318,7 +332,7 @@ where
             .ok_or_else(|| {
                 MeasurementError::InvalidMeasurement(input.to_owned())
             })?;
-        let value = Decimal::from_str(value_text).map_err(|_| {
+        let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
             MeasurementError::InvalidMeasurement(input.to_owned())
         })?;
         let unit = U::parse_lenient(unit_text)?;
@@ -346,7 +360,9 @@ fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let is_separated = unit_suffix.trim_start().len() != unit_suffix.len();
     let unit_text = unit_suffix.trim();
     if unit_text.is_empty()
-        || (!is_separated && unit_text.starts_with(['.', '+', '-']))
+        || (!is_separated
+            && (value_text.ends_with('.')
+                || unit_text.starts_with(['.', '+', '-'])))
     {
         None
     } else {

@@ -155,6 +155,26 @@ fn test_measurement_parse_strict_rejects_malformed_input() {
 }
 
 #[test]
+fn test_measurement_text_parsing_rejects_lossy_decimal_inputs() {
+    for input in ["9.000000000000000000000000000001 m", "2.5e-28 m"] {
+        assert!(
+            matches!(
+                measurement::Length::from_str(input),
+                Err(MeasurementError::InvalidMeasurement(_)),
+            ),
+            "lenient parsing accepted lossy Decimal input {input:?}",
+        );
+        assert!(
+            matches!(
+                measurement::Length::parse_strict(input),
+                Err(MeasurementError::InvalidMeasurement(_)),
+            ),
+            "strict parsing accepted lossy Decimal input {input:?}",
+        );
+    }
+}
+
+#[test]
 fn test_mass_measurement_convert_to_uses_decimal_conversion() {
     let measurement =
         measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);

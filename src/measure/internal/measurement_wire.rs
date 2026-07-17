@@ -17,7 +17,9 @@ pub(in crate::measure) struct MeasurementWire {
     pub(in crate::measure) quantity: String,
 
     /// Exact decimal value encoded as a string.
-    #[serde(with = "rust_decimal::serde::str")]
+    #[serde(
+        deserialize_with = "super::decimal_text::deserialize_decimal_text_exact"
+    )]
     pub(in crate::measure) value: Decimal,
 
     /// Canonical unit symbol or a documented input alias.

@@ -7,6 +7,8 @@
 // =============================================================================
 //! Private implementation types for persisted measurements.
 
+mod decimal_text;
 mod measurement_wire;
 
+pub(super) use decimal_text::parse_decimal_text_exact;
 pub(super) use measurement_wire::MeasurementWire;

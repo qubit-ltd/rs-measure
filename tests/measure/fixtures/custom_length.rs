@@ -28,5 +28,15 @@ define_unit_family! {
             symbol: "+cu";
             coefficient: 1;
         }
+        /// Dot-prefixed custom unit used to verify spaced measurement parsing.
+        Dot => {
+            symbol: ".cu";
+            coefficient: 1;
+        }
+        /// Minus-prefixed custom unit used to verify spaced measurement parsing.
+        Negative => {
+            symbol: "-cu";
+            coefficient: 1;
+        }
     }
 }
