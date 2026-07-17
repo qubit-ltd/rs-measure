@@ -69,19 +69,29 @@ fn assert_approx_eq(actual: f64, expected: f64) {
     );
 }
 
-/// Checks an oracle result with the tolerance allowed for upstream uom
-/// conversion factors.
+/// Checks an oracle result with a caller-selected relative tolerance.
 ///
 /// # Arguments
 ///
 /// * `actual` - The bridge result.
 /// * `expected` - The independently computed SI oracle value.
+/// * `tolerance` - Maximum allowed relative error.
+/// * `quantity` - Quantity identifier used in failure diagnostics.
+/// * `symbol` - Unit symbol used in failure diagnostics.
+/// * `sample` - Source value used in failure diagnostics.
 ///
 /// # Panics
 ///
 /// Panics when either value is non-finite, the expected value is zero, or the
-/// relative error exceeds five parts per million.
-fn assert_uom_oracle_relative_eq(actual: f64, expected: f64) {
+/// relative error exceeds `tolerance`.
+fn assert_uom_oracle_relative_eq(
+    actual: f64,
+    expected: f64,
+    tolerance: f64,
+    quantity: &str,
+    symbol: &str,
+    sample: f64,
+) {
     assert!(actual.is_finite(), "actual value must be finite: {actual}");
     assert!(
         expected.is_finite(),
@@ -91,10 +101,48 @@ fn assert_uom_oracle_relative_eq(actual: f64, expected: f64) {
 
     let relative_error = (actual - expected).abs() / expected.abs();
     assert!(
-        relative_error <= 5.0E-6,
-        "expected {actual} to approximately equal {expected}; relative error \
-         {relative_error} exceeds 0.000005",
+        relative_error <= tolerance,
+        "uom oracle mismatch for {quantity} unit {symbol:?} at {sample}: \
+         expected {actual} to approximately equal {expected}; relative error \
+         {relative_error} exceeds {tolerance}",
     );
+}
+
+/// Returns the relative tolerance for one independently checked uom mapping.
+///
+/// # Arguments
+///
+/// * `quantity` - Persisted quantity identifier.
+/// * `symbol` - Canonical unit symbol.
+///
+/// # Returns
+///
+/// A tight default tolerance, or a documented exception for an upstream uom
+/// factor that intentionally differs from this crate's exact definition.
+fn uom_oracle_relative_tolerance(quantity: &str, symbol: &str) -> f64 {
+    match (quantity, symbol) {
+        // uom 0.38 uses 4_046.873 m² while this crate follows the exact
+        // international acre definition of 4_046.856_422_4 m².
+        ("area", "ac") => 5.0E-6,
+        // uom 0.38 retains rounded customary factors for these units, while
+        // this crate stores their exact or higher-precision definitions.
+        (
+            "volume",
+            "in³" | "ft³" | "yd³" | "fl oz (US)" | "cup (US customary)"
+            | "pt (US liq)" | "qt (US liq)" | "gal (US)",
+        )
+        | ("mass", "oz" | "lb" | "2000 lb" | "2240 lb")
+        | ("pressure", "psi")
+        | ("power", "hp (mechanical)")
+        | ("mass_density", "lb/ft³" | "lb/gal (US)")
+        | ("force", "lbf")
+        | ("torque", "lbf · ft" | "lbf · in")
+        | ("volume_rate", "gal (US)/min")
+        | ("mass_rate", "lb/h")
+        | ("specific_heat_capacity", "Btu (IT)/(lb · °F)")
+        | ("illuminance", "fc") => 5.0E-7,
+        _ => 1.0E-12,
+    }
 }
 
 /// Checks every variant against an independently computed SI base value.
@@ -110,43 +158,62 @@ macro_rules! assert_unit_family_matches_uom_base {
             .expect("unit family should contain an identity definition");
 
         for unit in <$unit>::all() {
-            let source = Measurement::<$unit>::new(Decimal::ONE, *unit);
-            let definition =
-                unit.definition().expect("unit definition should be valid");
-            let factor = definition.factor();
-            let offset = definition
-                .offset()
-                .to_f64()
-                .expect("unit offset should fit f64 for the oracle");
-            let numerator = factor
-                .numerator()
-                .to_f64()
-                .expect("factor numerator should fit f64 for the oracle");
-            let denominator = factor
-                .denominator()
-                .to_f64()
-                .expect("factor denominator should fit f64 for the oracle");
-            let expected_base = (1.0 + offset) * numerator / denominator;
-            let quantity = source.to_uom_approx();
-
-            assert_uom_oracle_relative_eq(quantity.value, expected_base);
-
-            let mut independent_base =
-                Measurement::<$unit>::new(Decimal::ZERO, identity_unit)
-                    .to_uom_approx();
-            independent_base.value = expected_base;
-            let round_trip =
-                Measurement::<$unit>::from_uom_approx(independent_base, *unit)
-                    .expect(
-                        "independent SI base value should convert to the unit",
-                    );
-            assert_uom_oracle_relative_eq(
-                round_trip
-                    .value
+            for (sample_decimal, sample) in
+                [(Decimal::ONE, 1.0), (Decimal::new(2, 0), 2.0)]
+            {
+                let source = Measurement::<$unit>::new(sample_decimal, *unit);
+                let definition =
+                    unit.definition().expect("unit definition should be valid");
+                let factor = definition.factor();
+                let offset = definition
+                    .offset()
                     .to_f64()
-                    .expect("round-trip Decimal should fit f64"),
-                1.0,
-            );
+                    .expect("unit offset should fit f64 for the oracle");
+                let numerator = factor
+                    .numerator()
+                    .to_f64()
+                    .expect("factor numerator should fit f64 for the oracle");
+                let denominator = factor
+                    .denominator()
+                    .to_f64()
+                    .expect("factor denominator should fit f64 for the oracle");
+                let expected_base = (sample + offset) * numerator / denominator;
+                let quantity = source.to_uom_approx();
+                let tolerance = uom_oracle_relative_tolerance(
+                    <$unit>::QUANTITY,
+                    unit.symbol(),
+                );
+
+                assert_uom_oracle_relative_eq(
+                    quantity.value,
+                    expected_base,
+                    tolerance,
+                    <$unit>::QUANTITY,
+                    unit.symbol(),
+                    sample,
+                );
+
+                let mut independent_base =
+                    Measurement::<$unit>::new(Decimal::ZERO, identity_unit)
+                        .to_uom_approx();
+                independent_base.value = expected_base;
+                let round_trip = Measurement::<$unit>::from_uom_approx(
+                    independent_base,
+                    *unit,
+                )
+                .expect("independent SI base value should convert to the unit");
+                assert_uom_oracle_relative_eq(
+                    round_trip
+                        .value
+                        .to_f64()
+                        .expect("round-trip Decimal should fit f64"),
+                    sample,
+                    tolerance,
+                    <$unit>::QUANTITY,
+                    unit.symbol(),
+                    sample,
+                );
+            }
         }
     }};
 }

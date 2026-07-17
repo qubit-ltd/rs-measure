@@ -7,13 +7,12 @@
 // =============================================================================
 //! Assertions for exact unit definitions.
 
-use std::fmt::Debug;
-use std::str::FromStr;
-
 use qubit_measure::{
     Decimal,
     Unit,
+    unit,
 };
+use std::fmt::Debug;
 
 use crate::measure::support::DefinitionCase;
 
@@ -32,7 +31,11 @@ where
     U: Unit + Debug,
 {
     assert_eq!(cases.len(), U::all().len());
-    for case in cases {
+    for (expected_unit, case) in U::all().iter().zip(cases) {
+        assert_eq!(
+            *expected_unit, case.unit,
+            "definition cases must follow Unit::all() order",
+        );
         let definition =
             case.unit.definition().expect("definition should be valid");
         let normalized = qubit_measure::ConversionFactor::new(
@@ -43,24 +46,45 @@ where
         assert_eq!(definition.factor(), normalized);
         assert_eq!(
             definition.factor().numerator(),
-            Decimal::from_str(case.numerator)
+            Decimal::from_str_exact(case.numerator)
                 .expect("numerator should be valid Decimal"),
             "unexpected numerator for {:?}",
             case.unit,
         );
         assert_eq!(
             definition.factor().denominator(),
-            Decimal::from_str(case.denominator)
+            Decimal::from_str_exact(case.denominator)
                 .expect("denominator should be valid Decimal"),
             "unexpected denominator for {:?}",
             case.unit,
         );
         assert_eq!(
             definition.offset(),
-            Decimal::from_str(case.offset)
+            Decimal::from_str_exact(case.offset)
                 .expect("offset should be valid Decimal"),
             "unexpected offset for {:?}",
             case.unit,
         );
     }
+}
+
+/// Verifies that the definition oracle rejects cases in a different order
+/// from `Unit::all()`.
+#[test]
+#[should_panic(expected = "definition cases must follow Unit::all() order")]
+fn test_assert_definition_cases_rejects_out_of_order_cases() {
+    assert_definition_cases(&[
+        DefinitionCase {
+            unit: unit::ElectricalConductivity::SiemensPerCentimeter,
+            numerator: "100",
+            denominator: "1",
+            offset: "0",
+        },
+        DefinitionCase {
+            unit: unit::ElectricalConductivity::SiemensPerMeter,
+            numerator: "1",
+            denominator: "1",
+            offset: "0",
+        },
+    ]);
 }
