@@ -8,5 +8,6 @@
 //! Mirrored public-contract tests for Decimal literal parser phases.
 
 mod coefficient_tests;
+mod mod_tests;
 mod parser_tests;
 mod scanner_tests;

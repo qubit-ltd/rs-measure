@@ -8,7 +8,6 @@
 //! Mirrored tests for hidden macro support modules.
 
 mod decimal_literal;
-mod decimal_literal_tests;
 mod unit_metadata_tests;
 #[cfg(feature = "uom")]
 mod uom_bridge_tests;
