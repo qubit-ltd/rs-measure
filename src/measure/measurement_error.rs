@@ -84,11 +84,15 @@ pub enum MeasurementError {
         max: u32,
     },
 
-    /// Checked Decimal arithmetic could not represent an intermediate value.
-    #[error("Decimal arithmetic overflow while {operation}")]
-    ArithmeticOverflow {
-        /// The operation that exceeded the Decimal range.
-        operation: &'static str,
+    /// The converted value cannot be represented by Decimal.
+    #[error("converted value is outside the Decimal range")]
+    ValueOutOfRange,
+
+    /// The converted value cannot retain the requested Decimal scale.
+    #[error("converted value cannot retain Decimal scale {scale}")]
+    OutputScaleUnrepresentable {
+        /// Requested Decimal scale that could not be retained.
+        scale: u32,
     },
 
     /// A unit definition contains an invalid conversion factor or offset.

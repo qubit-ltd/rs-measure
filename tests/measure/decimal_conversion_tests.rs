@@ -67,6 +67,20 @@ fn test_decimal_conversion_keeps_five_ninths_as_a_ratio() {
 }
 
 #[test]
+fn test_maximum_precision_rounds_repeating_result_to_nearest_even() {
+    let converted = convert(
+        dec!(1),
+        DecimalConversionUnit::TwoThirds,
+        DecimalConversionUnit::Base,
+        ConversionOptions::maximum_precision(),
+    )
+    .expect("repeating result should round to Decimal precision");
+
+    assert_eq!(converted, dec!(0.6666666666666666666666666667));
+    assert_eq!(converted.scale(), Decimal::MAX_SCALE);
+}
+
+#[test]
 fn test_decimal_conversion_applies_requested_scale() {
     let options = ConversionOptions::fixed_scale(
         4,
@@ -336,9 +350,7 @@ fn test_decimal_conversion_reports_unrepresentable_requested_scale() {
             DecimalConversionUnit::Base,
             options,
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "set output scale",
-        }),
+        Err(MeasurementError::OutputScaleUnrepresentable { scale: 1 }),
     );
 }
 
@@ -353,9 +365,7 @@ fn test_decimal_conversion_reports_offset_overflow() {
             DecimalConversionUnit::Base,
             options,
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "add source offset",
-        }),
+        Err(MeasurementError::ValueOutOfRange),
     );
     assert_eq!(
         convert(
@@ -364,9 +374,7 @@ fn test_decimal_conversion_reports_offset_overflow() {
             DecimalConversionUnit::OffsetOne,
             options,
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "subtract target offset",
-        }),
+        Err(MeasurementError::ValueOutOfRange),
     );
 }
 
@@ -410,7 +418,7 @@ fn test_decimal_conversion_divides_first_after_multiplication_overflow() {
 }
 
 #[test]
-fn test_decimal_conversion_reports_ratio_overflow() {
+fn test_decimal_conversion_reports_value_out_of_range() {
     assert_eq!(
         convert(
             Decimal::MAX,
@@ -418,9 +426,7 @@ fn test_decimal_conversion_reports_ratio_overflow() {
             DecimalConversionUnit::Base,
             ConversionOptions::default(),
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "divide conversion ratio",
-        }),
+        Err(MeasurementError::ValueOutOfRange),
     );
 
     assert_eq!(
@@ -430,15 +436,13 @@ fn test_decimal_conversion_reports_ratio_overflow() {
             DecimalConversionUnit::Base,
             ConversionOptions::default(),
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "multiply conversion ratio",
-        }),
+        Err(MeasurementError::ValueOutOfRange),
     );
 }
 
-/// Verifies that fixed-scale output preserves ratio overflow context.
+/// Verifies that fixed-scale output preserves value-range classification.
 #[test]
-fn test_fixed_scale_conversion_preserves_ratio_overflow_context() {
+fn test_fixed_scale_conversion_preserves_value_range_error() {
     let options = ConversionOptions::fixed_scale(
         0,
         RoundingStrategy::MidpointNearestEven,
@@ -452,9 +456,7 @@ fn test_fixed_scale_conversion_preserves_ratio_overflow_context() {
             DecimalConversionUnit::Base,
             options,
         ),
-        Err(MeasurementError::ArithmeticOverflow {
-            operation: "multiply conversion ratio",
-        }),
+        Err(MeasurementError::ValueOutOfRange),
     );
 }
 

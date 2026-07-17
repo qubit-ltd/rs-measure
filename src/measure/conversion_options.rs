@@ -42,11 +42,16 @@ impl ConversionOptions {
         mode: ConversionMode::MaximumPrecision,
     };
 
-    /// Creates options that do not impose an additional output scale.
+    /// Creates options that do not impose a fixed output scale.
+    ///
+    /// Conversion arithmetic remains exact while represented as a rational.
+    /// If the result is not exactly representable as Decimal, conversion uses
+    /// nearest-even rounding at the greatest scale whose mantissa fits, then
+    /// normalizes trailing zeroes.
     ///
     /// # Returns
     ///
-    /// Options that preserve the maximum Decimal precision.
+    /// Options that retain the greatest representable Decimal precision.
     #[inline(always)]
     pub const fn maximum_precision() -> Self {
         Self {
@@ -56,7 +61,7 @@ impl ConversionOptions {
 
     /// Creates options that round and retain exactly `scale` decimal places.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `scale` - Exact number of decimal places to retain.
     /// * `rounding` - Strategy used to round the result.
@@ -90,7 +95,6 @@ impl ConversionOptions {
     /// # Returns
     ///
     /// The requested Decimal scale, if one was configured.
-    #[must_use]
     #[inline(always)]
     pub const fn scale(self) -> Option<u32> {
         match self.mode {
@@ -103,9 +107,9 @@ impl ConversionOptions {
     ///
     /// # Returns
     ///
-    /// The configured strategy for fixed-scale output, or `None` for maximum
-    /// precision.
-    #[must_use]
+    /// The configured strategy for fixed-scale output. `None` means no
+    /// caller-selected fixed-scale strategy; maximum-precision conversion may
+    /// still use nearest-even rounding at Decimal's representation boundary.
     #[inline(always)]
     pub const fn rounding(self) -> Option<RoundingStrategy> {
         match self.mode {

@@ -64,7 +64,7 @@ pub struct UnitDefinition {
 impl UnitDefinition {
     /// Creates a unit definition from a validated factor and an offset.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `factor` - Exact positive factor relative to the family base unit.
     /// * `offset` - Decimal offset applied before `factor`.
@@ -113,7 +113,7 @@ impl UnitDefinition {
 
     /// Converts `value` from this definition to `target` using Decimal only.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `value` - Value expressed by this source definition.
     /// * `target` - Definition in which the returned value is expressed.
@@ -121,12 +121,14 @@ impl UnitDefinition {
     ///
     /// # Returns
     ///
-    /// The exactly routed Decimal result expressed in `target`.
+    /// The rationally computed Decimal result expressed in `target`.
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::ArithmeticOverflow`] if Decimal cannot
-    /// represent an intermediate or the requested final scale.
+    /// Returns [`MeasurementError::ValueOutOfRange`] if Decimal cannot
+    /// represent the converted value. Returns
+    /// [`MeasurementError::OutputScaleUnrepresentable`] if the value fits but
+    /// cannot retain the requested final scale.
     #[inline(always)]
     pub(crate) fn convert_value_to(
         self,

@@ -12,7 +12,7 @@ use rust_decimal::RoundingStrategy;
 /// Represents one valid final-output policy for a Decimal conversion.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(in crate::measure) enum ConversionMode {
-    /// Preserves the maximum precision produced by Decimal arithmetic.
+    /// Uses nearest-even rounding at the greatest representable Decimal scale.
     MaximumPrecision,
 
     /// Rounds the result to an exact Decimal scale.

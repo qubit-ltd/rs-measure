@@ -40,10 +40,12 @@ fn test_measurement_error_new_variants_include_context() {
             "invalid Decimal scale 29; maximum is 28",
         ),
         (
-            MeasurementError::ArithmeticOverflow {
-                operation: "multiply conversion ratio",
-            },
-            "Decimal arithmetic overflow while multiply conversion ratio",
+            MeasurementError::ValueOutOfRange,
+            "converted value is outside the Decimal range",
+        ),
+        (
+            MeasurementError::OutputScaleUnrepresentable { scale: 4 },
+            "converted value cannot retain Decimal scale 4",
         ),
         (
             MeasurementError::InvalidUnitDefinition {
