@@ -107,6 +107,8 @@ assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 `Time::Minute` 也接受宽松别名 `m`，但显示、严格解析和 Serde 始终保留规范符号
 `min`。紧凑 measurement 会按已知单位后缀匹配；如果存在多个合法的数值/单位切分，
 返回 `AmbiguousMeasurement`，不会静默选择其中一种解释。
+以 `.`、`+` 或 `-` 开头的单位符号或别名必须与 Decimal 数值使用空白分隔；
+其紧凑形式会作为有歧义的数值边界被拒绝（例如应写成 `1.25 +cu`）。
 
 ### 精确 `std::time::Duration` 适配
 
@@ -139,9 +141,8 @@ assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 `MillimeterOfMercury` 采用精确的 Torr 等价值 `101325 / 760 Pa`
 （`20265 / 152 Pa`）。其规范符号为 `mm Hg`，宽松解析也接受 `mmHg`。该值不同于
 部分换算表采用的 conventional `133.3224 Pa` 舍入值。若应用需要该 conventional
-值，应定义外部单位，不能假定当前变体采用该值。可选 `uom` 桥接使用私有的 Torr
-等价标记单位，而不采用 `uom` 的 conventional millimeter-of-mercury 系数，因此桥接也
-保持相同语义。参见
+值，应定义外部单位，不能假定当前变体采用该值。可选 `uom` 桥接通过 Pascal 基单位
+应用这一精确定义，而不采用 `uom` 的 conventional millimeter-of-mercury 系数。参见
 [NIST SP 811 Chapter 5](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-5-units-outside-si)
 和 [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9)。
 
@@ -189,7 +190,10 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 该桥接只在显式启用默认关闭的 `uom` Cargo feature 后存在。未启用时，`UomUnit`、
 `to_uom_approx` 和 `from_uom_approx` 均不在 API 中。启用后，映射到 `uom` 的 family
 会实现 `UomUnit`。`_approx` 后缀是有意设计：这些适配器会跨越
-`Decimal <-> f64`，因此可能损失精度。持久化单位换算 `convert_to` 不使用该桥接。
+`Decimal <-> f64`，因此可能损失精度。适配器会先按 `qubit-measure` 的精确定义得到
+SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一致；但之后若通过
+`uom` 自带的非基准单位 getter 读取，当两个库对同名单位的定义不同时，显示数值仍按
+`uom` 自身的系数计算。持久化单位换算 `convert_to` 不使用该桥接。
 
 ```rust
 use qubit_measure::{Decimal, measurement, unit};

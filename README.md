@@ -116,6 +116,9 @@ assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 and Serde keep the canonical `min`. Compact measurements are matched against
 known unit suffixes; input with multiple valid numeric/unit splits returns
 `AmbiguousMeasurement` instead of silently choosing one interpretation.
+Unit symbols or aliases beginning with `.`, `+`, or `-` must be separated from
+the Decimal value by whitespace; their compact forms are rejected as ambiguous
+numeric boundaries (for example, use `1.25 +cu`).
 
 ### Exact `std::time::Duration` adapters
 
@@ -152,9 +155,9 @@ it is a fixed duration, not a calendar model.
 `mmHg` is accepted as a lenient alias. This differs from the conventional
 rounded `133.3224 Pa` value used by some conversion tables. Applications that
 require that conventional value must define an external unit instead of
-assuming this variant uses it. The optional `uom` bridge uses a private
-Torr-equivalent marker instead of `uom`'s conventional millimeter-of-mercury
-coefficient, so the bridge preserves the same semantic. See [NIST SP 811 Chapter 5](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-5-units-outside-si)
+assuming this variant uses it. The optional `uom` bridge applies this exact
+definition through the Pascal base value instead of using `uom`'s conventional
+millimeter-of-mercury coefficient. See [NIST SP 811 Chapter 5](https://www.nist.gov/pml/special-publication-811/nist-guide-si-chapter-5-units-outside-si)
 and [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-appendix-b-conversion-factors/nist-guide-si-appendix-b9).
 
 ## 7. External unit families
@@ -206,8 +209,13 @@ Every unit family follows this metadata contract:
 This bridge is available only with the default-off `uom` Cargo feature. Without
 that feature, `UomUnit`, `to_uom_approx`, and `from_uom_approx` are absent.
 Families mapped to `uom` implement `UomUnit` when enabled. The `_approx` suffix
-is intentional: these adapters cross `Decimal <-> f64` and may lose precision.
-Persisted unit conversion through `convert_to` does not use this bridge.
+is intentional: each adapter first applies the `qubit-measure` exact definition
+to obtain the SI base value, then crosses `Decimal <-> f64` and may lose
+precision. This keeps the quantity's physical base value aligned with the exact
+Decimal core. A later getter for a non-base `uom` unit still follows `uom`'s own
+coefficient, so its displayed number may differ when the two libraries define
+that named unit differently. Persisted unit conversion through `convert_to`
+does not use this bridge.
 
 ```rust
 use qubit_measure::{Decimal, measurement, unit};
