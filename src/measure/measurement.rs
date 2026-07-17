@@ -68,7 +68,7 @@ where
 {
     /// Creates a persisted measurement from a decimal value and typed unit.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `value` - Exact Decimal value expressed in `unit`.
     /// * `unit` - Typed unit used to interpret and persist `value`.
@@ -83,7 +83,7 @@ where
 
     /// Parses a measurement whose unit must use its canonical symbol.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `input` - Measurement text in `<decimal><unit>` or `<decimal> <unit>`
     ///   form.
@@ -102,6 +102,7 @@ where
     /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
     /// splits, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
     /// [`MeasurementError::UnknownUnit`] for an unknown unit.
+    #[inline(always)]
     pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
         let (value, unit) = parse_measurement_text::<U>(input, true)?;
         Ok(Self::new(value, unit))
@@ -120,18 +121,19 @@ where
 
     /// Converts this measurement using [`ConversionOptions::DEFAULT`].
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `target` - Unit in which the returned value is expressed.
     ///
     /// # Returns
     ///
-    /// A measurement converted to `target` through exact Decimal factors.
+    /// A measurement converted to `target` through exact rational factors and
+    /// the default maximum-precision Decimal output policy.
     ///
     /// # Errors
     ///
-    /// Returns unit-definition or Decimal arithmetic errors from the exact
-    /// conversion engine.
+    /// Returns unit-definition errors or
+    /// [`MeasurementError::ValueOutOfRange`] from the conversion engine.
     #[inline(always)]
     pub fn convert_to(self, target: U) -> Result<Self, MeasurementError> {
         self.convert_to_with_options(target, ConversionOptions::DEFAULT)
@@ -139,7 +141,7 @@ where
 
     /// Converts this measurement using explicit Decimal options.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `target` - Unit in which the returned value is expressed.
     /// * `options` - Final Decimal scale and rounding configuration.
@@ -150,8 +152,10 @@ where
     ///
     /// # Errors
     ///
-    /// Returns unit-definition or Decimal arithmetic errors from the exact
-    /// conversion engine, including an unrepresentable requested scale.
+    /// Returns unit-definition errors,
+    /// [`MeasurementError::ValueOutOfRange`], or
+    /// [`MeasurementError::OutputScaleUnrepresentable`] from the conversion
+    /// engine.
     #[inline]
     pub fn convert_to_with_options(
         self,
@@ -177,7 +181,7 @@ where
     /// storage or display unit instead of always using the `uom` base unit.
     /// The bridge crosses `f64` and may lose Decimal precision.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `quantity` - Approximate typed `uom/f64` quantity to adapt.
     /// * `unit` - Unit in which the persisted Decimal value is expressed.
@@ -219,7 +223,7 @@ where
 {
     /// Serializes the stable quantity, Decimal string, and canonical unit.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `serializer` - Serde serializer receiving the three-field record.
     ///
@@ -249,7 +253,7 @@ where
 {
     /// Deserializes and validates the three-field persistence representation.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `deserializer` - Serde deserializer providing the persisted record.
     ///
@@ -287,7 +291,7 @@ where
 {
     /// Formats this measurement as `<value> <unit>`.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `formatter` - Destination formatter.
     ///
@@ -316,7 +320,7 @@ where
     /// whitespace before the unit, for example `"1.25 +cu"`; their compact
     /// forms are rejected as ambiguous Decimal boundaries.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `input` - Measurement text in compact or space-separated form.
     ///
@@ -329,6 +333,7 @@ where
     /// Returns [`MeasurementError::InvalidMeasurement`] for malformed value
     /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
     /// splits, or [`MeasurementError::UnknownUnit`] for an unknown unit.
+    #[inline(always)]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         let (value, unit) = parse_measurement_text::<U>(input, false)?;
         Ok(Self::new(value, unit))

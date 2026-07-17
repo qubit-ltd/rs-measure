@@ -49,8 +49,12 @@ where
     }
 
     let trimmed = input.trim();
-    let canonical_symbols: HashSet<_> =
-        U::all().iter().map(|unit| unit.symbol()).collect();
+    let canonical_symbols = (!strict).then(|| {
+        U::all()
+            .iter()
+            .map(|unit| unit.symbol())
+            .collect::<HashSet<_>>()
+    });
     let mut candidates = Vec::new();
     for (unit_index, unit) in U::all().iter().copied().enumerate() {
         collect_compact_candidate(
@@ -59,7 +63,7 @@ where
             unit.symbol(),
             &mut candidates,
         );
-        if !strict {
+        if let Some(canonical_symbols) = &canonical_symbols {
             for alias in unit.aliases() {
                 collect_alias_candidate(
                     trimmed,
@@ -121,6 +125,7 @@ fn collect_compact_candidate(
 }
 
 /// Adds an alias interpretation unless a canonical unit owns that symbol.
+#[inline(always)]
 fn collect_alias_candidate(
     input: &str,
     unit_index: usize,
@@ -196,6 +201,7 @@ where
 /// # Returns
 ///
 /// The Decimal and unit slices when whitespace explicitly separates them.
+#[inline]
 fn split_spaced_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let trimmed = input.trim();
     let value_len = decimal_prefix_len(trimmed)?;
@@ -207,7 +213,7 @@ fn split_spaced_measurement_parts(input: &str) -> Option<(&str, &str)> {
 
 /// Splits a measurement string into decimal value text and trimmed unit text.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `input` - Candidate measurement text.
 ///
@@ -237,7 +243,7 @@ fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
 
 /// Returns the byte length of the leading decimal value.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `input` - Text beginning with an optional signed Decimal.
 ///
@@ -280,7 +286,7 @@ fn decimal_prefix_len(input: &str) -> Option<usize> {
 
 /// Returns the end offset of a valid exponent suffix.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `bytes` - Complete measurement input as bytes.
 /// * `index` - Offset immediately after the exponent marker.
