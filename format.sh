@@ -1,25 +1,6 @@
 #!/bin/bash
+set -euo pipefail
 
-################################################################################
-#
-#    Copyright (c) 2026.
-#    Haixing Hu, Qubit Co. Ltd.
-#
-#    All rights reserved.
-#
-################################################################################
-# Format script using nightly rustfmt
-# This script uses nightly rustfmt for advanced formatting features
+PROJECT_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
-# Check if nightly toolchain is installed
-if ! rustup toolchain list | grep -q nightly; then
-    echo "Installing nightly toolchain..."
-    rustup toolchain install nightly
-fi
-
-# Run cargo fmt with nightly toolchain
-echo "Running cargo +nightly fmt..."
-cargo +nightly fmt
-
-echo "Formatting complete!"
-
+exec "$PROJECT_ROOT/align-ci.sh" "$@"
