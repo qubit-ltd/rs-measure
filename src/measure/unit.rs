@@ -61,10 +61,6 @@ pub trait Unit:
     /// Canonical symbols must be non-empty, unique within the family, and
     /// contain no leading or trailing Unicode whitespace.
     ///
-    /// # Arguments
-    ///
-    /// * `self` - Unit whose canonical symbol is requested.
-    ///
     /// # Returns
     ///
     /// The unit's non-empty canonical symbol.
@@ -74,12 +70,9 @@ pub trait Unit:
     /// Returns accepted non-canonical aliases for lenient parsing.
     ///
     /// Aliases must be non-empty, unique among all family aliases, and contain
-    /// no leading or trailing Unicode whitespace. An alias may equal another
-    /// member's canonical symbol; that canonical owner wins.
-    ///
-    /// # Arguments
-    ///
-    /// * `self` - Unit whose non-canonical aliases are requested.
+    /// no leading or trailing Unicode whitespace. An alias cannot repeat its
+    /// own canonical symbol. It may equal another member's canonical symbol;
+    /// that canonical owner wins.
     ///
     /// # Returns
     ///
@@ -88,10 +81,6 @@ pub trait Unit:
     fn aliases(self) -> &'static [&'static str];
 
     /// Returns this unit's exact Decimal definition relative to its base unit.
-    ///
-    /// # Arguments
-    ///
-    /// * `self` - Unit whose exact definition is requested.
     ///
     /// # Returns
     ///
@@ -107,7 +96,7 @@ pub trait Unit:
     ///
     /// Canonical symbols are checked before aliases.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `input` - Canonical symbol candidate; surrounding whitespace is
     ///   ignored.
@@ -151,7 +140,7 @@ pub trait Unit:
     /// Canonical symbols are searched first, so they win over an earlier
     /// unit variant that declares the same text as an alias.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `input` - Canonical symbol or alias candidate; surrounding whitespace
     ///   is ignored.
@@ -260,6 +249,10 @@ where
     for unit in units.iter().copied() {
         for &alias in unit.aliases() {
             assert!(!alias.is_empty(), "unit alias must not be empty");
+            assert!(
+                alias != unit.symbol(),
+                "unit alias must differ from its canonical symbol: {alias}",
+            );
             assert!(
                 alias.trim() == alias,
                 "unit alias must not contain surrounding whitespace: {alias:?}",

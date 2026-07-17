@@ -34,6 +34,9 @@ pub(crate) const INVALID_QUANTITY: u8 = 4;
 /// Selects an invalid unit definition.
 pub(crate) const INVALID_DEFINITION: u8 = 5;
 
+/// Selects an alias that repeats its own canonical symbol.
+pub(crate) const SELF_ALIAS: u8 = 6;
+
 /// Configurable manual unit family used by validation tests.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct ManualValidationUnit<const CASE: u8> {
@@ -67,6 +70,7 @@ impl<const CASE: u8> Unit for ManualValidationUnit<CASE> {
     fn aliases(self) -> &'static [&'static str] {
         match (CASE, self.index) {
             (DUPLICATE_ALIAS, _) => &["duplicate-alias"],
+            (SELF_ALIAS, 0) => &["base"],
             (_, 0) => &["b"],
             _ => &["d"],
         }

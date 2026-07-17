@@ -22,6 +22,7 @@ use crate::measure::support::{
     INVALID_DEFINITION,
     INVALID_QUANTITY,
     ManualValidationUnit,
+    SELF_ALIAS,
     VALID,
 };
 
@@ -90,6 +91,13 @@ fn test_assert_unit_family_valid_rejects_duplicate_symbol() {
 #[should_panic(expected = "duplicate alias")]
 fn test_assert_unit_family_valid_rejects_duplicate_alias() {
     assert_unit_family_valid::<ManualValidationUnit<DUPLICATE_ALIAS>>();
+}
+
+/// Verifies that manual metadata rejects an alias equal to its own symbol.
+#[test]
+#[should_panic(expected = "unit alias must differ from its canonical symbol")]
+fn test_assert_unit_family_valid_rejects_own_canonical_alias() {
+    assert_unit_family_valid::<ManualValidationUnit<SELF_ALIAS>>();
 }
 
 #[test]

@@ -196,9 +196,9 @@ macro_rules! __define_unit_family_core {
             const SYMBOLS: &[&str] = &[
                 $($symbol,)+
             ];
-            const ALIASES: &[&str] = &[
+            const ALIASES: &[(&str, &str)] = &[
                 $(
-                    $($($alias,)*)?
+                    $($(($symbol, $alias),)*)?
                 )+
             ];
             $crate::__private::assert_unit_family_metadata(
@@ -487,6 +487,24 @@ macro_rules! impl_uom_unit {
 ///             symbol: "second";
 ///             coefficient: 1;
 ///             aliases: ["duplicate"];
+///         }
+///     }
+/// }
+/// ```
+///
+/// An alias that repeats its own canonical symbol is rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a redundant self alias.
+///     enum SelfAliasUnit for "self_alias_unit" {
+///         /// Unit whose alias repeats its canonical symbol.
+///         Invalid => {
+///             symbol: "m";
+///             coefficient: 1;
+///             aliases: ["m"];
 ///         }
 ///     }
 /// }

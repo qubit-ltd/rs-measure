@@ -40,7 +40,17 @@ fn test_assert_unit_family_metadata_accepts_valid_metadata() {
     assert_unit_family_metadata(
         "test_family_2",
         &["m", "mm", "cm"],
-        &["meter", "metre", "centimeter"],
+        &[("m", "meter"), ("m", "metre"), ("cm", "centimeter")],
+    );
+}
+
+/// Verifies that an alias may equal another member's canonical symbol.
+#[test]
+fn test_assert_unit_family_metadata_accepts_other_canonical_alias() {
+    assert_unit_family_metadata(
+        "test_family",
+        &["alias-owner", "canonical"],
+        &[("alias-owner", "canonical")],
     );
 }
 
@@ -71,13 +81,24 @@ fn test_assert_unit_family_metadata_rejects_duplicate_symbol() {
 #[test]
 #[should_panic(expected = "unit alias must not be empty")]
 fn test_assert_unit_family_metadata_rejects_empty_alias() {
-    assert_unit_family_metadata("test_family", &["m"], &[""]);
+    assert_unit_family_metadata("test_family", &["m"], &[("m", "")]);
 }
 
 #[test]
 #[should_panic(expected = "unit aliases must be unique")]
 fn test_assert_unit_family_metadata_rejects_duplicate_alias() {
-    assert_unit_family_metadata("test_family", &["m"], &["meter", "meter"]);
+    assert_unit_family_metadata(
+        "test_family",
+        &["m", "cm"],
+        &[("m", "meter"), ("cm", "meter")],
+    );
+}
+
+/// Verifies that a unit cannot repeat its own canonical symbol as an alias.
+#[test]
+#[should_panic(expected = "unit alias must differ from its canonical symbol")]
+fn test_assert_unit_family_metadata_rejects_own_canonical_alias() {
+    assert_unit_family_metadata("test_family", &["m"], &[("m", "m")]);
 }
 
 #[test]
@@ -112,7 +133,7 @@ fn test_assert_unit_family_metadata_rejects_surrounding_unicode_whitespace() {
                     assert_unit_family_metadata(
                         "test_family",
                         &["m"],
-                        &[alias.as_str()],
+                        &[("m", alias.as_str())],
                     );
                 })
                 .is_err(),

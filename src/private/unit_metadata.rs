@@ -9,25 +9,27 @@
 
 /// Validates metadata emitted by the unit-family macro at compile time.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `quantity` - The persisted quantity identifier.
 /// * `symbols` - Canonical symbols in variant order.
-/// * `aliases` - All aliases in declaration order.
+/// * `aliases` - Canonical-owner and alias pairs in declaration order.
 ///
 /// Canonical symbols and aliases are unique within their own sets. An alias
-/// may equal a canonical symbol because canonical parsing has priority.
+/// may equal another member's canonical symbol because canonical parsing has
+/// priority, but it may not repeat its own canonical symbol.
 ///
 /// # Panics
 ///
 /// Panics when the quantity is not non-empty ASCII `snake_case`, the family or
 /// a symbol is empty, a symbol or alias contains surrounding Unicode
-/// whitespace, canonical symbols repeat, or aliases are empty or repeat.
+/// whitespace, canonical symbols repeat, aliases are empty or repeat, or an
+/// alias repeats its owning canonical symbol.
 #[doc(hidden)]
 pub const fn assert_unit_family_metadata(
     quantity: &str,
     symbols: &[&str],
-    aliases: &[&str],
+    aliases: &[(&str, &str)],
 ) {
     assert!(
         is_ascii_snake_case(quantity),
@@ -60,7 +62,11 @@ pub const fn assert_unit_family_metadata(
 
     index = 0;
     while index < aliases.len() {
-        let alias = aliases[index];
+        let (owner_symbol, alias) = aliases[index];
+        assert!(
+            !str_eq(owner_symbol, alias),
+            "unit alias must differ from its canonical symbol",
+        );
         assert!(!alias.is_empty(), "unit alias must not be empty",);
         assert!(
             !has_leading_unit_whitespace(alias)
@@ -69,10 +75,8 @@ pub const fn assert_unit_family_metadata(
         );
         let mut other = index + 1;
         while other < aliases.len() {
-            assert!(
-                !str_eq(alias, aliases[other]),
-                "unit aliases must be unique",
-            );
+            let (_, other_alias) = aliases[other];
+            assert!(!str_eq(alias, other_alias), "unit aliases must be unique",);
             other += 1;
         }
         index += 1;
@@ -81,7 +85,7 @@ pub const fn assert_unit_family_metadata(
 
 /// Reports whether text starts with a Unicode White_Space character.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - Text whose first scalar value is inspected.
 ///
@@ -113,7 +117,7 @@ const fn has_leading_unit_whitespace(value: &str) -> bool {
 
 /// Reports whether text ends with a Unicode White_Space character.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - Text whose final scalar value is inspected.
 ///
@@ -158,7 +162,7 @@ const fn has_trailing_unit_whitespace(value: &str) -> bool {
 
 /// Reports whether a value is non-empty ASCII `snake_case`.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - The value to validate.
 ///
@@ -198,7 +202,7 @@ pub const fn is_ascii_snake_case(value: &str) -> bool {
 
 /// Compares two strings in const contexts.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `lhs` - The first string.
 /// * `rhs` - The second string.

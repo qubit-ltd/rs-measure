@@ -24,6 +24,7 @@ pub(crate) use manual_validation_unit::{
     INVALID_DEFINITION,
     INVALID_QUANTITY,
     ManualValidationUnit,
+    SELF_ALIAS,
     VALID,
 };
 pub(crate) use rational_oracle::{
