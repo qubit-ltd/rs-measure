@@ -19,7 +19,7 @@ use crate::UnitDefinition;
 
 /// Converts Decimal into the finite `f64` storage used by `uom`.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - Finite Decimal value to approximate as `f64`.
 ///
@@ -92,7 +92,7 @@ pub fn base_f64_to_unit_value(
 
 /// Converts an `f64` value from `uom` into Decimal.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - Approximate floating-point value to convert.
 ///

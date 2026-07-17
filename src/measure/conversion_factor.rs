@@ -50,7 +50,7 @@ impl ConversionFactor {
     /// Common mantissa factors and common scale are removed before the factor
     /// is stored.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `numerator` - The positive numerator of the conversion ratio.
     /// * `denominator` - The positive denominator of the conversion ratio.
@@ -95,7 +95,7 @@ impl ConversionFactor {
 
     /// Creates a positive finite-Decimal conversion factor.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `value` - Positive finite Decimal coefficient.
     ///
@@ -115,7 +115,7 @@ impl ConversionFactor {
     /// Creates a reduced conversion factor from positive integer terms in const
     /// contexts.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `numerator` - Positive integer numerator.
     /// * `denominator` - Positive integer denominator.
@@ -167,7 +167,7 @@ impl ConversionFactor {
 
 /// Reduces a positive Decimal ratio without multiplying either term.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `numerator` - The positive ratio numerator.
 /// * `denominator` - The positive ratio denominator.
@@ -202,7 +202,7 @@ pub(crate) fn reduce_ratio_terms(
 
 /// Computes the greatest common divisor of two positive integers.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `lhs` - The first positive integer.
 /// * `rhs` - The second positive integer.
@@ -221,7 +221,7 @@ const fn greatest_common_divisor(mut lhs: i128, mut rhs: i128) -> i128 {
 
 /// Converts a positive integer to an unscaled Decimal constant.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - The positive integer to convert.
 ///

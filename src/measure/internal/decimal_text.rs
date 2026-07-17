@@ -16,7 +16,7 @@ use serde::{
 
 /// Parses ordinary or scientific Decimal text without rounding.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `value` - Candidate Decimal text.
 ///
@@ -38,7 +38,7 @@ pub(in crate::measure) fn parse_decimal_text_exact(
 
 /// Deserializes a string containing an exactly representable Decimal.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `deserializer` - Serde deserializer providing the Decimal string.
 ///

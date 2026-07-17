@@ -61,10 +61,14 @@ type. Extra fields are ignored for forward-compatible metadata additions.
 results through `f64`. Unit coefficients are validated Decimal ratios, so definitions
 such as `5 / 9`, exact SI prefixes, and exact customary units are not rounded when
 declared. Built-in factors and offsets live in one crate-internal `consts.rs`, grouped
-by quantity. Mathematical values use Rust standard-library constants when available;
-for example, angle conversions derive from `std::f64::consts::PI` and
-`std::f64::consts::TAU`, with compile-time checks keeping their finite Decimal
-representations coherent.
+by quantity. Exact and derived definitions follow the
+[BIPM SI Brochure](https://www.bipm.org/en/publications/si-brochure),
+[NIST conversion references](https://www.nist.gov/pml/owm/metric-si/unit-conversion),
+[NIST Handbook 44](https://www.nist.gov/pml/owm/nist-handbook-44-current-edition),
+and [2022 CODATA](https://physics.nist.gov/cuu/Constants/). Irrational values are
+finite approximations: pi uses 23 decimal places from
+[NIST DLMF section 3.12](https://dlmf.nist.gov/3.12), the finite tau is exactly twice
+that value, and square degree uses 28 decimal places.
 
 ```rust
 use qubit_measure::{
@@ -81,19 +85,22 @@ assert_eq!(feet.value.to_string(), "3.2808");
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-`ConversionOptions::maximum_precision()` adds no final scale reduction or
-rounding policy.
-`fixed_scale(0..=28, strategy)` rounds and retains exactly the requested number of
-decimal places. Decimal still has a finite 96-bit mantissa: repeating fractions,
-irrational constants, and results outside its range cannot have infinite precision.
-Arithmetic and unrepresentable scale requests return `MeasurementError`.
+`ConversionOptions::maximum_precision()` does not request a fixed output scale.
+Conversion arithmetic first remains an exact rational calculation. If the result is
+not exactly representable, the crate rounds to nearest-even at the greatest Decimal
+scale whose mantissa fits, then normalizes trailing zeroes. `rounding() == None` means
+that no fixed-scale strategy was selected; it does not mean that representation-boundary
+rounding is impossible. `fixed_scale(0..=28, strategy)` instead rounds and retains
+exactly the requested number of decimal places. Values outside Decimal's range return
+`ValueOutOfRange`; a value that cannot retain the requested scale returns
+`OutputScaleUnrepresentable`.
 
 ## 4. Deterministic defaults
 
-`convert_to` always uses the immutable `ConversionOptions::DEFAULT`: maximum
-precision without final rounding. There is no process-wide mutable conversion
-state. Code that needs a fixed output scale and rounding strategy uses
-`convert_to_with_options` explicitly.
+`convert_to` always uses the immutable `ConversionOptions::DEFAULT`: no requested
+fixed scale, nearest-even at the representation boundary, and normalized output.
+There is no process-wide mutable conversion state. Code that needs a fixed output
+scale and rounding strategy uses `convert_to_with_options` explicitly.
 
 ## 5. Strict and lenient parsing
 
@@ -248,7 +255,7 @@ This release intentionally breaks the 0.2 wire format and affected Rust APIs.
 # Core API with the default empty feature set
 cargo test --no-default-features
 
-# Core API plus regex validation
+# Core API plus uom adapters
 cargo test --all-features
 
 # Project CI checks

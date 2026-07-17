@@ -18,7 +18,7 @@ use crate::measure::support::DefinitionCase;
 
 /// Checks exact unit definitions against independently written Decimal text.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `cases` - Complete ordered oracle cases for one unit family.
 ///

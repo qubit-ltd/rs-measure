@@ -56,7 +56,7 @@ const UOM_ORACLE_RELATIVE_TOLERANCE: f64 = 1.0E-12;
 
 /// Checks two floating-point values with a relative tolerance.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `actual` - The bridge result.
 /// * `expected` - The SI oracle value.
@@ -74,7 +74,7 @@ fn assert_approx_eq(actual: f64, expected: f64) {
 
 /// Checks an oracle result with a caller-selected relative tolerance.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `actual` - The bridge result.
 /// * `expected` - The independently computed SI oracle value.

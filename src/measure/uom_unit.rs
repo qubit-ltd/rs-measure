@@ -29,7 +29,7 @@ pub trait UomUnit: Unit {
 
     /// Creates an approximate `uom` quantity from a Decimal value.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `self` - Unit in which `value` is expressed.
     /// * `value` - Decimal value to adapt through `f64`.
@@ -47,7 +47,7 @@ pub trait UomUnit: Unit {
 
     /// Extracts an approximate Decimal value from a `uom` quantity.
     ///
-    /// # Arguments
+    /// # Parameters
     ///
     /// * `self` - Unit in which the returned Decimal is expressed.
     /// * `quantity` - Strongly typed `uom/f64` quantity to adapt.

@@ -58,9 +58,13 @@ Serde 使用带 quantity 校验的 wire format：
 
 `convert_to` 不会把持久化值、系数、偏移或中间结果转换成 `f64`。单位系数使用经过校验的
 Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不会在声明时被舍入。所有
-内建换算系数和偏移统一放在 crate 内部的 `consts.rs`，并按 quantity 分组；标准库已有的
-数学常数优先采用标准库定义，例如角度换算来自 `std::f64::consts::PI` 和
-`std::f64::consts::TAU`，并通过编译期检查保证两者的有限 Decimal 表示彼此一致。
+内建换算系数和偏移统一放在 crate 内部的 `consts.rs`，并按 quantity 分组。精确及派生定义
+遵循 [BIPM SI Brochure](https://www.bipm.org/en/publications/si-brochure)、
+[NIST 换算资料](https://www.nist.gov/pml/owm/metric-si/unit-conversion)、
+[NIST Handbook 44](https://www.nist.gov/pml/owm/nist-handbook-44-current-edition) 和
+[2022 CODATA](https://physics.nist.gov/cuu/Constants/)。无理数只能使用有限近似：pi 采用
+[NIST DLMF 3.12](https://dlmf.nist.gov/3.12) 的 23 位小数，有限 tau 严格等于它的两倍，
+平方度采用 28 位小数。
 
 ```rust
 use qubit_measure::{
@@ -77,16 +81,18 @@ assert_eq!(feet.value.to_string(), "3.2808");
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-`ConversionOptions::maximum_precision()` 不额外降低最终 scale，也不携带舍入策略。
-`fixed_scale(0..=28, strategy)` 会按指定策略舍入并保留恰好指定的小数位数。Decimal 仍只有
-有限的 96 位 mantissa：循环小数、无理常数和超出范围的结果不可能获得数学无限精度。
-算术溢出或无法保留指定 scale 时返回 `MeasurementError`。
+`ConversionOptions::maximum_precision()` 不指定固定输出 scale。换算过程先进行精确有理数
+计算；若结果不能被 Decimal 精确表示，则在 mantissa 可容纳的最高 scale 上按 nearest-even
+舍入，并规范化末尾零。`rounding() == None` 只表示没有选择 fixed-scale 策略，不表示表示
+边界上绝不会舍入。`fixed_scale(0..=28, strategy)` 则按指定策略舍入并保留恰好指定的小数
+位数。结果超出 Decimal 范围时返回 `ValueOutOfRange`；数值可表示但不能保留指定 scale 时
+返回 `OutputScaleUnrepresentable`。
 
 ## 4. 确定性默认配置
 
-`convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：最大精度且不做最终舍入。
-crate 不再包含进程级可变换算状态。需要固定输出 scale 和舍入策略时，应显式调用
-`convert_to_with_options`。
+`convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：不指定固定 scale，在表示边界
+按 nearest-even 舍入，并规范化输出。crate 不包含进程级可变换算状态。需要固定输出 scale
+和舍入策略时，应显式调用 `convert_to_with_options`。
 
 ## 5. 严格与宽松解析
 
@@ -225,7 +231,7 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 # 使用默认的空 feature 集测试核心 API
 cargo test --no-default-features
 
-# 测试核心 API 和正则校验
+# 测试核心 API 和 uom 适配器
 cargo test --all-features
 
 # 运行项目 CI 检查

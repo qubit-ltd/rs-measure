@@ -11,7 +11,7 @@ use qubit_measure_downstream_default_fixture::DefaultFixtureUnit;
 
 /// Verifies the exact factor and offset strings for a downstream unit.
 ///
-/// # Arguments
+/// # Parameters
 ///
 /// * `unit` - Downstream unit whose definition is inspected.
 /// * `numerator` - Expected exact factor numerator.
