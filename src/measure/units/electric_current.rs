@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::electric_current::{
     ampere,
     kiloampere,
@@ -23,20 +25,33 @@ use uom::si::f64::ElectricCurrent as UomElectricCurrent;
 
 define_unit_family! {
     /// Units for persisted electric current measurements.
-    pub enum ElectricCurrent for "electric_current", uom = UomElectricCurrent {
+    pub enum ElectricCurrent for "electric_current" {
         /// Picoampere (`pA`).
-        Picoampere => { symbol: "pA"; definition: crate::consts::electric_current::PICOAMPERE; uom: picoampere; }
+        Picoampere => { symbol: "pA"; definition: crate::consts::electric_current::PICOAMPERE; }
         /// Nanoampere (`nA`).
-        Nanoampere => { symbol: "nA"; definition: crate::consts::electric_current::NANOAMPERE; uom: nanoampere; }
+        Nanoampere => { symbol: "nA"; definition: crate::consts::electric_current::NANOAMPERE; }
         /// Microampere (`µA`).
-        Microampere => { symbol: "µA"; definition: crate::consts::electric_current::MICROAMPERE; aliases: ["uA", "μA"]; uom: microampere; }
+        Microampere => { symbol: "µA"; definition: crate::consts::electric_current::MICROAMPERE; aliases: ["uA", "μA"]; }
         /// Milliampere (`mA`).
-        Milliampere => { symbol: "mA"; definition: crate::consts::electric_current::MILLIAMPERE; uom: milliampere; }
+        Milliampere => { symbol: "mA"; definition: crate::consts::electric_current::MILLIAMPERE; }
         /// Ampere (`A`).
-        Ampere => { symbol: "A"; definition: crate::consts::electric_current::AMPERE; uom: ampere; }
+        Ampere => { symbol: "A"; definition: crate::consts::electric_current::AMPERE; }
         /// Kiloampere (`kA`).
-        Kiloampere => { symbol: "kA"; definition: crate::consts::electric_current::KILOAMPERE; uom: kiloampere; }
+        Kiloampere => { symbol: "kA"; definition: crate::consts::electric_current::KILOAMPERE; }
         /// Megaampere (`MA`).
-        Megaampere => { symbol: "MA"; definition: crate::consts::electric_current::MEGAAMPERE; uom: megaampere; }
+        Megaampere => { symbol: "MA"; definition: crate::consts::electric_current::MEGAAMPERE; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ElectricCurrent, UomElectricCurrent {
+        Picoampere => picoampere;
+        Nanoampere => nanoampere;
+        Microampere => microampere;
+        Milliampere => milliampere;
+        Ampere => ampere;
+        Kiloampere => kiloampere;
+        Megaampere => megaampere;
     }
 }

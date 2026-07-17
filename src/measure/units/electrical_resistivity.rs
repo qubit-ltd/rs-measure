@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::electrical_resistivity::{
     milliohm_meter,
     ohm_centimeter,
@@ -20,14 +22,24 @@ use uom::si::f64::ElectricalResistivity as UomElectricalResistivity;
 
 define_unit_family! {
     /// Units for persisted electrical resistivity measurements.
-    pub enum ElectricalResistivity for "electrical_resistivity", uom = UomElectricalResistivity {
+    pub enum ElectricalResistivity for "electrical_resistivity" {
         /// Milliohm meter (`mΩ · m`).
-        MilliohmMeter => { symbol: "mΩ · m"; definition: crate::consts::electrical_resistivity::MILLIOHM_METER; aliases: ["mOhm m", "mΩ*m"]; uom: milliohm_meter; }
+        MilliohmMeter => { symbol: "mΩ · m"; definition: crate::consts::electrical_resistivity::MILLIOHM_METER; aliases: ["mOhm m", "mΩ*m"]; }
         /// Ohm meter (`Ω · m`).
-        OhmMeter => { symbol: "Ω · m"; definition: crate::consts::electrical_resistivity::OHM_METER; aliases: ["ohm m", "Ω*m"]; uom: ohm_meter; }
+        OhmMeter => { symbol: "Ω · m"; definition: crate::consts::electrical_resistivity::OHM_METER; aliases: ["ohm m", "Ω*m"]; }
         /// Ohm centimeter (`Ω · cm`).
-        OhmCentimeter => { symbol: "Ω · cm"; definition: crate::consts::electrical_resistivity::OHM_CENTIMETER; aliases: ["ohm cm", "Ω*cm"]; uom: ohm_centimeter; }
+        OhmCentimeter => { symbol: "Ω · cm"; definition: crate::consts::electrical_resistivity::OHM_CENTIMETER; aliases: ["ohm cm", "Ω*cm"]; }
         /// Ohm square millimeter per meter (`Ω · mm²/m`).
-        OhmSquareMillimeterPerMeter => { symbol: "Ω · mm²/m"; definition: crate::consts::electrical_resistivity::OHM_SQUARE_MILLIMETER_PER_METER; aliases: ["Ω mm2/m", "ohm mm2/m"]; uom: ohm_square_millimeter_per_meter; }
+        OhmSquareMillimeterPerMeter => { symbol: "Ω · mm²/m"; definition: crate::consts::electrical_resistivity::OHM_SQUARE_MILLIMETER_PER_METER; aliases: ["Ω mm2/m", "ohm mm2/m"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ElectricalResistivity, UomElectricalResistivity {
+        MilliohmMeter => milliohm_meter;
+        OhmMeter => ohm_meter;
+        OhmCentimeter => ohm_centimeter;
+        OhmSquareMillimeterPerMeter => ohm_square_millimeter_per_meter;
     }
 }

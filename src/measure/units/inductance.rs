@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Inductance as UomInductance;
 #[cfg(feature = "uom")]
 use uom::si::inductance::{
@@ -20,14 +22,24 @@ use uom::si::inductance::{
 
 define_unit_family! {
     /// Units for persisted inductance measurements.
-    pub enum Inductance for "inductance", uom = UomInductance {
+    pub enum Inductance for "inductance" {
         /// Nanohenry (`nH`).
-        Nanohenry => { symbol: "nH"; definition: crate::consts::inductance::NANOHENRY; uom: nanohenry; }
+        Nanohenry => { symbol: "nH"; definition: crate::consts::inductance::NANOHENRY; }
         /// Microhenry (`µH`).
-        Microhenry => { symbol: "µH"; definition: crate::consts::inductance::MICROHENRY; aliases: ["uH", "μH"]; uom: microhenry; }
+        Microhenry => { symbol: "µH"; definition: crate::consts::inductance::MICROHENRY; aliases: ["uH", "μH"]; }
         /// Millihenry (`mH`).
-        Millihenry => { symbol: "mH"; definition: crate::consts::inductance::MILLIHENRY; uom: millihenry; }
+        Millihenry => { symbol: "mH"; definition: crate::consts::inductance::MILLIHENRY; }
         /// Henry (`H`).
-        Henry => { symbol: "H"; definition: crate::consts::inductance::HENRY; uom: henry; }
+        Henry => { symbol: "H"; definition: crate::consts::inductance::HENRY; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Inductance, UomInductance {
+        Nanohenry => nanohenry;
+        Microhenry => microhenry;
+        Millihenry => millihenry;
+        Henry => henry;
     }
 }

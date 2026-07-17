@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Mass as UomMass;
 #[cfg(feature = "uom")]
 use uom::si::mass::{
@@ -26,26 +28,42 @@ use uom::si::mass::{
 
 define_unit_family! {
     /// Units for persisted mass measurements.
-    pub enum Mass for "mass", uom = UomMass {
+    pub enum Mass for "mass" {
         /// Microgram (`µg`).
-        Microgram => { symbol: "µg"; definition: crate::consts::mass::MICROGRAM; aliases: ["ug", "μg"]; uom: microgram; }
+        Microgram => { symbol: "µg"; definition: crate::consts::mass::MICROGRAM; aliases: ["ug", "μg"]; }
         /// Milligram (`mg`).
-        Milligram => { symbol: "mg"; definition: crate::consts::mass::MILLIGRAM; uom: milligram; }
+        Milligram => { symbol: "mg"; definition: crate::consts::mass::MILLIGRAM; }
         /// Gram (`g`).
-        Gram => { symbol: "g"; definition: crate::consts::mass::GRAM; uom: gram; }
+        Gram => { symbol: "g"; definition: crate::consts::mass::GRAM; }
         /// Kilogram (`kg`).
-        Kilogram => { symbol: "kg"; definition: crate::consts::mass::KILOGRAM; uom: kilogram; }
+        Kilogram => { symbol: "kg"; definition: crate::consts::mass::KILOGRAM; }
         /// Metric tonne (`t`).
-        Tonne => { symbol: "t"; definition: crate::consts::mass::TONNE; uom: ton; }
+        Tonne => { symbol: "t"; definition: crate::consts::mass::TONNE; }
         /// Carat (`ct`).
-        Carat => { symbol: "ct"; definition: crate::consts::mass::CARAT; uom: carat; }
+        Carat => { symbol: "ct"; definition: crate::consts::mass::CARAT; }
         /// Ounce (`oz`).
-        Ounce => { symbol: "oz"; definition: crate::consts::mass::OUNCE; uom: ounce; }
+        Ounce => { symbol: "oz"; definition: crate::consts::mass::OUNCE; }
         /// Pound (`lb`).
-        Pound => { symbol: "lb"; definition: crate::consts::mass::POUND; uom: pound; }
+        Pound => { symbol: "lb"; definition: crate::consts::mass::POUND; }
         /// Short ton (`2000 lb`).
-        TonShort => { symbol: "2000 lb"; definition: crate::consts::mass::TON_SHORT; uom: ton_short; }
+        TonShort => { symbol: "2000 lb"; definition: crate::consts::mass::TON_SHORT; }
         /// Long ton (`2240 lb`).
-        TonLong => { symbol: "2240 lb"; definition: crate::consts::mass::TON_LONG; uom: ton_long; }
+        TonLong => { symbol: "2240 lb"; definition: crate::consts::mass::TON_LONG; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Mass, UomMass {
+        Microgram => microgram;
+        Milligram => milligram;
+        Gram => gram;
+        Kilogram => kilogram;
+        Tonne => ton;
+        Carat => carat;
+        Ounce => ounce;
+        Pound => pound;
+        TonShort => ton_short;
+        TonLong => ton_long;
     }
 }

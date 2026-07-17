@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::catalytic_activity_concentration::{
     enzyme_unit_per_liter,
     katal_per_cubic_meter,
@@ -19,12 +21,21 @@ use uom::si::f64::CatalyticActivityConcentration as UomCatalyticActivityConcentr
 
 define_unit_family! {
     /// Units for persisted catalytic activity concentration measurements.
-    pub enum CatalyticActivityConcentration for "catalytic_activity_concentration", uom = UomCatalyticActivityConcentration {
+    pub enum CatalyticActivityConcentration for "catalytic_activity_concentration" {
         /// Katal per cubic meter (`kat/m³`).
-        KatalPerCubicMeter => { symbol: "kat/m³"; definition: crate::consts::catalytic_activity_concentration::KATAL_PER_CUBIC_METER; aliases: ["kat/m3", "kat/m^3"]; uom: katal_per_cubic_meter; }
+        KatalPerCubicMeter => { symbol: "kat/m³"; definition: crate::consts::catalytic_activity_concentration::KATAL_PER_CUBIC_METER; aliases: ["kat/m3", "kat/m^3"]; }
         /// Enzyme unit per liter (`U/L`).
-        EnzymeUnitPerLiter => { symbol: "U/L"; definition: crate::consts::catalytic_activity_concentration::ENZYME_UNIT_PER_LITER; uom: enzyme_unit_per_liter; }
+        EnzymeUnitPerLiter => { symbol: "U/L"; definition: crate::consts::catalytic_activity_concentration::ENZYME_UNIT_PER_LITER; }
         /// Milli enzyme unit per milliliter (`mU/mL`).
-        MilliEnzymeUnitPerMilliliter => { symbol: "mU/mL"; definition: crate::consts::catalytic_activity_concentration::MILLI_ENZYME_UNIT_PER_MILLILITER; uom: milli_enzyme_unit_per_milliliter; }
+        MilliEnzymeUnitPerMilliliter => { symbol: "mU/mL"; definition: crate::consts::catalytic_activity_concentration::MILLI_ENZYME_UNIT_PER_MILLILITER; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    CatalyticActivityConcentration, UomCatalyticActivityConcentration {
+        KatalPerCubicMeter => katal_per_cubic_meter;
+        EnzymeUnitPerLiter => enzyme_unit_per_liter;
+        MilliEnzymeUnitPerMilliliter => milli_enzyme_unit_per_milliliter;
     }
 }

@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Time as UomTime;
 #[cfg(feature = "uom")]
 use uom::si::time::{
@@ -24,22 +26,36 @@ use uom::si::time::{
 
 define_unit_family! {
     /// Units for persisted time measurements.
-    pub enum Time for "time", uom = UomTime {
+    pub enum Time for "time" {
         /// Nanosecond (`ns`).
-        Nanosecond => { symbol: "ns"; definition: crate::consts::time::NANOSECOND; uom: nanosecond; }
+        Nanosecond => { symbol: "ns"; definition: crate::consts::time::NANOSECOND; }
         /// Microsecond (`µs`).
-        Microsecond => { symbol: "µs"; definition: crate::consts::time::MICROSECOND; aliases: ["us", "μs"]; uom: microsecond; }
+        Microsecond => { symbol: "µs"; definition: crate::consts::time::MICROSECOND; aliases: ["us", "μs"]; }
         /// Millisecond (`ms`).
-        Millisecond => { symbol: "ms"; definition: crate::consts::time::MILLISECOND; uom: millisecond; }
+        Millisecond => { symbol: "ms"; definition: crate::consts::time::MILLISECOND; }
         /// Second (`s`).
-        Second => { symbol: "s"; definition: crate::consts::time::SECOND; uom: second; }
+        Second => { symbol: "s"; definition: crate::consts::time::SECOND; }
         /// Minute (`min`).
-        Minute => { symbol: "min"; definition: crate::consts::time::MINUTE; uom: minute; }
+        Minute => { symbol: "min"; definition: crate::consts::time::MINUTE; aliases: ["m"]; }
         /// Hour (`h`).
-        Hour => { symbol: "h"; definition: crate::consts::time::HOUR; uom: hour; }
+        Hour => { symbol: "h"; definition: crate::consts::time::HOUR; }
         /// Day (`d`).
-        Day => { symbol: "d"; definition: crate::consts::time::DAY; uom: day; }
+        Day => { symbol: "d"; definition: crate::consts::time::DAY; }
         /// Common 365-day year with canonical symbol `a (365 d)`.
-        CommonYear365 => { symbol: "a (365 d)"; definition: crate::consts::time::COMMON_YEAR365; aliases: ["a", "yr", "year"]; uom: year; }
+        CommonYear365 => { symbol: "a (365 d)"; definition: crate::consts::time::COMMON_YEAR365; aliases: ["a", "yr", "year"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Time, UomTime {
+        Nanosecond => nanosecond;
+        Microsecond => microsecond;
+        Millisecond => millisecond;
+        Second => second;
+        Minute => minute;
+        Hour => hour;
+        Day => day;
+        CommonYear365 => year;
     }
 }

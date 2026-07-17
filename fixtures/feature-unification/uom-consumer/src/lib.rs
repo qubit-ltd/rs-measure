@@ -5,19 +5,21 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Uom-enabled downstream macro fixture without a local `uom` feature.
+//! Uom-enabled member of the Cargo feature-unification fixture.
 
 use qubit_measure::{
     UomUnit,
     define_unit_family,
     impl_uom_unit,
 };
-use uom::si::f64::Length as UomLength;
-use uom::si::length::meter;
+use uom::si::{
+    f64::Length as UomLength,
+    length::meter,
+};
 
 define_unit_family! {
-    /// External length family used to verify dependency-owned features.
-    pub enum DownstreamLength for "downstream_length" {
+    /// External length family with an explicit uom bridge.
+    pub enum FixtureLength for "fixture_length" {
         /// Meter fixture unit.
         Meter => {
             symbol: "m";
@@ -27,14 +29,14 @@ define_unit_family! {
 }
 
 impl_uom_unit! {
-    DownstreamLength, UomLength {
+    FixtureLength, UomLength {
         Meter => meter;
     }
 }
 
-/// Requires the generated downstream family to implement `UomUnit`.
+/// Requires the external family to implement [`UomUnit`].
 pub fn assert_uom_bridge_is_generated()
 where
-    DownstreamLength: UomUnit,
+    FixtureLength: UomUnit,
 {
 }

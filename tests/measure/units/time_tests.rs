@@ -8,6 +8,8 @@
 //! Exact definitions and contract tests for the time unit family.
 
 use qubit_measure::{
+    MeasurementError,
+    Unit,
     assert_unit_family_valid,
     unit,
 };
@@ -76,4 +78,16 @@ fn test_time_definitions_match_exact_golden_values() {
 fn test_time_unit_contract() {
     assert_unit_family_valid::<unit::Time>();
     assert_unit_contract::<unit::Time>();
+}
+
+#[test]
+fn test_minute_m_alias_is_lenient_but_not_canonical() {
+    assert_eq!(unit::Time::parse_lenient("m"), Ok(unit::Time::Minute));
+    assert_eq!("m".parse(), Ok(unit::Time::Minute));
+    assert!(matches!(
+        unit::Time::parse_strict("m"),
+        Err(MeasurementError::NonCanonicalUnit { canonical, .. })
+            if canonical == "min",
+    ));
+    assert_eq!(unit::Time::Minute.to_string(), "min");
 }

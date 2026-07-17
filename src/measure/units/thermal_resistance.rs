@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::ThermalResistance as UomThermalResistance;
 #[cfg(feature = "uom")]
 use uom::si::thermal_resistance::{
@@ -19,12 +21,21 @@ use uom::si::thermal_resistance::{
 
 define_unit_family! {
     /// Units for persisted thermal resistance measurements.
-    pub enum ThermalResistance for "thermal_resistance", uom = UomThermalResistance {
+    pub enum ThermalResistance for "thermal_resistance" {
         /// Kelvin per milliwatt (`K/mW`).
-        KelvinPerMilliwatt => { symbol: "K/mW"; definition: crate::consts::thermal_resistance::KELVIN_PER_MILLIWATT; uom: kelvin_per_milliwatt; }
+        KelvinPerMilliwatt => { symbol: "K/mW"; definition: crate::consts::thermal_resistance::KELVIN_PER_MILLIWATT; }
         /// Kelvin per watt (`K/W`).
-        KelvinPerWatt => { symbol: "K/W"; definition: crate::consts::thermal_resistance::KELVIN_PER_WATT; uom: kelvin_per_watt; }
+        KelvinPerWatt => { symbol: "K/W"; definition: crate::consts::thermal_resistance::KELVIN_PER_WATT; }
         /// Kelvin per kilowatt (`K/kW`).
-        KelvinPerKilowatt => { symbol: "K/kW"; definition: crate::consts::thermal_resistance::KELVIN_PER_KILOWATT; aliases: ["K/kw"]; uom: kelvin_per_kilowatt; }
+        KelvinPerKilowatt => { symbol: "K/kW"; definition: crate::consts::thermal_resistance::KELVIN_PER_KILOWATT; aliases: ["K/kw"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ThermalResistance, UomThermalResistance {
+        KelvinPerMilliwatt => kelvin_per_milliwatt;
+        KelvinPerWatt => kelvin_per_watt;
+        KelvinPerKilowatt => kelvin_per_kilowatt;
     }
 }

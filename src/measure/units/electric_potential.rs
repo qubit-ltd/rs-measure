@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::electric_potential::{
     kilovolt,
     megavolt,
@@ -24,18 +26,30 @@ define_unit_family! {
     /// Units for persisted electric potential measurements.
     ///
     /// Electric potential is the SI quantity commonly called voltage.
-    pub enum ElectricPotential for "electric_potential", uom = UomElectricPotential {
+    pub enum ElectricPotential for "electric_potential" {
         /// Nanovolt (`nV`).
-        Nanovolt => { symbol: "nV"; definition: crate::consts::electric_potential::NANOVOLT; uom: nanovolt; }
+        Nanovolt => { symbol: "nV"; definition: crate::consts::electric_potential::NANOVOLT; }
         /// Microvolt (`µV`).
-        Microvolt => { symbol: "µV"; definition: crate::consts::electric_potential::MICROVOLT; aliases: ["uV", "μV"]; uom: microvolt; }
+        Microvolt => { symbol: "µV"; definition: crate::consts::electric_potential::MICROVOLT; aliases: ["uV", "μV"]; }
         /// Millivolt (`mV`).
-        Millivolt => { symbol: "mV"; definition: crate::consts::electric_potential::MILLIVOLT; uom: millivolt; }
+        Millivolt => { symbol: "mV"; definition: crate::consts::electric_potential::MILLIVOLT; }
         /// Volt (`V`).
-        Volt => { symbol: "V"; definition: crate::consts::electric_potential::VOLT; aliases: ["volt"]; uom: volt; }
+        Volt => { symbol: "V"; definition: crate::consts::electric_potential::VOLT; aliases: ["volt"]; }
         /// Kilovolt (`kV`).
-        Kilovolt => { symbol: "kV"; definition: crate::consts::electric_potential::KILOVOLT; uom: kilovolt; }
+        Kilovolt => { symbol: "kV"; definition: crate::consts::electric_potential::KILOVOLT; }
         /// Megavolt (`MV`).
-        Megavolt => { symbol: "MV"; definition: crate::consts::electric_potential::MEGAVOLT; uom: megavolt; }
+        Megavolt => { symbol: "MV"; definition: crate::consts::electric_potential::MEGAVOLT; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ElectricPotential, UomElectricPotential {
+        Nanovolt => nanovolt;
+        Microvolt => microvolt;
+        Millivolt => millivolt;
+        Volt => volt;
+        Kilovolt => kilovolt;
+        Megavolt => megavolt;
     }
 }

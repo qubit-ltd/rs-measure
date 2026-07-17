@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::electric_current_density::{
     ampere_per_square_centimeter,
     ampere_per_square_meter,
@@ -19,12 +21,21 @@ use uom::si::f64::ElectricCurrentDensity as UomElectricCurrentDensity;
 
 define_unit_family! {
     /// Units for persisted electric current density measurements.
-    pub enum ElectricCurrentDensity for "electric_current_density", uom = UomElectricCurrentDensity {
+    pub enum ElectricCurrentDensity for "electric_current_density" {
         /// Ampere per square meter (`A/m²`).
-        AmperePerSquareMeter => { symbol: "A/m²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_METER; aliases: ["A/m2", "A/m^2"]; uom: ampere_per_square_meter; }
+        AmperePerSquareMeter => { symbol: "A/m²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_METER; aliases: ["A/m2", "A/m^2"]; }
         /// Ampere per square centimeter (`A/cm²`).
-        AmperePerSquareCentimeter => { symbol: "A/cm²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_CENTIMETER; aliases: ["A/cm2", "A/cm^2"]; uom: ampere_per_square_centimeter; }
+        AmperePerSquareCentimeter => { symbol: "A/cm²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_CENTIMETER; aliases: ["A/cm2", "A/cm^2"]; }
         /// Ampere per square millimeter (`A/mm²`).
-        AmperePerSquareMillimeter => { symbol: "A/mm²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_MILLIMETER; aliases: ["A/mm2", "A/mm^2"]; uom: ampere_per_square_millimeter; }
+        AmperePerSquareMillimeter => { symbol: "A/mm²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_MILLIMETER; aliases: ["A/mm2", "A/mm^2"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ElectricCurrentDensity, UomElectricCurrentDensity {
+        AmperePerSquareMeter => ampere_per_square_meter;
+        AmperePerSquareCentimeter => ampere_per_square_centimeter;
+        AmperePerSquareMillimeter => ampere_per_square_millimeter;
     }
 }

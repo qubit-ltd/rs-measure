@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Radioactivity as UomRadioactivity;
 #[cfg(feature = "uom")]
 use uom::si::radioactivity::{
@@ -23,20 +25,33 @@ use uom::si::radioactivity::{
 
 define_unit_family! {
     /// Units for persisted radioactivity measurements.
-    pub enum Radioactivity for "radioactivity", uom = UomRadioactivity {
+    pub enum Radioactivity for "radioactivity" {
         /// Becquerel (`Bq`).
-        Becquerel => { symbol: "Bq"; definition: crate::consts::radioactivity::BECQUEREL; uom: becquerel; }
+        Becquerel => { symbol: "Bq"; definition: crate::consts::radioactivity::BECQUEREL; }
         /// Kilobecquerel (`kBq`).
-        Kilobecquerel => { symbol: "kBq"; definition: crate::consts::radioactivity::KILOBECQUEREL; uom: kilobecquerel; }
+        Kilobecquerel => { symbol: "kBq"; definition: crate::consts::radioactivity::KILOBECQUEREL; }
         /// Megabecquerel (`MBq`).
-        Megabecquerel => { symbol: "MBq"; definition: crate::consts::radioactivity::MEGABECQUEREL; uom: megabecquerel; }
+        Megabecquerel => { symbol: "MBq"; definition: crate::consts::radioactivity::MEGABECQUEREL; }
         /// Curie (`Ci`).
-        Curie => { symbol: "Ci"; definition: crate::consts::radioactivity::CURIE; uom: curie; }
+        Curie => { symbol: "Ci"; definition: crate::consts::radioactivity::CURIE; }
         /// Millicurie (`mCi`).
-        Millicurie => { symbol: "mCi"; definition: crate::consts::radioactivity::MILLICURIE; uom: millicurie; }
+        Millicurie => { symbol: "mCi"; definition: crate::consts::radioactivity::MILLICURIE; }
         /// Microcurie (`µCi`).
-        Microcurie => { symbol: "µCi"; definition: crate::consts::radioactivity::MICROCURIE; aliases: ["uCi", "μCi"]; uom: microcurie; }
+        Microcurie => { symbol: "µCi"; definition: crate::consts::radioactivity::MICROCURIE; aliases: ["uCi", "μCi"]; }
         /// Disintegrations per minute (`dpm`).
-        DisintegrationsPerMinute => { symbol: "dpm"; definition: crate::consts::radioactivity::DISINTEGRATIONS_PER_MINUTE; uom: disintegrations_per_minute; }
+        DisintegrationsPerMinute => { symbol: "dpm"; definition: crate::consts::radioactivity::DISINTEGRATIONS_PER_MINUTE; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Radioactivity, UomRadioactivity {
+        Becquerel => becquerel;
+        Kilobecquerel => kilobecquerel;
+        Megabecquerel => megabecquerel;
+        Curie => curie;
+        Millicurie => millicurie;
+        Microcurie => microcurie;
+        DisintegrationsPerMinute => disintegrations_per_minute;
     }
 }

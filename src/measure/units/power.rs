@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Power as UomPower;
 #[cfg(feature = "uom")]
 use uom::si::power::{
@@ -23,20 +25,33 @@ use uom::si::power::{
 
 define_unit_family! {
     /// Units for persisted power measurements.
-    pub enum Power for "power", uom = UomPower {
+    pub enum Power for "power" {
         /// Nanowatt (`nW`).
-        Nanowatt => { symbol: "nW"; definition: crate::consts::power::NANOWATT; uom: nanowatt; }
+        Nanowatt => { symbol: "nW"; definition: crate::consts::power::NANOWATT; }
         /// Microwatt (`µW`).
-        Microwatt => { symbol: "µW"; definition: crate::consts::power::MICROWATT; aliases: ["uW", "μW"]; uom: microwatt; }
+        Microwatt => { symbol: "µW"; definition: crate::consts::power::MICROWATT; aliases: ["uW", "μW"]; }
         /// Milliwatt (`mW`).
-        Milliwatt => { symbol: "mW"; definition: crate::consts::power::MILLIWATT; uom: milliwatt; }
+        Milliwatt => { symbol: "mW"; definition: crate::consts::power::MILLIWATT; }
         /// Watt (`W`).
-        Watt => { symbol: "W"; definition: crate::consts::power::WATT; uom: watt; }
+        Watt => { symbol: "W"; definition: crate::consts::power::WATT; }
         /// Kilowatt (`kW`).
-        Kilowatt => { symbol: "kW"; definition: crate::consts::power::KILOWATT; uom: kilowatt; }
+        Kilowatt => { symbol: "kW"; definition: crate::consts::power::KILOWATT; }
         /// Megawatt (`MW`).
-        Megawatt => { symbol: "MW"; definition: crate::consts::power::MEGAWATT; uom: megawatt; }
+        Megawatt => { symbol: "MW"; definition: crate::consts::power::MEGAWATT; }
         /// Mechanical horsepower with canonical symbol `hp (mechanical)`.
-        MechanicalHorsepower => { symbol: "hp (mechanical)"; definition: crate::consts::power::MECHANICAL_HORSEPOWER; aliases: ["hp"]; uom: horsepower; }
+        MechanicalHorsepower => { symbol: "hp (mechanical)"; definition: crate::consts::power::MECHANICAL_HORSEPOWER; aliases: ["hp"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Power, UomPower {
+        Nanowatt => nanowatt;
+        Microwatt => microwatt;
+        Milliwatt => milliwatt;
+        Watt => watt;
+        Kilowatt => kilowatt;
+        Megawatt => megawatt;
+        MechanicalHorsepower => horsepower;
     }
 }

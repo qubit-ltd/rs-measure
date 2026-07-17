@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::ThermalConductivity as UomThermalConductivity;
 #[cfg(feature = "uom")]
 use uom::si::thermal_conductivity::{
@@ -20,14 +22,24 @@ use uom::si::thermal_conductivity::{
 
 define_unit_family! {
     /// Units for persisted thermal conductivity measurements.
-    pub enum ThermalConductivity for "thermal_conductivity", uom = UomThermalConductivity {
+    pub enum ThermalConductivity for "thermal_conductivity" {
         /// Milliwatt per meter kelvin (`mW/(m · K)`).
-        MilliwattPerMeterKelvin => { symbol: "mW/(m · K)"; definition: crate::consts::thermal_conductivity::MILLIWATT_PER_METER_KELVIN; aliases: ["mW/(m*K)"]; uom: milliwatt_per_meter_kelvin; }
+        MilliwattPerMeterKelvin => { symbol: "mW/(m · K)"; definition: crate::consts::thermal_conductivity::MILLIWATT_PER_METER_KELVIN; aliases: ["mW/(m*K)"]; }
         /// Watt per meter kelvin (`W/(m · K)`).
-        WattPerMeterKelvin => { symbol: "W/(m · K)"; definition: crate::consts::thermal_conductivity::WATT_PER_METER_KELVIN; aliases: ["W/(m*K)"]; uom: watt_per_meter_kelvin; }
+        WattPerMeterKelvin => { symbol: "W/(m · K)"; definition: crate::consts::thermal_conductivity::WATT_PER_METER_KELVIN; aliases: ["W/(m*K)"]; }
         /// Kilowatt per meter kelvin (`kW/(m · K)`).
-        KilowattPerMeterKelvin => { symbol: "kW/(m · K)"; definition: crate::consts::thermal_conductivity::KILOWATT_PER_METER_KELVIN; aliases: ["kW/(m*K)"]; uom: kilowatt_per_meter_kelvin; }
+        KilowattPerMeterKelvin => { symbol: "kW/(m · K)"; definition: crate::consts::thermal_conductivity::KILOWATT_PER_METER_KELVIN; aliases: ["kW/(m*K)"]; }
         /// Watt per meter degree Celsius (`W/(m · °C)`).
-        WattPerMeterDegreeCelsius => { symbol: "W/(m · °C)"; definition: crate::consts::thermal_conductivity::WATT_PER_METER_DEGREE_CELSIUS; aliases: ["W/(m*degC)"]; uom: watt_per_meter_degree_celsius; }
+        WattPerMeterDegreeCelsius => { symbol: "W/(m · °C)"; definition: crate::consts::thermal_conductivity::WATT_PER_METER_DEGREE_CELSIUS; aliases: ["W/(m*degC)"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    ThermalConductivity, UomThermalConductivity {
+        MilliwattPerMeterKelvin => milliwatt_per_meter_kelvin;
+        WattPerMeterKelvin => watt_per_meter_kelvin;
+        KilowattPerMeterKelvin => kilowatt_per_meter_kelvin;
+        WattPerMeterDegreeCelsius => watt_per_meter_degree_celsius;
     }
 }

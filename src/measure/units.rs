@@ -205,6 +205,7 @@ macro_rules! __define_unit_family_core {
         };
 
         $(#[$enum_attr])*
+        #[must_use]
         #[non_exhaustive]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
         $visibility enum $unit {
@@ -285,24 +286,59 @@ macro_rules! __define_unit_family_core {
     };
 }
 
-/// Implements the approximate `uom` bridge when its Cargo feature is enabled.
+/// Implements an explicit approximate `uom` bridge for a unit family.
 ///
-/// The expansion maps each exact unit variant to its corresponding
-/// `uom/f64` unit and converts at the explicit approximation boundary.
-#[cfg(feature = "uom")]
-#[doc(hidden)]
+/// Invoke this macro only when `qubit-measure`'s `uom` feature is enabled and
+/// the supplied `uom` quantity and unit types are available. Keeping this
+/// bridge separate from [`define_unit_family!`](crate::define_unit_family)
+/// prevents Cargo feature unification from changing whether an exact-only
+/// unit declaration resolves optional `uom` paths.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "uom")]
+/// # {
+/// use qubit_measure::{
+///     UomUnit,
+///     define_unit_family,
+///     impl_uom_unit,
+/// };
+/// use uom::si::{
+///     f64::Length as UomLength,
+///     length::meter,
+/// };
+///
+/// define_unit_family! {
+///     /// Example external length unit.
+///     enum ExampleLength for "example_length" {
+///         /// Meter.
+///         Meter => { symbol: "m"; coefficient: 1; }
+///     }
+/// }
+///
+/// impl_uom_unit! {
+///     ExampleLength, UomLength {
+///         Meter => meter;
+///     }
+/// }
+///
+/// fn assert_bridge<U: UomUnit>() {}
+/// assert_bridge::<ExampleLength>();
+/// # }
+/// ```
 #[macro_export]
-macro_rules! __define_uom_unit {
+macro_rules! impl_uom_unit {
     (
         $unit:ident,
-        $quantity_ty:ty,
-        {
+        $quantity_ty:ty {
             $($variant:ident => $uom_unit:ty;)+
         }
     ) => {
         impl $crate::UomUnit for $unit {
             type Quantity = $quantity_ty;
 
+            #[inline]
             fn to_uom_approx(
                 self,
                 value: $crate::Decimal,
@@ -316,6 +352,7 @@ macro_rules! __define_uom_unit {
                 }
             }
 
+            #[inline]
             fn value_from_uom_approx(
                 self,
                 quantity: Self::Quantity,
@@ -331,24 +368,12 @@ macro_rules! __define_uom_unit {
     };
 }
 
-/// Discards approximate bridge metadata when the `uom` feature is disabled.
-///
-/// This keeps exact unit-family macro invocations valid without compiling or
-/// exposing any `uom` type.
-#[cfg(not(feature = "uom"))]
-#[doc(hidden)]
-#[macro_export]
-macro_rules! __define_uom_unit {
-    ($($tokens:tt)*) => {};
-}
-
 /// Defines an externally extensible unit family with exact Decimal factors.
 ///
 /// The generated type implements [`Unit`](crate::Unit), display, lenient
-/// `FromStr`, and canonical string Serde. Supplying `uom = Quantity` plus a
-/// `uom` type for every variant also implements the optional approximate
-/// `UomUnit` bridge when the `uom` Cargo feature is enabled. Exact `Unit`
-/// generation is unconditional.
+/// `FromStr`, and canonical string Serde. Use
+/// [`impl_uom_unit!`](crate::impl_uom_unit) separately to add an optional
+/// approximate `UomUnit` bridge.
 ///
 /// # Syntax and generated API
 ///
@@ -358,9 +383,6 @@ macro_rules! __define_uom_unit {
 /// The supported Decimal literal subset includes integer, fractional,
 /// scientific, and digit-separated decimal forms plus binary, octal, and
 /// hexadecimal integers. Every accepted value must fit Decimal exactly.
-/// The `uom = Quantity` forms additionally require one `uom` unit type per
-/// variant, but those tokens are used only when the `uom` feature is enabled.
-///
 /// The generated enum is non-exhaustive and implements [`Unit`](crate::Unit),
 /// `Display`, lenient `FromStr`, and canonical string Serde. Its `all()` slice
 /// is generated from every declared variant, so it is complete by
@@ -534,87 +556,6 @@ macro_rules! __define_uom_unit {
 /// ```
 #[macro_export]
 macro_rules! define_unit_family {
-    (
-        $(#[$enum_attr:meta])*
-        $visibility:vis enum $unit:ident for $quantity_name:literal, uom = $quantity_ty:ty {
-            $(
-                $(#[$variant_attr:meta])*
-                $variant:ident => {
-                    symbol: $symbol:literal;
-                    definition: $definition:path;
-                    $(aliases: [$($alias:literal),* $(,)?];)?
-                    uom: $uom_unit:ty;
-                }
-            )+
-        }
-    ) => {
-        $crate::__define_unit_family_core! {
-            $(#[$enum_attr])*
-            $visibility enum $unit for $quantity_name {
-                $(
-                    $(#[$variant_attr])*
-                    $variant => {
-                        symbol: $symbol;
-                        definition: Ok($definition);
-                        $(aliases: [$($alias),*];)?
-                    }
-                )+
-            }
-        }
-
-        $crate::__define_uom_unit! {
-            $unit,
-            $quantity_ty,
-            {
-                $($variant => $uom_unit;)+
-            }
-        }
-    };
-    (
-        $(#[$enum_attr:meta])*
-        $visibility:vis enum $unit:ident for $quantity_name:literal, uom = $quantity_ty:ty {
-            $(
-                $(#[$variant_attr:meta])*
-                $variant:ident => {
-                    symbol: $symbol:literal;
-                    coefficient: $numerator:literal $(/ $denominator:literal)?;
-                    $(offset: $offset:literal;)?
-                    $(aliases: [$($alias:literal),* $(,)?];)?
-                    uom: $uom_unit:ty;
-                }
-            )+
-        }
-    ) => {
-        $crate::__define_unit_family_core! {
-            $(#[$enum_attr])*
-            $visibility enum $unit for $quantity_name {
-                $(
-                    $(#[$variant_attr])*
-                    $variant => {
-                        symbol: $symbol;
-                        definition: {
-                            let factor = $crate::__unit_factor!(
-                                $numerator $(/ $denominator)?
-                            )?;
-                            Ok($crate::UnitDefinition::new(
-                                factor,
-                                $crate::__unit_offset!($($offset)?),
-                            ))
-                        };
-                        $(aliases: [$($alias),*];)?
-                    }
-                )+
-            }
-        }
-
-        $crate::__define_uom_unit! {
-            $unit,
-            $quantity_ty,
-            {
-                $($variant => $uom_unit;)+
-            }
-        }
-    };
     (
         $(#[$enum_attr:meta])*
         $visibility:vis enum $unit:ident for $quantity_name:literal {

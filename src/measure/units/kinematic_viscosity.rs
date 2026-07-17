@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::KinematicViscosity as UomKinematicViscosity;
 #[cfg(feature = "uom")]
 use uom::si::kinematic_viscosity::{
@@ -20,14 +22,24 @@ use uom::si::kinematic_viscosity::{
 
 define_unit_family! {
     /// Units for persisted kinematic viscosity measurements.
-    pub enum KinematicViscosity for "kinematic_viscosity", uom = UomKinematicViscosity {
+    pub enum KinematicViscosity for "kinematic_viscosity" {
         /// Square millimeter per second (`mm²/s`).
-        SquareMillimeterPerSecond => { symbol: "mm²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_MILLIMETER_PER_SECOND; aliases: ["mm2/s", "mm^2/s"]; uom: square_millimeter_per_second; }
+        SquareMillimeterPerSecond => { symbol: "mm²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_MILLIMETER_PER_SECOND; aliases: ["mm2/s", "mm^2/s"]; }
         /// Square meter per second (`m²/s`).
-        SquareMeterPerSecond => { symbol: "m²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_METER_PER_SECOND; aliases: ["m2/s", "m^2/s"]; uom: square_meter_per_second; }
+        SquareMeterPerSecond => { symbol: "m²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_METER_PER_SECOND; aliases: ["m2/s", "m^2/s"]; }
         /// Stokes (`St`).
-        Stokes => { symbol: "St"; definition: crate::consts::kinematic_viscosity::STOKES; uom: stokes; }
+        Stokes => { symbol: "St"; definition: crate::consts::kinematic_viscosity::STOKES; }
         /// Centistokes (`cSt`).
-        Centistokes => { symbol: "cSt"; definition: crate::consts::kinematic_viscosity::CENTISTOKES; uom: centistokes; }
+        Centistokes => { symbol: "cSt"; definition: crate::consts::kinematic_viscosity::CENTISTOKES; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    KinematicViscosity, UomKinematicViscosity {
+        SquareMillimeterPerSecond => square_millimeter_per_second;
+        SquareMeterPerSecond => square_meter_per_second;
+        Stokes => stokes;
+        Centistokes => centistokes;
     }
 }

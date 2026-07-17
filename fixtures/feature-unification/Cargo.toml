@@ -1,0 +1,3 @@
+[workspace]
+members = ["default-consumer", "uom-consumer"]
+resolver = "3"

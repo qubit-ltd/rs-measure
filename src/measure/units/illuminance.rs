@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::Illuminance as UomIlluminance;
 #[cfg(feature = "uom")]
 use uom::si::illuminance::{
@@ -19,12 +21,21 @@ use uom::si::illuminance::{
 
 define_unit_family! {
     /// Units for persisted illuminance measurements.
-    pub enum Illuminance for "illuminance", uom = UomIlluminance {
+    pub enum Illuminance for "illuminance" {
         /// Lux (`lx`).
-        Lux => { symbol: "lx"; definition: crate::consts::illuminance::LUX; uom: lux; }
+        Lux => { symbol: "lx"; definition: crate::consts::illuminance::LUX; }
         /// Kilolux (`klx`).
-        Kilolux => { symbol: "klx"; definition: crate::consts::illuminance::KILOLUX; uom: kilolux; }
+        Kilolux => { symbol: "klx"; definition: crate::consts::illuminance::KILOLUX; }
         /// Foot-candle (`fc`).
-        Footcandle => { symbol: "fc"; definition: crate::consts::illuminance::FOOTCANDLE; uom: footcandle; }
+        Footcandle => { symbol: "fc"; definition: crate::consts::illuminance::FOOTCANDLE; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    Illuminance, UomIlluminance {
+        Lux => lux;
+        Kilolux => kilolux;
+        Footcandle => footcandle;
     }
 }

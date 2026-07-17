@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::MolarVolume as UomMolarVolume;
 #[cfg(feature = "uom")]
 use uom::si::molar_volume::{
@@ -19,12 +21,21 @@ use uom::si::molar_volume::{
 
 define_unit_family! {
     /// Units for persisted molar volume measurements.
-    pub enum MolarVolume for "molar_volume", uom = UomMolarVolume {
+    pub enum MolarVolume for "molar_volume" {
         /// Cubic centimeter per mole (`cm³/mol`).
-        CubicCentimeterPerMole => { symbol: "cm³/mol"; definition: crate::consts::molar_volume::CUBIC_CENTIMETER_PER_MOLE; aliases: ["cm3/mol", "cm^3/mol"]; uom: cubic_centimeter_per_mole; }
+        CubicCentimeterPerMole => { symbol: "cm³/mol"; definition: crate::consts::molar_volume::CUBIC_CENTIMETER_PER_MOLE; aliases: ["cm3/mol", "cm^3/mol"]; }
         /// Cubic decimeter per mole (`dm³/mol`).
-        CubicDecimeterPerMole => { symbol: "dm³/mol"; definition: crate::consts::molar_volume::CUBIC_DECIMETER_PER_MOLE; aliases: ["dm3/mol", "dm^3/mol"]; uom: cubic_decimeter_per_mole; }
+        CubicDecimeterPerMole => { symbol: "dm³/mol"; definition: crate::consts::molar_volume::CUBIC_DECIMETER_PER_MOLE; aliases: ["dm3/mol", "dm^3/mol"]; }
         /// Cubic meter per mole (`m³/mol`).
-        CubicMeterPerMole => { symbol: "m³/mol"; definition: crate::consts::molar_volume::CUBIC_METER_PER_MOLE; aliases: ["m3/mol", "m^3/mol"]; uom: cubic_meter_per_mole; }
+        CubicMeterPerMole => { symbol: "m³/mol"; definition: crate::consts::molar_volume::CUBIC_METER_PER_MOLE; aliases: ["m3/mol", "m^3/mol"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    MolarVolume, UomMolarVolume {
+        CubicCentimeterPerMole => cubic_centimeter_per_mole;
+        CubicDecimeterPerMole => cubic_decimeter_per_mole;
+        CubicMeterPerMole => cubic_meter_per_mole;
     }
 }

@@ -11,5 +11,7 @@ CARGO_TARGET_DIR="$CARGO_TARGET_DIR" cargo +"$BUILD_TOOLCHAIN" test --locked \
     --manifest-path "$PROJECT_ROOT/fixtures/downstream-default/Cargo.toml"
 CARGO_TARGET_DIR="$CARGO_TARGET_DIR" cargo +"$BUILD_TOOLCHAIN" test --locked \
     --manifest-path "$PROJECT_ROOT/fixtures/downstream-uom/Cargo.toml"
+CARGO_TARGET_DIR="$CARGO_TARGET_DIR" cargo +"$BUILD_TOOLCHAIN" check --locked \
+    --manifest-path "$PROJECT_ROOT/fixtures/feature-unification/Cargo.toml"
 
 exec env RS_CI_PROJECT_ROOT="$PROJECT_ROOT" "$PROJECT_ROOT/.rs-ci/ci-check.sh" "$@"

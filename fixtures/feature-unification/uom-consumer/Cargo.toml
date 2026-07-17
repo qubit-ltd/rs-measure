@@ -1,0 +1,10 @@
+[package]
+name = "qubit-measure-feature-unification-uom"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.94"
+publish = false
+
+[dependencies]
+qubit-measure = { path = "../../..", features = ["uom"] }
+uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }

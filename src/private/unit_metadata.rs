@@ -88,6 +88,7 @@ pub const fn assert_unit_family_metadata(
 /// # Returns
 ///
 /// `true` when the first scalar has the Unicode White_Space property.
+#[must_use]
 const fn has_leading_unit_whitespace(value: &str) -> bool {
     let bytes = value.as_bytes();
     if bytes.is_empty() {
@@ -119,6 +120,7 @@ const fn has_leading_unit_whitespace(value: &str) -> bool {
 /// # Returns
 ///
 /// `true` when the final scalar has the Unicode White_Space property.
+#[must_use]
 const fn has_trailing_unit_whitespace(value: &str) -> bool {
     let bytes = value.as_bytes();
     let length = bytes.len();
@@ -166,6 +168,7 @@ const fn has_trailing_unit_whitespace(value: &str) -> bool {
 /// lowercase ASCII letters, digits, and single internal underscores, and does
 /// not end with an underscore; otherwise, `false`.
 #[doc(hidden)]
+#[must_use]
 pub const fn is_ascii_snake_case(value: &str) -> bool {
     let bytes = value.as_bytes();
     if bytes.is_empty() || bytes[0] < b'a' || bytes[0] > b'z' {
@@ -203,6 +206,7 @@ pub const fn is_ascii_snake_case(value: &str) -> bool {
 /// # Returns
 ///
 /// `true` when both strings contain the same bytes; otherwise, `false`.
+#[must_use]
 const fn str_eq(lhs: &str, rhs: &str) -> bool {
     let lhs = lhs.as_bytes();
     let rhs = rhs.as_bytes();

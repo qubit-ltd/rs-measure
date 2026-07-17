@@ -9,6 +9,8 @@
 
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
+use crate::impl_uom_unit;
+#[cfg(feature = "uom")]
 use uom::si::f64::TemperatureInterval as UomTemperatureInterval;
 #[cfg(feature = "uom")]
 use uom::si::temperature_interval::{
@@ -20,14 +22,24 @@ use uom::si::temperature_interval::{
 
 define_unit_family! {
     /// Units for persisted temperature interval measurements.
-    pub enum TemperatureInterval for "temperature_interval", uom = UomTemperatureInterval {
+    pub enum TemperatureInterval for "temperature_interval" {
         /// Kelvin (`K`).
-        Kelvin => { symbol: "K"; definition: crate::consts::temperature_interval::KELVIN; uom: kelvin; }
+        Kelvin => { symbol: "K"; definition: crate::consts::temperature_interval::KELVIN; }
         /// Degree Celsius (`°C`).
-        Celsius => { symbol: "°C"; definition: crate::consts::temperature_interval::CELSIUS; aliases: ["degC"]; uom: degree_celsius; }
+        Celsius => { symbol: "°C"; definition: crate::consts::temperature_interval::CELSIUS; aliases: ["degC"]; }
         /// Degree Fahrenheit (`°F`).
-        Fahrenheit => { symbol: "°F"; definition: crate::consts::temperature_interval::FAHRENHEIT; aliases: ["degF"]; uom: degree_fahrenheit; }
+        Fahrenheit => { symbol: "°F"; definition: crate::consts::temperature_interval::FAHRENHEIT; aliases: ["degF"]; }
         /// Degree Rankine (`°R`).
-        Rankine => { symbol: "°R"; definition: crate::consts::temperature_interval::RANKINE; aliases: ["degR"]; uom: degree_rankine; }
+        Rankine => { symbol: "°R"; definition: crate::consts::temperature_interval::RANKINE; aliases: ["degR"]; }
+    }
+}
+
+#[cfg(feature = "uom")]
+impl_uom_unit! {
+    TemperatureInterval, UomTemperatureInterval {
+        Kelvin => kelvin;
+        Celsius => degree_celsius;
+        Fahrenheit => degree_fahrenheit;
+        Rankine => degree_rankine;
     }
 }
