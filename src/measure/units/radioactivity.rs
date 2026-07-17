@@ -13,15 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Radioactivity as UomRadioactivity;
 #[cfg(feature = "uom")]
-use uom::si::radioactivity::{
-    becquerel,
-    curie,
-    disintegrations_per_minute,
-    kilobecquerel,
-    megabecquerel,
-    microcurie,
-    millicurie,
-};
+use uom::si::radioactivity::becquerel;
 
 define_unit_family! {
     /// Units for persisted radioactivity measurements.
@@ -46,12 +38,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Radioactivity, UomRadioactivity {
-        Becquerel => becquerel;
-        Kilobecquerel => kilobecquerel;
-        Megabecquerel => megabecquerel;
-        Curie => curie;
-        Millicurie => millicurie;
-        Microcurie => microcurie;
-        DisintegrationsPerMinute => disintegrations_per_minute;
+        base: becquerel;
     }
 }

@@ -11,17 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::energy::{
-    btu_it,
-    calorie,
-    electronvolt,
-    joule,
-    kilocalorie,
-    kilojoule,
-    kilowatt_hour,
-    megajoule,
-    watt_hour,
-};
+use uom::si::energy::joule;
 #[cfg(feature = "uom")]
 use uom::si::f64::Energy as UomEnergy;
 
@@ -53,14 +43,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Energy, UomEnergy {
-        Joule => joule;
-        Kilojoule => kilojoule;
-        Megajoule => megajoule;
-        WattHour => watt_hour;
-        KilowattHour => kilowatt_hour;
-        Electronvolt => electronvolt;
-        ThermochemicalCalorie => calorie;
-        ThermochemicalKilocalorie => kilocalorie;
-        BritishThermalUnitInternationalTable => btu_it;
+        base: joule;
     }
 }

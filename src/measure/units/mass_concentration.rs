@@ -13,14 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MassConcentration as UomMassConcentration;
 #[cfg(feature = "uom")]
-use uom::si::mass_concentration::{
-    gram_per_deciliter,
-    gram_per_liter,
-    kilogram_per_cubic_meter,
-    microgram_per_liter,
-    milligram_per_deciliter,
-    milligram_per_liter,
-};
+use uom::si::mass_concentration::kilogram_per_cubic_meter;
 
 define_unit_family! {
     /// Units for persisted mass concentration measurements.
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MassConcentration, UomMassConcentration {
-        MicrogramPerLiter => microgram_per_liter;
-        MilligramPerLiter => milligram_per_liter;
-        GramPerLiter => gram_per_liter;
-        KilogramPerCubicMeter => kilogram_per_cubic_meter;
-        MilligramPerDeciliter => milligram_per_deciliter;
-        GramPerDeciliter => gram_per_deciliter;
+        base: kilogram_per_cubic_meter;
     }
 }

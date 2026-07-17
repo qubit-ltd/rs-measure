@@ -17,10 +17,6 @@
 #![deny(missing_docs)]
 #![deny(unsafe_op_in_unsafe_fn)]
 
-#[cfg(feature = "uom")]
-#[macro_use]
-extern crate uom as uom_macros;
-
 #[doc(hidden)]
 #[path = "private.rs"]
 pub mod __private;

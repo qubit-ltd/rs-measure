@@ -13,16 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Velocity as UomVelocity;
 #[cfg(feature = "uom")]
-use uom::si::velocity::{
-    centimeter_per_second,
-    foot_per_second,
-    kilometer_per_hour,
-    knot,
-    meter_per_second,
-    micrometer_per_second,
-    mile_per_hour,
-    millimeter_per_second,
-};
+use uom::si::velocity::meter_per_second;
 
 define_unit_family! {
     /// Units for persisted velocity measurements.
@@ -49,13 +40,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Velocity, UomVelocity {
-        MicrometerPerSecond => micrometer_per_second;
-        MillimeterPerSecond => millimeter_per_second;
-        CentimeterPerSecond => centimeter_per_second;
-        MeterPerSecond => meter_per_second;
-        KilometerPerHour => kilometer_per_hour;
-        FootPerSecond => foot_per_second;
-        MilePerHour => mile_per_hour;
-        Knot => knot;
+        base: meter_per_second;
     }
 }

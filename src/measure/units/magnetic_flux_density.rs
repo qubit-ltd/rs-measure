@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MagneticFluxDensity as UomMagneticFluxDensity;
 #[cfg(feature = "uom")]
-use uom::si::magnetic_flux_density::{
-    gauss,
-    microtesla,
-    millitesla,
-    nanotesla,
-    tesla,
-};
+use uom::si::magnetic_flux_density::tesla;
 
 define_unit_family! {
     /// Units for persisted magnetic flux density measurements.
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MagneticFluxDensity, UomMagneticFluxDensity {
-        Nanotesla => nanotesla;
-        Microtesla => microtesla;
-        Millitesla => millitesla;
-        Tesla => tesla;
-        Gauss => gauss;
+        base: tesla;
     }
 }

@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::HeatCapacity as UomHeatCapacity;
 #[cfg(feature = "uom")]
-use uom::si::heat_capacity::{
-    btu_it_per_degree_fahrenheit,
-    calorie_per_kelvin,
-    joule_per_degree_celsius,
-    joule_per_kelvin,
-    kilojoule_per_kelvin,
-};
+use uom::si::heat_capacity::joule_per_kelvin;
 
 define_unit_family! {
     /// Units for persisted heat capacity measurements.
@@ -42,10 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     HeatCapacity, UomHeatCapacity {
-        JoulePerKelvin => joule_per_kelvin;
-        KilojoulePerKelvin => kilojoule_per_kelvin;
-        JoulePerDegreeCelsius => joule_per_degree_celsius;
-        ThermochemicalCaloriePerKelvin => calorie_per_kelvin;
-        BritishThermalUnitInternationalTablePerDegreeFahrenheit => btu_it_per_degree_fahrenheit;
+        base: joule_per_kelvin;
     }
 }

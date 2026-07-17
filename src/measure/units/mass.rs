@@ -13,18 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Mass as UomMass;
 #[cfg(feature = "uom")]
-use uom::si::mass::{
-    carat,
-    gram,
-    kilogram,
-    microgram,
-    milligram,
-    ounce,
-    pound,
-    ton,
-    ton_long,
-    ton_short,
-};
+use uom::si::mass::kilogram;
 
 define_unit_family! {
     /// Units for persisted mass measurements.
@@ -55,15 +44,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Mass, UomMass {
-        Microgram => microgram;
-        Milligram => milligram;
-        Gram => gram;
-        Kilogram => kilogram;
-        Tonne => ton;
-        Carat => carat;
-        Ounce => ounce;
-        Pound => pound;
-        TonShort => ton_short;
-        TonLong => ton_long;
+        base: kilogram;
     }
 }

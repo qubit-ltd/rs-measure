@@ -13,14 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MassRate as UomMassRate;
 #[cfg(feature = "uom")]
-use uom::si::mass_rate::{
-    gram_per_second,
-    kilogram_per_hour,
-    kilogram_per_second,
-    milligram_per_second,
-    pound_per_hour,
-    ton_per_hour,
-};
+use uom::si::mass_rate::kilogram_per_second;
 
 define_unit_family! {
     /// Units for persisted mass rate measurements.
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MassRate, UomMassRate {
-        MilligramPerSecond => milligram_per_second;
-        GramPerSecond => gram_per_second;
-        KilogramPerSecond => kilogram_per_second;
-        KilogramPerHour => kilogram_per_hour;
-        TonnePerHour => ton_per_hour;
-        PoundPerHour => pound_per_hour;
+        base: kilogram_per_second;
     }
 }

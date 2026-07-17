@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Frequency as UomFrequency;
 #[cfg(feature = "uom")]
-use uom::si::frequency::{
-    gigahertz,
-    hertz,
-    kilohertz,
-    megahertz,
-};
+use uom::si::frequency::hertz;
 
 define_unit_family! {
     /// Units for persisted frequency measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Frequency, UomFrequency {
-        Hertz => hertz;
-        Kilohertz => kilohertz;
-        Megahertz => megahertz;
-        Gigahertz => gigahertz;
+        base: hertz;
     }
 }

@@ -51,6 +51,9 @@ use uom::si::time::second;
 use uom::si::velocity::meter_per_second;
 use uom::si::volume::liter;
 
+/// Maximum relative error allowed by the independent SI base oracle.
+const UOM_ORACLE_RELATIVE_TOLERANCE: f64 = 1.0E-12;
+
 /// Checks two floating-point values with a relative tolerance.
 ///
 /// # Arguments
@@ -108,43 +111,6 @@ fn assert_uom_oracle_relative_eq(
     );
 }
 
-/// Returns the relative tolerance for one independently checked uom mapping.
-///
-/// # Arguments
-///
-/// * `quantity` - Persisted quantity identifier.
-/// * `symbol` - Canonical unit symbol.
-///
-/// # Returns
-///
-/// A tight default tolerance, or a documented exception for an upstream uom
-/// factor that intentionally differs from this crate's exact definition.
-fn uom_oracle_relative_tolerance(quantity: &str, symbol: &str) -> f64 {
-    match (quantity, symbol) {
-        // uom 0.38 uses 4_046.873 m² while this crate follows the exact
-        // international acre definition of 4_046.856_422_4 m².
-        ("area", "ac") => 5.0E-6,
-        // uom 0.38 retains rounded customary factors for these units, while
-        // this crate stores their exact or higher-precision definitions.
-        (
-            "volume",
-            "in³" | "ft³" | "yd³" | "fl oz (US)" | "cup (US customary)"
-            | "pt (US liq)" | "qt (US liq)" | "gal (US)",
-        )
-        | ("mass", "oz" | "lb" | "2000 lb" | "2240 lb")
-        | ("pressure", "psi")
-        | ("power", "hp (mechanical)")
-        | ("mass_density", "lb/ft³" | "lb/gal (US)")
-        | ("force", "lbf")
-        | ("torque", "lbf · ft" | "lbf · in")
-        | ("volume_rate", "gal (US)/min")
-        | ("mass_rate", "lb/h")
-        | ("specific_heat_capacity", "Btu (IT)/(lb · °F)")
-        | ("illuminance", "fc") => 5.0E-7,
-        _ => 1.0E-12,
-    }
-}
-
 /// Checks every variant against an independently computed SI base value.
 macro_rules! assert_unit_family_matches_uom_base {
     ($unit:ty) => {{
@@ -179,15 +145,11 @@ macro_rules! assert_unit_family_matches_uom_base {
                     .expect("factor denominator should fit f64 for the oracle");
                 let expected_base = (sample + offset) * numerator / denominator;
                 let quantity = source.to_uom_approx();
-                let tolerance = uom_oracle_relative_tolerance(
-                    <$unit>::QUANTITY,
-                    unit.symbol(),
-                );
 
                 assert_uom_oracle_relative_eq(
                     quantity.value,
                     expected_base,
-                    tolerance,
+                    UOM_ORACLE_RELATIVE_TOLERANCE,
                     <$unit>::QUANTITY,
                     unit.symbol(),
                     sample,
@@ -208,7 +170,7 @@ macro_rules! assert_unit_family_matches_uom_base {
                         .to_f64()
                         .expect("round-trip Decimal should fit f64"),
                     sample,
-                    tolerance,
+                    UOM_ORACLE_RELATIVE_TOLERANCE,
                     <$unit>::QUANTITY,
                     unit.symbol(),
                     sample,
@@ -254,7 +216,7 @@ fn test_specific_heat_capacity_btu_it_uom_mapping_uses_si_oracle() {
         measurement
             .to_uom_approx()
             .get::<joule_per_kilogram_kelvin>(),
-        4_186.800_307_941_667,
+        189_910_080_000.0 / 45_359_237.0,
     );
 }
 

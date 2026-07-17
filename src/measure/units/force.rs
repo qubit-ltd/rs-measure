@@ -13,15 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Force as UomForce;
 #[cfg(feature = "uom")]
-use uom::si::force::{
-    gram_force,
-    kilogram_force,
-    kilonewton,
-    meganewton,
-    millinewton,
-    newton,
-    pound_force,
-};
+use uom::si::force::newton;
 
 define_unit_family! {
     /// Units for persisted force measurements.
@@ -46,12 +38,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Force, UomForce {
-        Millinewton => millinewton;
-        Newton => newton;
-        Kilonewton => kilonewton;
-        Meganewton => meganewton;
-        GramForce => gram_force;
-        KilogramForce => kilogram_force;
-        PoundForce => pound_force;
+        base: newton;
     }
 }

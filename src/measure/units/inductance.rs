@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Inductance as UomInductance;
 #[cfg(feature = "uom")]
-use uom::si::inductance::{
-    henry,
-    microhenry,
-    millihenry,
-    nanohenry,
-};
+use uom::si::inductance::henry;
 
 define_unit_family! {
     /// Units for persisted inductance measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Inductance, UomInductance {
-        Nanohenry => nanohenry;
-        Microhenry => microhenry;
-        Millihenry => millihenry;
-        Henry => henry;
+        base: henry;
     }
 }

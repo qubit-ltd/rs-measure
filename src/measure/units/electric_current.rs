@@ -11,15 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electric_current::{
-    ampere,
-    kiloampere,
-    megaampere,
-    microampere,
-    milliampere,
-    nanoampere,
-    picoampere,
-};
+use uom::si::electric_current::ampere;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricCurrent as UomElectricCurrent;
 
@@ -46,12 +38,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricCurrent, UomElectricCurrent {
-        Picoampere => picoampere;
-        Nanoampere => nanoampere;
-        Microampere => microampere;
-        Milliampere => milliampere;
-        Ampere => ampere;
-        Kiloampere => kiloampere;
-        Megaampere => megaampere;
+        base: ampere;
     }
 }

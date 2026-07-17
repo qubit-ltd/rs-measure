@@ -11,13 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::angle::{
-    degree,
-    minute,
-    radian,
-    revolution,
-    second,
-};
+use uom::si::angle::radian;
 #[cfg(feature = "uom")]
 use uom::si::f64::Angle as UomAngle;
 
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Angle, UomAngle {
-        Radian => radian;
-        Degree => degree;
-        Revolution => revolution;
-        Minute => minute;
-        Second => second;
+        base: radian;
     }
 }

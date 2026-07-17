@@ -30,7 +30,7 @@ define_unit_family! {
 
 impl_uom_unit! {
     FixtureLength, UomLength {
-        Meter => meter;
+        base: meter;
     }
 }
 

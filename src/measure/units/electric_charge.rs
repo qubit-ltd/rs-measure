@@ -11,14 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electric_charge::{
-    ampere_hour,
-    coulomb,
-    kilocoulomb,
-    microcoulomb,
-    milliampere_hour,
-    millicoulomb,
-};
+use uom::si::electric_charge::coulomb;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricCharge as UomElectricCharge;
 
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricCharge, UomElectricCharge {
-        Microcoulomb => microcoulomb;
-        Millicoulomb => millicoulomb;
-        Coulomb => coulomb;
-        Kilocoulomb => kilocoulomb;
-        AmpereHour => ampere_hour;
-        MilliampereHour => milliampere_hour;
+        base: coulomb;
     }
 }

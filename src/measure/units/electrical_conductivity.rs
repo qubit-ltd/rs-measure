@@ -11,10 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electrical_conductivity::{
-    siemens_per_centimeter,
-    siemens_per_meter,
-};
+use uom::si::electrical_conductivity::siemens_per_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricalConductivity as UomElectricalConductivity;
 
@@ -31,7 +28,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricalConductivity, UomElectricalConductivity {
-        SiemensPerMeter => siemens_per_meter;
-        SiemensPerCentimeter => siemens_per_centimeter;
+        base: siemens_per_meter;
     }
 }

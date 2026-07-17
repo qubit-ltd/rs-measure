@@ -11,12 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::acceleration::{
-    foot_per_second_squared,
-    meter_per_second_squared,
-    millimeter_per_second_squared,
-    standard_gravity,
-};
+use uom::si::acceleration::meter_per_second_squared;
 #[cfg(feature = "uom")]
 use uom::si::f64::Acceleration as UomAcceleration;
 
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Acceleration, UomAcceleration {
-        MillimeterPerSecondSquared => millimeter_per_second_squared;
-        MeterPerSecondSquared => meter_per_second_squared;
-        FootPerSecondSquared => foot_per_second_squared;
-        StandardGravity => standard_gravity;
+        base: meter_per_second_squared;
     }
 }

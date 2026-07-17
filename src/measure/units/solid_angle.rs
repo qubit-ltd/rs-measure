@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SolidAngle as UomSolidAngle;
 #[cfg(feature = "uom")]
-use uom::si::solid_angle::{
-    spat,
-    square_degree,
-    steradian,
-};
+use uom::si::solid_angle::steradian;
 
 define_unit_family! {
     /// Units for persisted solid angle measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     SolidAngle, UomSolidAngle {
-        Steradian => steradian;
-        Spat => spat;
-        SquareDegree => square_degree;
+        base: steradian;
     }
 }

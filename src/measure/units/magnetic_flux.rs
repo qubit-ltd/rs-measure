@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MagneticFlux as UomMagneticFlux;
 #[cfg(feature = "uom")]
-use uom::si::magnetic_flux::{
-    maxwell,
-    microweber,
-    milliweber,
-    weber,
-};
+use uom::si::magnetic_flux::weber;
 
 define_unit_family! {
     /// Units for persisted magnetic flux measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MagneticFlux, UomMagneticFlux {
-        Microweber => microweber;
-        Milliweber => milliweber;
-        Weber => weber;
-        Maxwell => maxwell;
+        base: weber;
     }
 }

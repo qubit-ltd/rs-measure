@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Luminance as UomLuminance;
 #[cfg(feature = "uom")]
-use uom::si::luminance::{
-    candela_per_square_centimeter,
-    candela_per_square_foot,
-    candela_per_square_meter,
-    footlambert,
-    stilb,
-};
+use uom::si::luminance::candela_per_square_meter;
 
 define_unit_family! {
     /// Units for persisted luminance measurements.
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Luminance, UomLuminance {
-        CandelaPerSquareMeter => candela_per_square_meter;
-        CandelaPerSquareCentimeter => candela_per_square_centimeter;
-        CandelaPerSquareFoot => candela_per_square_foot;
-        Footlambert => footlambert;
-        Stilb => stilb;
+        base: candela_per_square_meter;
     }
 }

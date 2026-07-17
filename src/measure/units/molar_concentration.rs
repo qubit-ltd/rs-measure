@@ -13,14 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MolarConcentration as UomMolarConcentration;
 #[cfg(feature = "uom")]
-use uom::si::molar_concentration::{
-    micromole_per_liter,
-    millimole_per_liter,
-    mole_per_cubic_meter,
-    mole_per_liter,
-    nanomole_per_liter,
-    particle_per_milliliter,
-};
+use uom::si::molar_concentration::mole_per_cubic_meter;
 
 define_unit_family! {
     /// Units for persisted molar concentration measurements.
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MolarConcentration, UomMolarConcentration {
-        NanomolePerLiter => nanomole_per_liter;
-        MicromolePerLiter => micromole_per_liter;
-        MillimolePerLiter => millimole_per_liter;
-        MolePerLiter => mole_per_liter;
-        MolePerCubicMeter => mole_per_cubic_meter;
-        ParticlePerMilliliter => particle_per_milliliter;
+        base: mole_per_cubic_meter;
     }
 }

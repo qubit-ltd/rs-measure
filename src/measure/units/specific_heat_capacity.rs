@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SpecificHeatCapacity as UomSpecificHeatCapacity;
 #[cfg(feature = "uom")]
-use uom::si::specific_heat_capacity::{
-    btu_it_per_pound_degree_fahrenheit,
-    calorie_per_gram_kelvin,
-    joule_per_gram_degree_celsius,
-    joule_per_kilogram_kelvin,
-    kilojoule_per_kilogram_kelvin,
-};
+use uom::si::specific_heat_capacity::joule_per_kilogram_kelvin;
 
 define_unit_family! {
     /// Units for persisted specific heat capacity measurements.
@@ -42,10 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     SpecificHeatCapacity, UomSpecificHeatCapacity {
-        JoulePerKilogramKelvin => joule_per_kilogram_kelvin;
-        KilojoulePerKilogramKelvin => kilojoule_per_kilogram_kelvin;
-        JoulePerGramDegreeCelsius => joule_per_gram_degree_celsius;
-        ThermochemicalCaloriePerGramKelvin => calorie_per_gram_kelvin;
-        BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit => btu_it_per_pound_degree_fahrenheit;
+        base: joule_per_kilogram_kelvin;
     }
 }

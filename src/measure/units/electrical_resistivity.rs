@@ -11,12 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electrical_resistivity::{
-    milliohm_meter,
-    ohm_centimeter,
-    ohm_meter,
-    ohm_square_millimeter_per_meter,
-};
+use uom::si::electrical_resistivity::ohm_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricalResistivity as UomElectricalResistivity;
 
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricalResistivity, UomElectricalResistivity {
-        MilliohmMeter => milliohm_meter;
-        OhmMeter => ohm_meter;
-        OhmCentimeter => ohm_centimeter;
-        OhmSquareMillimeterPerMeter => ohm_square_millimeter_per_meter;
+        base: ohm_meter;
     }
 }

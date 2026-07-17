@@ -26,6 +26,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Molality, UomMolality {
-        MolePerKilogram => mole_per_kilogram;
+        base: mole_per_kilogram;
     }
 }

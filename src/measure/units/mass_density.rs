@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MassDensity as UomMassDensity;
 #[cfg(feature = "uom")]
-use uom::si::mass_density::{
-    gram_per_cubic_centimeter,
-    gram_per_cubic_meter,
-    kilogram_per_cubic_meter,
-    pound_per_cubic_foot,
-    pound_per_gallon,
-};
+use uom::si::mass_density::kilogram_per_cubic_meter;
 
 define_unit_family! {
     /// Units for persisted mass density measurements.
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MassDensity, UomMassDensity {
-        KilogramPerCubicMeter => kilogram_per_cubic_meter;
-        GramPerCubicMeter => gram_per_cubic_meter;
-        GramPerCubicCentimeter => gram_per_cubic_centimeter;
-        PoundPerCubicFoot => pound_per_cubic_foot;
-        PoundPerUsGallon => pound_per_gallon;
+        base: kilogram_per_cubic_meter;
     }
 }

@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MagneticFieldStrength as UomMagneticFieldStrength;
 #[cfg(feature = "uom")]
-use uom::si::magnetic_field_strength::{
-    ampere_per_centimeter,
-    ampere_per_meter,
-    oersted,
-};
+use uom::si::magnetic_field_strength::ampere_per_meter;
 
 define_unit_family! {
     /// Units for persisted magnetic field strength measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MagneticFieldStrength, UomMagneticFieldStrength {
-        AmperePerMeter => ampere_per_meter;
-        AmperePerCentimeter => ampere_per_centimeter;
-        Oersted => oersted;
+        base: ampere_per_meter;
     }
 }

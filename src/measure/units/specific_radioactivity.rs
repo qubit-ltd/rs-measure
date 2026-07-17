@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SpecificRadioactivity as UomSpecificRadioactivity;
 #[cfg(feature = "uom")]
-use uom::si::specific_radioactivity::{
-    becquerel_per_kilogram,
-    curie_per_kilogram,
-    disintegrations_per_minute_per_kilogram,
-};
+use uom::si::specific_radioactivity::becquerel_per_kilogram;
 
 define_unit_family! {
     /// Units for persisted specific radioactivity measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     SpecificRadioactivity, UomSpecificRadioactivity {
-        BecquerelPerKilogram => becquerel_per_kilogram;
-        CuriePerKilogram => curie_per_kilogram;
-        DisintegrationsPerMinutePerKilogram => disintegrations_per_minute_per_kilogram;
+        base: becquerel_per_kilogram;
     }
 }

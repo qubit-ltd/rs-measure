@@ -13,16 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Time as UomTime;
 #[cfg(feature = "uom")]
-use uom::si::time::{
-    day,
-    hour,
-    microsecond,
-    millisecond,
-    minute,
-    nanosecond,
-    second,
-    year,
-};
+use uom::si::time::second;
 
 define_unit_family! {
     /// Units for persisted time measurements.
@@ -49,13 +40,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Time, UomTime {
-        Nanosecond => nanosecond;
-        Microsecond => microsecond;
-        Millisecond => millisecond;
-        Second => second;
-        Minute => minute;
-        Hour => hour;
-        Day => day;
-        CommonYear365 => year;
+        base: second;
     }
 }

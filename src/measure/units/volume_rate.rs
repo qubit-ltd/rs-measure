@@ -13,14 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::VolumeRate as UomVolumeRate;
 #[cfg(feature = "uom")]
-use uom::si::volume_rate::{
-    cubic_meter_per_hour,
-    cubic_meter_per_second,
-    gallon_per_minute,
-    liter_per_minute,
-    liter_per_second,
-    milliliter_per_second,
-};
+use uom::si::volume_rate::cubic_meter_per_second;
 
 define_unit_family! {
     /// Units for persisted volume rate measurements.
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     VolumeRate, UomVolumeRate {
-        CubicMeterPerSecond => cubic_meter_per_second;
-        CubicMeterPerHour => cubic_meter_per_hour;
-        MilliliterPerSecond => milliliter_per_second;
-        LiterPerSecond => liter_per_second;
-        LiterPerMinute => liter_per_minute;
-        UsGallonPerMinute => gallon_per_minute;
+        base: cubic_meter_per_second;
     }
 }

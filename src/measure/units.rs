@@ -32,8 +32,6 @@ mod heat_capacity;
 mod heat_flux_density;
 mod illuminance;
 mod inductance;
-#[cfg(feature = "uom")]
-mod internal;
 mod kinematic_viscosity;
 mod length;
 mod luminance;
@@ -289,10 +287,17 @@ macro_rules! __define_unit_family_core {
 /// Implements an explicit approximate `uom` bridge for a unit family.
 ///
 /// Invoke this macro only when `qubit-measure`'s `uom` feature is enabled and
-/// the supplied `uom` quantity and unit types are available. Keeping this
-/// bridge separate from [`define_unit_family!`](crate::define_unit_family)
-/// prevents Cargo feature unification from changing whether an exact-only
-/// unit declaration resolves optional `uom` paths.
+/// the supplied `uom` quantity and SI base-unit types are available. The base
+/// unit must represent the abstract base used by every
+/// [`UnitDefinition`](crate::UnitDefinition)
+/// returned by the family. The bridge applies that exact definition before
+/// crossing `f64`; reading the resulting quantity through another `uom` unit
+/// then follows `uom`'s own coefficient for that unit. A forward conversion
+/// panics if the family violates
+/// [`Unit::definition`](crate::Unit::definition)'s validity contract. Keeping
+/// this bridge separate from [`define_unit_family!`](crate::define_unit_family)
+/// prevents Cargo feature unification from changing whether an exact-only unit
+/// declaration resolves optional `uom` paths.
 ///
 /// # Examples
 ///
@@ -319,7 +324,7 @@ macro_rules! __define_unit_family_core {
 ///
 /// impl_uom_unit! {
 ///     ExampleLength, UomLength {
-///         Meter => meter;
+///         base: meter;
 ///     }
 /// }
 ///
@@ -332,24 +337,21 @@ macro_rules! impl_uom_unit {
     (
         $unit:ident,
         $quantity_ty:ty {
-            $($variant:ident => $uom_unit:ty;)+
+            base: $uom_base_unit:ty;
         }
     ) => {
         impl $crate::UomUnit for $unit {
             type Quantity = $quantity_ty;
 
             #[inline]
-            fn to_uom_approx(
-                self,
-                value: $crate::Decimal,
-            ) -> Self::Quantity {
-                let value = $crate::__private::decimal_to_f64_approx(value);
-                match self {
-                    $(
-                        Self::$variant =>
-                            <$quantity_ty>::new::<$uom_unit>(value),
-                    )+
-                }
+            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
+                let definition = $crate::Unit::definition(self).expect(
+                    "UomUnit requires every Unit definition to be valid",
+                );
+                let base_value = $crate::__private::unit_value_to_base_f64(
+                    value, definition,
+                );
+                <$quantity_ty>::new::<$uom_base_unit>(base_value)
             }
 
             #[inline]
@@ -357,12 +359,11 @@ macro_rules! impl_uom_unit {
                 self,
                 quantity: Self::Quantity,
             ) -> Result<$crate::Decimal, $crate::MeasurementError> {
-                let value = match self {
-                    $(
-                        Self::$variant => quantity.get::<$uom_unit>(),
-                    )+
-                };
-                $crate::__private::decimal_from_f64_approx(value)
+                let definition = $crate::Unit::definition(self)?;
+                let base_value = quantity.get::<$uom_base_unit>();
+                $crate::__private::base_f64_to_unit_value(
+                    base_value, definition,
+                )
             }
         }
     };

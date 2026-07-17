@@ -11,18 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::area::{
-    acre,
-    hectare,
-    square_centimeter,
-    square_foot,
-    square_inch,
-    square_kilometer,
-    square_meter,
-    square_mile,
-    square_millimeter,
-    square_yard,
-};
+use uom::si::area::square_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::Area as UomArea;
 
@@ -55,15 +44,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Area, UomArea {
-        SquareMillimeter => square_millimeter;
-        SquareCentimeter => square_centimeter;
-        SquareMeter => square_meter;
-        SquareKilometer => square_kilometer;
-        Hectare => hectare;
-        Acre => acre;
-        SquareInch => square_inch;
-        SquareFoot => square_foot;
-        SquareYard => square_yard;
-        SquareMile => square_mile;
+        base: square_meter;
     }
 }

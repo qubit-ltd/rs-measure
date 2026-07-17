@@ -11,13 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::capacitance::{
-    farad,
-    microfarad,
-    millifarad,
-    nanofarad,
-    picofarad,
-};
+use uom::si::capacitance::farad;
 #[cfg(feature = "uom")]
 use uom::si::f64::Capacitance as UomCapacitance;
 
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Capacitance, UomCapacitance {
-        Picofarad => picofarad;
-        Nanofarad => nanofarad;
-        Microfarad => microfarad;
-        Millifarad => millifarad;
-        Farad => farad;
+        base: farad;
     }
 }

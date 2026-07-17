@@ -11,13 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::catalytic_activity::{
-    enzyme_unit,
-    katal,
-    microkatal,
-    milli_enzyme_unit,
-    millikatal,
-};
+use uom::si::catalytic_activity::katal;
 #[cfg(feature = "uom")]
 use uom::si::f64::CatalyticActivity as UomCatalyticActivity;
 
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     CatalyticActivity, UomCatalyticActivity {
-        Microkatal => microkatal;
-        Millikatal => millikatal;
-        Katal => katal;
-        EnzymeUnit => enzyme_unit;
-        MilliEnzymeUnit => milli_enzyme_unit;
+        base: katal;
     }
 }

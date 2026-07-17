@@ -7,27 +7,13 @@
 // =============================================================================
 //! Units for persisted pressure measurements.
 
-#[cfg(feature = "uom")]
-use super::internal::ExactTorrEquivalent;
 use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Pressure as UomPressure;
 #[cfg(feature = "uom")]
-use uom::si::pressure::{
-    atmosphere,
-    bar,
-    hectopascal,
-    kilopascal,
-    megapascal,
-    micropascal,
-    millibar,
-    millipascal,
-    nanopascal,
-    pascal,
-    psi,
-};
+use uom::si::pressure::pascal;
 
 define_unit_family! {
     /// Units for persisted pressure measurements.
@@ -57,9 +43,9 @@ define_unit_family! {
         ///
         /// The lenient alias is `mmHg`. This definition differs from the
         /// conventional rounded 133.3224 Pa value used by some conversion
-        /// tables. The optional `uom` bridge uses an internal Torr-equivalent
-        /// marker so it preserves this unit's Torr-equivalent semantic instead
-        /// of using `uom`'s conventional millimeter-of-mercury coefficient.
+        /// tables. The optional `uom` bridge converts through the Pascal base
+        /// unit using this exact definition instead of using `uom`'s
+        /// conventional millimeter-of-mercury coefficient.
         MillimeterOfMercury => { symbol: "mm Hg"; definition: crate::consts::pressure::MILLIMETER_OF_MERCURY; aliases: ["mmHg"]; }
         /// Pound-force per square inch (`psi`).
         Psi => { symbol: "psi"; definition: crate::consts::pressure::PSI; }
@@ -69,17 +55,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Pressure, UomPressure {
-        Nanopascal => nanopascal;
-        Micropascal => micropascal;
-        Millipascal => millipascal;
-        Pascal => pascal;
-        Hectopascal => hectopascal;
-        Kilopascal => kilopascal;
-        Megapascal => megapascal;
-        Bar => bar;
-        Millibar => millibar;
-        Atmosphere => atmosphere;
-        MillimeterOfMercury => ExactTorrEquivalent;
-        Psi => psi;
+        base: pascal;
     }
 }

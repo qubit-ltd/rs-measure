@@ -11,14 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electric_field::{
-    kilovolt_per_millimeter,
-    megavolt_per_meter,
-    volt_per_centimeter,
-    volt_per_meter,
-    volt_per_micrometer,
-    volt_per_millimeter,
-};
+use uom::si::electric_field::volt_per_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricField as UomElectricField;
 
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricField, UomElectricField {
-        VoltPerMeter => volt_per_meter;
-        VoltPerCentimeter => volt_per_centimeter;
-        VoltPerMillimeter => volt_per_millimeter;
-        VoltPerMicrometer => volt_per_micrometer;
-        KilovoltPerMillimeter => kilovolt_per_millimeter;
-        MegavoltPerMeter => megavolt_per_meter;
+        base: volt_per_meter;
     }
 }

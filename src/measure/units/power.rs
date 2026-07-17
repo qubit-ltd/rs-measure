@@ -13,15 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Power as UomPower;
 #[cfg(feature = "uom")]
-use uom::si::power::{
-    horsepower,
-    kilowatt,
-    megawatt,
-    microwatt,
-    milliwatt,
-    nanowatt,
-    watt,
-};
+use uom::si::power::watt;
 
 define_unit_family! {
     /// Units for persisted power measurements.
@@ -46,12 +38,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Power, UomPower {
-        Nanowatt => nanowatt;
-        Microwatt => microwatt;
-        Milliwatt => milliwatt;
-        Watt => watt;
-        Kilowatt => kilowatt;
-        Megawatt => megawatt;
-        MechanicalHorsepower => horsepower;
+        base: watt;
     }
 }

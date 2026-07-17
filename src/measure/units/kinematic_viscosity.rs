@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::KinematicViscosity as UomKinematicViscosity;
 #[cfg(feature = "uom")]
-use uom::si::kinematic_viscosity::{
-    centistokes,
-    square_meter_per_second,
-    square_millimeter_per_second,
-    stokes,
-};
+use uom::si::kinematic_viscosity::square_meter_per_second;
 
 define_unit_family! {
     /// Units for persisted kinematic viscosity measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     KinematicViscosity, UomKinematicViscosity {
-        SquareMillimeterPerSecond => square_millimeter_per_second;
-        SquareMeterPerSecond => square_meter_per_second;
-        Stokes => stokes;
-        Centistokes => centistokes;
+        base: square_meter_per_second;
     }
 }

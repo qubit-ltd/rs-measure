@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::ThermodynamicTemperature as UomTemperature;
 #[cfg(feature = "uom")]
-use uom::si::thermodynamic_temperature::{
-    degree_celsius,
-    degree_fahrenheit,
-    degree_rankine,
-    kelvin,
-};
+use uom::si::thermodynamic_temperature::kelvin;
 
 define_unit_family! {
     /// Units for persisted thermodynamic temperature measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Temperature, UomTemperature {
-        Kelvin => kelvin;
-        Celsius => degree_celsius;
-        Fahrenheit => degree_fahrenheit;
-        Rankine => degree_rankine;
+        base: kelvin;
     }
 }

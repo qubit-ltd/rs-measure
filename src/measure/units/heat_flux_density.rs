@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::HeatFluxDensity as UomHeatFluxDensity;
 #[cfg(feature = "uom")]
-use uom::si::heat_flux_density::{
-    kilowatt_per_square_meter,
-    milliwatt_per_square_meter,
-    watt_per_square_centimeter,
-    watt_per_square_meter,
-};
+use uom::si::heat_flux_density::watt_per_square_meter;
 
 define_unit_family! {
     /// Units for persisted heat flux density measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     HeatFluxDensity, UomHeatFluxDensity {
-        MilliwattPerSquareMeter => milliwatt_per_square_meter;
-        WattPerSquareMeter => watt_per_square_meter;
-        KilowattPerSquareMeter => kilowatt_per_square_meter;
-        WattPerSquareCentimeter => watt_per_square_centimeter;
+        base: watt_per_square_meter;
     }
 }

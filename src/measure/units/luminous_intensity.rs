@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::LuminousIntensity as UomLuminousIntensity;
 #[cfg(feature = "uom")]
-use uom::si::luminous_intensity::{
-    candela,
-    kilocandela,
-    millicandela,
-};
+use uom::si::luminous_intensity::candela;
 
 define_unit_family! {
     /// Units for persisted luminous intensity measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     LuminousIntensity, UomLuminousIntensity {
-        Millicandela => millicandela;
-        Candela => candela;
-        Kilocandela => kilocandela;
+        base: candela;
     }
 }

@@ -17,8 +17,12 @@ use crate::measure::{
 /// A unit family that can bridge through an approximate `uom/f64` quantity.
 ///
 /// This trait and its adapters exist only when the default-off `uom` Cargo
-/// feature is enabled. The bridge converts through binary `f64`, so it is not
-/// part of the exact Decimal conversion path and may lose precision.
+/// feature is enabled. The bridge first applies the family's exact
+/// [`UnitDefinition`](crate::UnitDefinition) to obtain its abstract SI base
+/// value, then crosses binary `f64`. The physical base value therefore follows
+/// `qubit-measure` semantics, although precision may be lost. Reading the
+/// resulting quantity through a non-base `uom` unit still uses that unit's own
+/// coefficient, which may intentionally differ from this crate's definition.
 pub trait UomUnit: Unit {
     /// The corresponding strongly typed `uom/f64` quantity.
     type Quantity: Copy;
@@ -33,6 +37,11 @@ pub trait UomUnit: Unit {
     /// # Returns
     ///
     /// The corresponding approximate strongly typed `uom` quantity.
+    ///
+    /// # Panics
+    ///
+    /// Panics if the unit family violates [`Unit::definition`]'s validity
+    /// contract.
     #[must_use]
     fn to_uom_approx(self, value: Decimal) -> Self::Quantity;
 

@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SurfaceTension as UomSurfaceTension;
 #[cfg(feature = "uom")]
-use uom::si::surface_tension::{
-    dyne_per_centimeter,
-    joule_per_square_meter,
-    millinewton_per_meter,
-    newton_per_meter,
-};
+use uom::si::surface_tension::newton_per_meter;
 
 define_unit_family! {
     /// Units for persisted surface tension measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     SurfaceTension, UomSurfaceTension {
-        MillinewtonPerMeter => millinewton_per_meter;
-        NewtonPerMeter => newton_per_meter;
-        DynePerCentimeter => dyne_per_centimeter;
-        JoulePerSquareMeter => joule_per_square_meter;
+        base: newton_per_meter;
     }
 }

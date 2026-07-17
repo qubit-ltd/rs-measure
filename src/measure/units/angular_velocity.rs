@@ -11,12 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::angular_velocity::{
-    degree_per_second,
-    radian_per_second,
-    revolution_per_minute,
-    revolution_per_second,
-};
+use uom::si::angular_velocity::radian_per_second;
 #[cfg(feature = "uom")]
 use uom::si::f64::AngularVelocity as UomAngularVelocity;
 
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     AngularVelocity, UomAngularVelocity {
-        RadianPerSecond => radian_per_second;
-        DegreePerSecond => degree_per_second;
-        RevolutionPerSecond => revolution_per_second;
-        RevolutionPerMinute => revolution_per_minute;
+        base: radian_per_second;
     }
 }

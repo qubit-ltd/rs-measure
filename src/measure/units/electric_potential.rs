@@ -11,14 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electric_potential::{
-    kilovolt,
-    megavolt,
-    microvolt,
-    millivolt,
-    nanovolt,
-    volt,
-};
+use uom::si::electric_potential::volt;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricPotential as UomElectricPotential;
 
@@ -45,11 +38,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricPotential, UomElectricPotential {
-        Nanovolt => nanovolt;
-        Microvolt => microvolt;
-        Millivolt => millivolt;
-        Volt => volt;
-        Kilovolt => kilovolt;
-        Megavolt => megavolt;
+        base: volt;
     }
 }

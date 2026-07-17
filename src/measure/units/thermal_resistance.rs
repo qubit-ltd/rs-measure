@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::ThermalResistance as UomThermalResistance;
 #[cfg(feature = "uom")]
-use uom::si::thermal_resistance::{
-    kelvin_per_kilowatt,
-    kelvin_per_milliwatt,
-    kelvin_per_watt,
-};
+use uom::si::thermal_resistance::kelvin_per_watt;
 
 define_unit_family! {
     /// Units for persisted thermal resistance measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ThermalResistance, UomThermalResistance {
-        KelvinPerMilliwatt => kelvin_per_milliwatt;
-        KelvinPerWatt => kelvin_per_watt;
-        KelvinPerKilowatt => kelvin_per_kilowatt;
+        base: kelvin_per_watt;
     }
 }

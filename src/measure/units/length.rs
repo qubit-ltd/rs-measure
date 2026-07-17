@@ -13,18 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Length as UomLength;
 #[cfg(feature = "uom")]
-use uom::si::length::{
-    centimeter,
-    foot,
-    inch,
-    kilometer,
-    meter,
-    micrometer,
-    mile,
-    millimeter,
-    nanometer,
-    yard,
-};
+use uom::si::length::meter;
 
 define_unit_family! {
     /// Units for persisted length measurements.
@@ -55,15 +44,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Length, UomLength {
-        Nanometer => nanometer;
-        Micrometer => micrometer;
-        Millimeter => millimeter;
-        Centimeter => centimeter;
-        Meter => meter;
-        Kilometer => kilometer;
-        Inch => inch;
-        Foot => foot;
-        Yard => yard;
-        Mile => mile;
+        base: meter;
     }
 }

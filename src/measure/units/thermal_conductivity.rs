@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::ThermalConductivity as UomThermalConductivity;
 #[cfg(feature = "uom")]
-use uom::si::thermal_conductivity::{
-    kilowatt_per_meter_kelvin,
-    milliwatt_per_meter_kelvin,
-    watt_per_meter_degree_celsius,
-    watt_per_meter_kelvin,
-};
+use uom::si::thermal_conductivity::watt_per_meter_kelvin;
 
 define_unit_family! {
     /// Units for persisted thermal conductivity measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ThermalConductivity, UomThermalConductivity {
-        MilliwattPerMeterKelvin => milliwatt_per_meter_kelvin;
-        WattPerMeterKelvin => watt_per_meter_kelvin;
-        KilowattPerMeterKelvin => kilowatt_per_meter_kelvin;
-        WattPerMeterDegreeCelsius => watt_per_meter_degree_celsius;
+        base: watt_per_meter_kelvin;
     }
 }

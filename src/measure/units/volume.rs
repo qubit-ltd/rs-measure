@@ -13,22 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Volume as UomVolume;
 #[cfg(feature = "uom")]
-use uom::si::volume::{
-    cubic_centimeter,
-    cubic_foot,
-    cubic_inch,
-    cubic_meter,
-    cubic_millimeter,
-    cubic_yard,
-    cup,
-    fluid_ounce,
-    gallon,
-    liter,
-    microliter,
-    milliliter,
-    pint_liquid,
-    quart_liquid,
-};
+use uom::si::volume::cubic_meter;
 
 define_unit_family! {
     /// Units for persisted volume measurements.
@@ -67,19 +52,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Volume, UomVolume {
-        CubicMillimeter => cubic_millimeter;
-        CubicCentimeter => cubic_centimeter;
-        CubicMeter => cubic_meter;
-        Microliter => microliter;
-        Milliliter => milliliter;
-        Liter => liter;
-        CubicInch => cubic_inch;
-        CubicFoot => cubic_foot;
-        CubicYard => cubic_yard;
-        UsFluidOunce => fluid_ounce;
-        UsCustomaryCup => cup;
-        UsLiquidPint => pint_liquid;
-        UsLiquidQuart => quart_liquid;
-        UsLiquidGallon => gallon;
+        base: cubic_meter;
     }
 }

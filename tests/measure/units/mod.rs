@@ -32,8 +32,6 @@ mod heat_capacity_tests;
 mod heat_flux_density_tests;
 mod illuminance_tests;
 mod inductance_tests;
-mod internal;
-mod internal_tests;
 mod kinematic_viscosity_tests;
 mod length_tests;
 mod luminance_tests;

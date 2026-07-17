@@ -11,11 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::catalytic_activity_concentration::{
-    enzyme_unit_per_liter,
-    katal_per_cubic_meter,
-    milli_enzyme_unit_per_milliliter,
-};
+use uom::si::catalytic_activity_concentration::katal_per_cubic_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::CatalyticActivityConcentration as UomCatalyticActivityConcentration;
 
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     CatalyticActivityConcentration, UomCatalyticActivityConcentration {
-        KatalPerCubicMeter => katal_per_cubic_meter;
-        EnzymeUnitPerLiter => enzyme_unit_per_liter;
-        MilliEnzymeUnitPerMilliliter => milli_enzyme_unit_per_milliliter;
+        base: katal_per_cubic_meter;
     }
 }

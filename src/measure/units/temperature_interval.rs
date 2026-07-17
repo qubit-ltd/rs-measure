@@ -13,12 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::TemperatureInterval as UomTemperatureInterval;
 #[cfg(feature = "uom")]
-use uom::si::temperature_interval::{
-    degree_celsius,
-    degree_fahrenheit,
-    degree_rankine,
-    kelvin,
-};
+use uom::si::temperature_interval::kelvin;
 
 define_unit_family! {
     /// Units for persisted temperature interval measurements.
@@ -37,9 +32,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     TemperatureInterval, UomTemperatureInterval {
-        Kelvin => kelvin;
-        Celsius => degree_celsius;
-        Fahrenheit => degree_fahrenheit;
-        Rankine => degree_rankine;
+        base: kelvin;
     }
 }

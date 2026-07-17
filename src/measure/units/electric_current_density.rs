@@ -11,11 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electric_current_density::{
-    ampere_per_square_centimeter,
-    ampere_per_square_meter,
-    ampere_per_square_millimeter,
-};
+use uom::si::electric_current_density::ampere_per_square_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricCurrentDensity as UomElectricCurrentDensity;
 
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricCurrentDensity, UomElectricCurrentDensity {
-        AmperePerSquareMeter => ampere_per_square_meter;
-        AmperePerSquareCentimeter => ampere_per_square_centimeter;
-        AmperePerSquareMillimeter => ampere_per_square_millimeter;
+        base: ampere_per_square_meter;
     }
 }

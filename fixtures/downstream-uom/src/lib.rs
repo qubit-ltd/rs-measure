@@ -28,7 +28,7 @@ define_unit_family! {
 
 impl_uom_unit! {
     DownstreamLength, UomLength {
-        Meter => meter;
+        base: meter;
     }
 }
 

@@ -26,6 +26,8 @@ pub use unit_metadata::{
 pub use uom;
 #[cfg(feature = "uom")]
 pub use uom_bridge::{
+    base_f64_to_unit_value,
     decimal_from_f64_approx,
     decimal_to_f64_approx,
+    unit_value_to_base_f64,
 };

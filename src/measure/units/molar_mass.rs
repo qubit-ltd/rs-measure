@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MolarMass as UomMolarMass;
 #[cfg(feature = "uom")]
-use uom::si::molar_mass::{
-    gram_per_mole,
-    kilogram_per_mole,
-    milligram_per_mole,
-};
+use uom::si::molar_mass::kilogram_per_mole;
 
 define_unit_family! {
     /// Units for persisted molar mass measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MolarMass, UomMolarMass {
-        MilligramPerMole => milligram_per_mole;
-        GramPerMole => gram_per_mole;
-        KilogramPerMole => kilogram_per_mole;
+        base: kilogram_per_mole;
     }
 }

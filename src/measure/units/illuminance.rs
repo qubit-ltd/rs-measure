@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Illuminance as UomIlluminance;
 #[cfg(feature = "uom")]
-use uom::si::illuminance::{
-    footcandle,
-    kilolux,
-    lux,
-};
+use uom::si::illuminance::lux;
 
 define_unit_family! {
     /// Units for persisted illuminance measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Illuminance, UomIlluminance {
-        Lux => lux;
-        Kilolux => kilolux;
-        Footcandle => footcandle;
+        base: lux;
     }
 }

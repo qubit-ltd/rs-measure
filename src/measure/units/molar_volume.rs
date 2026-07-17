@@ -13,11 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MolarVolume as UomMolarVolume;
 #[cfg(feature = "uom")]
-use uom::si::molar_volume::{
-    cubic_centimeter_per_mole,
-    cubic_decimeter_per_mole,
-    cubic_meter_per_mole,
-};
+use uom::si::molar_volume::cubic_meter_per_mole;
 
 define_unit_family! {
     /// Units for persisted molar volume measurements.
@@ -34,8 +30,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     MolarVolume, UomMolarVolume {
-        CubicCentimeterPerMole => cubic_centimeter_per_mole;
-        CubicDecimeterPerMole => cubic_decimeter_per_mole;
-        CubicMeterPerMole => cubic_meter_per_mole;
+        base: cubic_meter_per_mole;
     }
 }

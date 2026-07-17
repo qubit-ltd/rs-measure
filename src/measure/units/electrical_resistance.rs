@@ -11,14 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::electrical_resistance::{
-    gigaohm,
-    kiloohm,
-    megaohm,
-    microohm,
-    milliohm,
-    ohm,
-};
+use uom::si::electrical_resistance::ohm;
 #[cfg(feature = "uom")]
 use uom::si::f64::ElectricalResistance as UomElectricalResistance;
 
@@ -43,11 +36,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     ElectricalResistance, UomElectricalResistance {
-        Microohm => microohm;
-        Milliohm => milliohm;
-        Ohm => ohm;
-        Kiloohm => kiloohm;
-        Megaohm => megaohm;
-        Gigaohm => gigaohm;
+        base: ohm;
     }
 }

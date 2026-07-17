@@ -13,13 +13,7 @@ use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Torque as UomTorque;
 #[cfg(feature = "uom")]
-use uom::si::torque::{
-    kilonewton_meter,
-    millinewton_meter,
-    newton_meter,
-    pound_force_foot,
-    pound_force_inch,
-};
+use uom::si::torque::newton_meter;
 
 define_unit_family! {
     /// Units for persisted torque measurements.
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     Torque, UomTorque {
-        MillinewtonMeter => millinewton_meter;
-        NewtonMeter => newton_meter;
-        KilonewtonMeter => kilonewton_meter;
-        PoundForceFoot => pound_force_foot;
-        PoundForceInch => pound_force_inch;
+        base: newton_meter;
     }
 }

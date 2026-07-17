@@ -11,13 +11,7 @@ use crate::define_unit_family;
 #[cfg(feature = "uom")]
 use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
-use uom::si::dynamic_viscosity::{
-    centipoise,
-    micropascal_second,
-    millipascal_second,
-    pascal_second,
-    poise,
-};
+use uom::si::dynamic_viscosity::pascal_second;
 #[cfg(feature = "uom")]
 use uom::si::f64::DynamicViscosity as UomDynamicViscosity;
 
@@ -40,10 +34,6 @@ define_unit_family! {
 #[cfg(feature = "uom")]
 impl_uom_unit! {
     DynamicViscosity, UomDynamicViscosity {
-        MicropascalSecond => micropascal_second;
-        MillipascalSecond => millipascal_second;
-        PascalSecond => pascal_second;
-        Poise => poise;
-        Centipoise => centipoise;
+        base: pascal_second;
     }
 }
