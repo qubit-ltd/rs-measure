@@ -134,17 +134,23 @@ macro_rules! __unit_factor {
     ($numerator:literal) => {
         $crate::ConversionFactor::from_decimal(
             const {
-                $crate::__private::decimal_from_literal(stringify!($numerator))
+                $crate::__private::positive_decimal_from_literal(stringify!(
+                    $numerator
+                ))
             },
         )
     };
     ($numerator:literal / $denominator:literal) => {
         $crate::ConversionFactor::new(
             const {
-                $crate::__private::decimal_from_literal(stringify!($numerator))
+                $crate::__private::positive_decimal_from_literal(stringify!(
+                    $numerator
+                ))
             },
             const {
-                $crate::__private::decimal_from_literal(stringify!($denominator))
+                $crate::__private::positive_decimal_from_literal(stringify!(
+                    $denominator
+                ))
             },
         )
     };
@@ -235,7 +241,7 @@ macro_rules! __define_unit_family_core {
                 }
             }
 
-            #[inline(always)]
+            #[inline]
             fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
                 match self {
                     $(Self::$variant => $definition,)+
@@ -404,11 +410,8 @@ macro_rules! impl_uom_unit {
 ///   whitespace after a measurement's Decimal value; their compact forms are
 ///   rejected as ambiguous numeric boundaries (for example, use `"1.25 +cu"`).
 ///
-/// Violating a statically expressible metadata rule fails compilation. A
-/// coefficient still returns
-/// [`MeasurementError::InvalidUnitDefinition`](crate::MeasurementError::InvalidUnitDefinition)
-/// if its Decimal factor is not positive when the generated definition is
-/// requested.
+/// Violating a statically expressible metadata rule fails compilation.
+/// Coefficient numerator and denominator literals must both be positive.
 ///
 /// # Examples
 ///
@@ -520,6 +523,62 @@ macro_rules! impl_uom_unit {
 ///             coefficient: 1;
 ///             aliases: ["meter "];
 ///         }
+///     }
+/// }
+/// ```
+///
+/// Zero coefficient numerators are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a zero coefficient numerator.
+///     enum ZeroNumeratorUnit for "zero_numerator_unit" {
+///         /// Unit whose coefficient is zero.
+///         Invalid => { symbol: "invalid"; coefficient: 0; }
+///     }
+/// }
+/// ```
+///
+/// Negative coefficient numerators are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a negative coefficient numerator.
+///     enum NegativeNumeratorUnit for "negative_numerator_unit" {
+///         /// Unit whose coefficient is negative.
+///         Invalid => { symbol: "invalid"; coefficient: -1; }
+///     }
+/// }
+/// ```
+///
+/// Zero coefficient denominators are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a zero coefficient denominator.
+///     enum ZeroDenominatorUnit for "zero_denominator_unit" {
+///         /// Unit whose denominator is zero.
+///         Invalid => { symbol: "invalid"; coefficient: 1 / 0; }
+///     }
+/// }
+/// ```
+///
+/// Negative coefficient denominators are rejected at compilation:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     /// Invalid family with a negative coefficient denominator.
+///     enum NegativeDenominatorUnit for "negative_denominator_unit" {
+///         /// Unit whose denominator is negative.
+///         Invalid => { symbol: "invalid"; coefficient: 1 / -1; }
 ///     }
 /// }
 /// ```

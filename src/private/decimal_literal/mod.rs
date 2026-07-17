@@ -11,4 +11,7 @@ mod coefficient;
 mod parser;
 mod scanner;
 
-pub use parser::decimal_from_literal;
+pub use parser::{
+    decimal_from_literal,
+    positive_decimal_from_literal,
+};

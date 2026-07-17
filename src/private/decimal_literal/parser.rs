@@ -95,3 +95,26 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
     }
     finalize_decimal(mantissa, exponent, negative)
 }
+
+/// Parses one positive Decimal literal for a unit conversion factor.
+///
+/// # Parameters
+///
+/// * `value` - Stringified numeric literal to parse and validate.
+///
+/// # Returns
+///
+/// The exact positive Decimal represented by `value`.
+///
+/// # Panics
+///
+/// Panics during constant evaluation when the literal is invalid,
+/// unrepresentable, zero, or negative.
+#[doc(hidden)]
+pub const fn positive_decimal_from_literal(value: &str) -> Decimal {
+    let decimal = decimal_from_literal(value);
+    if decimal.is_zero() || decimal.is_sign_negative() {
+        panic!("unit coefficient terms must be positive");
+    }
+    decimal
+}

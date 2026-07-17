@@ -15,7 +15,10 @@ mod unit_metadata;
 #[path = "private/uom_bridge.rs"]
 mod uom_bridge;
 
-pub use decimal_literal::decimal_from_literal;
+pub use decimal_literal::{
+    decimal_from_literal,
+    positive_decimal_from_literal,
+};
 pub use rust_decimal;
 pub use serde;
 pub use unit_metadata::{
