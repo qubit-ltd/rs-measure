@@ -437,19 +437,6 @@ fn test_measurement_from_str_keeps_unit_starting_with_e() {
 }
 
 #[test]
-fn test_compact_measurement_reports_ambiguous_unit_suffix() {
-    type CompactMeasurement = Measurement<CompactAmbiguityUnit>;
-
-    assert_eq!(
-        CompactMeasurement::from_str("12x"),
-        Err(MeasurementError::AmbiguousMeasurement {
-            input: "12x".to_owned(),
-            units: vec!["x".to_owned(), "2x".to_owned()],
-        }),
-    );
-}
-
-#[test]
 fn test_spaced_measurement_disambiguates_digit_leading_unit() {
     type CompactMeasurement = Measurement<CompactAmbiguityUnit>;
 

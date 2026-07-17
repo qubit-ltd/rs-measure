@@ -7,6 +7,7 @@
 // =============================================================================
 //! Private implementation types for persisted measurements.
 
+mod compact_candidate;
 mod conversion_mode;
 mod decimal_text;
 mod measurement_text;

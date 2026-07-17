@@ -11,19 +11,12 @@ use std::collections::HashSet;
 
 use rust_decimal::Decimal;
 
+use super::compact_candidate::CompactCandidate;
 use super::parse_decimal_text_exact;
 use crate::measure::{
     MeasurementError,
     Unit,
 };
-
-/// One valid interpretation of a compact measurement suffix.
-#[derive(Clone, Copy)]
-struct CompactCandidate {
-    value: Decimal,
-    unit_index: usize,
-    symbol: &'static str,
-}
 
 /// Parses a measurement with canonical-only or lenient unit matching.
 ///
