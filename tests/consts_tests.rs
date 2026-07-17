@@ -20,9 +20,11 @@ fn test_builtin_revolution_factor_uses_reduced_terms() {
         .definition()
         .expect("revolution definition should be valid")
         .factor();
-    let normalized =
-        ConversionFactor::new(dec!(3141592653589793), dec!(500000000000000))
-            .expect("normalized revolution factor should be valid");
+    let normalized = ConversionFactor::new(
+        dec!(39269908169872415480783),
+        dec!(6250000000000000000000),
+    )
+    .expect("normalized revolution factor should be valid");
 
     assert_eq!(builtin, normalized);
 }

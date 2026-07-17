@@ -29,14 +29,14 @@ fn test_solid_angle_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::SolidAngle::Spat,
-            numerator: "3141592653589793",
-            denominator: "250000000000000",
+            numerator: "39269908169872415480783",
+            denominator: "3125000000000000000000",
             offset: "0",
         },
         DefinitionCase {
             unit: unit::SolidAngle::SquareDegree,
-            numerator: "1523087098933543",
-            denominator: "5000000000000000000",
+            numerator: "609234839573417198693487",
+            denominator: "2000000000000000000000000000",
             offset: "0",
         },
     ]);

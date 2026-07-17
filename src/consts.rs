@@ -7,30 +7,39 @@
 // =============================================================================
 //! Mathematical and unit-conversion constants used throughout this crate.
 //!
-//! Constants are grouped by quantity. Irrational mathematical values use the
-//! Rust standard library as their source; exact Decimal conversions use
-//! documented finite rational representations derived from that source.
+//! Constants are grouped by quantity. Exact rational definitions follow the
+//! [BIPM SI Brochure], [NIST unit-conversion references], [NIST Handbook 44],
+//! and the [2022 CODATA recommended values]. U.S. customary area, volume,
+//! velocity, and derived definitions are calculated from the exact
+//! international foot, pound, and gallon relationships in those references.
+//!
+//! Definitions involving the irrational constant pi are necessarily finite
+//! approximations. Their digits follow [NIST DLMF section 3.12]; pi retains 23
+//! decimal places so the derived arcsecond denominator remains within
+//! Decimal's 96-bit mantissa, while square degree uses 28 decimal places.
+//!
+//! [BIPM SI Brochure]: https://www.bipm.org/en/publications/si-brochure
+//! [NIST unit-conversion references]: https://www.nist.gov/pml/owm/metric-si/unit-conversion
+//! [NIST Handbook 44]: https://www.nist.gov/pml/owm/nist-handbook-44-current-edition
+//! [2022 CODATA recommended values]: https://physics.nist.gov/cuu/Constants/
+//! [NIST DLMF section 3.12]: https://dlmf.nist.gov/3.12
 
-/// Decimal denominator used for the finite representation of pi.
-const PI_DECIMAL_DENOMINATOR: i128 = 1_000_000_000_000_000;
+/// Decimal denominator used for the finite 23-place representation of pi.
+const PI_DECIMAL_DENOMINATOR: i128 = 100_000_000_000_000_000_000_000;
 
-/// Decimal numerator derived from the standard library's pi constant.
-const PI_DECIMAL_NUMERATOR: i128 =
-    (std::f64::consts::PI * PI_DECIMAL_DENOMINATOR as f64 + 0.5) as i128;
+/// Rounded numerator for pi from NIST DLMF section 3.12.
+const PI_DECIMAL_NUMERATOR: i128 = 314_159_265_358_979_323_846_264;
 
 /// Decimal denominator used for the finite representation of tau.
-const TAU_DECIMAL_DENOMINATOR: i128 = 1_000_000_000_000_000;
+const TAU_DECIMAL_DENOMINATOR: i128 = PI_DECIMAL_DENOMINATOR;
 
-/// Decimal numerator derived from the standard library's tau constant.
-const TAU_DECIMAL_NUMERATOR: i128 = {
-    let scaled_tau = std::f64::consts::TAU * TAU_DECIMAL_DENOMINATOR as f64;
-    (scaled_tau + 0.5) as i128
-};
+/// Numerator that keeps finite tau exactly equal to twice finite pi.
+const TAU_DECIMAL_NUMERATOR: i128 = 2 * PI_DECIMAL_NUMERATOR;
 
 /// Ensures the finite standard-library representations remain coherent.
 const _: () = assert!(
-    TAU_DECIMAL_NUMERATOR * PI_DECIMAL_DENOMINATOR
-        == 2 * PI_DECIMAL_NUMERATOR * TAU_DECIMAL_DENOMINATOR,
+    TAU_DECIMAL_DENOMINATOR == PI_DECIMAL_DENOMINATOR
+        && TAU_DECIMAL_NUMERATOR == 2 * PI_DECIMAL_NUMERATOR,
 );
 
 /// Builds an exact Decimal constant and validates its representation.
@@ -959,23 +968,14 @@ pub(crate) mod solid_angle {
     use super::{
         TAU_DECIMAL_DENOMINATOR,
         TAU_DECIMAL_NUMERATOR,
-        angle,
     };
 
-    /// Denominator used for the finite square-degree conversion factor.
-    const SQUARE_DEGREE_DENOMINATOR: i128 = 5_000_000_000_000_000_000;
+    /// Denominator used for the finite 28-place square-degree factor.
+    const SQUARE_DEGREE_DENOMINATOR: i128 =
+        10_000_000_000_000_000_000_000_000_000;
 
-    /// Square-degree numerator derived from the standard library's pi.
-    const SQUARE_DEGREE_NUMERATOR: i128 = {
-        let degrees_per_half_revolution =
-            (angle::DEGREES_PER_REVOLUTION / 2) as f64;
-        let radians_per_degree =
-            std::f64::consts::PI / degrees_per_half_revolution;
-        (radians_per_degree
-            * radians_per_degree
-            * SQUARE_DEGREE_DENOMINATOR as f64
-            + 0.5) as i128
-    };
+    /// Rounded numerator for `(pi / 180)^2` from the NIST DLMF digits of pi.
+    const SQUARE_DEGREE_NUMERATOR: i128 = 3_046_174_197_867_085_993_467_435;
 
     /// Exact conversion definition for the `Steradian` unit.
     pub(crate) const STERADIAN: UnitDefinition = definition!(1, 1, 0, 0);
