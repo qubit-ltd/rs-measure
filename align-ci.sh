@@ -12,3 +12,9 @@ cargo +"$FMT_TOOLCHAIN" fmt \
 cargo +"$FMT_TOOLCHAIN" fmt \
     --manifest-path "$PROJECT_ROOT/fixtures/downstream-uom/Cargo.toml" \
     -- --config-path "$PROJECT_ROOT/.rs-ci/rustfmt.toml"
+cargo +"$FMT_TOOLCHAIN" fmt --all \
+    --manifest-path "$PROJECT_ROOT/fixtures/feature-unification/Cargo.toml" \
+    -- --config-path "$PROJECT_ROOT/.rs-ci/rustfmt.toml"
+cargo +"$FMT_TOOLCHAIN" fmt \
+    --manifest-path "$PROJECT_ROOT/fixtures/downstream-minimum/Cargo.toml" \
+    -- --config-path "$PROJECT_ROOT/.rs-ci/rustfmt.toml"
