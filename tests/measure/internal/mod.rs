@@ -9,4 +9,5 @@
 
 mod conversion_mode_tests;
 mod decimal_text_tests;
+mod measurement_text_tests;
 mod measurement_wire_tests;

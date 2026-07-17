@@ -400,6 +400,9 @@ macro_rules! impl_uom_unit {
 ///   trailing Unicode whitespace;
 /// - an alias may equal another variant's canonical symbol;
 /// - canonical symbols are searched first and therefore win during parsing.
+/// - canonical symbols and aliases beginning with `.`, `+`, or `-` require
+///   whitespace after a measurement's Decimal value; their compact forms are
+///   rejected as ambiguous numeric boundaries (for example, use `"1.25 +cu"`).
 ///
 /// Violating a statically expressible metadata rule fails compilation. A
 /// coefficient still returns
