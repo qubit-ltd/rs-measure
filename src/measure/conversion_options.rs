@@ -69,7 +69,7 @@ impl ConversionOptions {
     ///
     /// Returns [`MeasurementError::InvalidScale`] when `scale` exceeds the
     /// Decimal limit.
-    #[inline(always)]
+    #[inline]
     pub fn fixed_scale(
         scale: u32,
         rounding: RoundingStrategy,

@@ -18,6 +18,8 @@ define_unit_family! {
         Fahrenheit => { symbol: "fahrenheit"; coefficient: 5 / 9; offset: 459.67; }
         /// Foot-like rational definition.
         Foot => { symbol: "foot"; coefficient: 381 / 1250; }
+        /// Two-thirds ratio used to exercise cross-cancelled boundary values.
+        TwoThirds => { symbol: "two-thirds"; coefficient: 2 / 3; }
         /// Tiny one-half ratio.
         TinyHalf => { symbol: "tiny-half"; coefficient: 0.000000000000001 / 0.000000000000002; }
         /// Equivalent tiny one-half ratio.

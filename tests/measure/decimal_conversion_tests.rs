@@ -85,6 +85,24 @@ fn test_decimal_conversion_applies_requested_scale() {
     assert_eq!(result.scale(), 4);
 }
 
+/// Verifies that a representable result survives a larger intermediate product.
+#[test]
+fn test_decimal_conversion_avoids_intermediate_ratio_rounding() {
+    let value =
+        Decimal::try_from_i128_with_scale(Decimal::MAX.mantissa() - 3, 1)
+            .expect("boundary input should fit Decimal");
+
+    assert_eq!(
+        convert(
+            value,
+            DecimalConversionUnit::TwoThirds,
+            DecimalConversionUnit::Base,
+            ConversionOptions::maximum_precision(),
+        ),
+        Ok(dec!(5281877500950955839569596688.8)),
+    );
+}
+
 #[test]
 fn test_fixed_scale_rounding_matches_independent_rational_oracle() {
     let source = DecimalConversionUnit::Base;
@@ -418,6 +436,28 @@ fn test_decimal_conversion_reports_ratio_overflow() {
     );
 }
 
+/// Verifies that fixed-scale output preserves ratio overflow context.
+#[test]
+fn test_fixed_scale_conversion_preserves_ratio_overflow_context() {
+    let options = ConversionOptions::fixed_scale(
+        0,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
+
+    assert_eq!(
+        convert(
+            Decimal::MAX,
+            DecimalConversionUnit::Ten,
+            DecimalConversionUnit::Base,
+            options,
+        ),
+        Err(MeasurementError::ArithmeticOverflow {
+            operation: "multiply conversion ratio",
+        }),
+    );
+}
+
 #[test]
 fn test_decimal_conversion_reduces_two_over_two_before_max_arithmetic() {
     assert_eq!(
@@ -449,6 +489,34 @@ fn test_decimal_conversion_cross_cancels_equal_large_factors() {
 }
 
 proptest! {
+    /// Checks cross-cancelled values near Decimal's positive boundary.
+    #[test]
+    fn prop_boundary_ratio_conversion_matches_independent_rational_oracle(
+        multiplier in 1_u32..=1_000,
+    ) {
+        let value = Decimal::try_from_i128_with_scale(
+            Decimal::MAX.mantissa() - 3 * i128::from(multiplier),
+            1,
+        )
+        .expect("generated boundary value should fit Decimal");
+        let source = DecimalConversionUnit::TwoThirds;
+        let target = DecimalConversionUnit::Base;
+        let actual = convert(
+            value,
+            source,
+            target,
+            ConversionOptions::maximum_precision(),
+        )
+        .expect("cross-cancelled boundary result should fit Decimal");
+        let expected = expected_conversion(
+            value,
+            source.definition().expect("source definition should be valid"),
+            target.definition().expect("target definition should be valid"),
+        );
+
+        prop_assert_eq!(decimal_as_rational(actual), expected);
+    }
+
     #[test]
     fn prop_public_conversion_matches_independent_rational_oracle(
         multiplier in -1_000_000_i64..=1_000_000_i64,
