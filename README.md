@@ -1,6 +1,7 @@
 # Qubit Measure
 
 [![Rust CI](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml/badge.svg)](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://qubit-ltd.github.io/rs-measure/coverage-badge.json)](https://qubit-ltd.github.io/rs-measure/coverage/)
 [![Crates.io](https://img.shields.io/crates/v/qubit-measure.svg?color=blue)](https://crates.io/crates/qubit-measure)
 [![Rust](https://img.shields.io/badge/rust-1.94+-blue.svg?logo=rust)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
@@ -80,7 +81,8 @@ assert_eq!(feet.value.to_string(), "3.2808");
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-`ConversionOptions::maximum_precision(strategy)` adds no final scale reduction.
+`ConversionOptions::maximum_precision()` adds no final scale reduction or
+rounding policy.
 `fixed_scale(0..=28, strategy)` rounds and retains exactly the requested number of
 decimal places. Decimal still has a finite 96-bit mantissa: repeating fractions,
 irrational constants, and results outside its range cannot have infinite precision.
@@ -89,8 +91,8 @@ Arithmetic and unrepresentable scale requests return `MeasurementError`.
 ## 4. Deterministic defaults
 
 `convert_to` always uses the immutable `ConversionOptions::DEFAULT`: maximum
-precision with `MidpointNearestEven`. There is no process-wide mutable conversion
-state. Code that needs a fixed output scale or another rounding strategy uses
+precision without final rounding. There is no process-wide mutable conversion
+state. Code that needs a fixed output scale and rounding strategy uses
 `convert_to_with_options` explicitly.
 
 ## 5. Strict and lenient parsing
@@ -109,6 +111,17 @@ assert!(unit::Time::parse_strict("year").is_err());
 assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
+
+`Time::Minute` also accepts the lenient alias `m`, while display, strict parsing,
+and Serde keep the canonical `min`. Compact measurements are matched against
+known unit suffixes; input with multiple valid numeric/unit splits returns
+`AmbiguousMeasurement` instead of silently choosing one interpretation.
+
+### Exact `std::time::Duration` adapters
+
+`Measurement<Time>` converts to and from `std::time::Duration` through standard
+`From` and `TryFrom` implementations. Conversion is exact to one nanosecond and
+rejects negative, subnanosecond, and out-of-range measurements without rounding.
 
 ## 6. Ambiguous unit aliases
 
@@ -168,7 +181,9 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 ```
 
 The macro generates canonical display, strict and lenient parsing, Serde, enumeration,
-and exact definitions. External code may also implement `Unit` manually. Measurement
+and exact definitions. An optional `uom` bridge is added separately with
+`impl_uom_unit!`, under the consumer's own feature configuration. External code
+may also implement `Unit` manually. Measurement
 Serde uses the `Unit` symbol and parsing contract directly, so a manual unit does not
 need separate `Serialize` or `Deserialize` implementations.
 
@@ -219,6 +234,37 @@ appropriate, then explicitly adapt the result at the persistence boundary.
 
 This release intentionally breaks the 0.2 wire format and affected Rust APIs.
 
+## Testing
+
+```bash
+# Core API with the default empty feature set
+cargo test --no-default-features
+
+# Core API plus regex validation
+cargo test --all-features
+
+# Project CI checks
+./ci-check.sh
+
+# Check code coverage
+./coverage.sh
+```
+
 ## License
 
-Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
+Copyright (c) 2025 - 2026. Haixing Hu. All rights reserved.
+
+Licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE) for the
+full license text.
+
+## Contributing
+
+Contributions are welcome. Please follow the Rust API guidelines, keep public
+API documentation and tests current, and run `./align-ci.sh` to format code and
+`./ci-check.sh` to satisfy CI requirements before submitting a pull request.
+
+## Author
+
+**Haixing Hu** - *Qubit Co. Ltd.*
+
+Repository: [https://github.com/qubit-ltd/rs-measure](https://github.com/qubit-ltd/rs-measure)

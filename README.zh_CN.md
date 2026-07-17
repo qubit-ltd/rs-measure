@@ -1,6 +1,7 @@
 # Qubit Measure
 
 [![Rust CI](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml/badge.svg)](https://github.com/qubit-ltd/rs-measure/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/endpoint?url=https://qubit-ltd.github.io/rs-measure/coverage-badge.json)](https://qubit-ltd.github.io/rs-measure/coverage/)
 [![Crates.io](https://img.shields.io/crates/v/qubit-measure.svg?color=blue)](https://crates.io/crates/qubit-measure)
 [![Rust](https://img.shields.io/badge/rust-1.94+-blue.svg?logo=rust)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
@@ -76,16 +77,16 @@ assert_eq!(feet.value.to_string(), "3.2808");
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-`ConversionOptions::maximum_precision(strategy)` 不额外降低最终 scale。
+`ConversionOptions::maximum_precision()` 不额外降低最终 scale，也不携带舍入策略。
 `fixed_scale(0..=28, strategy)` 会按指定策略舍入并保留恰好指定的小数位数。Decimal 仍只有
 有限的 96 位 mantissa：循环小数、无理常数和超出范围的结果不可能获得数学无限精度。
 算术溢出或无法保留指定 scale 时返回 `MeasurementError`。
 
 ## 4. 确定性默认配置
 
-`convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：最大精度与
-`MidpointNearestEven`。crate 不再包含进程级可变换算状态。需要固定输出 scale 或其他
-舍入策略时，应显式调用 `convert_to_with_options`。
+`convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：最大精度且不做最终舍入。
+crate 不再包含进程级可变换算状态。需要固定输出 scale 和舍入策略时，应显式调用
+`convert_to_with_options`。
 
 ## 5. 严格与宽松解析
 
@@ -102,6 +103,16 @@ assert!(unit::Time::parse_strict("year").is_err());
 assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
+
+`Time::Minute` 也接受宽松别名 `m`，但显示、严格解析和 Serde 始终保留规范符号
+`min`。紧凑 measurement 会按已知单位后缀匹配；如果存在多个合法的数值/单位切分，
+返回 `AmbiguousMeasurement`，不会静默选择其中一种解释。
+
+### 精确 `std::time::Duration` 适配
+
+`Measurement<Time>` 通过标准 `From` 和 `TryFrom` 实现与
+`std::time::Duration` 双向转换。转换精确到纳秒；负值、亚纳秒值和越界值会直接报错，
+不会隐式舍入。
 
 ## 6. 歧义单位别名
 
@@ -157,7 +168,8 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
-宏会生成规范显示、严格和宽松解析、Serde、枚举遍历及精确定义。外部代码也可以手工实现
+宏会生成规范显示、严格和宽松解析、Serde、枚举遍历及精确定义。可选 `uom` 桥接通过
+`impl_uom_unit!` 在消费者自己的 feature 配置下单独添加。外部代码也可以手工实现
 `Unit`。Measurement Serde 直接使用 `Unit` 的符号和解析契约，因此手工单位无需另外实现
 `Serialize` 或 `Deserialize`。
 
@@ -203,6 +215,36 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 
 本版本有意破坏 0.2 wire format 和相关 Rust API。
 
-## License
+## 测试
 
-使用 Apache License 2.0，详见 [LICENSE](LICENSE)。
+```bash
+# 使用默认的空 feature 集测试核心 API
+cargo test --no-default-features
+
+# 测试核心 API 和正则校验
+cargo test --all-features
+
+# 运行项目 CI 检查
+./ci-check.sh
+
+# 检查代码覆盖率
+./coverage.sh
+```
+
+## 许可证
+
+Copyright (c) 2025 - 2026. Haixing Hu. All rights reserved.
+
+本项目基于 Apache License 2.0 授权。完整许可证文本请参阅
+[LICENSE](LICENSE)。
+
+## 贡献
+
+欢迎贡献。请遵循 Rust API 指南，及时更新公共 API 文档与测试，并在提交
+Pull Request 前运行 `./align-ci.sh`格式化代码，运行`./ci-check.sh`对齐CI要求。
+
+## 作者
+
+**Haixing Hu** - *Qubit Co. Ltd.*
+
+仓库地址：[https://github.com/qubit-ltd/rs-measure](https://github.com/qubit-ltd/rs-measure)
