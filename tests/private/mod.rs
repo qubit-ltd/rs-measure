@@ -5,10 +5,9 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! # Measurement Tests
-//!
-//! Integration tests for persistent measurements and unit conversions.
+//! Mirrored tests for hidden macro support modules.
 
-mod measure;
-mod measurement;
-mod private;
+mod decimal_literal_tests;
+mod unit_metadata_tests;
+#[cfg(feature = "uom")]
+mod uom_bridge_tests;

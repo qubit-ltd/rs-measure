@@ -303,7 +303,6 @@ macro_rules! __define_uom_unit {
         impl $crate::UomUnit for $unit {
             type Quantity = $quantity_ty;
 
-            #[inline(always)]
             fn to_uom_approx(
                 self,
                 value: $crate::Decimal,
@@ -317,7 +316,6 @@ macro_rules! __define_uom_unit {
                 }
             }
 
-            #[inline]
             fn value_from_uom_approx(
                 self,
                 quantity: Self::Quantity,
@@ -357,9 +355,9 @@ macro_rules! __define_uom_unit {
 /// Each variant supplies a canonical `symbol` and either an exact `definition`
 /// path or a positive Decimal `coefficient`, optionally written as a ratio and
 /// followed by an `offset`. An optional `aliases` list enables lenient input.
-/// Decimal literals support integer, fractional, scientific, digit-separated,
-/// binary, octal, and hexadecimal forms accepted by
-/// `rust_decimal_macros::dec!` through this macro's `$literal` grammar.
+/// The supported Decimal literal subset includes integer, fractional,
+/// scientific, and digit-separated decimal forms plus binary, octal, and
+/// hexadecimal integers. Every accepted value must fit Decimal exactly.
 /// The `uom = Quantity` forms additionally require one `uom` unit type per
 /// variant, but those tokens are used only when the `uom` feature is enabled.
 ///
