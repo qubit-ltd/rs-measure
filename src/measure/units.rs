@@ -128,13 +128,13 @@ pub use volume_rate::VolumeRate;
 /// Accepts either one positive Decimal literal or a positive
 /// `numerator / denominator` literal pair. The expansion returns the same
 /// validation result as
-/// [`ConversionFactor::from_integer`](crate::ConversionFactor::from_integer) or
+/// [`ConversionFactor::from_decimal`](crate::ConversionFactor::from_decimal) or
 /// [`ConversionFactor::new`](crate::ConversionFactor::new).
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __unit_factor {
     ($numerator:literal) => {
-        $crate::ConversionFactor::from_integer(
+        $crate::ConversionFactor::from_decimal(
             const {
                 $crate::__private::decimal_from_literal(stringify!($numerator))
             },

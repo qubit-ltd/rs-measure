@@ -93,7 +93,7 @@ impl ConversionFactor {
         })
     }
 
-    /// Creates a positive integer or finite-Decimal conversion factor.
+    /// Creates a positive finite-Decimal conversion factor.
     ///
     /// # Arguments
     ///
@@ -108,7 +108,7 @@ impl ConversionFactor {
     /// Returns [`MeasurementError::InvalidUnitDefinition`] if `value` is zero
     /// or negative.
     #[inline(always)]
-    pub fn from_integer(value: Decimal) -> Result<Self, MeasurementError> {
+    pub fn from_decimal(value: Decimal) -> Result<Self, MeasurementError> {
         Self::new(value, Decimal::ONE)
     }
 

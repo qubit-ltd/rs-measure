@@ -90,14 +90,14 @@ fn test_conversion_factor_rejects_non_positive_terms() {
 }
 
 #[test]
-fn test_conversion_factor_from_integer_uses_identity_denominator() {
-    let factor = ConversionFactor::from_integer(dec!(2.5))
+fn test_conversion_factor_from_decimal_uses_identity_denominator() {
+    let factor = ConversionFactor::from_decimal(dec!(2.5))
         .expect("positive finite decimal factor should be valid");
 
     assert_eq!(factor.numerator(), dec!(2.5));
     assert_eq!(factor.denominator(), Decimal::ONE);
     assert!(matches!(
-        ConversionFactor::from_integer(Decimal::ZERO),
+        ConversionFactor::from_decimal(Decimal::ZERO),
         Err(MeasurementError::InvalidUnitDefinition { .. }),
     ));
 }
