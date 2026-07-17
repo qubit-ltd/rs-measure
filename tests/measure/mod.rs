@@ -21,6 +21,7 @@ mod internal_tests;
 mod measurement_error_tests;
 mod measurement_tests;
 mod mod_tests;
+mod time_duration_tests;
 mod unit_definition_tests;
 mod unit_tests;
 mod units;

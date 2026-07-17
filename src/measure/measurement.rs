@@ -95,17 +95,11 @@ where
     /// # Errors
     ///
     /// Returns [`MeasurementError::InvalidMeasurement`] for malformed numeric
-    /// text, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
+    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
+    /// splits, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
     /// [`MeasurementError::UnknownUnit`] for an unknown unit.
     pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
-        let (value_text, unit_text) = split_measurement_parts(input)
-            .ok_or_else(|| {
-                MeasurementError::InvalidMeasurement(input.to_owned())
-            })?;
-        let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
-            MeasurementError::InvalidMeasurement(input.to_owned())
-        })?;
-        let unit = U::parse_strict(unit_text)?;
+        let (value, unit) = parse_measurement_text::<U>(input, true)?;
         Ok(Self::new(value, unit))
     }
 
@@ -326,18 +320,177 @@ where
     /// # Errors
     ///
     /// Returns [`MeasurementError::InvalidMeasurement`] for malformed value
-    /// text or [`MeasurementError::UnknownUnit`] for an unknown unit.
+    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
+    /// splits, or [`MeasurementError::UnknownUnit`] for an unknown unit.
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let (value_text, unit_text) = split_measurement_parts(input)
-            .ok_or_else(|| {
-                MeasurementError::InvalidMeasurement(input.to_owned())
-            })?;
-        let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
-            MeasurementError::InvalidMeasurement(input.to_owned())
-        })?;
-        let unit = U::parse_lenient(unit_text)?;
+        let (value, unit) = parse_measurement_text::<U>(input, false)?;
         Ok(Self::new(value, unit))
     }
+}
+
+/// Parses a measurement with canonical-only or lenient unit matching.
+///
+/// # Parameters
+///
+/// * `input` - Measurement text in compact or whitespace-separated form.
+/// * `strict` - Whether compact aliases are excluded and the final unit is
+///   parsed canonically.
+///
+/// # Returns
+///
+/// The exact Decimal value and typed unit.
+///
+/// # Errors
+///
+/// Returns a measurement parsing error for malformed numeric text, unknown or
+/// non-canonical units, or multiple valid compact suffixes.
+fn parse_measurement_text<U>(
+    input: &str,
+    strict: bool,
+) -> Result<(Decimal, U), MeasurementError>
+where
+    U: Unit,
+{
+    if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input)
+    {
+        return parse_measurement_parts::<U>(
+            input, value_text, unit_text, strict,
+        );
+    }
+
+    let trimmed = input.trim();
+    let mut candidates = Vec::new();
+    for unit in U::all().iter().copied() {
+        collect_compact_candidate(
+            trimmed,
+            unit,
+            unit.symbol(),
+            &mut candidates,
+        );
+        if !strict {
+            for alias in unit.aliases() {
+                let canonical_owner_exists = U::all()
+                    .iter()
+                    .copied()
+                    .any(|candidate| candidate.symbol() == *alias);
+                if !canonical_owner_exists {
+                    collect_compact_candidate(
+                        trimmed,
+                        unit,
+                        alias,
+                        &mut candidates,
+                    );
+                }
+            }
+        }
+    }
+
+    match candidates.as_slice() {
+        [(value, unit, _)] => return Ok((*value, *unit)),
+        [] => {}
+        _ => {
+            return Err(MeasurementError::AmbiguousMeasurement {
+                input: input.to_owned(),
+                units: candidates
+                    .iter()
+                    .map(|(_, _, symbol)| (*symbol).to_owned())
+                    .collect(),
+            });
+        }
+    }
+
+    let (value_text, unit_text) =
+        split_measurement_parts(input).ok_or_else(|| {
+            MeasurementError::InvalidMeasurement(input.to_owned())
+        })?;
+    parse_measurement_parts::<U>(input, value_text, unit_text, strict)
+}
+
+/// Adds one valid compact numeric-prefix and unit-suffix interpretation.
+///
+/// # Parameters
+///
+/// * `input` - Trimmed compact measurement text.
+/// * `unit` - Typed unit owning `symbol`.
+/// * `symbol` - Canonical symbol or accepted alias candidate.
+/// * `candidates` - Collection receiving a valid interpretation.
+fn collect_compact_candidate<U>(
+    input: &str,
+    unit: U,
+    symbol: &'static str,
+    candidates: &mut Vec<(Decimal, U, &'static str)>,
+) where
+    U: Unit,
+{
+    if symbol.starts_with(['.', '+', '-']) {
+        return;
+    }
+    let Some(value_text) = input.strip_suffix(symbol) else {
+        return;
+    };
+    if value_text.is_empty()
+        || value_text.ends_with(char::is_whitespace)
+        || value_text.ends_with('.')
+    {
+        return;
+    }
+    if let Some(value) = parse_decimal_text_exact(value_text) {
+        candidates.push((value, unit, symbol));
+    }
+}
+
+/// Parses already separated Decimal and unit text.
+///
+/// # Parameters
+///
+/// * `input` - Original text retained for invalid-measurement errors.
+/// * `value_text` - Exact Decimal candidate.
+/// * `unit_text` - Canonical symbol or lenient alias candidate.
+/// * `strict` - Whether aliases must be rejected.
+///
+/// # Returns
+///
+/// The exact Decimal value and parsed unit.
+///
+/// # Errors
+///
+/// Returns invalid-measurement, unknown-unit, or non-canonical-unit errors.
+fn parse_measurement_parts<U>(
+    input: &str,
+    value_text: &str,
+    unit_text: &str,
+    strict: bool,
+) -> Result<(Decimal, U), MeasurementError>
+where
+    U: Unit,
+{
+    let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
+        MeasurementError::InvalidMeasurement(input.to_owned())
+    })?;
+    let unit = if strict {
+        U::parse_strict(unit_text)?
+    } else {
+        U::parse_lenient(unit_text)?
+    };
+    Ok((value, unit))
+}
+
+/// Splits only measurement text with whitespace before the unit suffix.
+///
+/// # Parameters
+///
+/// * `input` - Candidate measurement text.
+///
+/// # Returns
+///
+/// The Decimal and unit slices when whitespace explicitly separates them.
+fn split_spaced_measurement_parts(input: &str) -> Option<(&str, &str)> {
+    let trimmed = input.trim();
+    let value_len = decimal_prefix_len(trimmed)?;
+    let (value_text, unit_suffix) = trimmed.split_at(value_len);
+    (unit_suffix.trim_start().len() != unit_suffix.len())
+        .then(|| (value_text, unit_suffix.trim()))
+        .filter(|(_, unit_text)| !unit_text.is_empty())
 }
 
 /// Splits a measurement string into decimal value text and trimmed unit text.

@@ -13,6 +13,7 @@ use rust_decimal::{
 };
 
 use crate::measure::MeasurementError;
+use crate::measure::internal::ConversionMode;
 
 /// Controls the final scale and rounding applied to a converted value.
 ///
@@ -22,20 +23,15 @@ use crate::measure::MeasurementError;
 ///
 /// ```compile_fail
 /// #![deny(unused_must_use)]
-/// use qubit_measure::{ConversionOptions, RoundingStrategy};
+/// use qubit_measure::ConversionOptions;
 ///
-/// ConversionOptions::maximum_precision(
-///     RoundingStrategy::MidpointNearestEven,
-/// );
+/// ConversionOptions::maximum_precision();
 /// ```
 #[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct ConversionOptions {
-    /// Requested output scale, or `None` to keep maximum precision.
-    scale: Option<u32>,
-
-    /// Rounding strategy used when an output scale is requested.
-    rounding: RoundingStrategy,
+    /// Valid output policy selected by the public constructors.
+    mode: ConversionMode,
 }
 
 impl ConversionOptions {
@@ -43,58 +39,18 @@ impl ConversionOptions {
     ///
     /// [`Measurement::convert_to`]: crate::Measurement::convert_to
     pub const DEFAULT: Self = Self {
-        scale: None,
-        rounding: RoundingStrategy::MidpointNearestEven,
+        mode: ConversionMode::MaximumPrecision,
     };
 
-    /// Creates conversion options.
-    ///
-    /// A `None` scale preserves the maximum precision available from Decimal
-    /// arithmetic. A concrete scale must not exceed [`Decimal::MAX_SCALE`].
-    ///
-    /// # Arguments
-    ///
-    /// * `scale` - Requested output scale, or `None` for maximum precision.
-    /// * `rounding` - Strategy used when rounding to a requested scale.
-    ///
-    /// # Returns
-    ///
-    /// Validated immutable conversion options.
-    ///
-    /// # Errors
-    ///
-    /// Returns [`MeasurementError::InvalidScale`] when `scale` exceeds the
-    /// Decimal limit.
-    #[inline]
-    pub fn new(
-        scale: Option<u32>,
-        rounding: RoundingStrategy,
-    ) -> Result<Self, MeasurementError> {
-        if let Some(scale) = scale
-            && scale > Decimal::MAX_SCALE
-        {
-            return Err(MeasurementError::InvalidScale {
-                scale,
-                max: Decimal::MAX_SCALE,
-            });
-        }
-        Ok(Self { scale, rounding })
-    }
-
     /// Creates options that do not impose an additional output scale.
-    ///
-    /// # Arguments
-    ///
-    /// * `rounding` - Strategy retained for any later explicit rounding.
     ///
     /// # Returns
     ///
     /// Options that preserve the maximum Decimal precision.
     #[inline(always)]
-    pub const fn maximum_precision(rounding: RoundingStrategy) -> Self {
+    pub const fn maximum_precision() -> Self {
         Self {
-            scale: None,
-            rounding,
+            mode: ConversionMode::MaximumPrecision,
         }
     }
 
@@ -118,7 +74,15 @@ impl ConversionOptions {
         scale: u32,
         rounding: RoundingStrategy,
     ) -> Result<Self, MeasurementError> {
-        Self::new(Some(scale), rounding)
+        if scale > Decimal::MAX_SCALE {
+            return Err(MeasurementError::InvalidScale {
+                scale,
+                max: Decimal::MAX_SCALE,
+            });
+        }
+        Ok(Self {
+            mode: ConversionMode::FixedScale { scale, rounding },
+        })
     }
 
     /// Returns the requested output scale, or `None` for maximum precision.
@@ -129,18 +93,35 @@ impl ConversionOptions {
     #[must_use]
     #[inline(always)]
     pub const fn scale(self) -> Option<u32> {
-        self.scale
+        match self.mode {
+            ConversionMode::MaximumPrecision => None,
+            ConversionMode::FixedScale { scale, .. } => Some(scale),
+        }
     }
 
-    /// Returns the strategy used for explicit output rounding.
+    /// Returns the strategy used for explicit output rounding, if configured.
     ///
     /// # Returns
     ///
-    /// The configured Decimal rounding strategy.
+    /// The configured strategy for fixed-scale output, or `None` for maximum
+    /// precision.
     #[must_use]
     #[inline(always)]
-    pub const fn rounding(self) -> RoundingStrategy {
-        self.rounding
+    pub const fn rounding(self) -> Option<RoundingStrategy> {
+        match self.mode {
+            ConversionMode::MaximumPrecision => None,
+            ConversionMode::FixedScale { rounding, .. } => Some(rounding),
+        }
+    }
+
+    /// Returns the validated internal conversion mode.
+    ///
+    /// # Returns
+    ///
+    /// The internal maximum-precision or fixed-scale policy.
+    #[inline(always)]
+    pub(super) const fn mode(self) -> ConversionMode {
+        self.mode
     }
 }
 

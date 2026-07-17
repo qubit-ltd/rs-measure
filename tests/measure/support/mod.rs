@@ -9,11 +9,14 @@
 
 mod definition_assertions;
 mod definition_case;
+mod failing_writer;
 mod manual_validation_unit;
+mod rational_oracle;
 mod unit_assertions;
 
 pub(crate) use definition_assertions::assert_definition_cases;
 pub(crate) use definition_case::DefinitionCase;
+pub(crate) use failing_writer::FailingWriter;
 pub(crate) use manual_validation_unit::{
     DUPLICATE_ALIAS,
     DUPLICATE_ALL,
@@ -22,5 +25,9 @@ pub(crate) use manual_validation_unit::{
     INVALID_QUANTITY,
     ManualValidationUnit,
     VALID,
+};
+pub(crate) use rational_oracle::{
+    decimal_as_rational,
+    expected_conversion,
 };
 pub(crate) use unit_assertions::assert_unit_contract;

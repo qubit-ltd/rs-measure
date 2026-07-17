@@ -99,7 +99,7 @@ fn test_assert_unit_family_valid_rejects_invalid_quantity() {
 }
 
 #[test]
-#[should_panic(expected = "invalid definition for base")]
+#[should_panic(expected = "invalid definition for derived")]
 fn test_assert_unit_family_valid_rejects_invalid_definition() {
     assert_unit_family_valid::<ManualValidationUnit<INVALID_DEFINITION>>();
 }

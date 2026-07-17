@@ -7,7 +7,12 @@
 // =============================================================================
 //! Stable numeric-literal contract tests for exported macros.
 
+use proptest::{
+    prop_assert_eq,
+    proptest,
+};
 use qubit_measure::__private::decimal_from_literal;
+use qubit_measure::Decimal;
 use rust_decimal::dec;
 
 #[test]
@@ -99,5 +104,18 @@ fn test_decimal_from_literal_reports_arithmetic_overflow_boundaries() {
             .or_else(|| panic.downcast_ref::<String>().map(String::as_str))
             .expect("Decimal literal panic should contain a string message");
         assert_eq!(message, expected_message, "literal {value:?}");
+    }
+}
+
+proptest! {
+    #[test]
+    fn prop_decimal_from_literal_matches_exact_scientific_parts(
+        mantissa in -1_000_000_000_000_i64..=1_000_000_000_000_i64,
+        scale in 0_u32..=9,
+    ) {
+        let literal = format!("{mantissa}e-{scale}");
+        let expected = Decimal::new(mantissa, scale);
+
+        prop_assert_eq!(decimal_from_literal(&literal), expected);
     }
 }

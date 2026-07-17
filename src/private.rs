@@ -7,7 +7,7 @@
 // =============================================================================
 //! Implementation dependencies used by exported declarative macros.
 
-#[path = "private/decimal_literal.rs"]
+#[path = "private/decimal_literal/mod.rs"]
 mod decimal_literal;
 #[path = "private/unit_metadata.rs"]
 mod unit_metadata;

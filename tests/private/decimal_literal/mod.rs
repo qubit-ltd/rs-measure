@@ -5,8 +5,8 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Mirrored persistence-boundary tests for measurement internals.
+//! Mirrored public-contract tests for Decimal literal parser phases.
 
-mod conversion_mode_tests;
-mod decimal_text_tests;
-mod measurement_wire_tests;
+mod coefficient_tests;
+mod parser_tests;
+mod scanner_tests;

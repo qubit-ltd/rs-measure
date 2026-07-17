@@ -73,7 +73,7 @@ impl<const CASE: u8> Unit for ManualValidationUnit<CASE> {
     }
 
     fn definition(self) -> Result<UnitDefinition, MeasurementError> {
-        if CASE == INVALID_DEFINITION {
+        if CASE == INVALID_DEFINITION && self.index != 0 {
             Err(MeasurementError::InvalidUnitDefinition {
                 reason: "test definition".to_owned(),
             })

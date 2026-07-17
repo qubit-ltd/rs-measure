@@ -17,8 +17,16 @@ use qubit_measure::{
 };
 use rust_decimal::Decimal;
 use rust_decimal::dec;
+use serde::Serialize;
 use serde_json::json;
 use std::str::FromStr;
+
+use super::fixtures::CompactAmbiguityUnit;
+use super::support::{
+    FailingWriter,
+    INVALID_DEFINITION,
+    ManualValidationUnit,
+};
 
 #[test]
 fn test_length_measurement_serde_preserves_value_and_unit() {
@@ -34,6 +42,23 @@ fn test_length_measurement_serde_preserves_value_and_unit() {
         value,
         json!({ "quantity": "length", "value": "50.0", "unit": "cm" }),
     );
+}
+
+#[test]
+fn test_measurement_serialization_propagates_writer_failures() {
+    let measurement = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
+    let serialized_length = serde_json::to_vec(&measurement)
+        .expect("measurement should serialize")
+        .len();
+
+    for accepted_bytes in 0..serialized_length {
+        let writer = FailingWriter::new(accepted_bytes);
+        let mut serializer = serde_json::Serializer::new(writer);
+        assert!(measurement.serialize(&mut serializer).is_err());
+    }
 }
 
 #[test]
@@ -61,9 +86,7 @@ fn test_length_conversion_uses_decimal_without_f64_loss() {
             .expect("source should be valid Decimal"),
         unit::Length::Centimeter,
     );
-    let options = ConversionOptions::maximum_precision(
-        RoundingStrategy::MidpointNearestEven,
-    );
+    let options = ConversionOptions::maximum_precision();
 
     let converted = source
         .convert_to_with_options(unit::Length::Meter, options)
@@ -205,6 +228,41 @@ fn test_measurement_convert_to_keeps_same_unit() {
         .expect("same unit conversion should be a no-op");
 
     assert_eq!(converted, measurement);
+}
+
+#[test]
+fn test_measurement_conversion_propagates_source_definition_error() {
+    type InvalidUnit = ManualValidationUnit<INVALID_DEFINITION>;
+
+    let unit = InvalidUnit::all()[1];
+    let error = Measurement::new(Decimal::ONE, unit)
+        .convert_to(unit)
+        .expect_err("invalid source definition should fail conversion");
+
+    assert_eq!(
+        error,
+        MeasurementError::InvalidUnitDefinition {
+            reason: "test definition".to_owned(),
+        },
+    );
+}
+
+#[test]
+fn test_measurement_conversion_propagates_target_definition_error() {
+    type InvalidUnit = ManualValidationUnit<INVALID_DEFINITION>;
+
+    let source = InvalidUnit::all()[0];
+    let target = InvalidUnit::all()[1];
+    let error = Measurement::new(Decimal::ONE, source)
+        .convert_to(target)
+        .expect_err("invalid target definition should fail conversion");
+
+    assert_eq!(
+        error,
+        MeasurementError::InvalidUnitDefinition {
+            reason: "test definition".to_owned(),
+        },
+    );
 }
 
 #[test]
@@ -379,6 +437,44 @@ fn test_measurement_from_str_keeps_unit_starting_with_e() {
 }
 
 #[test]
+fn test_compact_measurement_reports_ambiguous_unit_suffix() {
+    type CompactMeasurement = Measurement<CompactAmbiguityUnit>;
+
+    assert_eq!(
+        CompactMeasurement::from_str("12x"),
+        Err(MeasurementError::AmbiguousMeasurement {
+            input: "12x".to_owned(),
+            units: vec!["x".to_owned(), "2x".to_owned()],
+        }),
+    );
+}
+
+#[test]
+fn test_spaced_measurement_disambiguates_digit_leading_unit() {
+    type CompactMeasurement = Measurement<CompactAmbiguityUnit>;
+
+    assert_eq!(
+        CompactMeasurement::from_str("1 2x")
+            .expect("explicit whitespace should disambiguate the unit"),
+        CompactMeasurement::new(Decimal::ONE, CompactAmbiguityUnit::TwoX,),
+    );
+}
+
+#[test]
+fn test_compact_measurement_accepts_exponent_like_known_unit() {
+    type CompactMeasurement = Measurement<CompactAmbiguityUnit>;
+
+    assert_eq!(
+        CompactMeasurement::from_str("1e3")
+            .expect("known suffix should win over a missing-unit parse"),
+        CompactMeasurement::new(
+            Decimal::ONE,
+            CompactAmbiguityUnit::ExponentLike,
+        ),
+    );
+}
+
+#[test]
 fn test_measurement_from_str_parses_compact_ascii_unit_aliases() {
     assert_eq!(
         measurement::Area::from_str("1m2")
@@ -407,6 +503,33 @@ fn test_typed_measurement_from_str_rejects_unit_from_other_quantity() {
             unit: "kg".to_owned(),
         },
     );
+}
+
+#[test]
+fn test_compact_measurement_reports_unknown_unit_after_valid_value() {
+    let error = measurement::Length::from_str("12bogus")
+        .expect_err("unknown compact unit should fail");
+
+    assert_eq!(
+        error,
+        MeasurementError::UnknownUnit {
+            quantity: "length".to_owned(),
+            unit: "bogus".to_owned(),
+        },
+    );
+}
+
+#[test]
+fn test_compact_measurement_rejects_reserved_suffix_boundaries() {
+    for input in ["1.foo", "1+bogus", "1-bogus"] {
+        let error = measurement::Length::from_str(input)
+            .expect_err("reserved compact suffix should fail");
+
+        assert_eq!(
+            error,
+            MeasurementError::InvalidMeasurement(input.to_owned()),
+        );
+    }
 }
 
 #[test]

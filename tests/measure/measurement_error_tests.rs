@@ -7,6 +7,7 @@
 // =============================================================================
 
 use qubit_measure::MeasurementError;
+use rust_decimal::dec;
 
 #[test]
 fn test_measurement_error_display_includes_context() {
@@ -16,6 +17,19 @@ fn test_measurement_error_display_includes_context() {
     };
 
     assert_eq!(error.to_string(), "unknown length unit: kg");
+}
+
+#[test]
+fn test_ambiguous_measurement_error_lists_candidate_units() {
+    let error = MeasurementError::AmbiguousMeasurement {
+        input: "12x".to_owned(),
+        units: vec!["x".to_owned(), "2x".to_owned()],
+    };
+
+    assert_eq!(
+        error.to_string(),
+        "ambiguous measurement 12x; matching units: x, 2x",
+    );
 }
 
 #[test]
@@ -51,6 +65,27 @@ fn test_measurement_error_new_variants_include_context() {
                 actual: "mass".to_owned(),
             },
             "quantity mismatch: expected length, got mass",
+        ),
+        (
+            MeasurementError::NegativeDuration {
+                value: dec!(-1),
+                unit: "s".to_owned(),
+            },
+            "negative duration: -1 s",
+        ),
+        (
+            MeasurementError::SubnanosecondDuration {
+                value: dec!(0.1),
+                unit: "ns".to_owned(),
+            },
+            "duration has subnanosecond precision: 0.1 ns",
+        ),
+        (
+            MeasurementError::DurationOutOfRange {
+                value: dec!(1),
+                unit: "a (365 d)".to_owned(),
+            },
+            "duration is out of range: 1 a (365 d)",
         ),
     ];
 

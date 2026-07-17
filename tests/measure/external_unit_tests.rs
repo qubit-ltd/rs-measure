@@ -112,6 +112,16 @@ fn test_lenient_parsing_prefers_canonical_symbol_over_earlier_alias() {
 }
 
 #[test]
+fn test_compact_measurement_prefers_canonical_symbol_over_colliding_alias() {
+    assert_eq!(
+        "1canonical"
+            .parse::<Measurement<CanonicalPriorityUnit>>()
+            .expect("canonical compact suffix should parse unambiguously"),
+        Measurement::new(dec!(1), CanonicalPriorityUnit::CanonicalOwner),
+    );
+}
+
+#[test]
 fn test_external_unit_families_satisfy_metadata_contract() {
     assert_unit_family_valid::<CustomLength>();
     assert_unit_family_valid::<CanonicalPriorityUnit>();

@@ -30,6 +30,27 @@ use crate::measure::{
 ///
 /// UnitDefinition::base();
 /// ```
+///
+/// Raw definitions cannot be converted publicly because they do not carry a
+/// quantity identity. Use
+/// [`Measurement::convert_to`](crate::Measurement::convert_to)
+/// for dimension-safe public conversion:
+///
+/// ```compile_fail
+/// use qubit_measure::{
+///     ConversionOptions,
+///     Decimal,
+///     UnitDefinition,
+/// };
+///
+/// let source = UnitDefinition::base();
+/// let target = UnitDefinition::base();
+/// let _ = source.convert_value_to(
+///     Decimal::ONE,
+///     target,
+///     ConversionOptions::DEFAULT,
+/// );
+/// ```
 #[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct UnitDefinition {
@@ -107,7 +128,7 @@ impl UnitDefinition {
     /// Returns [`MeasurementError::ArithmeticOverflow`] if Decimal cannot
     /// represent an intermediate or the requested final scale.
     #[inline(always)]
-    pub fn convert_value_to(
+    pub(crate) fn convert_value_to(
         self,
         value: Decimal,
         target: Self,

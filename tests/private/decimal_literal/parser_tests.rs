@@ -5,8 +5,12 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Mirrored persistence-boundary tests for measurement internals.
+//! Public contract tests covering top-level literal parser orchestration.
 
-mod conversion_mode_tests;
-mod decimal_text_tests;
-mod measurement_wire_tests;
+use qubit_measure::__private::decimal_from_literal;
+use rust_decimal::dec;
+
+#[test]
+fn test_parser_combines_fraction_and_scientific_exponent() {
+    assert_eq!(decimal_from_literal("123.45e-2"), dec!(1.2345));
+}

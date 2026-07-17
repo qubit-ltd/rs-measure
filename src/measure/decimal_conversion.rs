@@ -10,6 +10,7 @@
 use rust_decimal::Decimal;
 
 use crate::measure::conversion_factor::reduce_ratio_terms;
+use crate::measure::internal::ConversionMode;
 use crate::measure::{
     ConversionOptions,
     MeasurementError,
@@ -166,10 +167,11 @@ fn apply_output_scale(
     mut value: Decimal,
     options: ConversionOptions,
 ) -> Result<Decimal, MeasurementError> {
-    let Some(scale) = options.scale() else {
-        return Ok(value);
+    let (scale, rounding) = match options.mode() {
+        ConversionMode::MaximumPrecision => return Ok(value),
+        ConversionMode::FixedScale { scale, rounding } => (scale, rounding),
     };
-    value = value.round_dp_with_strategy(scale, options.rounding());
+    value = value.round_dp_with_strategy(scale, rounding);
     value.rescale(scale);
     if value.scale() != scale {
         return Err(MeasurementError::ArithmeticOverflow {

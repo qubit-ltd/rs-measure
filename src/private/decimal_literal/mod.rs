@@ -5,8 +5,10 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Mirrored persistence-boundary tests for measurement internals.
+//! Exact parsing for numeric literals captured by exported macros.
 
-mod conversion_mode_tests;
-mod decimal_text_tests;
-mod measurement_wire_tests;
+mod coefficient;
+mod parser;
+mod scanner;
+
+pub use parser::decimal_from_literal;

@@ -10,6 +10,7 @@
 use thiserror::Error;
 
 /// Errors returned by parsing, converting, or adapting measurements.
+#[non_exhaustive]
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum MeasurementError {
     /// The unit symbol is not known for the requested quantity.
@@ -25,6 +26,49 @@ pub enum MeasurementError {
     /// The measurement text cannot be parsed.
     #[error("invalid measurement: {0}")]
     InvalidMeasurement(String),
+
+    /// Compact text admits more than one valid numeric/unit split.
+    #[error(
+        "ambiguous measurement {input}; matching units: {units}",
+        units = .units.join(", "),
+    )]
+    AmbiguousMeasurement {
+        /// Original measurement text.
+        input: String,
+
+        /// Unit suffixes that each leave a valid Decimal prefix.
+        units: Vec<String>,
+    },
+
+    /// A negative time measurement cannot be represented by `Duration`.
+    #[error("negative duration: {value} {unit}")]
+    NegativeDuration {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original time unit.
+        unit: String,
+    },
+
+    /// A time measurement contains a fractional nanosecond.
+    #[error("duration has subnanosecond precision: {value} {unit}")]
+    SubnanosecondDuration {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original time unit.
+        unit: String,
+    },
+
+    /// A non-negative time measurement exceeds `Duration::MAX`.
+    #[error("duration is out of range: {value} {unit}")]
+    DurationOutOfRange {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original time unit.
+        unit: String,
+    },
 
     /// Floating-point-to-decimal conversion failed.
     #[error("f64 value cannot be represented as Decimal: {0}")]

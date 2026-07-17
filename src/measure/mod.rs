@@ -13,6 +13,7 @@ mod decimal_conversion;
 mod internal;
 mod measurement;
 mod measurement_error;
+mod time_duration;
 mod unit;
 mod unit_definition;
 mod units;
