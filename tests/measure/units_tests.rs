@@ -7,13 +7,133 @@
 // =============================================================================
 //! Shared parsing and deserialization behavior for generated unit families.
 
+use std::fmt::Write;
 use std::str::FromStr;
 
 use qubit_measure::{
+    Decimal,
+    Measurement,
     MeasurementError,
+    Unit,
     unit,
 };
 use serde_json::json;
+
+/// Appends one built-in unit family's stable persistence contract.
+///
+/// # Parameters
+///
+/// * `contract` - Text buffer receiving quantity, symbol, alias, and wire data.
+fn append_unit_persistence_contract<U>(contract: &mut String)
+where
+    U: Unit,
+{
+    writeln!(
+        contract,
+        "quantity {}",
+        serde_json::to_string(U::QUANTITY)
+            .expect("quantity should serialize as JSON text"),
+    )
+    .expect("writing to a String should succeed");
+    for unit in U::all() {
+        writeln!(
+            contract,
+            "unit {} aliases {}",
+            serde_json::to_string(unit.symbol())
+                .expect("unit symbol should serialize as JSON text"),
+            serde_json::to_string(unit.aliases())
+                .expect("unit aliases should serialize as JSON text"),
+        )
+        .expect("writing to a String should succeed");
+    }
+    let first_unit = *U::all()
+        .first()
+        .expect("built-in unit family should not be empty");
+    let measurement = Measurement::<U>::new(Decimal::ONE, first_unit);
+    writeln!(
+        contract,
+        "wire {}",
+        serde_json::to_string(&measurement)
+            .expect("measurement should serialize as JSON text"),
+    )
+    .expect("writing to a String should succeed");
+}
+
+/// Appends the persistence contract for each listed built-in unit family.
+macro_rules! append_builtin_unit_contracts {
+    ($contract:expr, $($unit:ty),+ $(,)?) => {
+        $(append_unit_persistence_contract::<$unit>($contract);)+
+    };
+}
+
+#[test]
+fn test_builtin_unit_persistence_contract_matches_golden_manifest() {
+    let mut actual = String::new();
+    append_builtin_unit_contracts!(
+        &mut actual,
+        unit::Acceleration,
+        unit::AmountOfSubstance,
+        unit::Angle,
+        unit::AngularVelocity,
+        unit::Area,
+        unit::Capacitance,
+        unit::CatalyticActivity,
+        unit::CatalyticActivityConcentration,
+        unit::DynamicViscosity,
+        unit::ElectricCharge,
+        unit::ElectricCurrent,
+        unit::ElectricCurrentDensity,
+        unit::ElectricField,
+        unit::ElectricPotential,
+        unit::ElectricalConductance,
+        unit::ElectricalConductivity,
+        unit::ElectricalResistance,
+        unit::ElectricalResistivity,
+        unit::Energy,
+        unit::Force,
+        unit::Frequency,
+        unit::HeatCapacity,
+        unit::HeatFluxDensity,
+        unit::Illuminance,
+        unit::Inductance,
+        unit::KinematicViscosity,
+        unit::Length,
+        unit::Luminance,
+        unit::LuminousIntensity,
+        unit::MagneticFieldStrength,
+        unit::MagneticFlux,
+        unit::MagneticFluxDensity,
+        unit::Mass,
+        unit::MassConcentration,
+        unit::MassDensity,
+        unit::MassRate,
+        unit::Molality,
+        unit::MolarConcentration,
+        unit::MolarMass,
+        unit::MolarVolume,
+        unit::Power,
+        unit::Pressure,
+        unit::Radioactivity,
+        unit::SolidAngle,
+        unit::SpecificHeatCapacity,
+        unit::SpecificRadioactivity,
+        unit::SurfaceTension,
+        unit::Temperature,
+        unit::TemperatureInterval,
+        unit::ThermalConductivity,
+        unit::ThermalResistance,
+        unit::Time,
+        unit::Torque,
+        unit::Velocity,
+        unit::Volume,
+        unit::VolumeRate,
+    );
+
+    assert_eq!(
+        actual,
+        include_str!("fixtures/unit_persistence_contract.txt"),
+    );
+}
 
 #[test]
 fn test_unit_from_str_accepts_ascii_micro_aliases() {

@@ -1,0 +1,408 @@
+quantity "acceleration"
+unit "mm/s²" aliases ["mm/s2","mm/s^2"]
+unit "m/s²" aliases ["m/s2","m/s^2"]
+unit "ft/s²" aliases ["ft/s2","ft/s^2"]
+unit "g₀" aliases ["g0","g"]
+wire {"quantity":"acceleration","value":"1","unit":"mm/s²"}
+quantity "amount_of_substance"
+unit "µmol" aliases ["umol","μmol"]
+unit "mmol" aliases []
+unit "mol" aliases []
+unit "kmol" aliases []
+unit "particle" aliases []
+wire {"quantity":"amount_of_substance","value":"1","unit":"µmol"}
+quantity "angle"
+unit "rad" aliases []
+unit "°" aliases ["deg"]
+unit "r" aliases ["rev"]
+unit "′" aliases ["arcmin"]
+unit "″" aliases ["arcsec"]
+wire {"quantity":"angle","value":"1","unit":"rad"}
+quantity "angular_velocity"
+unit "rad/s" aliases []
+unit "°/s" aliases ["deg/s"]
+unit "rps" aliases []
+unit "rpm" aliases []
+wire {"quantity":"angular_velocity","value":"1","unit":"rad/s"}
+quantity "area"
+unit "mm²" aliases ["mm2","mm^2"]
+unit "cm²" aliases ["cm2","cm^2"]
+unit "m²" aliases ["m2","m^2"]
+unit "km²" aliases ["km2","km^2"]
+unit "ha" aliases []
+unit "ac" aliases []
+unit "in²" aliases ["in2","in^2"]
+unit "ft²" aliases ["ft2","ft^2"]
+unit "yd²" aliases ["yd2","yd^2"]
+unit "mi²" aliases ["mi2","mi^2"]
+wire {"quantity":"area","value":"1","unit":"mm²"}
+quantity "capacitance"
+unit "pF" aliases []
+unit "nF" aliases []
+unit "µF" aliases ["uF","μF"]
+unit "mF" aliases []
+unit "F" aliases []
+wire {"quantity":"capacitance","value":"1","unit":"pF"}
+quantity "catalytic_activity"
+unit "µkat" aliases ["ukat","μkat"]
+unit "mkat" aliases []
+unit "kat" aliases []
+unit "U" aliases []
+unit "mU" aliases []
+wire {"quantity":"catalytic_activity","value":"1","unit":"µkat"}
+quantity "catalytic_activity_concentration"
+unit "kat/m³" aliases ["kat/m3","kat/m^3"]
+unit "U/L" aliases []
+unit "mU/mL" aliases []
+wire {"quantity":"catalytic_activity_concentration","value":"1","unit":"kat/m³"}
+quantity "dynamic_viscosity"
+unit "µPa · s" aliases ["uPa · s","μPa · s","uPa*s"]
+unit "mPa · s" aliases ["mPa*s"]
+unit "Pa · s" aliases ["Pa*s","Pa s"]
+unit "P" aliases []
+unit "cP" aliases []
+wire {"quantity":"dynamic_viscosity","value":"1","unit":"µPa · s"}
+quantity "electric_charge"
+unit "µC" aliases ["uC","μC"]
+unit "mC" aliases []
+unit "C" aliases []
+unit "kC" aliases []
+unit "A · h" aliases ["Ah","A h"]
+unit "mA · h" aliases ["mAh","mA h"]
+wire {"quantity":"electric_charge","value":"1","unit":"µC"}
+quantity "electric_current"
+unit "pA" aliases []
+unit "nA" aliases []
+unit "µA" aliases ["uA","μA"]
+unit "mA" aliases []
+unit "A" aliases []
+unit "kA" aliases []
+unit "MA" aliases []
+wire {"quantity":"electric_current","value":"1","unit":"pA"}
+quantity "electric_current_density"
+unit "A/m²" aliases ["A/m2","A/m^2"]
+unit "A/cm²" aliases ["A/cm2","A/cm^2"]
+unit "A/mm²" aliases ["A/mm2","A/mm^2"]
+wire {"quantity":"electric_current_density","value":"1","unit":"A/m²"}
+quantity "electric_field"
+unit "V/m" aliases []
+unit "V/cm" aliases []
+unit "V/mm" aliases []
+unit "V/µm" aliases ["V/um","V/μm"]
+unit "kV/mm" aliases []
+unit "MV/m" aliases []
+wire {"quantity":"electric_field","value":"1","unit":"V/m"}
+quantity "electric_potential"
+unit "nV" aliases []
+unit "µV" aliases ["uV","μV"]
+unit "mV" aliases []
+unit "V" aliases ["volt"]
+unit "kV" aliases []
+unit "MV" aliases []
+wire {"quantity":"electric_potential","value":"1","unit":"nV"}
+quantity "electrical_conductance"
+unit "µS" aliases ["uS","μS"]
+unit "mS" aliases []
+unit "S" aliases []
+wire {"quantity":"electrical_conductance","value":"1","unit":"µS"}
+quantity "electrical_conductivity"
+unit "S/m" aliases []
+unit "S/cm" aliases []
+wire {"quantity":"electrical_conductivity","value":"1","unit":"S/m"}
+quantity "electrical_resistance"
+unit "µΩ" aliases ["uΩ","μΩ","uOhm"]
+unit "mΩ" aliases ["mOhm"]
+unit "Ω" aliases ["ohm","Ohm"]
+unit "kΩ" aliases ["kOhm"]
+unit "MΩ" aliases ["MOhm"]
+unit "GΩ" aliases ["GOhm"]
+wire {"quantity":"electrical_resistance","value":"1","unit":"µΩ"}
+quantity "electrical_resistivity"
+unit "mΩ · m" aliases ["mOhm m","mΩ*m"]
+unit "Ω · m" aliases ["ohm m","Ω*m"]
+unit "Ω · cm" aliases ["ohm cm","Ω*cm"]
+unit "Ω · mm²/m" aliases ["Ω mm2/m","ohm mm2/m"]
+wire {"quantity":"electrical_resistivity","value":"1","unit":"mΩ · m"}
+quantity "energy"
+unit "J" aliases []
+unit "kJ" aliases []
+unit "MJ" aliases []
+unit "W · h" aliases ["Wh"]
+unit "kW · h" aliases ["kWh"]
+unit "eV" aliases []
+unit "cal (th)" aliases ["cal"]
+unit "kcal (th)" aliases ["kcal"]
+unit "Btu (IT)" aliases ["Btu","BTU"]
+wire {"quantity":"energy","value":"1","unit":"J"}
+quantity "force"
+unit "mN" aliases []
+unit "N" aliases []
+unit "kN" aliases []
+unit "MN" aliases []
+unit "gf" aliases []
+unit "kgf" aliases []
+unit "lbf" aliases []
+wire {"quantity":"force","value":"1","unit":"mN"}
+quantity "frequency"
+unit "Hz" aliases []
+unit "kHz" aliases []
+unit "MHz" aliases []
+unit "GHz" aliases []
+wire {"quantity":"frequency","value":"1","unit":"Hz"}
+quantity "heat_capacity"
+unit "J/K" aliases []
+unit "kJ/K" aliases []
+unit "J/°C" aliases ["J/degC"]
+unit "cal (th)/K" aliases ["cal/K"]
+unit "Btu (IT)/°F" aliases ["Btu/°F","Btu/degF"]
+wire {"quantity":"heat_capacity","value":"1","unit":"J/K"}
+quantity "heat_flux_density"
+unit "mW/m²" aliases ["mW/m2","mW/m^2"]
+unit "W/m²" aliases ["W/m2","W/m^2"]
+unit "kW/m²" aliases ["kW/m2","kW/m^2"]
+unit "W/cm²" aliases ["W/cm2","W/cm^2"]
+wire {"quantity":"heat_flux_density","value":"1","unit":"mW/m²"}
+quantity "illuminance"
+unit "lx" aliases []
+unit "klx" aliases []
+unit "fc" aliases []
+wire {"quantity":"illuminance","value":"1","unit":"lx"}
+quantity "inductance"
+unit "nH" aliases []
+unit "µH" aliases ["uH","μH"]
+unit "mH" aliases []
+unit "H" aliases []
+wire {"quantity":"inductance","value":"1","unit":"nH"}
+quantity "kinematic_viscosity"
+unit "mm²/s" aliases ["mm2/s","mm^2/s"]
+unit "m²/s" aliases ["m2/s","m^2/s"]
+unit "St" aliases []
+unit "cSt" aliases []
+wire {"quantity":"kinematic_viscosity","value":"1","unit":"mm²/s"}
+quantity "length"
+unit "nm" aliases []
+unit "µm" aliases ["um","μm"]
+unit "mm" aliases []
+unit "cm" aliases []
+unit "m" aliases []
+unit "km" aliases []
+unit "in" aliases []
+unit "ft" aliases []
+unit "yd" aliases []
+unit "mi" aliases []
+wire {"quantity":"length","value":"1","unit":"nm"}
+quantity "luminance"
+unit "cd/m²" aliases ["cd/m2","cd/m^2"]
+unit "cd/cm²" aliases ["cd/cm2","cd/cm^2"]
+unit "cd/ft²" aliases ["cd/ft2","cd/ft^2"]
+unit "fl" aliases []
+unit "sb" aliases []
+wire {"quantity":"luminance","value":"1","unit":"cd/m²"}
+quantity "luminous_intensity"
+unit "mcd" aliases []
+unit "cd" aliases []
+unit "kcd" aliases []
+wire {"quantity":"luminous_intensity","value":"1","unit":"mcd"}
+quantity "magnetic_field_strength"
+unit "A/m" aliases []
+unit "A/cm" aliases []
+unit "Oe" aliases []
+wire {"quantity":"magnetic_field_strength","value":"1","unit":"A/m"}
+quantity "magnetic_flux"
+unit "µWb" aliases ["uWb","μWb"]
+unit "mWb" aliases []
+unit "Wb" aliases []
+unit "Mx" aliases []
+wire {"quantity":"magnetic_flux","value":"1","unit":"µWb"}
+quantity "magnetic_flux_density"
+unit "nT" aliases []
+unit "µT" aliases ["uT","μT"]
+unit "mT" aliases []
+unit "T" aliases []
+unit "G" aliases []
+wire {"quantity":"magnetic_flux_density","value":"1","unit":"nT"}
+quantity "mass"
+unit "µg" aliases ["ug","μg"]
+unit "mg" aliases []
+unit "g" aliases []
+unit "kg" aliases []
+unit "t" aliases []
+unit "ct" aliases []
+unit "oz" aliases []
+unit "lb" aliases []
+unit "2000 lb" aliases []
+unit "2240 lb" aliases []
+wire {"quantity":"mass","value":"1","unit":"µg"}
+quantity "mass_concentration"
+unit "µg/L" aliases ["ug/L","μg/L"]
+unit "mg/L" aliases []
+unit "g/L" aliases []
+unit "kg/m³" aliases ["kg/m3","kg/m^3"]
+unit "mg/dL" aliases []
+unit "g/dL" aliases []
+wire {"quantity":"mass_concentration","value":"1","unit":"µg/L"}
+quantity "mass_density"
+unit "kg/m³" aliases ["kg/m3","kg/m^3"]
+unit "g/m³" aliases ["g/m3","g/m^3"]
+unit "g/cm³" aliases ["g/cm3","g/cm^3"]
+unit "lb/ft³" aliases ["lb/ft3","lb/ft^3"]
+unit "lb/gal (US)" aliases ["lb/gal"]
+wire {"quantity":"mass_density","value":"1","unit":"kg/m³"}
+quantity "mass_rate"
+unit "mg/s" aliases []
+unit "g/s" aliases []
+unit "kg/s" aliases []
+unit "kg/h" aliases []
+unit "t/h" aliases []
+unit "lb/h" aliases []
+wire {"quantity":"mass_rate","value":"1","unit":"mg/s"}
+quantity "molality"
+unit "mol/kg" aliases []
+wire {"quantity":"molality","value":"1","unit":"mol/kg"}
+quantity "molar_concentration"
+unit "nmol/L" aliases []
+unit "µmol/L" aliases ["umol/L","μmol/L"]
+unit "mmol/L" aliases []
+unit "mol/L" aliases ["M"]
+unit "mol/m³" aliases ["mol/m3","mol/m^3"]
+unit "particle/mL" aliases []
+wire {"quantity":"molar_concentration","value":"1","unit":"nmol/L"}
+quantity "molar_mass"
+unit "mg/mol" aliases []
+unit "g/mol" aliases []
+unit "kg/mol" aliases []
+wire {"quantity":"molar_mass","value":"1","unit":"mg/mol"}
+quantity "molar_volume"
+unit "cm³/mol" aliases ["cm3/mol","cm^3/mol"]
+unit "dm³/mol" aliases ["dm3/mol","dm^3/mol"]
+unit "m³/mol" aliases ["m3/mol","m^3/mol"]
+wire {"quantity":"molar_volume","value":"1","unit":"cm³/mol"}
+quantity "power"
+unit "nW" aliases []
+unit "µW" aliases ["uW","μW"]
+unit "mW" aliases []
+unit "W" aliases []
+unit "kW" aliases []
+unit "MW" aliases []
+unit "hp (mechanical)" aliases ["hp"]
+wire {"quantity":"power","value":"1","unit":"nW"}
+quantity "pressure"
+unit "nPa" aliases []
+unit "µPa" aliases ["uPa","μPa"]
+unit "mPa" aliases []
+unit "Pa" aliases []
+unit "hPa" aliases []
+unit "kPa" aliases []
+unit "MPa" aliases []
+unit "bar" aliases []
+unit "mbar" aliases []
+unit "atm" aliases []
+unit "mm Hg" aliases ["mmHg"]
+unit "psi" aliases []
+wire {"quantity":"pressure","value":"1","unit":"nPa"}
+quantity "radioactivity"
+unit "Bq" aliases []
+unit "kBq" aliases []
+unit "MBq" aliases []
+unit "Ci" aliases []
+unit "mCi" aliases []
+unit "µCi" aliases ["uCi","μCi"]
+unit "dpm" aliases []
+wire {"quantity":"radioactivity","value":"1","unit":"Bq"}
+quantity "solid_angle"
+unit "sr" aliases []
+unit "sp" aliases []
+unit "°²" aliases ["deg2","deg^2"]
+wire {"quantity":"solid_angle","value":"1","unit":"sr"}
+quantity "specific_heat_capacity"
+unit "J/(kg · K)" aliases ["J/(kg*K)"]
+unit "kJ/(kg · K)" aliases ["kJ/(kg*K)"]
+unit "J/(g · °C)" aliases ["J/(g*degC)"]
+unit "cal (th)/(g · K)" aliases ["cal/(g · K)","cal/(g*K)"]
+unit "Btu (IT)/(lb · °F)" aliases ["Btu/(lb · °F)","Btu/(lb*degF)"]
+wire {"quantity":"specific_heat_capacity","value":"1","unit":"J/(kg · K)"}
+quantity "specific_radioactivity"
+unit "Bq/kg" aliases []
+unit "Ci/kg" aliases []
+unit "dpm/kg" aliases []
+wire {"quantity":"specific_radioactivity","value":"1","unit":"Bq/kg"}
+quantity "surface_tension"
+unit "mN/m" aliases []
+unit "N/m" aliases []
+unit "dyn/cm" aliases []
+unit "J/m²" aliases ["J/m2","J/m^2"]
+wire {"quantity":"surface_tension","value":"1","unit":"mN/m"}
+quantity "temperature"
+unit "K" aliases []
+unit "°C" aliases ["degC"]
+unit "°F" aliases ["degF"]
+unit "°R" aliases ["degR"]
+wire {"quantity":"temperature","value":"1","unit":"K"}
+quantity "temperature_interval"
+unit "K" aliases []
+unit "°C" aliases ["degC"]
+unit "°F" aliases ["degF"]
+unit "°R" aliases ["degR"]
+wire {"quantity":"temperature_interval","value":"1","unit":"K"}
+quantity "thermal_conductivity"
+unit "mW/(m · K)" aliases ["mW/(m*K)"]
+unit "W/(m · K)" aliases ["W/(m*K)"]
+unit "kW/(m · K)" aliases ["kW/(m*K)"]
+unit "W/(m · °C)" aliases ["W/(m*degC)"]
+wire {"quantity":"thermal_conductivity","value":"1","unit":"mW/(m · K)"}
+quantity "thermal_resistance"
+unit "K/mW" aliases []
+unit "K/W" aliases []
+unit "K/kW" aliases ["K/kw"]
+wire {"quantity":"thermal_resistance","value":"1","unit":"K/mW"}
+quantity "time"
+unit "ns" aliases []
+unit "µs" aliases ["us","μs"]
+unit "ms" aliases []
+unit "s" aliases []
+unit "min" aliases ["m"]
+unit "h" aliases []
+unit "d" aliases []
+unit "a (365 d)" aliases ["a","yr","year"]
+wire {"quantity":"time","value":"1","unit":"ns"}
+quantity "torque"
+unit "mN · m" aliases ["mN m","mN*m"]
+unit "N · m" aliases ["N m","N*m","Nm"]
+unit "kN · m" aliases ["kN m","kN*m","kNm"]
+unit "lbf · ft" aliases ["lbf ft"]
+unit "lbf · in" aliases ["lbf in"]
+wire {"quantity":"torque","value":"1","unit":"mN · m"}
+quantity "velocity"
+unit "µm/s" aliases ["um/s","μm/s"]
+unit "mm/s" aliases []
+unit "cm/s" aliases []
+unit "m/s" aliases []
+unit "km/h" aliases ["km/hr","kph"]
+unit "ft/s" aliases []
+unit "mi/h" aliases ["mi/hr","mph"]
+unit "kn" aliases []
+wire {"quantity":"velocity","value":"1","unit":"µm/s"}
+quantity "volume"
+unit "mm³" aliases ["mm3","mm^3"]
+unit "cm³" aliases ["cm3","cm^3"]
+unit "m³" aliases ["m3","m^3"]
+unit "µL" aliases ["uL","μL"]
+unit "mL" aliases []
+unit "L" aliases []
+unit "in³" aliases ["in3","in^3"]
+unit "ft³" aliases ["ft3","ft^3"]
+unit "yd³" aliases ["yd3","yd^3"]
+unit "fl oz (US)" aliases ["fl oz"]
+unit "cup (US customary)" aliases ["cup"]
+unit "pt (US liq)" aliases ["liq pt"]
+unit "qt (US liq)" aliases ["liq qt"]
+unit "gal (US)" aliases ["gal"]
+wire {"quantity":"volume","value":"1","unit":"mm³"}
+quantity "volume_rate"
+unit "m³/s" aliases ["m3/s","m^3/s"]
+unit "m³/h" aliases ["m3/h","m^3/h"]
+unit "mL/s" aliases []
+unit "L/s" aliases []
+unit "L/min" aliases []
+unit "gal (US)/min" aliases ["gal/min"]
+wire {"quantity":"volume_rate","value":"1","unit":"m³/s"}
