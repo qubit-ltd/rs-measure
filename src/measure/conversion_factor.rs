@@ -129,7 +129,7 @@ impl ConversionFactor {
     /// Panics if either term is non-positive or a reduced term exceeds
     /// Decimal's 96-bit coefficient range.
     #[inline]
-    pub(crate) const fn from_const_integers(
+    pub const fn from_const_integers(
         numerator: i128,
         denominator: i128,
     ) -> Self {

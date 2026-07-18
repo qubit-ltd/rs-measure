@@ -384,9 +384,11 @@ macro_rules! impl_uom_unit {
 ///
 /// # Syntax and generated API
 ///
-/// Each variant supplies a canonical `symbol` and either an exact `definition`
-/// path or a positive Decimal `coefficient`, optionally written as a ratio and
-/// followed by an `offset`. An optional `aliases` list enables lenient input.
+/// Each variant supplies a canonical `symbol`. One macro invocation uses either
+/// exact `definition` paths for every variant or positive Decimal `coefficient`
+/// values for every variant; the two forms cannot be mixed within one family.
+/// A coefficient may be written as a ratio and followed by an `offset`. An
+/// optional `aliases` list enables lenient input.
 /// The supported Decimal literal subset includes integer, fractional,
 /// scientific, and digit-separated decimal forms plus binary, octal, and
 /// hexadecimal integers. Every accepted value must fit Decimal exactly.
@@ -414,6 +416,41 @@ macro_rules! impl_uom_unit {
 /// Coefficient numerator and denominator literals must both be positive.
 ///
 /// # Examples
+///
+/// A reusable non-identity definition can be built in an external const
+/// context and supplied by path:
+///
+/// ```
+/// use qubit_measure::{
+///     ConversionFactor,
+///     Decimal,
+///     Unit,
+///     UnitDefinition,
+///     define_unit_family,
+/// };
+///
+/// const TWO_THIRDS: UnitDefinition = UnitDefinition::new(
+///     ConversionFactor::from_const_integers(2, 3),
+///     Decimal::ZERO,
+/// );
+///
+/// define_unit_family! {
+///     /// Unit family backed by a reusable definition.
+///     enum DefinitionUnit for "definition_unit" {
+///         /// Unit with a two-thirds base-unit factor.
+///         TwoThirds => {
+///             symbol: "two-thirds";
+///             definition: TWO_THIRDS;
+///         }
+///     }
+/// }
+///
+/// let definition = DefinitionUnit::TwoThirds
+///     .definition()
+///     .expect("const definition should be valid");
+/// assert_eq!(definition.factor().numerator(), Decimal::new(2, 0));
+/// assert_eq!(definition.factor().denominator(), Decimal::new(3, 0));
+/// ```
 ///
 /// An alias-to-canonical collision is valid and the canonical owner wins:
 ///

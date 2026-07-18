@@ -12,6 +12,15 @@ use qubit_measure::{
 };
 use rust_decimal::dec;
 
+const REDUCED_CONST_FACTOR: ConversionFactor =
+    ConversionFactor::from_const_integers(4, 6);
+
+#[test]
+fn test_conversion_factor_from_const_integers_is_public_and_reduces_terms() {
+    assert_eq!(REDUCED_CONST_FACTOR.numerator(), dec!(2));
+    assert_eq!(REDUCED_CONST_FACTOR.denominator(), dec!(3));
+}
+
 #[test]
 fn test_conversion_factor_new_reduces_integer_terms() {
     let reduced = ConversionFactor::new(dec!(4), dec!(6))

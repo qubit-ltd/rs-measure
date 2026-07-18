@@ -7,7 +7,18 @@
 // =============================================================================
 //! Default-feature downstream macro fixture.
 
-use qubit_measure::define_unit_family;
+use qubit_measure::{
+    ConversionFactor,
+    Decimal,
+    UnitDefinition,
+    define_unit_family,
+};
+
+/// Non-identity definition constructed entirely in an external const context.
+const RATIONAL_DEFINITION: UnitDefinition = UnitDefinition::new(
+    ConversionFactor::from_const_integers(4, 6),
+    Decimal::ZERO,
+);
 
 define_unit_family! {
     /// Exact-only unit family that remains independent of optional features.
@@ -52,6 +63,17 @@ define_unit_family! {
         RadixRatio => {
             symbol: "radix-ratio";
             coefficient: 0o20 / 0b10;
+        }
+    }
+}
+
+define_unit_family! {
+    /// Exact-definition family declared entirely by reusable paths.
+    pub enum DefinitionFixtureUnit for "definition_fixture" {
+        /// Reusable exact definition supplied through a path.
+        ExactDefinition => {
+            symbol: "exact-definition";
+            definition: RATIONAL_DEFINITION;
         }
     }
 }
