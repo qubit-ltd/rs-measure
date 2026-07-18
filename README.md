@@ -16,18 +16,21 @@ The exact Decimal core is the default and does not compile `uom`:
 
 ```toml
 [dependencies]
-qubit-measure = "0.3"
+qubit-measure = "0.4"
+rust_decimal = "1.39"
 ```
 
 Enable the approximate `f64` bridge explicitly:
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.3", features = ["uom"] }
+qubit-measure = { version = "0.4", features = ["uom"] }
+rust_decimal = "1.39"
 ```
 
 ```rust
-use qubit_measure::{Decimal, measurement, unit};
+use qubit_measure::{measurement, unit};
+use rust_decimal::Decimal;
 
 let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
 let meters = length.convert_to(unit::Length::Meter)?;
@@ -51,9 +54,10 @@ Serde uses a quantity-aware wire format:
 ```
 
 All three fields are required. `quantity` is a stable `snake_case` identifier,
-`value` is a Decimal string, and `unit` is always serialized with its canonical
-symbol. Deserialization rejects a quantity that does not match the requested Rust
-type. Extra fields are ignored for forward-compatible metadata additions.
+`value` is a Decimal string, and `unit` is always serialized with and
+deserialized from its canonical symbol. Deserialization rejects aliases and a
+quantity that does not match the requested Rust type. Extra fields are ignored
+for forward-compatible metadata additions.
 
 ## 3. Decimal precision and rounding
 
@@ -72,8 +76,9 @@ that value, and square degree uses 28 decimal places.
 
 ```rust
 use qubit_measure::{
-    ConversionOptions, Decimal, RoundingStrategy, measurement, unit,
+    ConversionOptions, measurement, unit,
 };
+use rust_decimal::{Decimal, RoundingStrategy};
 
 let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
 let options = ConversionOptions::fixed_scale(
@@ -105,10 +110,10 @@ scale and rounding strategy uses `convert_to_with_options` explicitly.
 ## 5. Strict and lenient parsing
 
 `Unit::parse_strict` accepts canonical symbols only. A recognized alias produces
-`NonCanonicalUnit` with the canonical replacement. `Unit::parse_lenient`, `FromStr`,
-`Measurement::from_str`, and default Serde deserialization accept documented aliases.
-Canonical symbols always take precedence when they collide with another unit's alias.
-`Measurement::parse_strict` provides strict parsing for complete values.
+`NonCanonicalUnit` with the canonical replacement. `FromStr`,
+`Measurement::from_str`, and default Serde deserialization use this strict contract.
+Call `Unit::parse_lenient` or `Measurement::parse_lenient` explicitly when documented
+aliases should be accepted. Canonical symbols and aliases must be disjoint.
 
 ```rust
 use qubit_measure::{Unit, unit};
@@ -116,6 +121,11 @@ use qubit_measure::{Unit, unit};
 assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
 assert!(unit::Time::parse_strict("year").is_err());
 assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
+assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
+assert_eq!(
+    qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
+    unit::Time::CommonYear365,
+);
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
@@ -205,8 +215,7 @@ Every unit family follows this metadata contract:
   Unicode whitespace;
 - aliases are non-empty, unique among aliases, and contain no leading or
   trailing Unicode whitespace;
-- an alias may equal another variant's canonical symbol;
-- canonical symbols are checked first and therefore win;
+- aliases do not match any canonical symbol in the family;
 - macro-generated families are checked at compilation;
 - manual `Unit` implementations should call `assert_unit_family_valid` in tests;
 - stable Rust cannot prove that a manual enum omitted no variant from `all()`.
@@ -225,7 +234,8 @@ that named unit differently. Persisted unit conversion through `convert_to`
 does not use this bridge.
 
 ```rust
-use qubit_measure::{Decimal, measurement, unit};
+use qubit_measure::{measurement, unit};
+use rust_decimal::Decimal;
 use uom::si::length::meter;
 
 let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
@@ -235,19 +245,18 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 Use `uom` for dimensional calculations where binary floating-point behavior is
 appropriate, then explicitly adapt the result at the persistence boundary.
 
-## 9. Migration from 0.2 to 0.3
+## 9. Migration from 0.3 to 0.4
 
-| 0.2 | 0.3 |
+| 0.3 | 0.4 |
 | --- | --- |
-| JSON `{value, unit}` | JSON `{quantity, value, unit}` |
-| `convert_to` routed through `uom/f64` | Decimal-only exact-factor conversion |
-| `to_uom` / `from_uom` | `to_uom_approx` / `from_uom_approx` |
-| Ambiguous variants such as `Year`, `Gallon`, `Horsepower` | Qualified variants listed above |
-| Canonical ambiguous short symbols | Qualified canonical symbols; short forms are lenient aliases |
-| `Unit` included `uom` methods | Exact `Unit` plus optional `UomUnit` |
-| Unit families were crate-internal | Public `define_unit_family!` and manual implementations |
+| `qubit_measure::{Decimal, RoundingStrategy}` | Import both types directly from `rust_decimal` |
+| `FromStr` and default Serde accepted aliases | Canonical-only; use explicit `parse_lenient` for aliases |
+| Aliases could collide with canonical symbols | Canonical symbols and aliases must be disjoint |
+| Downstream macros resolved re-exported dependencies | Downstream crates declare `serde` and, when needed, `rust_decimal` directly |
 
-This release intentionally breaks the 0.2 wire format and affected Rust APIs.
+This release intentionally removes dependency re-exports and tightens parsing and
+unit-family metadata. Downstream crates must update imports, dependencies, and any
+persisted alias spellings.
 
 ## Testing
 

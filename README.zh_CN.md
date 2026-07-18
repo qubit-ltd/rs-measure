@@ -16,18 +16,21 @@
 
 ```toml
 [dependencies]
-qubit-measure = "0.3"
+qubit-measure = "0.4"
+rust_decimal = "1.39"
 ```
 
 需要近似 `f64` 桥接时显式启用：
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.3", features = ["uom"] }
+qubit-measure = { version = "0.4", features = ["uom"] }
+rust_decimal = "1.39"
 ```
 
 ```rust
-use qubit_measure::{Decimal, measurement, unit};
+use qubit_measure::{measurement, unit};
+use rust_decimal::Decimal;
 
 let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
 let meters = length.convert_to(unit::Length::Meter)?;
@@ -51,8 +54,8 @@ Serde 使用带 quantity 校验的 wire format：
 ```
 
 三个字段都必须存在。`quantity` 是稳定的 `snake_case` 标识，`value` 是 Decimal 字符串，
-`unit` 序列化时始终使用规范符号。如果 quantity 与目标 Rust 类型不匹配，反序列化会失败。
-额外字段会被忽略，允许未来添加元数据。
+`unit` 序列化和反序列化时都只接受规范符号；别名会被拒绝。如果 quantity 与目标 Rust
+类型不匹配，反序列化也会失败。额外字段会被忽略，允许未来添加元数据。
 
 ## 3. Decimal 精度与舍入
 
@@ -68,8 +71,9 @@ Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不
 
 ```rust
 use qubit_measure::{
-    ConversionOptions, Decimal, RoundingStrategy, measurement, unit,
+    ConversionOptions, measurement, unit,
 };
+use rust_decimal::{Decimal, RoundingStrategy};
 
 let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
 let options = ConversionOptions::fixed_scale(
@@ -97,9 +101,9 @@ assert_eq!(feet.value.to_string(), "3.2808");
 ## 5. 严格与宽松解析
 
 `Unit::parse_strict` 只接受规范符号；遇到已知别名时返回 `NonCanonicalUnit` 并给出规范替代。
-`Unit::parse_lenient`、`FromStr`、`Measurement::from_str` 和默认 Serde 反序列化接受已声明别名。
-当某个规范符号与另一单位的别名冲突时，始终优先匹配规范符号。
-`Measurement::parse_strict` 为完整 measurement 提供严格解析。
+`FromStr`、`Measurement::from_str` 和默认 Serde 反序列化都采用这一严格契约。只有显式调用
+`Unit::parse_lenient` 或 `Measurement::parse_lenient` 时才接受已声明别名。规范符号与别名
+必须互不相交。
 
 ```rust
 use qubit_measure::{Unit, unit};
@@ -107,6 +111,11 @@ use qubit_measure::{Unit, unit};
 assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
 assert!(unit::Time::parse_strict("year").is_err());
 assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
+assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
+assert_eq!(
+    qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
+    unit::Time::CommonYear365,
+);
 # Ok::<(), qubit_measure::MeasurementError>(())
 ```
 
@@ -185,8 +194,7 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 - `quantity` 是非空 ASCII `snake_case`，以小写字母开头，且没有开头、结尾或连续下划线；
 - 规范符号非空且互不重复，并且不得包含开头或结尾的 Unicode 空白字符；
 - 别名非空且互不重复，并且不得包含开头或结尾的 Unicode 空白字符；
-- 别名可以等于另一变体的规范符号；
-- 解析时先检查规范符号，因此规范符号优先；
+- 别名不得等于单位族中的任何规范符号；
 - 宏生成的单位族在编译期接受检查；
 - 手工 `Unit` 实现应在测试中调用 `assert_unit_family_valid`；
 - stable Rust 无法证明手工枚举的 `all()` 没有遗漏任何变体。
@@ -202,7 +210,8 @@ SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一�
 `uom` 自身的系数计算。持久化单位换算 `convert_to` 不使用该桥接。
 
 ```rust
-use qubit_measure::{Decimal, measurement, unit};
+use qubit_measure::{measurement, unit};
+use rust_decimal::Decimal;
 use uom::si::length::meter;
 
 let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
@@ -211,19 +220,17 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 
 适合二进制浮点语义的量纲计算仍可使用 `uom`，然后在持久化边界显式适配结果。
 
-## 9. 从 0.2 迁移到 0.3
+## 9. 从 0.3 迁移到 0.4
 
-| 0.2 | 0.3 |
+| 0.3 | 0.4 |
 | --- | --- |
-| JSON `{value, unit}` | JSON `{quantity, value, unit}` |
-| `convert_to` 经过 `uom/f64` | 使用精确系数的纯 Decimal 换算 |
-| `to_uom` / `from_uom` | `to_uom_approx` / `from_uom_approx` |
-| `Year`、`Gallon`、`Horsepower` 等歧义变体 | 上表列出的带限定词变体 |
-| 歧义短写是规范符号 | 限定后的规范符号；短写仅为宽松别名 |
-| `Unit` 包含 `uom` 方法 | 精确 `Unit` 加可选 `UomUnit` |
-| 单位族仅 crate 内部可定义 | 公开 `define_unit_family!` 并允许手工实现 |
+| `qubit_measure::{Decimal, RoundingStrategy}` | 直接从 `rust_decimal` 导入这两个类型 |
+| `FromStr` 和默认 Serde 接受别名 | 只接受规范符号；别名使用显式 `parse_lenient` |
+| 别名可以与规范符号冲突 | 规范符号与别名必须互不相交 |
+| 下游宏通过本 crate 的重导出解析依赖 | 下游直接声明 `serde`，并在需要时声明 `rust_decimal` |
 
-本版本有意破坏 0.2 wire format 和相关 Rust API。
+本版本有意移除依赖项重导出，并收紧解析与单位族元数据契约。下游 crate 必须更新导入、
+依赖声明，以及持久化数据中的别名拼写。
 
 ## 测试
 

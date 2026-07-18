@@ -7,4 +7,6 @@ publish = false
 
 [dependencies]
 qubit-measure = { path = "../../..", features = ["uom"] }
+rust_decimal = "1.39"
+serde = "1.0"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }

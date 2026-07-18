@@ -308,7 +308,7 @@ dependencies = [
 
 [[package]]
 name = "qubit-measure"
-version = "0.3.0"
+version = "0.4.0"
 dependencies = [
  "num-bigint",
  "num-rational",
@@ -323,6 +323,8 @@ name = "qubit-measure-downstream-uom-fixture"
 version = "0.0.0"
 dependencies = [
  "qubit-measure",
+ "rust_decimal",
+ "serde",
  "uom",
 ]
 

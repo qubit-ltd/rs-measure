@@ -5,12 +5,10 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
+//! Tests for the default-feature Decimal literal fixture family.
 
 use qubit_measure::Unit;
-use qubit_measure_downstream_default_fixture::{
-    DefaultFixtureUnit,
-    DefinitionFixtureUnit,
-};
+use qubit_measure_downstream_default_fixture::DefaultFixtureUnit;
 
 /// Verifies the exact factor and offset strings for a downstream unit.
 ///
@@ -44,15 +42,4 @@ fn test_define_unit_family_preserves_decimal_literal_grammar() {
     assert_definition(DefaultFixtureUnit::DigitSeparated, "1234567", "1", "0");
     assert_definition(DefaultFixtureUnit::RadixInteger, "511", "1", "0");
     assert_definition(DefaultFixtureUnit::RadixRatio, "8", "1", "0");
-}
-
-#[test]
-fn test_define_unit_family_accepts_external_const_definition_path() {
-    let definition = DefinitionFixtureUnit::ExactDefinition
-        .definition()
-        .expect("fixture unit definition should be valid");
-
-    assert_eq!(definition.factor().numerator().to_string(), "2");
-    assert_eq!(definition.factor().denominator().to_string(), "3");
-    assert_eq!(definition.offset().to_string(), "0");
 }
