@@ -252,10 +252,10 @@ This release intentionally breaks the 0.2 wire format and affected Rust APIs.
 ## Testing
 
 ```bash
-# Core API with the default empty feature set
-cargo test --no-default-features
+# Run tests with the default feature set
+cargo test
 
-# Core API plus uom adapters
+# Run tests with all declared features
 cargo test --all-features
 
 # Project CI checks

@@ -228,10 +228,10 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 ## 测试
 
 ```bash
-# 使用默认的空 feature 集测试核心 API
-cargo test --no-default-features
+# 使用默认 feature 集运行测试
+cargo test
 
-# 测试核心 API 和 uom 适配器
+# 使用项目声明的全部 feature 运行测试
 cargo test --all-features
 
 # 运行项目 CI 检查
