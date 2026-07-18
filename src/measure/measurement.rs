@@ -37,7 +37,7 @@ use std::str::FromStr;
 /// persistence keeps the original user-facing unit instead of only the
 /// normalized base-unit value.
 /// Its Serde contract encodes units through [`Unit::symbol`] and decodes them
-/// through [`Unit::parse_lenient`], without requiring unit-specific Serde.
+/// through [`Unit::parse_strict`], without requiring unit-specific Serde.
 ///
 /// # Examples
 ///
@@ -45,7 +45,8 @@ use std::str::FromStr;
 ///
 /// ```compile_fail
 /// #![deny(unused_must_use)]
-/// use qubit_measure::{Decimal, Measurement, unit};
+/// use qubit_measure::{Measurement, unit};
+/// use rust_decimal::Decimal;
 ///
 /// Measurement::new(Decimal::ONE, unit::Length::Meter);
 /// ```
@@ -105,6 +106,38 @@ where
     #[inline(always)]
     pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
         let (value, unit) = parse_measurement_text::<U>(input, true)?;
+        Ok(Self::new(value, unit))
+    }
+
+    /// Parses a measurement accepting canonical symbols and documented aliases.
+    ///
+    /// # Parameters
+    ///
+    /// * `input` - Measurement text in `<decimal><unit>` or `<decimal> <unit>`
+    ///   form.
+    ///
+    /// # Returns
+    ///
+    /// A typed measurement containing the parsed Decimal and resolved unit.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidMeasurement`] for malformed numeric
+    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
+    /// splits, or [`MeasurementError::UnknownUnit`] for an unknown unit.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::{Measurement, unit};
+    ///
+    /// let value = Measurement::<unit::Time>::parse_lenient("1 year")?;
+    /// assert_eq!(value.unit, unit::Time::CommonYear365);
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
+    #[inline(always)]
+    pub fn parse_lenient(input: &str) -> Result<Self, MeasurementError> {
+        let (value, unit) = parse_measurement_text::<U>(input, false)?;
         Ok(Self::new(value, unit))
     }
 
@@ -259,7 +292,7 @@ where
     ///
     /// # Returns
     ///
-    /// A measurement after quantity validation and lenient unit parsing.
+    /// A measurement after quantity validation and strict unit parsing.
     ///
     /// # Errors
     ///
@@ -280,7 +313,7 @@ where
             ));
         }
         let unit =
-            U::parse_lenient(&wire.unit).map_err(serde::de::Error::custom)?;
+            U::parse_strict(&wire.unit).map_err(serde::de::Error::custom)?;
         Ok(Self::new(wire.value, unit))
     }
 }
@@ -316,7 +349,7 @@ where
     /// The unit is resolved only inside `U`'s quantity family, so parsing a
     /// mass unit as a length measurement returns
     /// [`MeasurementError::UnknownUnit`].
-    /// Unit symbols or aliases beginning with `.`, `+`, or `-` require
+    /// Unit symbols beginning with `.`, `+`, or `-` require
     /// whitespace before the unit, for example `"1.25 +cu"`; their compact
     /// forms are rejected as ambiguous Decimal boundaries.
     ///
@@ -326,16 +359,16 @@ where
     ///
     /// # Returns
     ///
-    /// A typed measurement parsed with lenient unit aliases.
+    /// A typed measurement parsed from a canonical unit symbol.
     ///
     /// # Errors
     ///
     /// Returns [`MeasurementError::InvalidMeasurement`] for malformed value
     /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
-    /// splits, or [`MeasurementError::UnknownUnit`] for an unknown unit.
+    /// splits, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
+    /// [`MeasurementError::UnknownUnit`] for an unknown unit.
     #[inline(always)]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        let (value, unit) = parse_measurement_text::<U>(input, false)?;
-        Ok(Self::new(value, unit))
+        Self::parse_strict(input)
     }
 }

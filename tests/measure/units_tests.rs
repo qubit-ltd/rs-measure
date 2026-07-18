@@ -11,12 +11,12 @@ use std::fmt::Write;
 use std::str::FromStr;
 
 use qubit_measure::{
-    Decimal,
     Measurement,
     MeasurementError,
     Unit,
     unit,
 };
+use rust_decimal::Decimal;
 use serde_json::json;
 
 /// Appends one built-in unit family's stable persistence contract.
@@ -136,159 +136,183 @@ fn test_builtin_unit_persistence_contract_matches_golden_manifest() {
 }
 
 #[test]
-fn test_unit_from_str_accepts_ascii_micro_aliases() {
+fn test_unit_parse_lenient_accepts_ascii_micro_aliases() {
     assert_eq!(
-        unit::Length::from_str("um").expect("ASCII micrometer should parse"),
+        unit::Length::parse_lenient("um")
+            .expect("ASCII micrometer should parse"),
         unit::Length::Micrometer
     );
     assert_eq!(
-        unit::Mass::from_str("ug").expect("ASCII microgram should parse"),
+        unit::Mass::parse_lenient("ug").expect("ASCII microgram should parse"),
         unit::Mass::Microgram
     );
     assert_eq!(
-        unit::Time::from_str("us").expect("ASCII microsecond should parse"),
+        unit::Time::parse_lenient("us")
+            .expect("ASCII microsecond should parse"),
         unit::Time::Microsecond
     );
     assert_eq!(
-        unit::Volume::from_str("uL").expect("ASCII microliter should parse"),
+        unit::Volume::parse_lenient("uL")
+            .expect("ASCII microliter should parse"),
         unit::Volume::Microliter
     );
     assert_eq!(
-        unit::Pressure::from_str("uPa")
+        unit::Pressure::parse_lenient("uPa")
             .expect("ASCII micropascal should parse"),
         unit::Pressure::Micropascal
     );
     assert_eq!(
-        unit::Power::from_str("uW").expect("ASCII microwatt should parse"),
+        unit::Power::parse_lenient("uW").expect("ASCII microwatt should parse"),
         unit::Power::Microwatt
     );
     assert_eq!(
-        unit::Velocity::from_str("um/s")
+        unit::Velocity::parse_lenient("um/s")
             .expect("ASCII micrometer per second should parse"),
         unit::Velocity::MicrometerPerSecond
     );
     assert_eq!(
-        unit::ElectricCurrent::from_str("uA")
+        unit::ElectricCurrent::parse_lenient("uA")
             .expect("ASCII microampere should parse"),
         unit::ElectricCurrent::Microampere
     );
     assert_eq!(
-        unit::Capacitance::from_str("uF")
+        unit::Capacitance::parse_lenient("uF")
             .expect("ASCII microfarad should parse"),
         unit::Capacitance::Microfarad
     );
     assert_eq!(
-        unit::Inductance::from_str("uH")
+        unit::Inductance::parse_lenient("uH")
             .expect("ASCII microhenry should parse"),
         unit::Inductance::Microhenry
     );
     assert_eq!(
-        unit::MagneticFluxDensity::from_str("uT")
+        unit::MagneticFluxDensity::parse_lenient("uT")
             .expect("ASCII microtesla should parse"),
         unit::MagneticFluxDensity::Microtesla
     );
 }
 
 #[test]
-fn test_unit_from_str_accepts_common_input_aliases() {
+fn test_unit_parse_lenient_accepts_common_input_aliases() {
     assert_eq!(
-        unit::Area::from_str("m2").expect("ASCII square meter should parse"),
+        unit::Area::parse_lenient("m2")
+            .expect("ASCII square meter should parse"),
         unit::Area::SquareMeter
     );
     assert_eq!(
-        unit::Area::from_str("ft^2").expect("ASCII square foot should parse"),
+        unit::Area::parse_lenient("ft^2")
+            .expect("ASCII square foot should parse"),
         unit::Area::SquareFoot
     );
     assert_eq!(
-        unit::Volume::from_str("m3").expect("ASCII cubic meter should parse"),
+        unit::Volume::parse_lenient("m3")
+            .expect("ASCII cubic meter should parse"),
         unit::Volume::CubicMeter
     );
     assert_eq!(
-        unit::Volume::from_str("in^3").expect("ASCII cubic inch should parse"),
+        unit::Volume::parse_lenient("in^3")
+            .expect("ASCII cubic inch should parse"),
         unit::Volume::CubicInch
     );
     assert_eq!(
-        unit::MassDensity::from_str("kg/m3")
+        unit::MassDensity::parse_lenient("kg/m3")
             .expect("ASCII kilogram per cubic meter should parse"),
         unit::MassDensity::KilogramPerCubicMeter
     );
     assert_eq!(
-        unit::MassDensity::from_str("g/cm^3")
+        unit::MassDensity::parse_lenient("g/cm^3")
             .expect("ASCII gram per cubic centimeter should parse"),
         unit::MassDensity::GramPerCubicCentimeter
     );
     assert_eq!(
-        unit::Pressure::from_str("mmHg")
+        unit::Pressure::parse_lenient("mmHg")
             .expect("millimeter mercury alias should parse"),
         unit::Pressure::MillimeterOfMercury
     );
     assert_eq!(
-        unit::Velocity::from_str("mph")
+        unit::Velocity::parse_lenient("mph")
             .expect("mile per hour alias should parse"),
         unit::Velocity::MilePerHour
     );
     assert_eq!(
-        unit::Velocity::from_str("kph")
+        unit::Velocity::parse_lenient("kph")
             .expect("kilometer per hour alias should parse"),
         unit::Velocity::KilometerPerHour
     );
     assert_eq!(
-        unit::Time::from_str("year").expect("year alias should parse"),
+        unit::Time::parse_lenient("year").expect("year alias should parse"),
         unit::Time::CommonYear365
     );
     assert_eq!(
-        unit::Time::from_str("yr").expect("year abbreviation should parse"),
+        unit::Time::parse_lenient("yr")
+            .expect("year abbreviation should parse"),
         unit::Time::CommonYear365
     );
     assert_eq!(
-        unit::ElectricPotential::from_str("volt")
+        unit::ElectricPotential::parse_lenient("volt")
             .expect("voltage name should parse"),
         unit::ElectricPotential::Volt
     );
     assert_eq!(
-        unit::ElectricCharge::from_str("mAh")
+        unit::ElectricCharge::parse_lenient("mAh")
             .expect("battery charge alias should parse"),
         unit::ElectricCharge::MilliampereHour
     );
     assert_eq!(
-        unit::ElectricalResistance::from_str("kOhm")
+        unit::ElectricalResistance::parse_lenient("kOhm")
             .expect("ASCII kiloohm should parse"),
         unit::ElectricalResistance::Kiloohm
     );
     assert_eq!(
-        unit::Acceleration::from_str("m/s2")
+        unit::Acceleration::parse_lenient("m/s2")
             .expect("ASCII acceleration should parse"),
         unit::Acceleration::MeterPerSecondSquared
     );
     assert_eq!(
-        unit::Torque::from_str("Nm")
+        unit::Torque::parse_lenient("Nm")
             .expect("compact newton meter should parse"),
         unit::Torque::NewtonMeter
     );
     assert_eq!(
-        unit::Angle::from_str("deg").expect("degree alias should parse"),
+        unit::Angle::parse_lenient("deg").expect("degree alias should parse"),
         unit::Angle::Degree
     );
     assert_eq!(
-        unit::VolumeRate::from_str("m3/h")
+        unit::VolumeRate::parse_lenient("m3/h")
             .expect("ASCII cubic meter per hour should parse"),
         unit::VolumeRate::CubicMeterPerHour
     );
     assert_eq!(
-        unit::MolarConcentration::from_str("M")
+        unit::MolarConcentration::parse_lenient("M")
             .expect("molar concentration alias should parse"),
         unit::MolarConcentration::MolePerLiter
     );
     assert_eq!(
-        unit::ElectricField::from_str("V/um")
+        unit::ElectricField::parse_lenient("V/um")
             .expect("ASCII electric field alias should parse"),
         unit::ElectricField::VoltPerMicrometer
     );
     assert_eq!(
-        unit::Luminance::from_str("cd/m2")
+        unit::Luminance::parse_lenient("cd/m2")
             .expect("ASCII luminance alias should parse"),
         unit::Luminance::CandelaPerSquareMeter
     );
+}
+
+#[test]
+fn test_unit_from_str_rejects_alias() {
+    assert!(matches!(
+        unit::Time::from_str("year"),
+        Err(MeasurementError::NonCanonicalUnit { .. }),
+    ));
+}
+
+#[test]
+fn test_unit_deserialize_rejects_alias() {
+    let error = serde_json::from_value::<unit::Time>(json!("year"))
+        .expect_err("default Serde must reject aliases");
+
+    assert!(error.to_string().contains("non-canonical"));
 }
 
 #[test]

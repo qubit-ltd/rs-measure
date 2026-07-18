@@ -122,19 +122,15 @@ fn test_measurement_wire_rejects_quantity_mismatch_with_context() {
     );
 }
 
-/// Verifies that aliases deserialize leniently and serialize canonically.
+/// Verifies that persisted unit aliases are rejected as non-canonical.
 #[test]
-fn test_measurement_wire_accepts_alias_and_serializes_canonical_unit() {
-    let value = serde_json::from_value::<measurement::Time>(json!({
+fn test_measurement_wire_rejects_alias() {
+    let error = serde_json::from_value::<measurement::Time>(json!({
         "quantity": "time",
         "value": "1",
         "unit": "year",
     }))
-    .expect("documented alias should deserialize");
+    .expect_err("persisted aliases must be rejected");
 
-    assert_eq!(
-        serde_json::to_value(value)
-            .expect("measurement should serialize canonically"),
-        json!({"quantity": "time", "value": "1", "unit": "a (365 d)"}),
-    );
+    assert!(error.to_string().contains("non-canonical"));
 }

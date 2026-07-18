@@ -13,23 +13,21 @@
 ///
 /// * `quantity` - The persisted quantity identifier.
 /// * `symbols` - Canonical symbols in variant order.
-/// * `aliases` - Canonical-owner and alias pairs in declaration order.
+/// * `aliases` - Aliases in declaration order.
 ///
-/// Canonical symbols and aliases are unique within their own sets. An alias
-/// may equal another member's canonical symbol because canonical parsing has
-/// priority, but it may not repeat its own canonical symbol.
+/// Canonical symbols and aliases are unique and disjoint.
 ///
 /// # Panics
 ///
 /// Panics when the quantity is not non-empty ASCII `snake_case`, the family or
 /// a symbol is empty, a symbol or alias contains surrounding Unicode
 /// whitespace, canonical symbols repeat, aliases are empty or repeat, or an
-/// alias repeats its owning canonical symbol.
+/// alias matches any canonical symbol.
 #[doc(hidden)]
 pub const fn assert_unit_family_metadata(
     quantity: &str,
     symbols: &[&str],
-    aliases: &[(&str, &str)],
+    aliases: &[&str],
 ) {
     assert!(
         is_ascii_snake_case(quantity),
@@ -62,11 +60,7 @@ pub const fn assert_unit_family_metadata(
 
     index = 0;
     while index < aliases.len() {
-        let (owner_symbol, alias) = aliases[index];
-        assert!(
-            !str_eq(owner_symbol, alias),
-            "unit alias must differ from its canonical symbol",
-        );
+        let alias = aliases[index];
         assert!(!alias.is_empty(), "unit alias must not be empty",);
         assert!(
             !has_leading_unit_whitespace(alias)
@@ -75,9 +69,19 @@ pub const fn assert_unit_family_metadata(
         );
         let mut other = index + 1;
         while other < aliases.len() {
-            let (_, other_alias) = aliases[other];
-            assert!(!str_eq(alias, other_alias), "unit aliases must be unique",);
+            assert!(
+                !str_eq(alias, aliases[other]),
+                "unit aliases must be unique",
+            );
             other += 1;
+        }
+        let mut symbol_index = 0;
+        while symbol_index < symbols.len() {
+            assert!(
+                !str_eq(alias, symbols[symbol_index]),
+                "unit alias must not match any canonical symbol",
+            );
+            symbol_index += 1;
         }
         index += 1;
     }

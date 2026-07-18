@@ -27,8 +27,7 @@ use crate::measure::{
 ///   trailing Unicode whitespace;
 /// - aliases are non-empty, unique among aliases, and contain no leading or
 ///   trailing Unicode whitespace;
-/// - an alias may equal another member's canonical symbol, but canonical
-///   symbols are searched first and therefore win;
+/// - aliases do not match any canonical symbol in the family;
 /// - every member supplies a valid exact definition and obeys the documented
 ///   strict and lenient parsing behavior.
 ///
@@ -70,9 +69,8 @@ pub trait Unit:
     /// Returns accepted non-canonical aliases for lenient parsing.
     ///
     /// Aliases must be non-empty, unique among all family aliases, and contain
-    /// no leading or trailing Unicode whitespace. An alias cannot repeat its
-    /// own canonical symbol. It may equal another member's canonical symbol;
-    /// that canonical owner wins.
+    /// no leading or trailing Unicode whitespace. An alias cannot match any
+    /// canonical symbol in the family.
     ///
     /// # Returns
     ///
@@ -93,8 +91,6 @@ pub trait Unit:
     fn definition(self) -> Result<UnitDefinition, MeasurementError>;
 
     /// Parses only canonical unit symbols.
-    ///
-    /// Canonical symbols are checked before aliases.
     ///
     /// # Parameters
     ///
@@ -137,9 +133,6 @@ pub trait Unit:
 
     /// Parses canonical symbols and documented aliases.
     ///
-    /// Canonical symbols are searched first, so they win over an earlier
-    /// unit variant that declares the same text as an alias.
-    ///
     /// # Parameters
     ///
     /// * `input` - Canonical symbol or alias candidate; surrounding whitespace
@@ -176,9 +169,8 @@ pub trait Unit:
 
 /// Asserts the observable metadata contract of a [`Unit`] implementation.
 ///
-/// Canonical symbols and aliases are unique within their own sets. An alias may
-/// equal a canonical symbol; canonical symbols are parsed first and therefore
-/// win. Macro-generated families enforce the same metadata rules at compile
+/// Canonical symbols and aliases are unique and disjoint. Macro-generated
+/// families enforce the same metadata rules at compile
 /// time. Manual implementations should call this assertion from their tests.
 /// Stable Rust cannot prove that a manual enum omitted no variant from
 /// [`Unit::all`].
@@ -192,8 +184,8 @@ pub trait Unit:
 /// Panics if the family is empty, its quantity is not non-empty ASCII
 /// `snake_case`, `all()` repeats an entry, a canonical symbol or alias is
 /// empty, contains surrounding Unicode whitespace, or is duplicated within
-/// its own set, a definition is invalid, or strict or lenient parsing violates
-/// the documented canonical-priority contract.
+/// its own set, an alias matches a canonical symbol, a definition is invalid,
+/// or strict or lenient parsing violates the documented contract.
 ///
 /// # Examples
 ///
@@ -250,8 +242,8 @@ where
         for &alias in unit.aliases() {
             assert!(!alias.is_empty(), "unit alias must not be empty");
             assert!(
-                alias != unit.symbol(),
-                "unit alias must differ from its canonical symbol: {alias}",
+                !units.iter().any(|candidate| candidate.symbol() == alias),
+                "unit alias must not match any canonical symbol: {alias}",
             );
             assert!(
                 alias.trim() == alias,
@@ -260,35 +252,20 @@ where
             assert!(!seen_aliases.contains(&alias), "duplicate alias: {alias}");
             seen_aliases.push(alias);
 
-            if let Some(owner) = units
-                .iter()
-                .copied()
-                .find(|candidate| candidate.symbol() == alias)
-            {
-                assert!(
-                    U::parse_strict(alias) == Ok(owner),
-                    "canonical owner must win strict parsing for {alias}",
-                );
-                assert!(
-                    U::parse_lenient(alias) == Ok(owner),
-                    "canonical owner must win lenient parsing for {alias}",
-                );
-            } else {
-                assert!(
-                    matches!(
-                        U::parse_strict(alias),
-                        Err(MeasurementError::NonCanonicalUnit {
-                            canonical,
-                            ..
-                        }) if canonical == unit.symbol()
-                    ),
-                    "strict parsing must reject alias {alias}",
-                );
-                assert!(
-                    U::parse_lenient(alias) == Ok(unit),
-                    "lenient alias parse failed for {alias}",
-                );
-            }
+            assert!(
+                matches!(
+                    U::parse_strict(alias),
+                    Err(MeasurementError::NonCanonicalUnit {
+                        canonical,
+                        ..
+                    }) if canonical == unit.symbol()
+                ),
+                "strict parsing must reject alias {alias}",
+            );
+            assert!(
+                U::parse_lenient(alias) == Ok(unit),
+                "lenient alias parse failed for {alias}",
+            );
         }
     }
 }

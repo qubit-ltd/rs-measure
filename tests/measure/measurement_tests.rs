@@ -10,13 +10,15 @@ use qubit_measure::{
     ConversionOptions,
     Measurement,
     MeasurementError,
-    RoundingStrategy,
     Unit,
     measurement,
     unit,
 };
-use rust_decimal::Decimal;
-use rust_decimal::dec;
+use rust_decimal::{
+    Decimal,
+    RoundingStrategy,
+    dec,
+};
 use serde::Serialize;
 use serde_json::json;
 use std::str::FromStr;
@@ -134,20 +136,32 @@ fn test_measurement_explicit_scale_applies_to_same_unit() {
 }
 
 #[test]
-fn test_measurement_alias_deserializes_leniently_and_serializes_canonically() {
-    let measurement: measurement::Time = serde_json::from_value(json!({
+fn test_measurement_serde_rejects_unit_alias() {
+    let error = serde_json::from_value::<measurement::Time>(json!({
         "quantity": "time",
         "value": "1",
         "unit": "year",
     }))
-    .expect("documented alias should deserialize");
+    .expect_err("default Serde must reject aliases");
 
-    assert_eq!(measurement.unit, unit::Time::CommonYear365);
+    assert!(error.to_string().contains("non-canonical"));
+}
+
+#[test]
+fn test_measurement_parse_lenient_accepts_alias() {
     assert_eq!(
-        serde_json::to_value(measurement)
-            .expect("measurement should serialize"),
-        json!({"quantity": "time", "value": "1", "unit": "a (365 d)"}),
+        measurement::Time::parse_lenient("1 year")
+            .expect("explicit lenient parsing should accept aliases"),
+        measurement::Time::new(Decimal::ONE, unit::Time::CommonYear365),
     );
+}
+
+#[test]
+fn test_measurement_from_str_rejects_alias() {
+    assert!(matches!(
+        measurement::Time::from_str("1 year"),
+        Err(MeasurementError::NonCanonicalUnit { .. }),
+    ));
 }
 
 #[test]
@@ -462,20 +476,28 @@ fn test_compact_measurement_accepts_exponent_like_known_unit() {
 }
 
 #[test]
-fn test_measurement_from_str_parses_compact_ascii_unit_aliases() {
+fn test_measurement_parse_lenient_parses_compact_ascii_unit_aliases() {
     assert_eq!(
-        measurement::Area::from_str("1m2")
+        measurement::Area::parse_lenient("1m2")
             .expect("compact square meter alias should parse"),
         measurement::Area::new(Decimal::ONE, unit::Area::SquareMeter),
     );
     assert_eq!(
-        measurement::Velocity::from_str("65mph")
+        measurement::Velocity::parse_lenient("65mph")
             .expect("compact mph alias should parse"),
         measurement::Velocity::new(
             Decimal::new(65, 0),
             unit::Velocity::MilePerHour
         ),
     );
+}
+
+#[test]
+fn test_measurement_from_str_rejects_compact_unit_alias() {
+    assert!(matches!(
+        measurement::Area::from_str("1m2"),
+        Err(MeasurementError::NonCanonicalUnit { .. }),
+    ));
 }
 
 #[test]

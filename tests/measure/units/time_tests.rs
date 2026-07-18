@@ -83,7 +83,11 @@ fn test_time_unit_contract() {
 #[test]
 fn test_minute_m_alias_is_lenient_but_not_canonical() {
     assert_eq!(unit::Time::parse_lenient("m"), Ok(unit::Time::Minute));
-    assert_eq!("m".parse(), Ok(unit::Time::Minute));
+    assert!(matches!(
+        "m".parse::<unit::Time>(),
+        Err(MeasurementError::NonCanonicalUnit { canonical, .. })
+            if canonical == "min",
+    ));
     assert!(matches!(
         unit::Time::parse_strict("m"),
         Err(MeasurementError::NonCanonicalUnit { canonical, .. })

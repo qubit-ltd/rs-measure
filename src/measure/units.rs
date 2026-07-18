@@ -158,13 +158,13 @@ macro_rules! __unit_factor {
 
 /// Produces an optional Decimal offset for an exported unit macro.
 ///
-/// An empty invocation expands to [`Decimal::ZERO`](crate::Decimal::ZERO); one
-/// Decimal literal expands to that exact value.
+/// An empty invocation expands to an exact Decimal zero; one Decimal literal
+/// expands to that exact value.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __unit_offset {
     () => {
-        $crate::Decimal::ZERO
+        const { $crate::__private::decimal_from_literal("0") }
     };
     ($offset:literal) => {
         const { $crate::__private::decimal_from_literal(stringify!($offset)) }
@@ -175,7 +175,7 @@ macro_rules! __unit_offset {
 ///
 /// The expansion validates quantity, canonical-symbol, and alias metadata at
 /// compilation, then generates the enum, [`Unit`](crate::Unit), display,
-/// lenient `FromStr`, and canonical string Serde implementations.
+/// strict `FromStr`, and canonical-only string Serde implementations.
 #[doc(hidden)]
 #[macro_export]
 macro_rules! __define_unit_family_core {
@@ -196,9 +196,9 @@ macro_rules! __define_unit_family_core {
             const SYMBOLS: &[&str] = &[
                 $($symbol,)+
             ];
-            const ALIASES: &[(&str, &str)] = &[
+            const ALIASES: &[&str] = &[
                 $(
-                    $($(($symbol, $alias),)*)?
+                    $($($alias,)*)?
                 )+
             ];
             $crate::__private::assert_unit_family_metadata(
@@ -261,30 +261,30 @@ macro_rules! __define_unit_family_core {
 
             #[inline(always)]
             fn from_str(input: &str) -> Result<Self, Self::Err> {
-                <Self as $crate::Unit>::parse_lenient(input)
+                <Self as $crate::Unit>::parse_strict(input)
             }
         }
 
-        impl $crate::__private::serde::Serialize for $unit {
+        impl ::serde::Serialize for $unit {
             #[inline]
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
-                S: $crate::__private::serde::Serializer,
+                S: ::serde::Serializer,
             {
                 serializer.serialize_str(<Self as $crate::Unit>::symbol(*self))
             }
         }
 
-        impl<'de> $crate::__private::serde::Deserialize<'de> for $unit {
+        impl<'de> ::serde::Deserialize<'de> for $unit {
             #[inline]
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
-                D: $crate::__private::serde::Deserializer<'de>,
+                D: ::serde::Deserializer<'de>,
             {
                 let symbol = <::std::string::String as
-                    $crate::__private::serde::Deserialize>::deserialize(deserializer)?;
-                <Self as ::std::str::FromStr>::from_str(&symbol)
-                    .map_err($crate::__private::serde::de::Error::custom)
+                    ::serde::Deserialize>::deserialize(deserializer)?;
+                <Self as $crate::Unit>::parse_strict(&symbol)
+                    .map_err(::serde::de::Error::custom)
             }
         }
     };
@@ -350,7 +350,10 @@ macro_rules! impl_uom_unit {
             type Quantity = $quantity_ty;
 
             #[inline]
-            fn to_uom_approx(self, value: $crate::Decimal) -> Self::Quantity {
+            fn to_uom_approx(
+                self,
+                value: ::rust_decimal::Decimal,
+            ) -> Self::Quantity {
                 let definition = $crate::Unit::definition(self).expect(
                     "UomUnit requires every Unit definition to be valid",
                 );
@@ -364,7 +367,7 @@ macro_rules! impl_uom_unit {
             fn value_from_uom_approx(
                 self,
                 quantity: Self::Quantity,
-            ) -> Result<$crate::Decimal, $crate::MeasurementError> {
+            ) -> Result<::rust_decimal::Decimal, $crate::MeasurementError> {
                 let definition = $crate::Unit::definition(self)?;
                 let base_value = quantity.get::<$uom_base_unit>();
                 $crate::__private::base_f64_to_unit_value(
@@ -377,8 +380,8 @@ macro_rules! impl_uom_unit {
 
 /// Defines an externally extensible unit family with exact Decimal factors.
 ///
-/// The generated type implements [`Unit`](crate::Unit), display, lenient
-/// `FromStr`, and canonical string Serde. Use
+/// The generated type implements [`Unit`](crate::Unit), display, strict
+/// `FromStr`, and canonical-only string Serde. Use
 /// [`impl_uom_unit!`](crate::impl_uom_unit) separately to add an optional
 /// approximate `UomUnit` bridge.
 ///
@@ -393,8 +396,8 @@ macro_rules! impl_uom_unit {
 /// scientific, and digit-separated decimal forms plus binary, octal, and
 /// hexadecimal integers. Every accepted value must fit Decimal exactly.
 /// The generated enum is non-exhaustive and implements [`Unit`](crate::Unit),
-/// `Display`, lenient `FromStr`, and canonical string Serde. Its `all()` slice
-/// is generated from every declared variant, so it is complete by
+/// `Display`, strict `FromStr`, and canonical-only string Serde. Its `all()`
+/// slice is generated from every declared variant, so it is complete by
 /// construction.
 ///
 /// # Metadata contract
@@ -406,8 +409,7 @@ macro_rules! impl_uom_unit {
 ///   trailing Unicode whitespace;
 /// - aliases are non-empty, unique among aliases, and contain no leading or
 ///   trailing Unicode whitespace;
-/// - an alias may equal another variant's canonical symbol;
-/// - canonical symbols are searched first and therefore win during parsing.
+/// - aliases do not match any canonical symbol in the family;
 /// - canonical symbols and aliases beginning with `.`, `+`, or `-` require
 ///   whitespace after a measurement's Decimal value; their compact forms are
 ///   rejected as ambiguous numeric boundaries (for example, use `"1.25 +cu"`).
@@ -423,11 +425,11 @@ macro_rules! impl_uom_unit {
 /// ```
 /// use qubit_measure::{
 ///     ConversionFactor,
-///     Decimal,
 ///     Unit,
 ///     UnitDefinition,
 ///     define_unit_family,
 /// };
+/// use rust_decimal::Decimal;
 ///
 /// const TWO_THIRDS: UnitDefinition = UnitDefinition::new(
 ///     ConversionFactor::from_const_integers(2, 3),
@@ -452,16 +454,13 @@ macro_rules! impl_uom_unit {
 /// assert_eq!(definition.factor().denominator(), Decimal::new(3, 0));
 /// ```
 ///
-/// An alias-to-canonical collision is valid and the canonical owner wins:
+/// An alias-to-canonical collision is rejected at compilation:
 ///
-/// ```
-/// use qubit_measure::{
-///     Unit,
-///     define_unit_family,
-/// };
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
 ///
 /// define_unit_family! {
-///     /// Unit family demonstrating canonical-symbol priority.
+///     /// Invalid family with an alias-to-canonical collision.
 ///     enum CollisionUnit for "collision_unit" {
 ///         /// Variant that owns the colliding alias.
 ///         AliasOwner => {
@@ -476,11 +475,6 @@ macro_rules! impl_uom_unit {
 ///         }
 ///     }
 /// }
-///
-/// assert_eq!(
-///     CollisionUnit::parse_lenient("canonical"),
-///     Ok(CollisionUnit::CanonicalOwner),
-/// );
 /// ```
 ///
 /// Duplicate canonical symbols are rejected at compilation:

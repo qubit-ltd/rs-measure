@@ -17,7 +17,6 @@ use rust_decimal::dec;
 use serde_json::json;
 
 use crate::measure::fixtures::{
-    CanonicalPriorityUnit,
     CustomLength,
     ManualUnit,
 };
@@ -32,7 +31,14 @@ fn test_external_family_supports_strict_and_lenient_parsing() {
         CustomLength::parse_strict("half-cu"),
         Err(MeasurementError::NonCanonicalUnit { .. }),
     ));
-    assert_eq!("half-cu".parse(), Ok(CustomLength::Half));
+    assert_eq!(
+        CustomLength::parse_lenient("half-cu"),
+        Ok(CustomLength::Half)
+    );
+    assert!(matches!(
+        "half-cu".parse::<CustomLength>(),
+        Err(MeasurementError::NonCanonicalUnit { .. }),
+    ));
     assert_eq!(CustomLength::Half.to_string(), "hcu");
 }
 
@@ -93,37 +99,17 @@ fn test_measurement_serde_uses_manual_unit_contract() {
         json!({"quantity": "manual", "value": "1.25", "unit": "manual"}),
     );
 
-    let deserialized: Measurement<ManualUnit> = serde_json::from_value(json!({
+    let error = serde_json::from_value::<Measurement<ManualUnit>>(json!({
         "quantity": "manual",
         "value": "1.25",
         "unit": "mnl",
     }))
-    .expect("manual-unit measurement alias should deserialize");
-    assert_eq!(deserialized, measurement);
-}
-
-#[test]
-fn test_lenient_parsing_prefers_canonical_symbol_over_earlier_alias() {
-    assert_eq!(
-        CanonicalPriorityUnit::parse_lenient("canonical")
-            .expect("canonical symbol should parse"),
-        CanonicalPriorityUnit::CanonicalOwner,
-    );
-}
-
-#[test]
-fn test_compact_measurement_prefers_canonical_symbol_over_colliding_alias() {
-    assert_eq!(
-        "1canonical"
-            .parse::<Measurement<CanonicalPriorityUnit>>()
-            .expect("canonical compact suffix should parse unambiguously"),
-        Measurement::new(dec!(1), CanonicalPriorityUnit::CanonicalOwner),
-    );
+    .expect_err("manual-unit measurement alias should be rejected");
+    assert!(error.to_string().contains("non-canonical"));
 }
 
 #[test]
 fn test_external_unit_families_satisfy_metadata_contract() {
     assert_unit_family_valid::<CustomLength>();
-    assert_unit_family_valid::<CanonicalPriorityUnit>();
     assert_unit_family_valid::<ManualUnit>();
 }

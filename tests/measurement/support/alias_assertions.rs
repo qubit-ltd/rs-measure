@@ -13,12 +13,12 @@ macro_rules! assert_measurement_alias {
         #[test]
         fn test_measurement_alias_uses_expected_unit_family() {
             use qubit_measure::{
-                Decimal,
                 Measurement,
                 Unit,
                 measurement,
                 unit,
             };
+            use rust_decimal::Decimal;
 
             let selected_unit = *unit::$unit::all()
                 .first()

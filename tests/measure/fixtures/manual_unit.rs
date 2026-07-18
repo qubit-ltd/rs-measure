@@ -53,6 +53,6 @@ impl FromStr for ManualUnit {
     type Err = MeasurementError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        Self::parse_lenient(input)
+        Self::parse_strict(input)
     }
 }

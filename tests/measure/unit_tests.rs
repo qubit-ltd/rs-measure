@@ -16,6 +16,7 @@ use qubit_measure::{
 use rust_decimal::Decimal;
 
 use crate::measure::support::{
+    CANONICAL_ALIAS,
     DUPLICATE_ALIAS,
     DUPLICATE_ALL,
     DUPLICATE_SYMBOL,
@@ -71,6 +72,14 @@ fn test_strict_unit_parser_rejects_unknown_unit() {
 }
 
 #[test]
+fn test_lenient_unit_parser_rejects_unknown_unit() {
+    assert!(matches!(
+        unit::Time::parse_lenient("fortnight"),
+        Err(MeasurementError::UnknownUnit { .. }),
+    ));
+}
+
+#[test]
 fn test_assert_unit_family_valid_accepts_valid_manual_family() {
     assert_unit_family_valid::<ManualValidationUnit<VALID>>();
 }
@@ -95,9 +104,16 @@ fn test_assert_unit_family_valid_rejects_duplicate_alias() {
 
 /// Verifies that manual metadata rejects an alias equal to its own symbol.
 #[test]
-#[should_panic(expected = "unit alias must differ from its canonical symbol")]
+#[should_panic(expected = "unit alias must not match any canonical symbol")]
 fn test_assert_unit_family_valid_rejects_own_canonical_alias() {
     assert_unit_family_valid::<ManualValidationUnit<SELF_ALIAS>>();
+}
+
+/// Verifies that manual metadata rejects an alias equal to another symbol.
+#[test]
+#[should_panic(expected = "unit alias must not match any canonical symbol")]
+fn test_assert_unit_family_valid_rejects_other_canonical_alias() {
+    assert_unit_family_valid::<ManualValidationUnit<CANONICAL_ALIAS>>();
 }
 
 #[test]
