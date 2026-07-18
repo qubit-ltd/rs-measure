@@ -10,12 +10,14 @@
 use std::time::Duration;
 
 use qubit_measure::{
-    Decimal,
     Measurement,
     MeasurementError,
     unit::Time,
 };
-use rust_decimal::dec;
+use rust_decimal::{
+    Decimal,
+    dec,
+};
 
 #[test]
 fn test_duration_round_trip_is_exact() {
@@ -78,6 +80,16 @@ fn test_negative_time_cannot_convert_to_duration() {
             unit: "s".to_owned(),
         }),
     );
+}
+
+#[test]
+fn test_negative_zero_converts_to_zero_duration() {
+    let mut negative_zero = Decimal::ZERO;
+    negative_zero.set_sign_negative(true);
+    assert!(negative_zero.is_sign_negative());
+    let measurement = Measurement::new(negative_zero, Time::Second);
+
+    assert_eq!(Duration::try_from(measurement), Ok(Duration::ZERO));
 }
 
 #[test]

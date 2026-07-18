@@ -66,7 +66,7 @@ impl TryFrom<Measurement<Time>> for Duration {
     fn try_from(measurement: Measurement<Time>) -> Result<Self, Self::Error> {
         let original_value = measurement.value;
         let original_unit = measurement.unit.symbol().to_owned();
-        if original_value.is_sign_negative() {
+        if original_value < Decimal::ZERO {
             return Err(MeasurementError::NegativeDuration {
                 value: original_value,
                 unit: original_unit,
