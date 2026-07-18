@@ -12,6 +12,7 @@ use qubit_measure::{
     MeasurementError,
     Unit,
     UnitDefinition,
+    UomUnit,
     measurement,
     unit,
 };
@@ -21,21 +22,62 @@ use uom::si::electric_current::ampere;
 use uom::si::electric_potential::volt;
 use uom::si::energy::joule;
 use uom::si::f64::{
+    Acceleration as UomAcceleration,
+    AmountOfSubstance as UomAmountOfSubstance,
+    Angle as UomAngle,
+    AngularVelocity as UomAngularVelocity,
     Area as UomArea,
+    Capacitance as UomCapacitance,
+    CatalyticActivity as UomCatalyticActivity,
+    CatalyticActivityConcentration as UomCatalyticActivityConcentration,
+    DynamicViscosity as UomDynamicViscosity,
+    ElectricCharge as UomElectricCharge,
     ElectricCurrent as UomElectricCurrent,
+    ElectricCurrentDensity as UomElectricCurrentDensity,
+    ElectricField as UomElectricField,
     ElectricPotential as UomElectricPotential,
+    ElectricalConductance as UomElectricalConductance,
+    ElectricalConductivity as UomElectricalConductivity,
+    ElectricalResistance as UomElectricalResistance,
+    ElectricalResistivity as UomElectricalResistivity,
     Energy as UomEnergy,
+    Force as UomForce,
     Frequency as UomFrequency,
+    HeatCapacity as UomHeatCapacity,
+    HeatFluxDensity as UomHeatFluxDensity,
+    Illuminance as UomIlluminance,
+    Inductance as UomInductance,
+    KinematicViscosity as UomKinematicViscosity,
     Length as UomLength,
+    Luminance as UomLuminance,
+    LuminousIntensity as UomLuminousIntensity,
+    MagneticFieldStrength as UomMagneticFieldStrength,
+    MagneticFlux as UomMagneticFlux,
+    MagneticFluxDensity as UomMagneticFluxDensity,
     Mass as UomMass,
+    MassConcentration as UomMassConcentration,
     MassDensity as UomMassDensity,
+    MassRate as UomMassRate,
+    Molality as UomMolality,
+    MolarConcentration as UomMolarConcentration,
+    MolarMass as UomMolarMass,
+    MolarVolume as UomMolarVolume,
     Power as UomPower,
     Pressure as UomPressure,
+    Radioactivity as UomRadioactivity,
+    SolidAngle as UomSolidAngle,
+    SpecificHeatCapacity as UomSpecificHeatCapacity,
+    SpecificRadioactivity as UomSpecificRadioactivity,
+    SurfaceTension as UomSurfaceTension,
     TemperatureInterval as UomTemperatureInterval,
+    ThermalConductivity as UomThermalConductivity,
+    ThermalResistance as UomThermalResistance,
     ThermodynamicTemperature as UomTemperature,
     Time as UomTime,
+    Torque as UomTorque,
     Velocity as UomVelocity,
     Volume as UomVolume,
+    VolumeRate as UomVolumeRate,
 };
 use uom::si::frequency::hertz;
 use uom::si::heat_capacity::joule_per_kelvin;
@@ -53,6 +95,110 @@ use uom::si::volume::liter;
 
 /// Maximum relative error allowed by the independent SI base oracle.
 const UOM_ORACLE_RELATIVE_TOLERANCE: f64 = 1.0E-12;
+
+/// Requires a unit family to expose the expected strongly typed uom quantity.
+///
+/// # Type Parameters
+///
+/// * `U` - Unit family whose associated quantity is checked.
+/// * `Q` - Expected `uom/f64` quantity type.
+fn assert_uom_quantity_type<U, Q>()
+where
+    U: UomUnit<Quantity = Q>,
+{
+}
+
+#[test]
+fn test_all_uom_unit_families_use_expected_quantity_types() {
+    assert_uom_quantity_type::<unit::Acceleration, UomAcceleration>();
+    assert_uom_quantity_type::<unit::AmountOfSubstance, UomAmountOfSubstance>();
+    assert_uom_quantity_type::<unit::Angle, UomAngle>();
+    assert_uom_quantity_type::<unit::AngularVelocity, UomAngularVelocity>();
+    assert_uom_quantity_type::<unit::Area, UomArea>();
+    assert_uom_quantity_type::<unit::Capacitance, UomCapacitance>();
+    assert_uom_quantity_type::<unit::CatalyticActivity, UomCatalyticActivity>();
+    assert_uom_quantity_type::<
+        unit::CatalyticActivityConcentration,
+        UomCatalyticActivityConcentration,
+    >();
+    assert_uom_quantity_type::<unit::DynamicViscosity, UomDynamicViscosity>();
+    assert_uom_quantity_type::<unit::ElectricCharge, UomElectricCharge>();
+    assert_uom_quantity_type::<unit::ElectricCurrent, UomElectricCurrent>();
+    assert_uom_quantity_type::<
+        unit::ElectricCurrentDensity,
+        UomElectricCurrentDensity,
+    >();
+    assert_uom_quantity_type::<unit::ElectricField, UomElectricField>();
+    assert_uom_quantity_type::<unit::ElectricPotential, UomElectricPotential>();
+    assert_uom_quantity_type::<
+        unit::ElectricalConductance,
+        UomElectricalConductance,
+    >();
+    assert_uom_quantity_type::<
+        unit::ElectricalConductivity,
+        UomElectricalConductivity,
+    >();
+    assert_uom_quantity_type::<
+        unit::ElectricalResistance,
+        UomElectricalResistance,
+    >();
+    assert_uom_quantity_type::<
+        unit::ElectricalResistivity,
+        UomElectricalResistivity,
+    >();
+    assert_uom_quantity_type::<unit::Energy, UomEnergy>();
+    assert_uom_quantity_type::<unit::Force, UomForce>();
+    assert_uom_quantity_type::<unit::Frequency, UomFrequency>();
+    assert_uom_quantity_type::<unit::HeatCapacity, UomHeatCapacity>();
+    assert_uom_quantity_type::<unit::HeatFluxDensity, UomHeatFluxDensity>();
+    assert_uom_quantity_type::<unit::Illuminance, UomIlluminance>();
+    assert_uom_quantity_type::<unit::Inductance, UomInductance>();
+    assert_uom_quantity_type::<unit::KinematicViscosity, UomKinematicViscosity>(
+    );
+    assert_uom_quantity_type::<unit::Length, UomLength>();
+    assert_uom_quantity_type::<unit::Luminance, UomLuminance>();
+    assert_uom_quantity_type::<unit::LuminousIntensity, UomLuminousIntensity>();
+    assert_uom_quantity_type::<
+        unit::MagneticFieldStrength,
+        UomMagneticFieldStrength,
+    >();
+    assert_uom_quantity_type::<unit::MagneticFlux, UomMagneticFlux>();
+    assert_uom_quantity_type::<unit::MagneticFluxDensity, UomMagneticFluxDensity>(
+    );
+    assert_uom_quantity_type::<unit::Mass, UomMass>();
+    assert_uom_quantity_type::<unit::MassConcentration, UomMassConcentration>();
+    assert_uom_quantity_type::<unit::MassDensity, UomMassDensity>();
+    assert_uom_quantity_type::<unit::MassRate, UomMassRate>();
+    assert_uom_quantity_type::<unit::Molality, UomMolality>();
+    assert_uom_quantity_type::<unit::MolarConcentration, UomMolarConcentration>(
+    );
+    assert_uom_quantity_type::<unit::MolarMass, UomMolarMass>();
+    assert_uom_quantity_type::<unit::MolarVolume, UomMolarVolume>();
+    assert_uom_quantity_type::<unit::Power, UomPower>();
+    assert_uom_quantity_type::<unit::Pressure, UomPressure>();
+    assert_uom_quantity_type::<unit::Radioactivity, UomRadioactivity>();
+    assert_uom_quantity_type::<unit::SolidAngle, UomSolidAngle>();
+    assert_uom_quantity_type::<
+        unit::SpecificHeatCapacity,
+        UomSpecificHeatCapacity,
+    >();
+    assert_uom_quantity_type::<
+        unit::SpecificRadioactivity,
+        UomSpecificRadioactivity,
+    >();
+    assert_uom_quantity_type::<unit::SurfaceTension, UomSurfaceTension>();
+    assert_uom_quantity_type::<unit::Temperature, UomTemperature>();
+    assert_uom_quantity_type::<unit::TemperatureInterval, UomTemperatureInterval>(
+    );
+    assert_uom_quantity_type::<unit::ThermalConductivity, UomThermalConductivity>(
+    );
+    assert_uom_quantity_type::<unit::ThermalResistance, UomThermalResistance>();
+    assert_uom_quantity_type::<unit::Time, UomTime>();
+    assert_uom_quantity_type::<unit::Torque, UomTorque>();
+    assert_uom_quantity_type::<unit::Velocity, UomVelocity>();
+    assert_uom_quantity_type::<unit::Volume, UomVolume>();
+    assert_uom_quantity_type::<unit::VolumeRate, UomVolumeRate>();
+}
 
 /// Checks two floating-point values with a relative tolerance.
 ///
