@@ -8,10 +8,10 @@
 //! Assertions for exact unit definitions.
 
 use qubit_measure::{
-    Decimal,
     Unit,
     unit,
 };
+use rust_decimal::Decimal;
 use std::fmt::Debug;
 
 use crate::measure::support::DefinitionCase;

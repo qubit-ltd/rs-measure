@@ -10,13 +10,13 @@
 use qubit_measure::{
     ConversionFactor,
     ConversionOptions,
-    Decimal,
     Measurement,
     MeasurementError,
     Unit,
     UnitDefinition,
     unit,
 };
+use rust_decimal::Decimal;
 
 /// Verifies that all public core measurement types remain available together.
 #[test]

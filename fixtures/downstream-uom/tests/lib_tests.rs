@@ -6,14 +6,12 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    Decimal,
-    Measurement,
-};
+use qubit_measure::Measurement;
 use qubit_measure_downstream_uom_fixture::{
     DownstreamLength,
     assert_uom_bridge_is_generated,
 };
+use rust_decimal::Decimal;
 use uom::si::length::meter;
 
 #[test]

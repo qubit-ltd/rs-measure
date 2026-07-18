@@ -23,7 +23,8 @@ use crate::measure::MeasurementError;
 ///
 /// ```compile_fail
 /// #![deny(unused_must_use)]
-/// use qubit_measure::{ConversionFactor, Decimal};
+/// use qubit_measure::ConversionFactor;
+/// use rust_decimal::Decimal;
 ///
 /// ConversionFactor::new(Decimal::ONE, Decimal::ONE)
 ///     .expect("identity factor should be valid");

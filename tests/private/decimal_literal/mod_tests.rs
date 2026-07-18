@@ -12,8 +12,10 @@ use proptest::{
     proptest,
 };
 use qubit_measure::__private::decimal_from_literal;
-use qubit_measure::Decimal;
-use rust_decimal::dec;
+use rust_decimal::{
+    Decimal,
+    dec,
+};
 
 #[test]
 fn test_decimal_from_literal_matches_supported_literal_subset() {

@@ -13,13 +13,15 @@ use proptest::{
 use qubit_measure::{
     ConversionFactor,
     ConversionOptions,
-    Decimal,
     Measurement,
     MeasurementError,
-    RoundingStrategy,
     Unit,
 };
-use rust_decimal::dec;
+use rust_decimal::{
+    Decimal,
+    RoundingStrategy,
+    dec,
+};
 
 use super::fixtures::DecimalConversionUnit;
 use super::support::{

@@ -9,10 +9,12 @@
 
 use qubit_measure::{
     ConversionFactor,
-    Decimal,
     UnitDefinition,
 };
-use rust_decimal::dec;
+use rust_decimal::{
+    Decimal,
+    dec,
+};
 
 #[test]
 fn test_unit_definition_new_preserves_factor_and_offset() {

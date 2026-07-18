@@ -8,10 +8,12 @@
 
 use qubit_measure::{
     ConversionOptions,
-    Decimal,
-    RoundingStrategy,
     measurement,
     unit,
+};
+use rust_decimal::{
+    Decimal,
+    RoundingStrategy,
 };
 use serde_json::json;
 

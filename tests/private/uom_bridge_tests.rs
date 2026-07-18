@@ -15,12 +15,14 @@ use qubit_measure::{
         unit_value_to_base_f64,
     },
     ConversionFactor,
-    Decimal,
     MeasurementError,
     UnitDefinition,
 };
-use rust_decimal::dec;
 use rust_decimal::prelude::ToPrimitive;
+use rust_decimal::{
+    Decimal,
+    dec,
+};
 
 #[test]
 fn test_uom_bridge_helpers_convert_finite_values() {

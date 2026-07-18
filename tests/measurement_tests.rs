@@ -8,11 +8,11 @@
 //! Persisted measurement module aggregation tests.
 
 use qubit_measure::{
-    Decimal,
     Measurement,
     measurement,
     unit,
 };
+use rust_decimal::Decimal;
 
 /// Verifies that the public measurement module aggregates the Length alias.
 #[test]

@@ -7,7 +7,6 @@
 // =============================================================================
 
 use qubit_measure::{
-    Decimal,
     Measurement,
     MeasurementError,
     Unit,
@@ -16,6 +15,7 @@ use qubit_measure::{
     measurement,
     unit,
 };
+use rust_decimal::Decimal;
 use rust_decimal::prelude::ToPrimitive;
 use uom::si::area::square_meter;
 use uom::si::electric_current::ampere;

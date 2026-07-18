@@ -6,11 +6,11 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    ConversionFactor,
+use qubit_measure::ConversionFactor;
+use rust_decimal::{
     Decimal,
+    dec,
 };
-use rust_decimal::dec;
 
 const REDUCED_CONST_FACTOR: ConversionFactor =
     ConversionFactor::from_const_integers(4, 6);

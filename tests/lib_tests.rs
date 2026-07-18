@@ -8,12 +8,12 @@
 //! Root re-export contract tests.
 
 use qubit_measure::{
-    Decimal,
     Measurement,
     Unit,
     measurement,
     unit,
 };
+use rust_decimal::Decimal;
 
 /// Verifies that the crate root exposes its core types and public modules.
 #[test]

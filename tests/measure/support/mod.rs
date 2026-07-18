@@ -18,6 +18,7 @@ pub(crate) use definition_assertions::assert_definition_cases;
 pub(crate) use definition_case::DefinitionCase;
 pub(crate) use failing_writer::FailingWriter;
 pub(crate) use manual_validation_unit::{
+    CANONICAL_ALIAS,
     DUPLICATE_ALIAS,
     DUPLICATE_ALL,
     DUPLICATE_SYMBOL,

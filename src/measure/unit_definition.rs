@@ -39,9 +39,9 @@ use crate::measure::{
 /// ```compile_fail
 /// use qubit_measure::{
 ///     ConversionOptions,
-///     Decimal,
 ///     UnitDefinition,
 /// };
+/// use rust_decimal::Decimal;
 ///
 /// let source = UnitDefinition::base();
 /// let target = UnitDefinition::base();

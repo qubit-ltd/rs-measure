@@ -7,10 +7,10 @@
 // =============================================================================
 
 use qubit_measure::{
-    Decimal,
     measurement,
     unit,
 };
+use rust_decimal::Decimal;
 use uom::si::length::meter;
 
 /// Demonstrates the explicitly enabled approximate `uom` bridge.

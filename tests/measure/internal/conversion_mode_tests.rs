@@ -7,10 +7,8 @@
 // =============================================================================
 //! Public behavior tests for private conversion-policy states.
 
-use qubit_measure::{
-    ConversionOptions,
-    RoundingStrategy,
-};
+use qubit_measure::ConversionOptions;
+use rust_decimal::RoundingStrategy;
 
 #[test]
 fn test_conversion_modes_expose_only_semantically_valid_state() {

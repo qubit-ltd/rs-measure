@@ -19,14 +19,10 @@ pub use decimal_literal::{
     decimal_from_literal,
     positive_decimal_from_literal,
 };
-pub use rust_decimal;
-pub use serde;
 pub use unit_metadata::{
     assert_unit_family_metadata,
     is_ascii_snake_case,
 };
-#[cfg(feature = "uom")]
-pub use uom;
 #[cfg(feature = "uom")]
 pub use uom_bridge::{
     base_f64_to_unit_value,

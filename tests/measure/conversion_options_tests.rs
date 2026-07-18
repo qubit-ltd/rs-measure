@@ -9,8 +9,8 @@
 use qubit_measure::{
     ConversionOptions,
     MeasurementError,
-    RoundingStrategy,
 };
+use rust_decimal::RoundingStrategy;
 
 #[test]
 fn test_maximum_precision_has_no_rounding_strategy() {

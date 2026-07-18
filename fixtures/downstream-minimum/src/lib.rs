@@ -7,10 +7,8 @@
 // =============================================================================
 //! Minimum direct-dependency contract for qubit-measure.
 
-use qubit_measure::{
-    ConversionFactor,
-    Decimal,
-};
+use qubit_measure::ConversionFactor;
+use rust_decimal::Decimal;
 
 /// Builds a Decimal conversion factor through the public API.
 ///

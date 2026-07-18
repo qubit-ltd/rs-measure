@@ -11,10 +11,10 @@ use std::cmp::Ordering;
 
 use num_bigint::BigInt;
 use num_rational::BigRational;
-use qubit_measure::{
+use qubit_measure::UnitDefinition;
+use rust_decimal::{
     Decimal,
     RoundingStrategy,
-    UnitDefinition,
 };
 
 /// Converts a Decimal into its exact rational representation.

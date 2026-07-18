@@ -36,7 +36,3 @@ pub use measure::{
     UnitDefinition,
     assert_unit_family_valid,
 };
-pub use rust_decimal::{
-    Decimal,
-    RoundingStrategy,
-};
