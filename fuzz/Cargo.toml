@@ -1,0 +1,39 @@
+[package]
+name = "qubit-measure-fuzz"
+version = "0.0.0"
+edition = "2024"
+rust-version = "1.94"
+publish = false
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+qubit-measure = { path = ".." }
+rust_decimal = "1.39"
+serde = "1.0"
+serde_json = "1.0"
+
+[workspace]
+
+[[bin]]
+name = "measurement_parsing"
+path = "fuzz_targets/measurement_parsing.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "measurement_serde"
+path = "fuzz_targets/measurement_serde.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "external_unit_family"
+path = "fuzz_targets/external_unit_family.rs"
+test = false
+doc = false
+bench = false
