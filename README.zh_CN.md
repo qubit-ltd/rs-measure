@@ -26,6 +26,7 @@ rust_decimal = "1.39"
 [dependencies]
 qubit-measure = { version = "0.4", features = ["uom"] }
 rust_decimal = "1.39"
+uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
 
 ```rust
@@ -167,6 +168,15 @@ assert_eq!(
 
 `Unit`、`ConversionFactor` 和 `UnitDefinition` 均为公开 API。导出的宏支持编译期扩展，
 不引入运行时注册表，也不强制要求 `uom` 映射。
+宏展开会在下游 crate 中直接解析 `rust_decimal` 和 `serde`，因此外部单位族必须直接声明
+这两个依赖：
+
+```toml
+[dependencies]
+qubit-measure = "0.4"
+rust_decimal = "1.39"
+serde = "1.0"
+```
 
 ```rust
 use qubit_measure::{Unit, define_unit_family};
@@ -211,8 +221,17 @@ SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一�
 `uom` 自带的非基准单位 getter 读取，当两个库对同名单位的定义不同时，显示数值仍按
 `uom` 自身的系数计算。持久化单位换算 `convert_to` 不使用该桥接。
 
-对于外部手写的单位定义，应优先使用 `try_to_uom_approx`，以便返回 definition 错误；
-为保持兼容，无错误返回值的 `to_uom_approx` 仍保留原有 panic 行为。
+外部 `UomUnit` 实现必须实现 `try_to_uom_approx`，以便返回 definition 错误；默认提供的
+`to_uom_approx` 是便捷包装，只要 fallible 方法返回错误就会 panic。
+
+下游只要直接使用 `uom` 类型，就必须直接声明 `uom` 依赖：
+
+```toml
+[dependencies]
+qubit-measure = { version = "0.4", features = ["uom"] }
+rust_decimal = "1.39"
+uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
+```
 
 ```rust
 use qubit_measure::{measurement, unit};

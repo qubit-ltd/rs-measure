@@ -26,6 +26,7 @@ Enable the approximate `f64` bridge explicitly:
 [dependencies]
 qubit-measure = { version = "0.4", features = ["uom"] }
 rust_decimal = "1.39"
+uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
 
 ```rust
@@ -186,6 +187,15 @@ and [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-s
 
 `Unit`, `ConversionFactor`, and `UnitDefinition` are public. The exported macro
 defines compile-time families without a runtime registry or a mandatory `uom` mapping.
+The expansion resolves `rust_decimal` and `serde` in the consumer crate, so
+external families declare both dependencies directly:
+
+```toml
+[dependencies]
+qubit-measure = "0.4"
+rust_decimal = "1.39"
+serde = "1.0"
+```
 
 ```rust
 use qubit_measure::{Unit, define_unit_family};
@@ -239,9 +249,18 @@ coefficient, so its displayed number may differ when the two libraries define
 that named unit differently. Persisted unit conversion through `convert_to`
 does not use this bridge.
 
-For externally implemented unit definitions, prefer `try_to_uom_approx`, which
-returns the definition error. The infallible `to_uom_approx` wrapper retains its
-panic behavior for compatibility.
+External `UomUnit` implementations must implement `try_to_uom_approx`, which
+returns the definition error. The default `to_uom_approx` convenience wrapper
+panics whenever that fallible method returns an error.
+
+Consumers that name `uom` types declare `uom` directly:
+
+```toml
+[dependencies]
+qubit-measure = { version = "0.4", features = ["uom"] }
+rust_decimal = "1.39"
+uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
+```
 
 ```rust
 use qubit_measure::{measurement, unit};
