@@ -95,7 +95,7 @@ use uom::si::volume::liter;
 
 use crate::measure::fixtures::{
     FallibleUomUnit,
-    LegacyUomUnit,
+    TryOnlyUomUnit,
 };
 
 /// Maximum relative error allowed by the independent SI base oracle.
@@ -428,21 +428,48 @@ fn test_try_to_uom_approx_returns_invalid_definition_error() {
 }
 
 #[test]
-fn test_try_to_uom_approx_supports_legacy_external_implementation() {
-    let quantity = LegacyUomUnit::Valid
-        .try_to_uom_approx(Decimal::new(2, 0))
-        .expect("valid legacy unit should use the fallible default");
+fn test_value_from_uom_approx_returns_invalid_definition_error() {
+    let quantity = UomLength::new::<meter>(1.0);
 
-    assert_eq!(quantity.get::<meter>(), 2.0);
     assert!(matches!(
-        LegacyUomUnit::Invalid.try_to_uom_approx(Decimal::ONE),
+        FallibleUomUnit::Invalid.value_from_uom_approx(quantity),
         Err(MeasurementError::InvalidUnitDefinition { reason })
-            if reason == "legacy uom test definition",
+            if reason == "fallible uom test definition",
     ));
 }
 
 #[test]
-fn test_to_uom_approx_compatibility_wrapper_converts_builtin_unit() {
+fn test_measurement_from_uom_approx_returns_invalid_definition_error() {
+    let quantity = UomLength::new::<meter>(1.0);
+
+    assert!(matches!(
+        Measurement::<FallibleUomUnit>::from_uom_approx(
+            quantity,
+            FallibleUomUnit::Invalid,
+        ),
+        Err(MeasurementError::InvalidUnitDefinition { reason })
+            if reason == "fallible uom test definition",
+    ));
+}
+
+#[test]
+fn test_to_uom_approx_uses_fallible_external_implementation() {
+    let quantity = TryOnlyUomUnit::Valid.to_uom_approx(Decimal::new(2, 0));
+
+    assert_eq!(quantity.get::<meter>(), 2.0);
+}
+
+#[test]
+fn test_try_to_uom_approx_returns_external_definition_error() {
+    assert!(matches!(
+        TryOnlyUomUnit::Invalid.try_to_uom_approx(Decimal::ONE),
+        Err(MeasurementError::InvalidUnitDefinition { reason })
+            if reason == "try-only uom test definition",
+    ));
+}
+
+#[test]
+fn test_to_uom_approx_convenience_wrapper_converts_builtin_unit() {
     let quantity = unit::Length::Centimeter.to_uom_approx(Decimal::new(50, 0));
 
     assert_eq!(quantity.get::<meter>(), 0.5);

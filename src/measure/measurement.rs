@@ -228,7 +228,9 @@ where
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::DecimalConversion`] when the approximate
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
+    /// unit family cannot provide a valid exact definition. Returns
+    /// [`MeasurementError::DecimalConversion`] when the approximate
     /// floating-point value cannot be represented as Decimal.
     #[inline(always)]
     pub fn from_uom_approx(
@@ -267,14 +269,14 @@ where
     ///
     /// # Panics
     ///
-    /// Panics if an external unit family cannot provide a valid exact
-    /// definition. Use [`Measurement::try_to_uom_approx`] for a fallible
+    /// Panics when [`UomUnit::to_uom_approx`] panics. Its default
+    /// implementation panics if [`UomUnit::try_to_uom_approx`] returns an
+    /// error. Use [`Measurement::try_to_uom_approx`] for a fallible
     /// conversion.
     #[must_use]
     #[inline(always)]
     pub fn to_uom_approx(self) -> U::Quantity {
-        self.try_to_uom_approx()
-            .expect("UomUnit requires every Unit definition to be valid")
+        self.unit.to_uom_approx(self.value)
     }
 }
 

@@ -29,10 +29,8 @@ pub trait UomUnit: Unit {
 
     /// Tries to create an approximate `uom` quantity from a Decimal value.
     ///
-    /// Existing external implementations receive a compatibility default that
-    /// validates the unit definition before delegating to
-    /// [`UomUnit::to_uom_approx`]. Implementations should override this method
-    /// when they can construct the quantity without repeating validation.
+    /// Implementations must validate any fallible external unit definition
+    /// before constructing the approximate quantity.
     ///
     /// # Parameters
     ///
@@ -47,14 +45,10 @@ pub trait UomUnit: Unit {
     ///
     /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
     /// unit family cannot provide a valid exact definition.
-    #[inline]
     fn try_to_uom_approx(
         self,
         value: Decimal,
-    ) -> Result<Self::Quantity, MeasurementError> {
-        let _ = self.definition()?;
-        Ok(self.to_uom_approx(value))
-    }
+    ) -> Result<Self::Quantity, MeasurementError>;
 
     /// Creates an approximate `uom` quantity from a Decimal value.
     ///
@@ -69,11 +63,16 @@ pub trait UomUnit: Unit {
     ///
     /// # Panics
     ///
-    /// Panics if the unit family violates [`Unit::definition`]'s validity
-    /// contract. Use [`UomUnit::try_to_uom_approx`] when the definition comes
-    /// from an external manual implementation.
+    /// The default implementation panics if
+    /// [`UomUnit::try_to_uom_approx`] returns an error. Call the fallible
+    /// method when the definition comes from an external manual
+    /// implementation.
     #[must_use]
-    fn to_uom_approx(self, value: Decimal) -> Self::Quantity;
+    #[inline(always)]
+    fn to_uom_approx(self, value: Decimal) -> Self::Quantity {
+        self.try_to_uom_approx(value)
+            .expect("UomUnit::try_to_uom_approx returned an error")
+    }
 
     /// Extracts an approximate Decimal value from a `uom` quantity.
     ///
@@ -88,8 +87,10 @@ pub trait UomUnit: Unit {
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::DecimalConversion`] if the floating-point
-    /// result cannot be represented as Decimal.
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
+    /// unit family cannot provide a valid exact definition. Returns
+    /// [`MeasurementError::DecimalConversion`] if the floating-point result
+    /// cannot be represented as Decimal.
     fn value_from_uom_approx(
         self,
         quantity: Self::Quantity,

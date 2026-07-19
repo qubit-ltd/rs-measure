@@ -299,12 +299,12 @@ macro_rules! __define_unit_family_core {
 /// returned by the family. The bridge applies that exact definition before
 /// crossing `f64`; reading the resulting quantity through another `uom` unit
 /// then follows `uom`'s own coefficient for that unit. The generated
-/// `UomUnit::try_to_uom_approx` returns a unit-definition error, while the
-/// compatibility `to_uom_approx` method
-/// panics for the same invalid external definition. Keeping this bridge
-/// separate from [`define_unit_family!`](crate::define_unit_family) prevents
-/// Cargo feature unification from changing whether an exact-only unit
-/// declaration resolves optional `uom` paths.
+/// required `UomUnit::try_to_uom_approx` method returns a unit-definition
+/// error, while the trait's default `to_uom_approx` convenience method panics
+/// for the same invalid external definition. Keeping this bridge separate from
+/// [`define_unit_family!`](crate::define_unit_family) prevents Cargo feature
+/// unification from changing whether an exact-only unit declaration resolves
+/// optional `uom` paths.
 ///
 /// # Examples
 ///
@@ -360,17 +360,6 @@ macro_rules! impl_uom_unit {
                     value, definition,
                 );
                 Ok(<$quantity_ty>::new::<$uom_base_unit>(base_value))
-            }
-
-            #[inline]
-            fn to_uom_approx(
-                self,
-                value: ::rust_decimal::Decimal,
-            ) -> Self::Quantity {
-                <Self as $crate::UomUnit>::try_to_uom_approx(self, value)
-                    .expect(
-                        "UomUnit requires every Unit definition to be valid",
-                    )
             }
 
             #[inline]

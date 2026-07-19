@@ -5,7 +5,7 @@
 //
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
-//! Legacy external `uom` implementation used to verify the fallible default.
+//! External `uom` implementation with a fallible forward conversion.
 
 use std::fmt;
 use std::str::FromStr;
@@ -26,9 +26,9 @@ use rust_decimal::{
 use uom::si::f64::Length as UomLength;
 use uom::si::length::meter;
 
-/// External unit implemented against the original required `UomUnit` methods.
+/// External unit implemented through only the fallible `UomUnit` contract.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(crate) enum LegacyUomUnit {
+pub(crate) enum TryOnlyUomUnit {
     /// Unit with a valid base definition.
     Valid,
 
@@ -36,8 +36,8 @@ pub(crate) enum LegacyUomUnit {
     Invalid,
 }
 
-impl Unit for LegacyUomUnit {
-    const QUANTITY: &'static str = "legacy_uom";
+impl Unit for TryOnlyUomUnit {
+    const QUANTITY: &'static str = "try_only_uom";
 
     fn all() -> &'static [Self] {
         &[Self::Valid, Self::Invalid]
@@ -45,8 +45,8 @@ impl Unit for LegacyUomUnit {
 
     fn symbol(self) -> &'static str {
         match self {
-            Self::Valid => "legacy-uom",
-            Self::Invalid => "invalid-legacy-uom",
+            Self::Valid => "try-only-uom",
+            Self::Invalid => "invalid-try-only-uom",
         }
     }
 
@@ -58,24 +58,25 @@ impl Unit for LegacyUomUnit {
         match self {
             Self::Valid => Ok(UnitDefinition::base()),
             Self::Invalid => Err(MeasurementError::InvalidUnitDefinition {
-                reason: "legacy uom test definition".to_owned(),
+                reason: "try-only uom test definition".to_owned(),
             }),
         }
     }
 }
 
-impl UomUnit for LegacyUomUnit {
+impl UomUnit for TryOnlyUomUnit {
     type Quantity = UomLength;
 
-    fn to_uom_approx(self, value: Decimal) -> Self::Quantity {
-        let _ = self
-            .definition()
-            .expect("legacy UomUnit requires a valid definition");
-        UomLength::new::<meter>(
+    fn try_to_uom_approx(
+        self,
+        value: Decimal,
+    ) -> Result<Self::Quantity, MeasurementError> {
+        let _ = self.definition()?;
+        Ok(UomLength::new::<meter>(
             value
                 .to_f64()
                 .expect("Decimal is representable as finite f64"),
-        )
+        ))
     }
 
     fn value_from_uom_approx(
@@ -90,13 +91,13 @@ impl UomUnit for LegacyUomUnit {
     }
 }
 
-impl fmt::Display for LegacyUomUnit {
+impl fmt::Display for TryOnlyUomUnit {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str(self.symbol())
     }
 }
 
-impl FromStr for LegacyUomUnit {
+impl FromStr for TryOnlyUomUnit {
     type Err = MeasurementError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
