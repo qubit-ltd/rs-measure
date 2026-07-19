@@ -298,11 +298,12 @@ macro_rules! __define_unit_family_core {
 /// [`UnitDefinition`](crate::UnitDefinition)
 /// returned by the family. The bridge applies that exact definition before
 /// crossing `f64`; reading the resulting quantity through another `uom` unit
-/// then follows `uom`'s own coefficient for that unit. A forward conversion
-/// panics if the family violates
-/// [`Unit::definition`](crate::Unit::definition)'s validity contract. Keeping
-/// this bridge separate from [`define_unit_family!`](crate::define_unit_family)
-/// prevents Cargo feature unification from changing whether an exact-only unit
+/// then follows `uom`'s own coefficient for that unit. The generated
+/// `UomUnit::try_to_uom_approx` returns a unit-definition error, while the
+/// compatibility `to_uom_approx` method
+/// panics for the same invalid external definition. Keeping this bridge
+/// separate from [`define_unit_family!`](crate::define_unit_family) prevents
+/// Cargo feature unification from changing whether an exact-only unit
 /// declaration resolves optional `uom` paths.
 ///
 /// # Examples
@@ -350,17 +351,26 @@ macro_rules! impl_uom_unit {
             type Quantity = $quantity_ty;
 
             #[inline]
+            fn try_to_uom_approx(
+                self,
+                value: ::rust_decimal::Decimal,
+            ) -> Result<Self::Quantity, $crate::MeasurementError> {
+                let definition = $crate::Unit::definition(self)?;
+                let base_value = $crate::__private::unit_value_to_base_f64(
+                    value, definition,
+                );
+                Ok(<$quantity_ty>::new::<$uom_base_unit>(base_value))
+            }
+
+            #[inline]
             fn to_uom_approx(
                 self,
                 value: ::rust_decimal::Decimal,
             ) -> Self::Quantity {
-                let definition = $crate::Unit::definition(self).expect(
-                    "UomUnit requires every Unit definition to be valid",
-                );
-                let base_value = $crate::__private::unit_value_to_base_f64(
-                    value, definition,
-                );
-                <$quantity_ty>::new::<$uom_base_unit>(base_value)
+                <Self as $crate::UomUnit>::try_to_uom_approx(self, value)
+                    .expect(
+                        "UomUnit requires every Unit definition to be valid",
+                    )
             }
 
             #[inline]

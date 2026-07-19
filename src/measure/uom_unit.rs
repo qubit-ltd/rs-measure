@@ -27,6 +27,35 @@ pub trait UomUnit: Unit {
     /// The corresponding strongly typed `uom/f64` quantity.
     type Quantity: Copy;
 
+    /// Tries to create an approximate `uom` quantity from a Decimal value.
+    ///
+    /// Existing external implementations receive a compatibility default that
+    /// validates the unit definition before delegating to
+    /// [`UomUnit::to_uom_approx`]. Implementations should override this method
+    /// when they can construct the quantity without repeating validation.
+    ///
+    /// # Parameters
+    ///
+    /// * `self` - Unit in which `value` is expressed.
+    /// * `value` - Decimal value to adapt through `f64`.
+    ///
+    /// # Returns
+    ///
+    /// The corresponding approximate strongly typed `uom` quantity.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
+    /// unit family cannot provide a valid exact definition.
+    #[inline]
+    fn try_to_uom_approx(
+        self,
+        value: Decimal,
+    ) -> Result<Self::Quantity, MeasurementError> {
+        let _ = self.definition()?;
+        Ok(self.to_uom_approx(value))
+    }
+
     /// Creates an approximate `uom` quantity from a Decimal value.
     ///
     /// # Parameters
@@ -41,7 +70,8 @@ pub trait UomUnit: Unit {
     /// # Panics
     ///
     /// Panics if the unit family violates [`Unit::definition`]'s validity
-    /// contract.
+    /// contract. Use [`UomUnit::try_to_uom_approx`] when the definition comes
+    /// from an external manual implementation.
     #[must_use]
     fn to_uom_approx(self, value: Decimal) -> Self::Quantity;
 

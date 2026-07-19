@@ -239,6 +239,24 @@ where
             .map(|value| Self::new(value, unit))
     }
 
+    /// Tries to convert this measurement into its approximate typed `uom`
+    /// quantity.
+    ///
+    /// This bridge crosses `f64` and may lose Decimal precision.
+    ///
+    /// # Returns
+    ///
+    /// The corresponding strongly typed `uom/f64` quantity.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
+    /// unit family cannot provide a valid exact definition.
+    #[inline(always)]
+    pub fn try_to_uom_approx(self) -> Result<U::Quantity, MeasurementError> {
+        self.unit.try_to_uom_approx(self.value)
+    }
+
     /// Converts this measurement into its approximate typed `uom` quantity.
     ///
     /// This bridge crosses `f64` and may lose Decimal precision.
@@ -246,10 +264,17 @@ where
     /// # Returns
     ///
     /// The corresponding strongly typed `uom/f64` quantity.
+    ///
+    /// # Panics
+    ///
+    /// Panics if an external unit family cannot provide a valid exact
+    /// definition. Use [`Measurement::try_to_uom_approx`] for a fallible
+    /// conversion.
     #[must_use]
     #[inline(always)]
     pub fn to_uom_approx(self) -> U::Quantity {
-        self.unit.to_uom_approx(self.value)
+        self.try_to_uom_approx()
+            .expect("UomUnit requires every Unit definition to be valid")
     }
 }
 

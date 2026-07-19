@@ -93,6 +93,11 @@ use uom::si::time::second;
 use uom::si::velocity::meter_per_second;
 use uom::si::volume::liter;
 
+use crate::measure::fixtures::{
+    FallibleUomUnit,
+    LegacyUomUnit,
+};
+
 /// Maximum relative error allowed by the independent SI base oracle.
 const UOM_ORACLE_RELATIVE_TOLERANCE: f64 = 1.0E-12;
 
@@ -403,6 +408,44 @@ fn test_length_measurement_to_uom_approx_converts_unit() {
     assert_eq!(length.get::<meter>(), 0.5);
     assert_eq!(millimeters.to_uom_approx().get::<meter>(), 0.5);
     assert_eq!(meters.to_uom_approx().get::<meter>(), 2.0);
+}
+
+#[test]
+fn test_try_to_uom_approx_returns_invalid_definition_error() {
+    let unit = FallibleUomUnit::Invalid;
+    let measurement = Measurement::new(Decimal::ONE, unit);
+
+    assert!(matches!(
+        unit.try_to_uom_approx(Decimal::ONE),
+        Err(MeasurementError::InvalidUnitDefinition { reason })
+            if reason == "fallible uom test definition",
+    ));
+    assert!(matches!(
+        measurement.try_to_uom_approx(),
+        Err(MeasurementError::InvalidUnitDefinition { reason })
+            if reason == "fallible uom test definition",
+    ));
+}
+
+#[test]
+fn test_try_to_uom_approx_supports_legacy_external_implementation() {
+    let quantity = LegacyUomUnit::Valid
+        .try_to_uom_approx(Decimal::new(2, 0))
+        .expect("valid legacy unit should use the fallible default");
+
+    assert_eq!(quantity.get::<meter>(), 2.0);
+    assert!(matches!(
+        LegacyUomUnit::Invalid.try_to_uom_approx(Decimal::ONE),
+        Err(MeasurementError::InvalidUnitDefinition { reason })
+            if reason == "legacy uom test definition",
+    ));
+}
+
+#[test]
+fn test_to_uom_approx_compatibility_wrapper_converts_builtin_unit() {
+    let quantity = unit::Length::Centimeter.to_uom_approx(Decimal::new(50, 0));
+
+    assert_eq!(quantity.get::<meter>(), 0.5);
 }
 
 #[test]
