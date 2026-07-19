@@ -17,11 +17,13 @@ use rust_decimal::Decimal;
 
 use crate::measure::support::{
     CANONICAL_ALIAS,
+    DISPLAY_MISMATCH,
     DUPLICATE_ALIAS,
     DUPLICATE_ALL,
     DUPLICATE_SYMBOL,
     INVALID_DEFINITION,
     INVALID_QUANTITY,
+    LENIENT_FROM_STR,
     ManualValidationUnit,
     SELF_ALIAS,
     VALID,
@@ -126,4 +128,16 @@ fn test_assert_unit_family_valid_rejects_invalid_quantity() {
 #[should_panic(expected = "invalid definition for derived")]
 fn test_assert_unit_family_valid_rejects_invalid_definition() {
     assert_unit_family_valid::<ManualValidationUnit<INVALID_DEFINITION>>();
+}
+
+#[test]
+#[should_panic(expected = "Display must emit canonical symbol")]
+fn test_assert_unit_family_valid_rejects_display_symbol_mismatch() {
+    assert_unit_family_valid::<ManualValidationUnit<DISPLAY_MISMATCH>>();
+}
+
+#[test]
+#[should_panic(expected = "FromStr must reject alias")]
+fn test_assert_unit_family_valid_rejects_lenient_from_str() {
+    assert_unit_family_valid::<ManualValidationUnit<LENIENT_FROM_STR>>();
 }

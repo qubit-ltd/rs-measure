@@ -29,7 +29,10 @@ use crate::measure::{
 ///   trailing Unicode whitespace;
 /// - aliases do not match any canonical symbol in the family;
 /// - every member supplies a valid exact definition and obeys the documented
-///   strict and lenient parsing behavior.
+///   strict and lenient parsing behavior;
+/// - [`fmt::Display`] emits exactly [`Unit::symbol`];
+/// - [`FromStr`] has the same canonical-only behavior as
+///   [`Unit::parse_strict`].
 ///
 /// [`crate::define_unit_family!`] checks the statically expressible metadata
 /// rules at compilation. Manual implementations should call
@@ -224,6 +227,14 @@ where
             !units[..index].iter().any(|other| other.symbol() == symbol),
             "duplicate canonical symbol: {symbol}",
         );
+        assert!(
+            unit.to_string() == symbol,
+            "Display must emit canonical symbol: {symbol}",
+        );
+        assert!(
+            symbol.parse::<U>() == Ok(unit),
+            "FromStr must accept canonical symbol: {symbol}",
+        );
         let _ = unit.definition().unwrap_or_else(|error| {
             panic!("invalid definition for {symbol}: {error}")
         });
@@ -265,6 +276,16 @@ where
             assert!(
                 U::parse_lenient(alias) == Ok(unit),
                 "lenient alias parse failed for {alias}",
+            );
+            assert!(
+                matches!(
+                    alias.parse::<U>(),
+                    Err(MeasurementError::NonCanonicalUnit {
+                        canonical,
+                        ..
+                    }) if canonical == unit.symbol()
+                ),
+                "FromStr must reject alias {alias}",
             );
         }
     }

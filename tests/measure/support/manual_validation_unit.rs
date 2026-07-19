@@ -40,6 +40,12 @@ pub(crate) const SELF_ALIAS: u8 = 6;
 /// Selects an alias equal to another unit's canonical symbol.
 pub(crate) const CANONICAL_ALIAS: u8 = 7;
 
+/// Selects a `Display` implementation that differs from the canonical symbol.
+pub(crate) const DISPLAY_MISMATCH: u8 = 8;
+
+/// Selects a `FromStr` implementation that accepts lenient aliases.
+pub(crate) const LENIENT_FROM_STR: u8 = 9;
+
 /// Configurable manual unit family used by validation tests.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub(crate) struct ManualValidationUnit<const CASE: u8> {
@@ -93,7 +99,11 @@ impl<const CASE: u8> Unit for ManualValidationUnit<CASE> {
 
 impl<const CASE: u8> fmt::Display for ManualValidationUnit<CASE> {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
-        formatter.write_str(self.symbol())
+        if CASE == DISPLAY_MISMATCH {
+            formatter.write_str("display-mismatch")
+        } else {
+            formatter.write_str(self.symbol())
+        }
     }
 }
 
@@ -101,6 +111,10 @@ impl<const CASE: u8> FromStr for ManualValidationUnit<CASE> {
     type Err = MeasurementError;
 
     fn from_str(input: &str) -> Result<Self, Self::Err> {
-        Self::parse_strict(input)
+        if CASE == LENIENT_FROM_STR {
+            Self::parse_lenient(input)
+        } else {
+            Self::parse_strict(input)
+        }
     }
 }

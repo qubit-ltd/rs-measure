@@ -19,11 +19,13 @@ pub(crate) use definition_case::DefinitionCase;
 pub(crate) use failing_writer::FailingWriter;
 pub(crate) use manual_validation_unit::{
     CANONICAL_ALIAS,
+    DISPLAY_MISMATCH,
     DUPLICATE_ALIAS,
     DUPLICATE_ALL,
     DUPLICATE_SYMBOL,
     INVALID_DEFINITION,
     INVALID_QUANTITY,
+    LENIENT_FROM_STR,
     ManualValidationUnit,
     SELF_ALIAS,
     VALID,
