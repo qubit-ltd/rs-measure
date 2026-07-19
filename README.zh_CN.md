@@ -90,13 +90,14 @@ assert_eq!(feet.value.to_string(), "3.2808");
 舍入，并规范化末尾零。`rounding() == None` 只表示没有选择 fixed-scale 策略，不表示表示
 边界上绝不会舍入。`fixed_scale(0..=28, strategy)` 则按指定策略舍入并保留恰好指定的小数
 位数。结果超出 Decimal 范围时返回 `ValueOutOfRange`；数值可表示但不能保留指定 scale 时
-返回 `OutputScaleUnrepresentable`。
+返回 `OutputScaleUnrepresentable`。当源和目标定义相同时，maximum-precision 换算是 no-op，
+会保留原始 Decimal 的 scale 和末尾零。
 
 ## 4. 确定性默认配置
 
 `convert_to` 始终使用不可变的 `ConversionOptions::DEFAULT`：不指定固定 scale，在表示边界
-按 nearest-even 舍入，并规范化输出。crate 不包含进程级可变换算状态。需要固定输出 scale
-和舍入策略时，应显式调用 `convert_to_with_options`。
+按 nearest-even 舍入；除上述同定义 no-op 外，输出会被规范化。crate 不包含进程级可变
+换算状态。需要固定输出 scale 和舍入策略时，应显式调用 `convert_to_with_options`。
 
 ## 5. 严格与宽松解析
 

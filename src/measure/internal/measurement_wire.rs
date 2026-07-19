@@ -22,6 +22,6 @@ pub(in crate::measure) struct MeasurementWire {
     )]
     pub(in crate::measure) value: Decimal,
 
-    /// Canonical unit symbol or a documented input alias.
+    /// Canonical unit symbol accepted by strict unit parsing.
     pub(in crate::measure) unit: String,
 }

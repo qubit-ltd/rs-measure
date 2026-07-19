@@ -47,7 +47,9 @@ impl ConversionOptions {
     /// Conversion arithmetic remains exact while represented as a rational.
     /// If the result is not exactly representable as Decimal, conversion uses
     /// nearest-even rounding at the greatest scale whose mantissa fits, then
-    /// normalizes trailing zeroes.
+    /// normalizes trailing zeroes. When the source and target definitions are
+    /// equal, conversion instead preserves the original Decimal representation,
+    /// including its scale and trailing zeroes.
     ///
     /// # Returns
     ///

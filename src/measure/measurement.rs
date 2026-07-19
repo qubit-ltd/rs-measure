@@ -162,6 +162,9 @@ where
     ///
     /// A measurement converted to `target` through exact rational factors and
     /// the default maximum-precision Decimal output policy.
+    /// When the source and target definitions are equal, this policy preserves
+    /// the original Decimal representation, including its scale and trailing
+    /// zeroes.
     ///
     /// # Errors
     ///
@@ -297,7 +300,8 @@ where
     /// # Errors
     ///
     /// Returns a deserializer error for malformed Decimal text, mismatched
-    /// quantity metadata, or an unknown unit.
+    /// quantity metadata, a documented but non-canonical unit alias, or an
+    /// unknown unit.
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

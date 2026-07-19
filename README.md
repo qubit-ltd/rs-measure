@@ -98,12 +98,15 @@ that no fixed-scale strategy was selected; it does not mean that representation-
 rounding is impossible. `fixed_scale(0..=28, strategy)` instead rounds and retains
 exactly the requested number of decimal places. Values outside Decimal's range return
 `ValueOutOfRange`; a value that cannot retain the requested scale returns
-`OutputScaleUnrepresentable`.
+`OutputScaleUnrepresentable`. When the source and target definitions are equal,
+maximum-precision conversion is a no-op and preserves the original Decimal scale and
+trailing zeroes.
 
 ## 4. Deterministic defaults
 
 `convert_to` always uses the immutable `ConversionOptions::DEFAULT`: no requested
-fixed scale, nearest-even at the representation boundary, and normalized output.
+fixed scale, nearest-even at the representation boundary, and normalized output except
+for the equal-definition no-op described above.
 There is no process-wide mutable conversion state. Code that needs a fixed output
 scale and rounding strategy uses `convert_to_with_options` explicitly.
 
