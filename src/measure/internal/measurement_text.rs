@@ -7,8 +7,6 @@
 // =============================================================================
 //! Text parsing helpers for typed measurements.
 
-use std::collections::HashSet;
-
 use rust_decimal::Decimal;
 
 use super::compact_candidate::CompactCandidate;
@@ -49,35 +47,31 @@ where
     }
 
     let trimmed = input.trim();
-    let canonical_symbols = (!strict).then(|| {
-        U::all()
-            .iter()
-            .map(|unit| unit.symbol())
-            .collect::<HashSet<_>>()
-    });
-    let mut candidates = Vec::new();
+    let mut first_candidate = None;
+    let mut ambiguous_units = Vec::new();
     for (unit_index, unit) in U::all().iter().copied().enumerate() {
         collect_compact_candidate(
             trimmed,
             unit_index,
             unit.symbol(),
-            &mut candidates,
+            &mut first_candidate,
+            &mut ambiguous_units,
         );
-        if let Some(canonical_symbols) = &canonical_symbols {
+        if !strict {
             for alias in unit.aliases() {
-                collect_alias_candidate(
+                collect_compact_candidate(
                     trimmed,
                     unit_index,
                     alias,
-                    canonical_symbols.contains(alias),
-                    &mut candidates,
+                    &mut first_candidate,
+                    &mut ambiguous_units,
                 );
             }
         }
     }
 
     if let Some((value, unit_index)) =
-        resolve_compact_candidates(input, &candidates)?
+        resolve_compact_candidates(input, first_candidate, ambiguous_units)?
     {
         return Ok((value, U::all()[unit_index]));
     }
@@ -89,19 +83,23 @@ where
     parse_measurement_parts::<U>(input, value_text, unit_text, strict)
 }
 
-/// Adds one valid compact numeric-prefix and unit-suffix interpretation.
+/// Retains one valid compact numeric-prefix and unit-suffix interpretation.
 ///
 /// # Parameters
 ///
 /// * `input` - Trimmed compact measurement text.
 /// * `unit_index` - Index of the typed unit owning `symbol`.
 /// * `symbol` - Canonical symbol or accepted alias candidate.
-/// * `candidates` - Collection receiving a valid interpretation.
+/// * `first_candidate` - Slot retaining the first interpretation without heap
+///   allocation.
+/// * `ambiguous_units` - Symbol list whose backing storage is allocated only
+///   for the second and later interpretations.
 fn collect_compact_candidate(
     input: &str,
     unit_index: usize,
     symbol: &'static str,
-    candidates: &mut Vec<CompactCandidate>,
+    first_candidate: &mut Option<CompactCandidate>,
+    ambiguous_units: &mut Vec<String>,
 ) {
     if symbol.starts_with(['.', '+', '-']) {
         return;
@@ -116,43 +114,73 @@ fn collect_compact_candidate(
         return;
     }
     if let Some(value) = parse_decimal_text_exact(value_text) {
-        candidates.push(CompactCandidate {
-            value,
-            unit_index,
-            symbol,
-        });
+        retain_compact_candidate(
+            CompactCandidate {
+                value,
+                unit_index,
+                symbol,
+            },
+            first_candidate,
+            ambiguous_units,
+        );
     }
 }
 
-/// Adds an alias interpretation unless a canonical unit owns that symbol.
-#[inline(always)]
-fn collect_alias_candidate(
-    input: &str,
-    unit_index: usize,
-    alias: &'static str,
-    canonical_owner_exists: bool,
-    candidates: &mut Vec<CompactCandidate>,
+/// Retains one candidate and allocates unit names only after ambiguity exists.
+///
+/// # Parameters
+///
+/// * `candidate` - Newly discovered compact interpretation.
+/// * `first_candidate` - Slot retaining the first interpretation without heap
+///   allocation.
+/// * `ambiguous_units` - Symbol list whose backing storage is allocated only
+///   for the second and later interpretations.
+fn retain_compact_candidate(
+    candidate: CompactCandidate,
+    first_candidate: &mut Option<CompactCandidate>,
+    ambiguous_units: &mut Vec<String>,
 ) {
-    if !canonical_owner_exists {
-        collect_compact_candidate(input, unit_index, alias, candidates);
+    if let Some(first) = first_candidate.as_ref() {
+        if ambiguous_units.is_empty() {
+            ambiguous_units.push(first.symbol.to_owned());
+        }
+        ambiguous_units.push(candidate.symbol.to_owned());
+    } else {
+        *first_candidate = Some(candidate);
     }
 }
 
 /// Resolves zero, one, or multiple compact suffix interpretations.
+///
+/// # Parameters
+///
+/// * `input` - Original measurement text retained for an ambiguity error.
+/// * `first_candidate` - First compact interpretation, if one exists.
+/// * `ambiguous_units` - Owned symbols when multiple interpretations exist, or
+///   an empty zero-capacity vector otherwise.
+///
+/// # Returns
+///
+/// The exact Decimal and unit index for one interpretation, or `None` when no
+/// compact interpretation exists.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::AmbiguousMeasurement`] with every matched symbol
+/// when multiple compact interpretations exist.
 fn resolve_compact_candidates(
     input: &str,
-    candidates: &[CompactCandidate],
+    first_candidate: Option<CompactCandidate>,
+    ambiguous_units: Vec<String>,
 ) -> Result<Option<(Decimal, usize)>, MeasurementError> {
-    match candidates {
-        [candidate] => Ok(Some((candidate.value, candidate.unit_index))),
-        [] => Ok(None),
-        _ => Err(MeasurementError::AmbiguousMeasurement {
+    if ambiguous_units.is_empty() {
+        Ok(first_candidate
+            .map(|candidate| (candidate.value, candidate.unit_index)))
+    } else {
+        Err(MeasurementError::AmbiguousMeasurement {
             input: input.to_owned(),
-            units: candidates
-                .iter()
-                .map(|candidate| candidate.symbol.to_owned())
-                .collect(),
-        }),
+            units: ambiguous_units,
+        })
     }
 }
 

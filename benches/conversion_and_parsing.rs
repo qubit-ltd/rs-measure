@@ -77,8 +77,7 @@ fn benchmark_parsing(criterion: &mut Criterion) {
     });
     criterion.bench_function("parsing/lenient_compact_alias", |bencher| {
         bencher.iter(|| {
-            black_box("12.345um")
-                .parse::<measurement::Length>()
+            measurement::Length::parse_lenient(black_box("12.345um"))
                 .expect("lenient compact benchmark input should parse")
         });
     });

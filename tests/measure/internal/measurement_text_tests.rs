@@ -45,6 +45,17 @@ fn test_measurement_text_accepts_strict_canonical_length() {
 }
 
 #[test]
+fn test_measurement_text_reports_unknown_unit_in_lenient_mode() {
+    assert_eq!(
+        measurement::Length::parse_lenient("1 bogus"),
+        Err(MeasurementError::UnknownUnit {
+            quantity: "length".to_owned(),
+            unit: "bogus".to_owned(),
+        }),
+    );
+}
+
+#[test]
 fn test_measurement_text_rejects_incomplete_numeric_boundaries() {
     for input in [
         "", " ", "+", "-", ".", "+.", "-.", "1 ", "1\t", "1.m", "1e999 m",

@@ -16,6 +16,8 @@ define_unit_family! {
         X => { symbol: "x"; coefficient: 1; }
         /// Digit-leading suffix sharing `x`.
         TwoX => { symbol: "2x"; coefficient: 2; }
+        /// Longer digit-leading suffix sharing `2x` and `x`.
+        TwelveX => { symbol: "12x"; coefficient: 12; }
         /// Exponent-like suffix.
         ExponentLike => { symbol: "e3"; coefficient: 3; }
     }

@@ -28,4 +28,11 @@ fn test_compact_candidate_reports_ambiguous_unit_suffix() {
             units: vec!["x".to_owned(), "2x".to_owned()],
         }),
     );
+    assert_eq!(
+        CompactMeasurement::from_str("112x"),
+        Err(MeasurementError::AmbiguousMeasurement {
+            input: "112x".to_owned(),
+            units: vec!["x".to_owned(), "2x".to_owned(), "12x".to_owned()],
+        }),
+    );
 }
