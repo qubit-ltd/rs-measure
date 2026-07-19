@@ -1,0 +1,67 @@
+# Built-in unit-definition provenance manifest.
+# Each quantity row covers every built-in unit returned by Unit::all() for that family.
+# source_ids are semicolon-separated stable identifiers from the catalog below.
+# numeric_policy is exact unless a family contains a documented finite irrational approximation.
+#
+# BIPM-SI-9.3.01 https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf/2d2b50bf-f2b4-9661-f402-5f9d66e4b507?version=4.0
+# NIST-SP-811-2008 https://doi.org/10.6028/NIST.SP.811e2008
+# NIST-HB-44-2026 https://doi.org/10.6028/NIST.HB.44-2026
+# CODATA-2022-V9.0 https://physics.nist.gov/cuu/Reference/versioncon.shtml
+# NIST-DLMF-3.12 https://dlmf.nist.gov/3.12
+quantity	source_ids	numeric_policy	scope
+acceleration	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
+amount_of_substance	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+angle	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angular_velocity	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+area	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+capacitance	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+catalytic_activity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity_concentration	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Catalytic activity divided by SI volume
+dynamic_viscosity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+electric_charge	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_current	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current_density	BIPM-SI-9.3.01	exact	SI current divided by SI area
+electric_field	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_potential	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electrical_conductance	BIPM-SI-9.3.01	exact	SI siemens and decimal prefixes
+electrical_conductivity	BIPM-SI-9.3.01	exact	SI conductance divided by SI length
+electrical_resistance	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistivity	BIPM-SI-9.3.01	exact	SI resistance-length combinations
+energy	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+force	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+frequency	BIPM-SI-9.3.01	exact	SI hertz and decimal prefixes
+heat_capacity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_flux_density	BIPM-SI-9.3.01	exact	SI power divided by SI area
+illuminance	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI lux and footcandle conversion
+inductance	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+kinematic_viscosity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
+length	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+luminance	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminous_intensity	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
+magnetic_field_strength	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
+magnetic_flux	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
+magnetic_flux_density	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+mass	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass_concentration	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_density	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_rate	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+molality	BIPM-SI-9.3.01	exact	SI amount of substance divided by SI mass
+molar_concentration	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_mass	BIPM-SI-9.3.01	exact	SI mass divided by amount of substance
+molar_volume	BIPM-SI-9.3.01	exact	SI volume divided by amount of substance
+power	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+pressure	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+radioactivity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+solid_angle	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
+specific_heat_capacity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_radioactivity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
+surface_tension	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI surface tension and dyne conversion
+temperature	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine affine definitions
+temperature_interval	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine intervals
+thermal_conductivity	BIPM-SI-9.3.01	exact	SI thermal conductivity and decimal prefixes
+thermal_resistance	BIPM-SI-9.3.01	exact	SI thermal resistance and decimal prefixes
+time	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+torque	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+velocity	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+volume	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume_rate	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute

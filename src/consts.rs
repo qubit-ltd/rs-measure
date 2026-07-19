@@ -17,6 +17,8 @@
 //! approximations. Their digits follow [NIST DLMF section 3.12]; pi retains 23
 //! decimal places so the derived arcsecond denominator remains within
 //! Decimal's 96-bit mantissa, while square degree uses 28 decimal places.
+//! The crate's versioned, quantity-family provenance matrix is maintained in
+//! `docs/unit-definition-provenance.tsv`.
 //!
 //! [BIPM SI Brochure]: https://www.bipm.org/en/publications/si-brochure
 //! [NIST unit-conversion references]: https://www.nist.gov/pml/owm/metric-si/unit-conversion

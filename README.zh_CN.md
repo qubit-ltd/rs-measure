@@ -67,7 +67,8 @@ Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不
 [NIST Handbook 44](https://www.nist.gov/pml/owm/nist-handbook-44-current-edition) 和
 [2022 CODATA](https://physics.nist.gov/cuu/Constants/)。无理数只能使用有限近似：pi 采用
 [NIST DLMF 3.12](https://dlmf.nist.gov/3.12) 的 23 位小数，有限 tau 严格等于它的两倍，
-平方度采用 28 位小数。
+平方度采用 28 位小数。每个内建 quantity family 使用的版本化来源、数值策略和覆盖范围
+记录在机器可读的[单位定义来源清单](docs/unit-definition-provenance.tsv)中。
 
 ```rust
 use qubit_measure::{
@@ -203,12 +204,15 @@ assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
 ## 8. 近似 `uom` 桥接
 
 该桥接只在显式启用默认关闭的 `uom` Cargo feature 后存在。未启用时，`UomUnit`、
-`to_uom_approx` 和 `from_uom_approx` 均不在 API 中。启用后，映射到 `uom` 的 family
-会实现 `UomUnit`。`_approx` 后缀是有意设计：这些适配器会跨越
+`try_to_uom_approx`、`to_uom_approx` 和 `from_uom_approx` 均不在 API 中。启用后，
+映射到 `uom` 的 family 会实现 `UomUnit`。`_approx` 后缀是有意设计：这些适配器会跨越
 `Decimal <-> f64`，因此可能损失精度。适配器会先按 `qubit-measure` 的精确定义得到
 SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一致；但之后若通过
 `uom` 自带的非基准单位 getter 读取，当两个库对同名单位的定义不同时，显示数值仍按
 `uom` 自身的系数计算。持久化单位换算 `convert_to` 不使用该桥接。
+
+对于外部手写的单位定义，应优先使用 `try_to_uom_approx`，以便返回 definition 错误；
+为保持兼容，无错误返回值的 `to_uom_approx` 仍保留原有 panic 行为。
 
 ```rust
 use qubit_measure::{measurement, unit};

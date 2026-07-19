@@ -72,7 +72,9 @@ by quantity. Exact and derived definitions follow the
 and [2022 CODATA](https://physics.nist.gov/cuu/Constants/). Irrational values are
 finite approximations: pi uses 23 decimal places from
 [NIST DLMF section 3.12](https://dlmf.nist.gov/3.12), the finite tau is exactly twice
-that value, and square degree uses 28 decimal places.
+that value, and square degree uses 28 decimal places. The versioned source set,
+numeric policy, and coverage scope for every built-in quantity family are recorded
+in the machine-readable [unit-definition provenance manifest](docs/unit-definition-provenance.tsv).
 
 ```rust
 use qubit_measure::{
@@ -226,7 +228,8 @@ Every unit family follows this metadata contract:
 ## 8. Approximate `uom` bridge
 
 This bridge is available only with the default-off `uom` Cargo feature. Without
-that feature, `UomUnit`, `to_uom_approx`, and `from_uom_approx` are absent.
+that feature, `UomUnit`, `try_to_uom_approx`, `to_uom_approx`, and
+`from_uom_approx` are absent.
 Families mapped to `uom` implement `UomUnit` when enabled. The `_approx` suffix
 is intentional: each adapter first applies the `qubit-measure` exact definition
 to obtain the SI base value, then crosses `Decimal <-> f64` and may lose
@@ -235,6 +238,10 @@ Decimal core. A later getter for a non-base `uom` unit still follows `uom`'s own
 coefficient, so its displayed number may differ when the two libraries define
 that named unit differently. Persisted unit conversion through `convert_to`
 does not use this bridge.
+
+For externally implemented unit definitions, prefer `try_to_uom_approx`, which
+returns the definition error. The infallible `to_uom_approx` wrapper retains its
+panic behavior for compatibility.
 
 ```rust
 use qubit_measure::{measurement, unit};
