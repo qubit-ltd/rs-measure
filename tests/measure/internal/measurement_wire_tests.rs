@@ -7,7 +7,10 @@
 // =============================================================================
 //! Public Serde contract tests for the private measurement wire type.
 
-use qubit_measure::measurement;
+use qubit_measure::{
+    MeasurementParseOptions,
+    measurement,
+};
 use serde_json::json;
 
 /// Verifies that every persisted measurement field remains required.
@@ -72,9 +75,76 @@ fn test_measurement_wire_rejects_lossy_decimal_text() {
         .expect_err("lossy Decimal text should fail");
 
         assert!(
-            error.to_string().contains("invalid Decimal value"),
+            error
+                .to_string()
+                .contains("cannot be represented exactly as Decimal"),
             "unexpected error for {value:?}: {error}",
         );
+    }
+}
+
+/// Verifies that malformed Decimal grammar is classified during wire decoding.
+#[test]
+fn test_measurement_wire_rejects_malformed_decimal_text() {
+    for value in ["1e2e3", "1e+", "+", "1..0"] {
+        let error = serde_json::from_value::<measurement::Length>(json!({
+            "quantity": "length",
+            "value": value,
+            "unit": "m",
+        }))
+        .expect_err("malformed Decimal text should fail");
+
+        assert!(
+            error.to_string().contains("invalid measurement syntax"),
+            "unexpected error for {value:?}: {error}",
+        );
+    }
+}
+
+/// Verifies that every persisted string field uses the default byte limit.
+#[test]
+fn test_measurement_wire_rejects_oversized_string_fields() {
+    let oversized =
+        "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
+    let values = [
+        json!({
+            "quantity": oversized.clone(),
+            "value": "1",
+            "unit": "m",
+        }),
+        json!({
+            "quantity": "length",
+            "value": oversized.clone(),
+            "unit": "m",
+        }),
+        json!({
+            "quantity": "length",
+            "value": "1",
+            "unit": oversized,
+        }),
+    ];
+
+    for value in values {
+        let error = serde_json::from_value::<measurement::Length>(value)
+            .expect_err("oversized wire field should fail");
+
+        assert!(
+            error.to_string().contains("byte limit"),
+            "unexpected oversized-field error: {error}",
+        );
+    }
+}
+
+/// Verifies that wire decoding accepts exact scientific boundary values.
+#[test]
+fn test_measurement_wire_accepts_exact_scientific_boundaries() {
+    for value in ["1.0e-28", "100e-29", "0.1e29"] {
+        let _ = serde_json::from_value::<measurement::Length>(json!({
+            "quantity": "length",
+            "value": value,
+            "unit": "m",
+        }))
+        .expect("exact scientific wire value should parse");
     }
 }
 

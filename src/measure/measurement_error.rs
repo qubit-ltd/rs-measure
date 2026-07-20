@@ -23,9 +23,20 @@ pub enum MeasurementError {
         unit: String,
     },
 
-    /// The measurement text cannot be parsed.
-    #[error("invalid measurement: {0}")]
-    InvalidMeasurement(String),
+    /// The measurement text exceeds the configured byte limit.
+    #[error("measurement text exceeds the {maximum}-byte limit")]
+    MeasurementTextLimitExceeded {
+        /// Inclusive maximum accepted number of UTF-8 bytes.
+        maximum: usize,
+    },
+
+    /// The measurement text does not follow the supported grammar.
+    #[error("invalid measurement syntax")]
+    InvalidMeasurementSyntax,
+
+    /// The numeric value cannot be represented exactly as Decimal.
+    #[error("measurement value cannot be represented exactly as Decimal")]
+    UnrepresentableMeasurementValue,
 
     /// Compact text admits more than one valid numeric/unit split.
     #[error(

@@ -13,6 +13,7 @@ mod decimal_conversion;
 mod internal;
 mod measurement;
 mod measurement_error;
+mod measurement_parse_options;
 mod time_duration;
 mod unit;
 mod unit_definition;
@@ -24,6 +25,7 @@ pub use conversion_factor::ConversionFactor;
 pub use conversion_options::ConversionOptions;
 pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
+pub use measurement_parse_options::MeasurementParseOptions;
 pub use unit::{
     Unit,
     assert_unit_family_valid,

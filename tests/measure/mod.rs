@@ -19,6 +19,7 @@ mod external_unit_tests;
 mod internal;
 mod internal_tests;
 mod measurement_error_tests;
+mod measurement_parse_options_tests;
 mod measurement_tests;
 mod mod_tests;
 mod time_duration_tests;

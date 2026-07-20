@@ -36,6 +36,18 @@ fn test_ambiguous_measurement_error_lists_candidate_units() {
 fn test_measurement_error_new_variants_include_context() {
     let cases = [
         (
+            MeasurementError::MeasurementTextLimitExceeded { maximum: 3 },
+            "measurement text exceeds the 3-byte limit",
+        ),
+        (
+            MeasurementError::InvalidMeasurementSyntax,
+            "invalid measurement syntax",
+        ),
+        (
+            MeasurementError::UnrepresentableMeasurementValue,
+            "measurement value cannot be represented exactly as Decimal",
+        ),
+        (
             MeasurementError::InvalidScale { scale: 29, max: 28 },
             "invalid Decimal scale 29; maximum is 28",
         ),

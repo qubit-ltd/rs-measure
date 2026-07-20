@@ -9,6 +9,7 @@
 
 use qubit_measure::{
     Measurement,
+    MeasurementParseOptions,
     Unit,
     measurement,
     unit,
@@ -22,4 +23,8 @@ fn test_crate_root_reexports_measurement_and_unit_api() {
         Measurement::new(Decimal::ONE, unit::Length::Meter);
 
     assert_eq!(value.quantity_name(), unit::Length::QUANTITY);
+    assert_eq!(
+        MeasurementParseOptions::default().max_text_bytes(),
+        MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES,
+    );
 }

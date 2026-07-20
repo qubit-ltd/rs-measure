@@ -183,12 +183,14 @@ fn test_measurement_parse_strict_accepts_canonical_input() {
 
 #[test]
 fn test_measurement_parse_strict_rejects_malformed_input() {
-    for input in ["1", "1e999 s"] {
-        assert!(matches!(
-            measurement::Time::parse_strict(input),
-            Err(MeasurementError::InvalidMeasurement(_)),
-        ));
-    }
+    assert_eq!(
+        measurement::Time::parse_strict("1"),
+        Err(MeasurementError::InvalidMeasurementSyntax),
+    );
+    assert_eq!(
+        measurement::Time::parse_strict("1e999 s"),
+        Err(MeasurementError::UnrepresentableMeasurementValue),
+    );
 }
 
 #[test]
@@ -197,14 +199,14 @@ fn test_measurement_text_parsing_rejects_lossy_decimal_inputs() {
         assert!(
             matches!(
                 measurement::Length::from_str(input),
-                Err(MeasurementError::InvalidMeasurement(_)),
+                Err(MeasurementError::UnrepresentableMeasurementValue),
             ),
             "lenient parsing accepted lossy Decimal input {input:?}",
         );
         assert!(
             matches!(
                 measurement::Length::parse_strict(input),
-                Err(MeasurementError::InvalidMeasurement(_)),
+                Err(MeasurementError::UnrepresentableMeasurementValue),
             ),
             "strict parsing accepted lossy Decimal input {input:?}",
         );
@@ -534,10 +536,7 @@ fn test_compact_measurement_rejects_reserved_suffix_boundaries() {
         let error = measurement::Length::from_str(input)
             .expect_err("reserved compact suffix should fail");
 
-        assert_eq!(
-            error,
-            MeasurementError::InvalidMeasurement(input.to_owned()),
-        );
+        assert_eq!(error, MeasurementError::InvalidMeasurementSyntax,);
     }
 }
 
@@ -546,7 +545,7 @@ fn test_measurement_from_str_rejects_missing_unit() {
     let error = measurement::Length::from_str("12")
         .expect_err("missing unit should fail");
 
-    assert_eq!(error, MeasurementError::InvalidMeasurement("12".to_owned()));
+    assert_eq!(error, MeasurementError::InvalidMeasurementSyntax);
 }
 
 #[test]
@@ -554,7 +553,7 @@ fn test_measurement_from_str_rejects_missing_value() {
     let error = measurement::Length::from_str("cm")
         .expect_err("missing value should fail");
 
-    assert_eq!(error, MeasurementError::InvalidMeasurement("cm".to_owned()));
+    assert_eq!(error, MeasurementError::InvalidMeasurementSyntax);
 }
 
 #[test]
@@ -563,10 +562,7 @@ fn test_measurement_from_str_rejects_invalid_value() {
         let error = measurement::Length::from_str(input)
             .expect_err("invalid decimal should fail");
 
-        assert_eq!(
-            error,
-            MeasurementError::InvalidMeasurement(input.to_owned()),
-        );
+        assert_eq!(error, MeasurementError::InvalidMeasurementSyntax,);
     }
 }
 
@@ -577,10 +573,7 @@ fn test_measurement_from_str_rejects_decimal_overflow() {
     let error = measurement::Length::from_str(input)
         .expect_err("overflowing decimal should fail");
 
-    assert_eq!(
-        error,
-        MeasurementError::InvalidMeasurement(input.to_owned())
-    );
+    assert_eq!(error, MeasurementError::UnrepresentableMeasurementValue);
 }
 
 #[test]

@@ -16,6 +16,7 @@ use crate::measure::internal::{
 use crate::measure::{
     ConversionOptions,
     MeasurementError,
+    MeasurementParseOptions,
     Unit,
 };
 use rust_decimal::Decimal;
@@ -37,7 +38,9 @@ use std::str::FromStr;
 /// persistence keeps the original user-facing unit instead of only the
 /// normalized base-unit value.
 /// Its Serde contract encodes units through [`Unit::symbol`] and decodes them
-/// through [`Unit::parse_strict`], without requiring unit-specific Serde.
+/// through [`Unit::parse_strict`], without requiring unit-specific Serde. Each
+/// wire string is limited to
+/// [`MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES`] bytes.
 ///
 /// # Examples
 ///
@@ -92,6 +95,9 @@ where
     /// Unit symbols beginning with `.`, `+`, or `-` require whitespace before
     /// the unit, for example `"1.25 +cu"`; their compact forms are rejected as
     /// ambiguous Decimal boundaries.
+    /// Scientific notation is accepted only when the final value is exactly
+    /// representable; no parsing path rounds. The parser retains as much input
+    /// scale as Decimal can hold and applies the default 1 MiB text limit.
     ///
     /// # Returns
     ///
@@ -99,13 +105,40 @@ where
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::InvalidMeasurement`] for malformed numeric
-    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
-    /// splits, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
-    /// [`MeasurementError::UnknownUnit`] for an unknown unit.
+    /// Returns [`MeasurementError::MeasurementTextLimitExceeded`] for
+    /// oversized input, [`MeasurementError::InvalidMeasurementSyntax`] for
+    /// malformed text,
+    /// [`MeasurementError::UnrepresentableMeasurementValue`] when Decimal
+    /// cannot hold the value exactly, or a classified unit or ambiguity error.
     #[inline(always)]
     pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
-        let (value, unit) = parse_measurement_text::<U>(input, true)?;
+        Self::parse_strict_with_options(
+            input,
+            &MeasurementParseOptions::default(),
+        )
+    }
+
+    /// Parses a canonical measurement using explicit resource limits.
+    ///
+    /// # Parameters
+    ///
+    /// * `input` - Measurement text in compact or space-separated form.
+    /// * `options` - Resource limits applied before parsing.
+    ///
+    /// # Returns
+    ///
+    /// A typed measurement containing the parsed Decimal and canonical unit.
+    ///
+    /// # Errors
+    ///
+    /// Returns a classified measurement syntax, representation, size, unit,
+    /// or ambiguity error.
+    #[inline(always)]
+    pub fn parse_strict_with_options(
+        input: &str,
+        options: &MeasurementParseOptions,
+    ) -> Result<Self, MeasurementError> {
+        let (value, unit) = parse_measurement_text::<U>(input, true, options)?;
         Ok(Self::new(value, unit))
     }
 
@@ -116,15 +149,20 @@ where
     /// * `input` - Measurement text in `<decimal><unit>` or `<decimal> <unit>`
     ///   form.
     ///
+    /// This convenience method applies the default 1 MiB text limit and never
+    /// rounds an unrepresentable Decimal value.
+    ///
     /// # Returns
     ///
     /// A typed measurement containing the parsed Decimal and resolved unit.
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::InvalidMeasurement`] for malformed numeric
-    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
-    /// splits, or [`MeasurementError::UnknownUnit`] for an unknown unit.
+    /// Returns [`MeasurementError::MeasurementTextLimitExceeded`] for
+    /// oversized input, [`MeasurementError::InvalidMeasurementSyntax`] for
+    /// malformed text,
+    /// [`MeasurementError::UnrepresentableMeasurementValue`] when Decimal
+    /// cannot hold the value exactly, or a classified unit or ambiguity error.
     ///
     /// # Examples
     ///
@@ -137,7 +175,33 @@ where
     /// ```
     #[inline(always)]
     pub fn parse_lenient(input: &str) -> Result<Self, MeasurementError> {
-        let (value, unit) = parse_measurement_text::<U>(input, false)?;
+        Self::parse_lenient_with_options(
+            input,
+            &MeasurementParseOptions::default(),
+        )
+    }
+
+    /// Parses a lenient measurement using explicit resource limits.
+    ///
+    /// # Parameters
+    ///
+    /// * `input` - Measurement text in compact or space-separated form.
+    /// * `options` - Resource limits applied before parsing.
+    ///
+    /// # Returns
+    ///
+    /// A typed measurement containing the parsed Decimal and resolved unit.
+    ///
+    /// # Errors
+    ///
+    /// Returns a classified measurement syntax, representation, size, unit,
+    /// or ambiguity error.
+    #[inline(always)]
+    pub fn parse_lenient_with_options(
+        input: &str,
+        options: &MeasurementParseOptions,
+    ) -> Result<Self, MeasurementError> {
+        let (value, unit) = parse_measurement_text::<U>(input, false, options)?;
         Ok(Self::new(value, unit))
     }
 
@@ -326,9 +390,9 @@ where
     ///
     /// # Errors
     ///
-    /// Returns a deserializer error for malformed Decimal text, mismatched
-    /// quantity metadata, a documented but non-canonical unit alias, or an
-    /// unknown unit.
+    /// Returns a deserializer error for an oversized wire string, malformed or
+    /// unrepresentable Decimal text, mismatched quantity metadata, a documented
+    /// but non-canonical unit alias, or an unknown unit.
     #[inline]
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -383,6 +447,8 @@ where
     /// Unit symbols beginning with `.`, `+`, or `-` require
     /// whitespace before the unit, for example `"1.25 +cu"`; their compact
     /// forms are rejected as ambiguous Decimal boundaries.
+    /// This default entry point applies a 1 MiB input limit and requires the
+    /// final Decimal value to be exactly representable without rounding.
     ///
     /// # Parameters
     ///
@@ -394,10 +460,11 @@ where
     ///
     /// # Errors
     ///
-    /// Returns [`MeasurementError::InvalidMeasurement`] for malformed value
-    /// text, [`MeasurementError::AmbiguousMeasurement`] for multiple compact
-    /// splits, [`MeasurementError::NonCanonicalUnit`] for a known alias, or
-    /// [`MeasurementError::UnknownUnit`] for an unknown unit.
+    /// Returns [`MeasurementError::MeasurementTextLimitExceeded`] for
+    /// oversized input, [`MeasurementError::InvalidMeasurementSyntax`] for
+    /// malformed text,
+    /// [`MeasurementError::UnrepresentableMeasurementValue`] when Decimal
+    /// cannot hold the value exactly, or a classified unit or ambiguity error.
     #[inline(always)]
     fn from_str(input: &str) -> Result<Self, Self::Err> {
         Self::parse_strict(input)
