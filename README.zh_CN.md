@@ -57,6 +57,7 @@ Serde 使用带 quantity 校验的 wire format：
 三个字段都必须存在。`quantity` 是稳定的 `snake_case` 标识，`value` 是 Decimal 字符串，
 `unit` 序列化和反序列化时都只接受规范符号；别名会被拒绝。如果 quantity 与目标 Rust
 类型不匹配，反序列化也会失败。额外字段会被忽略，允许未来添加元数据。
+反序列化时，每个字符串字段最多接受 1,048,576 个 UTF-8 字节。
 
 ## 3. Decimal 精度与舍入
 
@@ -127,6 +128,25 @@ assert_eq!(
 返回 `AmbiguousMeasurement`，不会静默选择其中一种解释。
 以 `.`、`+` 或 `-` 开头的单位符号或别名必须与 Decimal 数值使用空白分隔；
 其紧凑形式会作为有歧义的数值边界被拒绝（例如应写成 `1.25 +cu`）。
+
+measurement 数值支持普通和科学计数法 Decimal 文本，并按最终数值判断精确可表示性：
+例如 `1.0e-28 m` 可以解析，需要舍入的值则返回
+`UnrepresentableMeasurementValue`。解析器会保留 Decimal 能容纳的最大输入 scale；
+语法错误返回 `InvalidMeasurementSyntax`。
+
+默认解析和 `FromStr` 拒绝超过 1,048,576 个 UTF-8 字节的 measurement 文本。
+可以通过显式选项设置更小或更大的限制：
+
+```rust
+use qubit_measure::{MeasurementParseOptions, measurement};
+
+let options = MeasurementParseOptions::default().with_max_text_bytes(64);
+let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
+assert_eq!(length.value.scale(), 2);
+# Ok::<(), qubit_measure::MeasurementError>(())
+```
+
+超限输入会在 Decimal 或单位扫描开始前返回 `MeasurementTextLimitExceeded`。
 
 ### 精确 `std::time::Duration` 适配
 

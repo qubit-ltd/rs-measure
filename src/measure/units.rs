@@ -393,7 +393,10 @@ macro_rules! impl_uom_unit {
 /// optional `aliases` list enables lenient input.
 /// The supported Decimal literal subset includes integer, fractional,
 /// scientific, and digit-separated decimal forms plus binary, octal, and
-/// hexadecimal integers. Every accepted value must fit Decimal exactly.
+/// hexadecimal integers. Representability is decided from the final value
+/// after scientific-exponent and coefficient-zero cancellation. Every accepted
+/// value must fit Decimal exactly, without rounding, and representable input
+/// scale is preserved as far as Decimal's coefficient and scale allow.
 /// The generated enum is non-exhaustive and implements [`Unit`](crate::Unit),
 /// `Display`, strict `FromStr`, and canonical-only string Serde. Its `all()`
 /// slice is generated from every declared variant, so it is complete by
