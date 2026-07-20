@@ -11,6 +11,8 @@ mod coefficient;
 mod parser;
 mod scanner;
 
+pub(crate) use coefficient::finalize_exact_decimal;
+
 pub use parser::{
     decimal_from_literal,
     positive_decimal_from_literal,

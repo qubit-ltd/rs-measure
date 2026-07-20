@@ -85,11 +85,11 @@ fn test_decimal_from_literal_reports_arithmetic_overflow_boundaries() {
         ),
         (
             "3402823669209384634633746074317682114550",
-            "invalid Decimal literal",
+            "Decimal literal cannot be represented exactly",
         ),
         (
             "340282366920938463463374607431768211455e1",
-            "Decimal literal exceeds Decimal's mantissa range",
+            "Decimal literal cannot be represented exactly",
         ),
         (
             "1.00e-2147483647",
@@ -106,6 +106,28 @@ fn test_decimal_from_literal_reports_arithmetic_overflow_boundaries() {
             .or_else(|| panic.downcast_ref::<String>().map(String::as_str))
             .expect("Decimal literal panic should contain a string message");
         assert_eq!(message, expected_message, "literal {value:?}");
+    }
+}
+
+/// Verifies overflow handling in radix, fraction, and exponent scanning.
+#[test]
+fn test_decimal_from_literal_exercises_scanner_overflow_paths() {
+    assert_eq!(decimal_from_literal("0x__1"), Decimal::ONE);
+
+    for value in [
+        "0.340282366920938463463374607431768211456",
+        "34028236692093846346337460743176821145501",
+        "0xfffffffffffffffffffffffffffffffffffff",
+        "1e340282366920938463463374607431768211456",
+        "1e3402823669209384634633746074317682114550",
+    ] {
+        assert!(
+            std::panic::catch_unwind(|| {
+                decimal_from_literal(std::hint::black_box(value));
+            })
+            .is_err(),
+            "overflowing literal {value:?} should panic",
+        );
     }
 }
 

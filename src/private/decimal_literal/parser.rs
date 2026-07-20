@@ -16,6 +16,7 @@ use super::coefficient::{
 };
 use super::scanner::{
     detect_radix,
+    parse_decimal_digits,
     parse_digits,
     parse_exponent,
     parse_sign,
@@ -63,17 +64,23 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
         return decimal_from_parts(mantissa, 0, negative);
     }
 
-    let (mut mantissa, integer_digits, mut end, mut overflowed) =
-        parse_digits(bytes, index, 10, 0);
+    let (
+        mut mantissa,
+        mut trailing_zeroes,
+        integer_digits,
+        mut end,
+        mut overflowed,
+    ) = parse_decimal_digits(bytes, index, 0, 0);
     if integer_digits == 0 {
         panic!("Decimal literal must contain an integer part");
     }
 
     let mut exponent = 0_i32;
     if end < length && bytes[end] == b'.' {
-        let (value, digits, fraction_end, fraction_overflowed) =
-            parse_digits(bytes, end + 1, 10, mantissa);
+        let (value, zeroes, digits, fraction_end, fraction_overflowed) =
+            parse_decimal_digits(bytes, end + 1, mantissa, trailing_zeroes);
         mantissa = value;
+        trailing_zeroes = zeroes;
         end = fraction_end;
         overflowed = overflowed || fraction_overflowed;
         if digits == 0 && end < length {
@@ -81,7 +88,7 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
                 "Decimal literal fraction must contain digits before an exponent"
             );
         }
-        if digits > i32::MAX as u32 || overflowed || mantissa > MAX_MANTISSA {
+        if digits > i32::MAX as u32 || overflowed {
             panic!("Decimal literal precision exceeds Decimal's exact range");
         }
         exponent = -(digits as i32);
@@ -93,7 +100,7 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
     if end != length || overflowed {
         panic!("invalid Decimal literal");
     }
-    finalize_decimal(mantissa, exponent, negative)
+    finalize_decimal(mantissa, exponent, trailing_zeroes, negative)
 }
 
 /// Parses one positive Decimal literal for a unit conversion factor.
