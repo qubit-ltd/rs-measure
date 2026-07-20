@@ -13,6 +13,7 @@ use super::compact_candidate::CompactCandidate;
 use super::parse_decimal_text_exact;
 use crate::measure::{
     MeasurementError,
+    MeasurementParseOptions,
     Unit,
 };
 
@@ -23,6 +24,7 @@ use crate::measure::{
 /// * `input` - Measurement text in compact or whitespace-separated form.
 /// * `strict` - Whether compact aliases are excluded and the final unit is
 ///   parsed canonically.
+/// * `options` - Resource limits applied before parsing.
 ///
 /// # Returns
 ///
@@ -35,15 +37,19 @@ use crate::measure::{
 pub(in crate::measure) fn parse_measurement_text<U>(
     input: &str,
     strict: bool,
+    options: &MeasurementParseOptions,
 ) -> Result<(Decimal, U), MeasurementError>
 where
     U: Unit,
 {
+    if input.len() > options.max_text_bytes() {
+        return Err(MeasurementError::MeasurementTextLimitExceeded {
+            maximum: options.max_text_bytes(),
+        });
+    }
     if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input)
     {
-        return parse_measurement_parts::<U>(
-            input, value_text, unit_text, strict,
-        );
+        return parse_measurement_parts::<U>(value_text, unit_text, strict);
     }
 
     let trimmed = input.trim();
@@ -75,12 +81,46 @@ where
     {
         return Ok((value, U::all()[unit_index]));
     }
+    if has_malformed_scientific_suffix(trimmed) {
+        return Err(MeasurementError::InvalidMeasurementSyntax);
+    }
 
-    let (value_text, unit_text) =
-        split_measurement_parts(input).ok_or_else(|| {
-            MeasurementError::InvalidMeasurement(input.to_owned())
-        })?;
-    parse_measurement_parts::<U>(input, value_text, unit_text, strict)
+    let (value_text, unit_text) = split_measurement_parts(input)
+        .ok_or(MeasurementError::InvalidMeasurementSyntax)?;
+    parse_measurement_parts::<U>(value_text, unit_text, strict)
+}
+
+/// Detects an exponent marker whose required digits are visibly absent.
+///
+/// Known compact unit suffixes are resolved before this check, preserving unit
+/// symbols such as `eV` and explicitly declared exponent-like suffixes.
+///
+/// # Parameters
+///
+/// * `input` - Trimmed measurement text with no recognized compact suffix.
+///
+/// # Returns
+///
+/// `true` when an `e` or `E` immediately after a valid coefficient is followed
+/// by the end of input, whitespace, or a sign without exponent digits.
+fn has_malformed_scientific_suffix(input: &str) -> bool {
+    let Some(value_len) = decimal_prefix_len(input) else {
+        return false;
+    };
+    let suffix = &input[value_len..];
+    let Some(rest) = suffix
+        .strip_prefix('e')
+        .or_else(|| suffix.strip_prefix('E'))
+    else {
+        return false;
+    };
+    if rest.is_empty() || rest.starts_with(char::is_whitespace) {
+        return true;
+    }
+    let Some(after_sign) = rest.strip_prefix(['+', '-']) else {
+        return false;
+    };
+    !matches!(after_sign.as_bytes().first(), Some(b'0'..=b'9'))
 }
 
 /// Retains one valid compact numeric-prefix and unit-suffix interpretation.
@@ -113,7 +153,7 @@ fn collect_compact_candidate(
     {
         return;
     }
-    if let Some(value) = parse_decimal_text_exact(value_text) {
+    if let Ok(value) = parse_decimal_text_exact(value_text) {
         retain_compact_candidate(
             CompactCandidate {
                 value,
@@ -188,7 +228,6 @@ fn resolve_compact_candidates(
 ///
 /// # Parameters
 ///
-/// * `input` - Original text retained for invalid-measurement errors.
 /// * `value_text` - Exact Decimal candidate.
 /// * `unit_text` - Canonical symbol or lenient alias candidate.
 /// * `strict` - Whether aliases must be rejected.
@@ -201,7 +240,6 @@ fn resolve_compact_candidates(
 ///
 /// Returns invalid-measurement, unknown-unit, or non-canonical-unit errors.
 fn parse_measurement_parts<U>(
-    input: &str,
     value_text: &str,
     unit_text: &str,
     strict: bool,
@@ -209,9 +247,7 @@ fn parse_measurement_parts<U>(
 where
     U: Unit,
 {
-    let value = parse_decimal_text_exact(value_text).ok_or_else(|| {
-        MeasurementError::InvalidMeasurement(input.to_owned())
-    })?;
+    let value = parse_decimal_text_exact(value_text)?;
     let unit = if strict {
         U::parse_strict(unit_text)?
     } else {

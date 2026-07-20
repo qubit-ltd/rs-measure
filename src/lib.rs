@@ -32,6 +32,7 @@ pub use measure::{
     ConversionOptions,
     Measurement,
     MeasurementError,
+    MeasurementParseOptions,
     Unit,
     UnitDefinition,
     assert_unit_family_valid,

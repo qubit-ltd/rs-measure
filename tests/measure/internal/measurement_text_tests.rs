@@ -57,13 +57,15 @@ fn test_measurement_text_reports_unknown_unit_in_lenient_mode() {
 
 #[test]
 fn test_measurement_text_rejects_incomplete_numeric_boundaries() {
-    for input in [
-        "", " ", "+", "-", ".", "+.", "-.", "1 ", "1\t", "1.m", "1e999 m",
-    ] {
+    for input in ["", " ", "+", "-", ".", "+.", "-.", "1 ", "1\t", "1.m"] {
         assert_eq!(
             measurement::Length::from_str(input),
-            Err(MeasurementError::InvalidMeasurement(input.to_owned())),
+            Err(MeasurementError::InvalidMeasurementSyntax),
             "input={input:?}",
         );
     }
+    assert_eq!(
+        measurement::Length::from_str("1e999 m"),
+        Err(MeasurementError::UnrepresentableMeasurementValue),
+    );
 }

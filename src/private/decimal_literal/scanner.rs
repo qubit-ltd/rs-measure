@@ -101,6 +101,69 @@ pub(super) const fn parse_digits(
     (initial, digits, index, overflowed)
 }
 
+/// Accumulates decimal digits while deferring a trailing run of zeroes.
+///
+/// # Parameters
+///
+/// * `bytes` - Complete stringified literal bytes.
+/// * `index` - Index of the first digit to inspect.
+/// * `initial` - Significant mantissa accumulated by an earlier component.
+/// * `pending_zeroes` - Deferred zeroes from an earlier component.
+///
+/// # Returns
+///
+/// The significant mantissa, deferred zero count, parsed digit count, stopping
+/// index, and arithmetic-overflow flag.
+pub(super) const fn parse_decimal_digits(
+    bytes: &[u8],
+    mut index: usize,
+    mut initial: u128,
+    mut pending_zeroes: u32,
+) -> (u128, u32, u32, usize, bool) {
+    let mut digits = 0_u32;
+    let mut overflowed = false;
+    while index < bytes.len() {
+        let byte = bytes[index];
+        if byte == b'_' && digits > 0 {
+            index += 1;
+            continue;
+        }
+        if !byte.is_ascii_digit() {
+            break;
+        }
+        digits = digits.saturating_add(1);
+        if byte == b'0' {
+            pending_zeroes = pending_zeroes.saturating_add(1);
+        } else {
+            while pending_zeroes > 0 {
+                initial = match initial.checked_mul(10) {
+                    Some(value) => value,
+                    None => {
+                        overflowed = true;
+                        u128::MAX
+                    }
+                };
+                pending_zeroes -= 1;
+            }
+            initial = match initial.checked_mul(10) {
+                Some(value) => match value.checked_add((byte - b'0') as u128) {
+                    Some(value) => value,
+                    None => {
+                        overflowed = true;
+                        u128::MAX
+                    }
+                },
+                None => {
+                    overflowed = true;
+                    u128::MAX
+                }
+            };
+        }
+        index += 1;
+    }
+    (initial, pending_zeroes, digits, index, overflowed)
+}
+
 /// Parses and combines a scientific-notation exponent.
 ///
 /// # Parameters
@@ -137,10 +200,9 @@ pub(super) const fn parse_exponent(
             None => panic!("Decimal literal exponent is out of range"),
         }
     } else {
-        match current.checked_add(parsed) {
-            Some(value) => value,
-            None => panic!("Decimal literal exponent is out of range"),
-        }
+        // `current` is zero or negative after scanning a Decimal coefficient,
+        // so adding a non-negative `parsed` exponent cannot overflow `i32`.
+        current + parsed
     };
     (combined, end)
 }

@@ -12,6 +12,7 @@ use qubit_measure::{
     ConversionOptions,
     Measurement,
     MeasurementError,
+    MeasurementParseOptions,
     Unit,
     UnitDefinition,
     unit,
@@ -26,12 +27,17 @@ fn test_measure_module_core_types_are_reexported() {
         .expect("meter definition should be valid");
     let factor: ConversionFactor = definition.factor();
     let options = ConversionOptions::default();
+    let parse_options = MeasurementParseOptions::default();
     let result: Result<Measurement<unit::Length>, MeasurementError> =
         Measurement::new(Decimal::ONE, unit::Length::Meter)
             .convert_to(unit::Length::Meter);
 
     assert_eq!(factor.numerator(), Decimal::ONE);
     assert_eq!(options, ConversionOptions::DEFAULT);
+    assert_eq!(
+        parse_options.max_text_bytes(),
+        MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES,
+    );
     assert_eq!(
         result.expect("measurement should be available").value,
         Decimal::ONE,

@@ -71,7 +71,7 @@ fn test_compact_measurement_rejects_reserved_unit_prefixes() {
         assert!(
             matches!(
                 input.parse::<Measurement<CustomLength>>(),
-                Err(MeasurementError::InvalidMeasurement(_)),
+                Err(MeasurementError::InvalidMeasurementSyntax),
             ),
             "accepted ambiguous compact measurement {input:?}",
         );

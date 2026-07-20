@@ -58,7 +58,8 @@ All three fields are required. `quantity` is a stable `snake_case` identifier,
 `value` is a Decimal string, and `unit` is always serialized with and
 deserialized from its canonical symbol. Deserialization rejects aliases and a
 quantity that does not match the requested Rust type. Extra fields are ignored
-for forward-compatible metadata additions.
+for forward-compatible metadata additions. Each string field is limited to
+1,048,576 UTF-8 bytes during deserialization.
 
 ## 3. Decimal precision and rounding
 
@@ -142,6 +143,27 @@ known unit suffixes; input with multiple valid numeric/unit splits returns
 Unit symbols or aliases beginning with `.`, `+`, or `-` must be separated from
 the Decimal value by whitespace; their compact forms are rejected as ambiguous
 numeric boundaries (for example, use `1.25 +cu`).
+
+Measurement values accept ordinary and scientific Decimal text. Exactness is
+decided from the final value, so inputs such as `1.0e-28 m` are accepted, while
+values requiring rounding return `UnrepresentableMeasurementValue`. The parser
+preserves as much input scale as Decimal can represent. Malformed text returns
+`InvalidMeasurementSyntax`.
+
+Default parsing and `FromStr` reject measurement text above 1,048,576 UTF-8
+bytes. Use explicit options to choose a smaller or larger limit:
+
+```rust
+use qubit_measure::{MeasurementParseOptions, measurement};
+
+let options = MeasurementParseOptions::default().with_max_text_bytes(64);
+let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
+assert_eq!(length.value.scale(), 2);
+# Ok::<(), qubit_measure::MeasurementError>(())
+```
+
+Oversized input returns `MeasurementTextLimitExceeded` before Decimal or unit
+scanning begins.
 
 ### Exact `std::time::Duration` adapters
 

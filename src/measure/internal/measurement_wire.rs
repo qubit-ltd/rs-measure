@@ -14,6 +14,9 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub(in crate::measure) struct MeasurementWire {
     /// Stable quantity identifier used to reject cross-quantity data.
+    #[serde(
+        deserialize_with = "super::decimal_text::deserialize_bounded_string"
+    )]
     pub(in crate::measure) quantity: String,
 
     /// Exact decimal value encoded as a string.
@@ -23,5 +26,8 @@ pub(in crate::measure) struct MeasurementWire {
     pub(in crate::measure) value: Decimal,
 
     /// Canonical unit symbol accepted by strict unit parsing.
+    #[serde(
+        deserialize_with = "super::decimal_text::deserialize_bounded_string"
+    )]
     pub(in crate::measure) unit: String,
 }

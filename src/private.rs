@@ -15,6 +15,7 @@ mod unit_metadata;
 #[path = "private/uom_bridge.rs"]
 mod uom_bridge;
 
+pub(crate) use decimal_literal::finalize_exact_decimal;
 pub use decimal_literal::{
     decimal_from_literal,
     positive_decimal_from_literal,
