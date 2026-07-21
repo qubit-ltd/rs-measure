@@ -10,8 +10,8 @@
 use std::time::Duration;
 
 use rust_decimal::Decimal;
-use rust_decimal::prelude::ToPrimitive;
 
+use crate::measure::decimal_conversion::convert_decimal_to_rational;
 use crate::measure::{
     Measurement,
     MeasurementError,
@@ -61,8 +61,8 @@ impl TryFrom<Measurement<Time>> for Duration {
     ///
     /// Returns [`MeasurementError::NegativeDuration`] for negative values,
     /// [`MeasurementError::SubnanosecondDuration`] when exact nanoseconds are
-    /// impossible, [`MeasurementError::DurationOutOfRange`] above
-    /// [`Duration::MAX`], or when exact unit conversion exceeds Decimal range.
+    /// impossible, or [`MeasurementError::DurationOutOfRange`] above
+    /// [`Duration::MAX`].
     fn try_from(measurement: Measurement<Time>) -> Result<Self, Self::Error> {
         let original_value = measurement.value;
         let original_unit = measurement.unit.symbol().to_owned();
@@ -73,25 +73,29 @@ impl TryFrom<Measurement<Time>> for Duration {
             });
         }
 
-        let nanoseconds = match measurement.convert_to(Time::Nanosecond) {
-            Ok(converted) => converted.value.normalize(),
-            Err(_) => {
-                return Err(MeasurementError::DurationOutOfRange {
-                    value: original_value,
-                    unit: original_unit,
-                });
-            }
-        };
-        if !nanoseconds.fract().is_zero() {
+        let source = measurement
+            .unit
+            .definition()
+            .expect("built-in Time definitions are valid");
+        let target = Time::Nanosecond
+            .definition()
+            .expect("built-in Time definitions are valid");
+        let nanoseconds =
+            convert_decimal_to_rational(original_value, source, target);
+        if !nanoseconds.is_integer() {
             return Err(MeasurementError::SubnanosecondDuration {
                 value: original_value,
                 unit: original_unit,
             });
         }
 
-        let total_nanos = nanoseconds
-            .to_u128()
-            .expect("non-negative integral Decimal always fits u128");
+        let total_nanos =
+            u128::try_from(nanoseconds.to_integer()).map_err(|_| {
+                MeasurementError::DurationOutOfRange {
+                    value: original_value,
+                    unit: original_unit.clone(),
+                }
+            })?;
         let maximum_nanos = u128::from(u64::MAX) * NANOS_PER_SECOND
             + u128::from(Duration::MAX.subsec_nanos());
         if total_nanos > maximum_nanos {

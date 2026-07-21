@@ -106,6 +106,24 @@ fn test_subnanosecond_time_cannot_convert_to_duration() {
 }
 
 #[test]
+fn test_large_subnanosecond_time_cannot_convert_to_duration() {
+    let value = Decimal::try_from_i128_with_scale(
+        30_000_000_000_000_000_000_000_000_001,
+        11,
+    )
+    .expect("large minute value should fit Decimal exactly");
+    let measurement = Measurement::new(value, Time::Minute);
+
+    assert_eq!(
+        Duration::try_from(measurement),
+        Err(MeasurementError::SubnanosecondDuration {
+            value,
+            unit: "min".to_owned(),
+        }),
+    );
+}
+
+#[test]
 fn test_time_above_duration_max_is_rejected() {
     let measurement = Measurement::new(Decimal::MAX, Time::Second);
 
@@ -114,6 +132,19 @@ fn test_time_above_duration_max_is_rejected() {
         Err(MeasurementError::DurationOutOfRange {
             value: Decimal::MAX,
             unit: "s".to_owned(),
+        }),
+    );
+}
+
+#[test]
+fn test_time_above_u128_nanosecond_range_is_rejected() {
+    let measurement = Measurement::new(Decimal::MAX, Time::Day);
+
+    assert_eq!(
+        Duration::try_from(measurement),
+        Err(MeasurementError::DurationOutOfRange {
+            value: Decimal::MAX,
+            unit: "d".to_owned(),
         }),
     );
 }
