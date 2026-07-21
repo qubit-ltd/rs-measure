@@ -52,15 +52,7 @@ pub(crate) fn convert_decimal(
         return apply_output_scale(value, options);
     }
 
-    let adjusted =
-        decimal_as_rational(value) + decimal_as_rational(source.offset());
-    let source_factor = source.factor();
-    let target_factor = target.factor();
-    let scaled = adjusted * decimal_as_rational(source_factor.numerator())
-        / decimal_as_rational(source_factor.denominator())
-        * decimal_as_rational(target_factor.denominator())
-        / decimal_as_rational(target_factor.numerator());
-    let exact = &scaled - decimal_as_rational(target.offset());
+    let exact = convert_decimal_to_rational(value, source, target);
 
     match options.mode() {
         ConversionMode::MaximumPrecision => maximum_precision_decimal(&exact)
@@ -75,6 +67,34 @@ pub(crate) fn convert_decimal(
             })
         }
     }
+}
+
+/// Converts a Decimal value exactly between validated unit definitions.
+///
+/// # Parameters
+///
+/// * `value` - Decimal value expressed by `source`.
+/// * `source` - Definition of the input unit.
+/// * `target` - Definition of the requested output unit.
+///
+/// # Returns
+///
+/// The exact rational value expressed by `target`, without applying a Decimal
+/// representation boundary or rounding policy.
+pub(super) fn convert_decimal_to_rational(
+    value: Decimal,
+    source: UnitDefinition,
+    target: UnitDefinition,
+) -> BigRational {
+    let adjusted =
+        decimal_as_rational(value) + decimal_as_rational(source.offset());
+    let source_factor = source.factor();
+    let target_factor = target.factor();
+    let scaled = adjusted * decimal_as_rational(source_factor.numerator())
+        / decimal_as_rational(source_factor.denominator())
+        * decimal_as_rational(target_factor.denominator())
+        / decimal_as_rational(target_factor.numerator());
+    scaled - decimal_as_rational(target.offset())
 }
 
 /// Converts a Decimal to its exact rational representation.
