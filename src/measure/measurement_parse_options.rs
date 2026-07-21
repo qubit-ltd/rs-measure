@@ -11,6 +11,7 @@
 #[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MeasurementParseOptions {
+    /// Inclusive byte limit applied to supplied measurement text.
     max_text_bytes: usize,
 }
 

@@ -34,6 +34,8 @@ define_unit_family! {
         InverseTwelveFemto => { symbol: "inverse-twelve-femto"; coefficient: 1 / 0.000000000000012; }
         /// Identity factor with a positive offset.
         OffsetOne => { symbol: "offset-one"; coefficient: 1; offset: 1; }
+        /// Identity factor with a fractional offset near Decimal's boundary.
+        OffsetPointFour => { symbol: "offset-point-four"; coefficient: 1; offset: 0.4; }
         /// Maximum Decimal factor.
         Maximum => { symbol: "maximum"; coefficient: 79228162514264337593543950335; }
         /// Reciprocal maximum Decimal factor.

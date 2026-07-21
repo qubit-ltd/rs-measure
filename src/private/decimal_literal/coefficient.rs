@@ -70,7 +70,6 @@ pub(super) const fn finalize_decimal(
 /// # Returns
 ///
 /// The exact Decimal when its scale and coefficient fit; otherwise, `None`.
-#[inline]
 pub(crate) const fn finalize_exact_decimal(
     mut mantissa: u128,
     exponent: i64,

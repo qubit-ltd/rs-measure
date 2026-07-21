@@ -381,6 +381,30 @@ fn test_decimal_conversion_reports_offset_overflow() {
 }
 
 #[test]
+fn test_decimal_conversion_rejects_exact_boundary_overflow_before_rounding() {
+    let options = ConversionOptions::maximum_precision();
+
+    assert_eq!(
+        convert(
+            Decimal::MAX,
+            DecimalConversionUnit::OffsetPointFour,
+            DecimalConversionUnit::Base,
+            options,
+        ),
+        Err(MeasurementError::ValueOutOfRange),
+    );
+    assert_eq!(
+        convert(
+            Decimal::MIN,
+            DecimalConversionUnit::Base,
+            DecimalConversionUnit::OffsetPointFour,
+            options,
+        ),
+        Err(MeasurementError::ValueOutOfRange),
+    );
+}
+
+#[test]
 fn test_decimal_conversion_falls_back_when_combined_factor_overflows() {
     assert_eq!(
         convert(

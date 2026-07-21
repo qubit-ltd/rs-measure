@@ -39,8 +39,11 @@ use std::str::FromStr;
 /// normalized base-unit value.
 /// Its Serde contract encodes units through [`Unit::symbol`] and decodes them
 /// through [`Unit::parse_strict`], without requiring unit-specific Serde. Each
-/// wire string is limited to
-/// [`MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES`] bytes.
+/// decoded wire string is limited to
+/// [`MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES`] bytes. This is an
+/// acceptance and parsing-work limit applied after Serde has constructed the
+/// string; callers needing payload or pre-allocation limits must configure
+/// them at the transport or deserializer boundary.
 ///
 /// # Examples
 ///

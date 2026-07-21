@@ -53,18 +53,16 @@ pub(crate) fn convert_decimal(
     }
 
     let exact = convert_decimal_to_rational(value, source, target);
+    if !fits_decimal_range(&exact) {
+        return Err(MeasurementError::ValueOutOfRange);
+    }
 
     match options.mode() {
         ConversionMode::MaximumPrecision => maximum_precision_decimal(&exact)
             .ok_or(MeasurementError::ValueOutOfRange),
         ConversionMode::FixedScale { scale, rounding } => {
-            fixed_scale_decimal(&exact, scale, rounding).ok_or_else(|| {
-                if maximum_precision_decimal(&exact).is_none() {
-                    MeasurementError::ValueOutOfRange
-                } else {
-                    MeasurementError::OutputScaleUnrepresentable { scale }
-                }
-            })
+            fixed_scale_decimal(&exact, scale, rounding)
+                .ok_or(MeasurementError::OutputScaleUnrepresentable { scale })
         }
     }
 }
@@ -112,6 +110,16 @@ fn decimal_as_rational(value: Decimal) -> BigRational {
         BigInt::from(value.mantissa()),
         BigInt::from(10_u8).pow(value.scale()),
     )
+}
+
+/// Tests whether an exact rational lies within Decimal's closed value range.
+///
+/// This check must precede Decimal rounding so an out-of-range rational cannot
+/// round back to Decimal::MIN or Decimal::MAX.
+fn fits_decimal_range(value: &BigRational) -> bool {
+    let minimum = decimal_as_rational(Decimal::MIN);
+    let maximum = decimal_as_rational(Decimal::MAX);
+    value >= &minimum && value <= &maximum
 }
 
 /// Converts an exact rational to the most precise representable Decimal.

@@ -58,8 +58,11 @@ All three fields are required. `quantity` is a stable `snake_case` identifier,
 `value` is a Decimal string, and `unit` is always serialized with and
 deserialized from its canonical symbol. Deserialization rejects aliases and a
 quantity that does not match the requested Rust type. Extra fields are ignored
-for forward-compatible metadata additions. Each string field is limited to
-1,048,576 UTF-8 bytes during deserialization.
+for forward-compatible metadata additions. Each decoded string field is limited
+to 1,048,576 UTF-8 bytes after Serde has constructed it. This bounds accepted
+field text and subsequent parsing work; it is not a transport-payload or
+pre-allocation limit. Configure those limits at the transport or deserializer
+boundary.
 
 ## 3. Decimal precision and rounding
 

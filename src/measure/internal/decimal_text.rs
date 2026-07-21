@@ -132,7 +132,6 @@ fn parse_scientific_exponent(value: &str) -> Option<i64> {
 /// # Errors
 ///
 /// Returns a classified syntax or exact-representation error.
-#[inline]
 fn parse_decimal_base(
     value: &str,
 ) -> Result<(u128, usize, usize, bool), MeasurementError> {
@@ -237,8 +236,13 @@ where
 ///
 /// # Errors
 ///
-/// Returns the deserializer's error for a non-string value or a string that
-/// exceeds [`MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES`].
+/// Returns the deserializer's error for a non-string value or a decoded string
+/// that exceeds [`MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES`].
+///
+/// This function first asks Serde to construct an owned [`String`] and then
+/// checks its byte length. The limit therefore controls field acceptance and
+/// subsequent parsing work; it is neither a transport payload limit nor an
+/// allocation limit enforced before deserialization.
 #[inline]
 pub(super) fn deserialize_bounded_string<'de, D>(
     deserializer: D,
