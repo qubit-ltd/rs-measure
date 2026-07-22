@@ -16,6 +16,7 @@ use rust_decimal::{
     Decimal,
     dec,
 };
+use std::str::FromStr;
 
 #[test]
 fn test_decimal_from_literal_matches_supported_literal_subset() {
@@ -129,6 +130,14 @@ fn test_decimal_from_literal_exercises_scanner_overflow_paths() {
             "overflowing literal {value:?} should panic",
         );
     }
+}
+
+#[test]
+fn test_decimal_from_literal_preserves_interleaved_zero_runs() {
+    let expected = Decimal::from_str("100200300.004005000")
+        .expect("expected Decimal should be representable");
+
+    assert_eq!(decimal_from_literal("100200300.004005000"), expected);
 }
 
 proptest! {

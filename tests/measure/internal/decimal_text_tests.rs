@@ -16,6 +16,7 @@ use rust_decimal::{
     Decimal,
     dec,
 };
+use std::str::FromStr;
 
 /// Verifies that exactly representable scientific text remains supported.
 #[test]
@@ -76,4 +77,18 @@ fn test_decimal_text_accepts_zero_with_extreme_exponents() {
     assert_eq!(tiny, Decimal::new(0, 28));
     assert_eq!(tiny.scale(), 28);
     assert_eq!(large, Decimal::ZERO);
+}
+
+/// Verifies that significant digits separated by zero runs remain exact.
+#[test]
+fn test_decimal_text_preserves_interleaved_and_trailing_zero_runs() {
+    let expected = Decimal::from_str("100200300.004005000")
+        .expect("expected Decimal should be representable");
+    let actual = "100200300.004005000 m"
+        .parse::<measurement::Length>()
+        .expect("zero runs should parse exactly")
+        .value;
+
+    assert_eq!(actual, expected);
+    assert_eq!(actual.scale(), 9);
 }

@@ -135,33 +135,85 @@ pub(super) const fn parse_decimal_digits(
         if byte == b'0' {
             pending_zeroes = pending_zeroes.saturating_add(1);
         } else {
-            while pending_zeroes > 0 {
-                initial = match initial.checked_mul(10) {
-                    Some(value) => value,
-                    None => {
-                        overflowed = true;
-                        u128::MAX
-                    }
-                };
-                pending_zeroes -= 1;
-            }
-            initial = match initial.checked_mul(10) {
-                Some(value) => match value.checked_add((byte - b'0') as u128) {
-                    Some(value) => value,
-                    None => {
-                        overflowed = true;
-                        u128::MAX
-                    }
-                },
-                None => {
-                    overflowed = true;
-                    u128::MAX
-                }
-            };
+            let (flushed, flush_overflowed) =
+                flush_decimal_zeroes(initial, pending_zeroes, overflowed);
+            initial = flushed;
+            overflowed = flush_overflowed;
+            pending_zeroes = 0;
+            let (appended, append_overflowed) =
+                append_decimal_digit(initial, byte - b'0', overflowed);
+            initial = appended;
+            overflowed = append_overflowed;
         }
         index += 1;
     }
     (initial, pending_zeroes, digits, index, overflowed)
+}
+
+/// Appends a run of decimal zeroes with saturating overflow reporting.
+///
+/// # Parameters
+///
+/// * `value` - Significant mantissa accumulated so far.
+/// * `zeroes` - Number of decimal zeroes to append.
+/// * `overflowed` - Whether an earlier accumulation already overflowed.
+///
+/// # Returns
+///
+/// The saturated mantissa and cumulative overflow flag.
+const fn flush_decimal_zeroes(
+    mut value: u128,
+    mut zeroes: u32,
+    mut overflowed: bool,
+) -> (u128, bool) {
+    while zeroes > 0 {
+        let (multiplied, multiply_overflowed) =
+            multiply_decimal(value, overflowed);
+        value = multiplied;
+        overflowed = multiply_overflowed;
+        zeroes -= 1;
+    }
+    (value, overflowed)
+}
+
+/// Appends one non-zero decimal digit with saturating overflow reporting.
+///
+/// # Parameters
+///
+/// * `value` - Significant mantissa accumulated so far.
+/// * `digit` - Decimal digit in the inclusive range `1..=9`.
+/// * `overflowed` - Whether an earlier accumulation already overflowed.
+///
+/// # Returns
+///
+/// The saturated mantissa and cumulative overflow flag.
+const fn append_decimal_digit(
+    value: u128,
+    digit: u8,
+    overflowed: bool,
+) -> (u128, bool) {
+    let (multiplied, multiply_overflowed) = multiply_decimal(value, overflowed);
+    match multiplied.checked_add(digit as u128) {
+        Some(value) => (value, multiply_overflowed),
+        None => (u128::MAX, true),
+    }
+}
+
+/// Multiplies a decimal mantissa by ten with saturating overflow reporting.
+///
+/// # Parameters
+///
+/// * `value` - Mantissa to multiply.
+/// * `overflowed` - Whether an earlier accumulation already overflowed.
+///
+/// # Returns
+///
+/// The saturated product and cumulative overflow flag.
+const fn multiply_decimal(value: u128, overflowed: bool) -> (u128, bool) {
+    match value.checked_mul(10) {
+        Some(value) => (value, overflowed),
+        None => (u128::MAX, true),
+    }
 }
 
 /// Parses and combines a scientific-notation exponent.

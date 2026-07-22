@@ -136,11 +136,7 @@ fn parse_decimal_base(
     value: &str,
 ) -> Result<(u128, usize, usize, bool), MeasurementError> {
     let bytes = value.as_bytes();
-    let (negative, start) = match bytes.first() {
-        Some(b'+') => (false, 1),
-        Some(b'-') => (true, 1),
-        _ => (false, 0),
-    };
+    let (negative, start) = decimal_sign(bytes);
     let mut mantissa = 0_u128;
     let mut trailing_zeroes = 0_usize;
     let mut fraction_digits = 0_usize;
@@ -150,27 +146,17 @@ fn parse_decimal_base(
     for &byte in &bytes[start..] {
         match byte {
             b'.' if !after_decimal_point => after_decimal_point = true,
-            b'0'..=b'9' => {
+            b'0' => {
                 has_digit = true;
-                if after_decimal_point {
-                    fraction_digits += 1;
-                }
-                if byte == b'0' {
-                    trailing_zeroes += 1;
-                    continue;
-                }
-                for _ in 0..trailing_zeroes {
-                    mantissa = mantissa.checked_mul(10).ok_or(
-                        MeasurementError::UnrepresentableMeasurementValue,
-                    )?;
-                }
+                fraction_digits += usize::from(after_decimal_point);
+                trailing_zeroes += 1;
+            }
+            b'1'..=b'9' => {
+                has_digit = true;
+                fraction_digits += usize::from(after_decimal_point);
+                mantissa = append_decimal_zeroes(mantissa, trailing_zeroes)?;
                 trailing_zeroes = 0;
-                mantissa = mantissa
-                    .checked_mul(10)
-                    .and_then(|value| {
-                        value.checked_add(u128::from(byte - b'0'))
-                    })
-                    .ok_or(MeasurementError::UnrepresentableMeasurementValue)?;
+                mantissa = append_decimal_digit(mantissa, byte - b'0')?;
             }
             _ => return Err(MeasurementError::InvalidMeasurementSyntax),
         }
@@ -179,6 +165,77 @@ fn parse_decimal_base(
         return Err(MeasurementError::InvalidMeasurementSyntax);
     }
     Ok((mantissa, trailing_zeroes, fraction_digits, negative))
+}
+
+/// Parses an optional leading sign from a Decimal coefficient.
+///
+/// # Parameters
+///
+/// * `bytes` - Complete Decimal coefficient bytes.
+///
+/// # Returns
+///
+/// The negative-sign flag and index of the first unsigned coefficient byte.
+#[inline(always)]
+fn decimal_sign(bytes: &[u8]) -> (bool, usize) {
+    match bytes.first() {
+        Some(b'+') => (false, 1),
+        Some(b'-') => (true, 1),
+        _ => (false, 0),
+    }
+}
+
+/// Appends deferred decimal zeroes using checked arithmetic.
+///
+/// # Parameters
+///
+/// * `value` - Significant mantissa accumulated so far.
+/// * `zeroes` - Number of decimal zeroes to append.
+///
+/// # Returns
+///
+/// The mantissa after multiplying by ten once per deferred zero.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::UnrepresentableMeasurementValue`] when the
+/// exact mantissa exceeds `u128`.
+fn append_decimal_zeroes(
+    mut value: u128,
+    zeroes: usize,
+) -> Result<u128, MeasurementError> {
+    for _ in 0..zeroes {
+        value = value
+            .checked_mul(10)
+            .ok_or(MeasurementError::UnrepresentableMeasurementValue)?;
+    }
+    Ok(value)
+}
+
+/// Appends one non-zero decimal digit using checked arithmetic.
+///
+/// # Parameters
+///
+/// * `value` - Significant mantissa accumulated so far.
+/// * `digit` - Decimal digit in the inclusive range `1..=9`.
+///
+/// # Returns
+///
+/// The exact mantissa with `digit` appended.
+///
+/// # Errors
+///
+/// Returns [`MeasurementError::UnrepresentableMeasurementValue`] when the
+/// exact mantissa exceeds `u128`.
+#[inline]
+fn append_decimal_digit(
+    value: u128,
+    digit: u8,
+) -> Result<u128, MeasurementError> {
+    value
+        .checked_mul(10)
+        .and_then(|value| value.checked_add(u128::from(digit)))
+        .ok_or(MeasurementError::UnrepresentableMeasurementValue)
 }
 
 /// Converts a negative exponent into a bounded preferred Decimal scale.
