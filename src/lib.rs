@@ -23,6 +23,7 @@ pub mod __private;
 mod consts;
 mod measure;
 pub mod measurement;
+pub mod measurement_text;
 pub mod unit;
 
 #[cfg(feature = "uom")]
