@@ -21,6 +21,7 @@ use rust_decimal::{
 };
 use serde::Serialize;
 use serde_json::json;
+use std::cmp::Ordering;
 use std::str::FromStr;
 
 use super::fixtures::CompactAmbiguityUnit;
@@ -98,6 +99,55 @@ fn test_length_conversion_uses_decimal_without_f64_loss() {
         converted.value,
         Decimal::from_str("123456789012345678.9012345678")
             .expect("expected value should be valid Decimal"),
+    );
+}
+
+#[test]
+fn test_measurement_equivalent_to_compares_physical_values() {
+    let meter = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+    let centimeters =
+        measurement::Length::new(dec!(100), unit::Length::Centimeter);
+
+    assert_ne!(meter, centimeters);
+    assert_eq!(meter.equivalent_to(&centimeters), Ok(true));
+    assert_eq!(centimeters.equivalent_to(&meter), Ok(true));
+}
+
+#[test]
+fn test_measurement_try_cmp_exact_orders_cross_unit_values() {
+    let meter = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+    let centimeters =
+        measurement::Length::new(dec!(99), unit::Length::Centimeter);
+
+    assert_eq!(meter.try_cmp_exact(&centimeters), Ok(Ordering::Greater));
+    assert_eq!(centimeters.try_cmp_exact(&meter), Ok(Ordering::Less));
+}
+
+#[test]
+fn test_measurement_try_cmp_exact_handles_affine_units() {
+    let celsius = measurement::Temperature::new(
+        Decimal::ZERO,
+        unit::Temperature::Celsius,
+    );
+    let fahrenheit =
+        measurement::Temperature::new(dec!(32), unit::Temperature::Fahrenheit);
+
+    assert_eq!(celsius.try_cmp_exact(&fahrenheit), Ok(Ordering::Equal));
+    assert_eq!(celsius.equivalent_to(&fahrenheit), Ok(true));
+}
+
+#[test]
+fn test_measurement_try_cmp_exact_propagates_definition_errors() {
+    type InvalidUnit = ManualValidationUnit<INVALID_DEFINITION>;
+
+    let valid = Measurement::new(Decimal::ONE, InvalidUnit::all()[0]);
+    let invalid = Measurement::new(Decimal::ONE, InvalidUnit::all()[1]);
+
+    assert_eq!(
+        valid.try_cmp_exact(&invalid),
+        Err(MeasurementError::InvalidUnitDefinition {
+            reason: "test definition".to_owned(),
+        }),
     );
 }
 

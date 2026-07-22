@@ -9,6 +9,7 @@
 
 #[cfg(feature = "uom")]
 use crate::measure::UomUnit;
+use crate::measure::decimal_conversion::compare_decimal_values;
 use crate::measure::internal::{
     MeasurementWire,
     parse_measurement_text,
@@ -27,6 +28,7 @@ use serde::{
     Serialize,
     Serializer,
 };
+use std::cmp::Ordering;
 use std::fmt;
 use std::str::FromStr;
 
@@ -44,6 +46,10 @@ use std::str::FromStr;
 /// acceptance and parsing-work limit applied after Serde has constructed the
 /// string; callers needing payload or pre-allocation limits must configure
 /// them at the transport or deserializer boundary.
+///
+/// Derived [`PartialEq`] and [`Eq`] compare the stored Decimal and unit fields,
+/// not their converted physical values. Use [`Measurement::equivalent_to`] or
+/// [`Measurement::try_cmp_exact`] for exact cross-unit semantics.
 ///
 /// # Examples
 ///
@@ -217,6 +223,66 @@ where
     #[inline(always)]
     pub const fn quantity_name(&self) -> &'static str {
         U::QUANTITY
+    }
+
+    /// Compares this measurement with another value of the same quantity.
+    ///
+    /// The comparison converts through exact rational arithmetic. It does not
+    /// apply a Decimal output scale or rounding policy and does not cross
+    /// floating point.
+    ///
+    /// # Parameters
+    ///
+    /// * `other` - Measurement of the same unit family to compare against.
+    ///
+    /// # Returns
+    ///
+    /// The exact physical ordering of `self` and `other`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when either unit
+    /// cannot provide a valid exact definition.
+    #[inline]
+    pub fn try_cmp_exact(
+        &self,
+        other: &Self,
+    ) -> Result<Ordering, MeasurementError> {
+        let left_definition = self.unit.definition()?;
+        let right_definition = other.unit.definition()?;
+        Ok(compare_decimal_values(
+            self.value,
+            left_definition,
+            other.value,
+            right_definition,
+        ))
+    }
+
+    /// Tests whether another measurement represents the same physical value.
+    ///
+    /// Unlike derived [`PartialEq`], this method compares across units through
+    /// exact rational arithmetic and performs no Decimal rounding.
+    ///
+    /// # Parameters
+    ///
+    /// * `other` - Measurement of the same unit family to compare against.
+    ///
+    /// # Returns
+    ///
+    /// `true` when both measurements represent exactly the same physical
+    /// value; otherwise, `false`.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`MeasurementError::InvalidUnitDefinition`] when either unit
+    /// cannot provide a valid exact definition.
+    #[inline]
+    pub fn equivalent_to(
+        &self,
+        other: &Self,
+    ) -> Result<bool, MeasurementError> {
+        self.try_cmp_exact(other)
+            .map(|ordering| ordering == Ordering::Equal)
     }
 
     /// Converts this measurement using [`ConversionOptions::DEFAULT`].

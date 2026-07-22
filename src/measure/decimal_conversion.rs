@@ -123,6 +123,34 @@ pub(super) fn convert_decimal_to_rational(
     scaled - decimal_as_rational(target.offset())
 }
 
+/// Compares two Decimal values through exact unit conversion.
+///
+/// # Parameters
+///
+/// * `left_value` - Decimal value expressed by `left_definition`.
+/// * `left_definition` - Validated definition of the left unit.
+/// * `right_value` - Decimal value expressed by `right_definition`.
+/// * `right_definition` - Validated definition of the right unit.
+///
+/// # Returns
+///
+/// The physical ordering of the two values without Decimal rounding or
+/// floating-point conversion.
+#[inline]
+pub(super) fn compare_decimal_values(
+    left_value: Decimal,
+    left_definition: UnitDefinition,
+    right_value: Decimal,
+    right_definition: UnitDefinition,
+) -> Ordering {
+    let left_in_right_units = convert_decimal_to_rational(
+        left_value,
+        left_definition,
+        right_definition,
+    );
+    left_in_right_units.cmp(&decimal_as_rational(right_value))
+}
+
 /// Converts a Decimal to its exact rational representation.
 ///
 /// # Parameters
