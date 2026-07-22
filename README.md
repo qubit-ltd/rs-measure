@@ -67,7 +67,9 @@ boundary.
 For configuration fields that intentionally use compact text, opt in with
 `#[serde(with = "qubit_measure::measurement_text")]`. The adapter serializes
 canonical strings such as `"2 MiB"` and uses strict parsing when decoding; it
-does not change the default three-field representation.
+does not change the default three-field representation. Optional fields use
+`#[serde(default, with = "qubit_measure::measurement_text::option")]`; present
+values remain canonical strings, while absent values use `null`.
 
 ## 3. Decimal precision and rounding
 
@@ -196,7 +198,8 @@ text or the explicitly lossy whole-millisecond representations used by downstrea
 `KiB` through `TiB`. Definitions follow IEC 80000-13:2025 and use byte as the
 exact base unit. `u64::try_from` and `usize::try_from` return exact whole-byte
 counts; negative, fractional-byte, and out-of-range values are rejected without
-rounding.
+rounding. Conversely, `From<u64>` constructs a byte-based information
+measurement without loss.
 
 ## 6. Ambiguous unit aliases
 

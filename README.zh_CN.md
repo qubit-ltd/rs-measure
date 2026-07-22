@@ -63,7 +63,9 @@ Serde 使用带 quantity 校验的 wire format：
 
 配置字段若明确需要紧凑文本，可显式使用
 `#[serde(with = "qubit_measure::measurement_text")]`。该适配器序列化规范字符串（例如
-`"2 MiB"`），反序列化时采用严格解析；默认三字段表示保持不变。
+`"2 MiB"`），反序列化时采用严格解析；默认三字段表示保持不变。可选字段使用
+`#[serde(default, with = "qubit_measure::measurement_text::option")]`：存在的值仍为规范
+字符串，缺失值表示为 `null`。
 
 ## 3. Decimal 精度与舍入
 
@@ -174,7 +176,8 @@ assert_eq!(length.value.scale(), 2);
 `Information` 支持 bit、byte，十进制 `kB` 到 `TB`，以及二进制 `KiB` 到
 `TiB`。定义遵循 IEC 80000-13:2025，并以 byte 作为精确基准单位。
 `u64::try_from` 和 `usize::try_from` 只返回精确的整 byte 数；负值、非完整
-byte 和越界值会被拒绝，不进行舍入。
+byte 和越界值会被拒绝，不进行舍入。反向的 `From<u64>` 会无损构造以 byte
+为单位的信息量。
 
 ## 6. 歧义单位别名
 
