@@ -61,6 +61,22 @@ fn exact_nonnegative_bytes(
     Ok(bytes.to_integer())
 }
 
+impl From<u64> for Measurement<Information> {
+    /// Creates an information measurement from an exact byte count.
+    ///
+    /// # Parameters
+    ///
+    /// * `bytes` - Non-negative number of bytes to store.
+    ///
+    /// # Returns
+    ///
+    /// An information measurement expressed in [`Information::Byte`].
+    #[inline(always)]
+    fn from(bytes: u64) -> Self {
+        Self::new(Decimal::from(bytes), Information::Byte)
+    }
+}
+
 impl TryFrom<Measurement<Information>> for u64 {
     type Error = MeasurementError;
 

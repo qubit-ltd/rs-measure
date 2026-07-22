@@ -18,6 +18,19 @@ use rust_decimal::{
 };
 
 #[test]
+fn test_information_constructs_u64_as_bytes() {
+    for value in [0, 2_048, u64::MAX] {
+        let measurement: Measurement<Information> = value.into();
+
+        assert_eq!(
+            measurement,
+            Measurement::new(Decimal::from(value), Information::Byte),
+        );
+        assert_eq!(u64::try_from(measurement), Ok(value));
+    }
+}
+
+#[test]
 fn test_information_converts_exactly_to_u64_bytes() {
     for (measurement, expected) in [
         (Measurement::new(dec!(8), Information::Bit), 1),

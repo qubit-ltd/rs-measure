@@ -31,8 +31,8 @@ struct InformationConfig {
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 struct TimeConfig {
     /// Configured timeout.
-    #[serde(with = "measurement_text")]
-    timeout: measurement::Time,
+    #[serde(default, with = "measurement_text::option")]
+    timeout: Option<measurement::Time>,
 }
 
 #[test]
@@ -51,6 +51,39 @@ fn test_measurement_text_serde_round_trip_uses_canonical_compact_string() {
         serde_json::from_value::<InformationConfig>(value)
             .expect("canonical compact measurement should deserialize"),
         config,
+    );
+}
+
+#[test]
+fn test_optional_measurement_text_serde_round_trip_uses_canonical_text() {
+    let config = TimeConfig {
+        timeout: Some(measurement::Time::new(dec!(2), unit::Time::Second)),
+    };
+
+    let value = serde_json::to_value(&config)
+        .expect("optional compact measurement should serialize");
+    assert_eq!(value, json!({"timeout": "2 s"}));
+    assert_eq!(
+        serde_json::from_value::<TimeConfig>(value)
+            .expect("optional compact measurement should deserialize"),
+        config,
+    );
+}
+
+#[test]
+fn test_optional_measurement_text_serde_accepts_null_and_missing_fields() {
+    for value in [json!({"timeout": null}), json!({})] {
+        assert_eq!(
+            serde_json::from_value::<TimeConfig>(value).expect(
+                "null or missing optional measurement should deserialize"
+            ),
+            TimeConfig { timeout: None },
+        );
+    }
+    assert_eq!(
+        serde_json::to_value(TimeConfig { timeout: None })
+            .expect("absent optional measurement should serialize"),
+        json!({"timeout": null}),
     );
 }
 
