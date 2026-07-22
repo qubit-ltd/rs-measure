@@ -40,7 +40,7 @@ assert_eq!(meters.value, Decimal::new(5, 1));
 ```
 
 `Measurement<U>` 保存一个 `Decimal` 和一个类型化单位。`measurement::*` 中的别名与
-`unit::*` 中的枚举覆盖 56 个物理 quantity family。
+`unit::*` 中的枚举覆盖 57 个 quantity family。
 
 ## 2. 三字段 JSON 契约
 
@@ -60,6 +60,10 @@ Serde 使用带 quantity 校验的 wire format：
 反序列化时，每个已解码字符串字段最多接受 1,048,576 个 UTF-8 字节。该限制在 Serde
 构造字符串之后执行，只约束字段是否被接受以及后续解析工作量；它不限制传输 payload，
 也不保证反序列化之前的内存分配上限。此类限制应在传输层或 deserializer 边界配置。
+
+配置字段若明确需要紧凑文本，可显式使用
+`#[serde(with = "qubit_measure::measurement_text")]`。该适配器序列化规范字符串（例如
+`"2 MiB"`），反序列化时采用严格解析；默认三字段表示保持不变。
 
 ## 3. Decimal 精度与舍入
 
@@ -97,6 +101,10 @@ assert_eq!(feet.value.to_string(), "3.2808");
 位数。结果超出 Decimal 范围时返回 `ValueOutOfRange`；数值可表示但不能保留指定 scale 时
 返回 `OutputScaleUnrepresentable`。当源和目标定义相同时，maximum-precision 换算是 no-op，
 当源、目标定义在数学上等价时，会保留原始 Decimal 的 scale 和末尾零。
+
+派生的 `PartialEq` 和 `Eq` 比较存储的 Decimal 与单位字段，因此结构上
+`1 m != 100 cm`。精确物理相等应使用 `equivalent_to`，跨单位精确排序应使用
+`try_cmp_exact`；两者始终使用有理数运算，不应用 Decimal 输出舍入策略。
 
 ## 4. 确定性默认配置
 
@@ -160,6 +168,13 @@ assert_eq!(length.value.scale(), 2);
 `{"quantity","value","unit"}` 三字段 measurement 记录，Serde 反序列化只接受规范单位
 符号。既有的非负 `Duration` 持久化格式应继续使用 `qubit-datatype` 与 `qubit-serde`：
 精确紧凑单位文本，或下游 crate 已采用的显式有损整毫秒格式。
+
+### 精确信息大小适配
+
+`Information` 支持 bit、byte，十进制 `kB` 到 `TB`，以及二进制 `KiB` 到
+`TiB`。定义遵循 IEC 80000-13:2025，并以 byte 作为精确基准单位。
+`u64::try_from` 和 `usize::try_from` 只返回精确的整 byte 数；负值、非完整
+byte 和越界值会被拒绝，不进行舍入。
 
 ## 6. 歧义单位别名
 

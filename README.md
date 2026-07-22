@@ -40,7 +40,7 @@ assert_eq!(meters.value, Decimal::new(5, 1));
 ```
 
 `Measurement<U>` stores a `Decimal` and a typed unit. The aliases in
-`measurement::*` and enums in `unit::*` cover 56 physical quantity families.
+`measurement::*` and enums in `unit::*` cover 57 quantity families.
 
 ## 2. Three-field JSON contract
 
@@ -63,6 +63,11 @@ to 1,048,576 UTF-8 bytes after Serde has constructed it. This bounds accepted
 field text and subsequent parsing work; it is not a transport-payload or
 pre-allocation limit. Configure those limits at the transport or deserializer
 boundary.
+
+For configuration fields that intentionally use compact text, opt in with
+`#[serde(with = "qubit_measure::measurement_text")]`. The adapter serializes
+canonical strings such as `"2 MiB"` and uses strict parsing when decoding; it
+does not change the default three-field representation.
 
 ## 3. Decimal precision and rounding
 
@@ -108,6 +113,11 @@ exactly the requested number of decimal places. Values outside Decimal's range r
 `OutputScaleUnrepresentable`. When the source and target definitions are
 mathematically equivalent, maximum-precision conversion is a no-op and preserves
 the original Decimal scale and trailing zeroes.
+
+Derived `PartialEq` and `Eq` compare the stored Decimal and unit fields, so
+`1 m != 100 cm` structurally. Use `equivalent_to` for exact physical equality
+or `try_cmp_exact` for exact cross-unit ordering. Both methods stay in rational
+arithmetic and never apply the Decimal output-rounding policy.
 
 ## 4. Deterministic defaults
 
@@ -179,6 +189,14 @@ uses the three-field measurement record `{"quantity","value","unit"}` and accept
 the canonical unit symbol during Serde deserialization. Use `qubit-datatype` and
 `qubit-serde` for their established non-negative `Duration` formats: compact exact unit
 text or the explicitly lossy whole-millisecond representations used by downstream crates.
+
+### Exact information-size adapters
+
+`Information` supports bit and byte, decimal `kB` through `TB`, and binary
+`KiB` through `TiB`. Definitions follow IEC 80000-13:2025 and use byte as the
+exact base unit. `u64::try_from` and `usize::try_from` return exact whole-byte
+counts; negative, fractional-byte, and out-of-range values are rejected without
+rounding.
 
 ## 6. Ambiguous unit aliases
 
