@@ -96,6 +96,7 @@ fn test_builtin_unit_persistence_contract_matches_golden_manifest() {
         unit::HeatFluxDensity,
         unit::Illuminance,
         unit::Inductance,
+        unit::Information,
         unit::KinematicViscosity,
         unit::Length,
         unit::Luminance,

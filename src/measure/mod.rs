@@ -10,6 +10,7 @@
 mod conversion_factor;
 mod conversion_options;
 mod decimal_conversion;
+mod information_integer;
 mod internal;
 mod measurement;
 mod measurement_error;
@@ -57,6 +58,7 @@ pub use units::{
     HeatFluxDensity,
     Illuminance,
     Inductance,
+    Information,
     KinematicViscosity,
     Length,
     Luminance,

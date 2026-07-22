@@ -79,6 +79,7 @@ fn test_unit_definition_provenance_covers_every_builtin_unit() {
     let known_source_ids = BTreeSet::from([
         "BIPM-SI-9.3.01",
         "CODATA-2022-V9.0",
+        "IEC-80000-13-2025",
         "NIST-DLMF-3.12",
         "NIST-HB-44-2026",
         "NIST-SP-811-2008",

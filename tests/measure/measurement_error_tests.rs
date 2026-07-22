@@ -101,6 +101,28 @@ fn test_measurement_error_new_variants_include_context() {
             },
             "duration is out of range: 1 a (365 d)",
         ),
+        (
+            MeasurementError::NegativeInformation {
+                value: dec!(-1),
+                unit: "B".to_owned(),
+            },
+            "negative information size: -1 B",
+        ),
+        (
+            MeasurementError::FractionalByteInformation {
+                value: dec!(1),
+                unit: "b".to_owned(),
+            },
+            "information size is not a whole number of bytes: 1 b",
+        ),
+        (
+            MeasurementError::InformationOutOfRange {
+                value: dec!(1),
+                unit: "TiB".to_owned(),
+                target: "usize",
+            },
+            "information size is out of range for usize: 1 TiB",
+        ),
     ];
 
     for (error, expected) in cases {

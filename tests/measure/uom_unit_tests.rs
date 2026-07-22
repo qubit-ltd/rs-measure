@@ -47,6 +47,7 @@ use uom::si::f64::{
     HeatFluxDensity as UomHeatFluxDensity,
     Illuminance as UomIlluminance,
     Inductance as UomInductance,
+    Information as UomInformation,
     KinematicViscosity as UomKinematicViscosity,
     Length as UomLength,
     Luminance as UomLuminance,
@@ -81,6 +82,7 @@ use uom::si::f64::{
 };
 use uom::si::frequency::hertz;
 use uom::si::heat_capacity::joule_per_kelvin;
+use uom::si::information::byte;
 use uom::si::length::meter;
 use uom::si::mass::kilogram;
 use uom::si::mass_density::kilogram_per_cubic_meter;
@@ -158,6 +160,7 @@ fn test_all_uom_unit_families_use_expected_quantity_types() {
     assert_uom_quantity_type::<unit::HeatFluxDensity, UomHeatFluxDensity>();
     assert_uom_quantity_type::<unit::Illuminance, UomIlluminance>();
     assert_uom_quantity_type::<unit::Inductance, UomInductance>();
+    assert_uom_quantity_type::<unit::Information, UomInformation>();
     assert_uom_quantity_type::<unit::KinematicViscosity, UomKinematicViscosity>(
     );
     assert_uom_quantity_type::<unit::Length, UomLength>();
@@ -613,6 +616,7 @@ fn test_all_supported_unit_variants_bridge_through_uom() {
     assert_unit_family_matches_uom_base!(unit::ElectricalResistance);
     assert_unit_family_matches_uom_base!(unit::ElectricalConductance);
     assert_unit_family_matches_uom_base!(unit::Inductance);
+    assert_unit_family_matches_uom_base!(unit::Information);
     assert_unit_family_matches_uom_base!(unit::Force);
     assert_unit_family_matches_uom_base!(unit::Acceleration);
     assert_unit_family_matches_uom_base!(unit::Torque);
@@ -649,6 +653,16 @@ fn test_all_supported_unit_variants_bridge_through_uom() {
     assert_unit_family_matches_uom_base!(unit::MolarVolume);
     assert_unit_family_matches_uom_base!(unit::CatalyticActivityConcentration);
     assert_unit_family_matches_uom_base!(unit::SpecificRadioactivity);
+}
+
+#[test]
+fn test_information_uom_bridge_uses_byte_base() {
+    let information = measurement::Information::new(
+        Decimal::new(2, 0),
+        unit::Information::Kibibyte,
+    );
+
+    assert_approx_eq(information.to_uom_approx().get::<byte>(), 2_048.0);
 }
 
 #[test]

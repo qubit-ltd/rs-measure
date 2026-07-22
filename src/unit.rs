@@ -42,6 +42,7 @@ pub use crate::measure::{
     HeatFluxDensity,
     Illuminance,
     Inductance,
+    Information,
     KinematicViscosity,
     Length,
     Luminance,

@@ -173,6 +173,18 @@ unit "µH" aliases ["uH","μH"]
 unit "mH" aliases []
 unit "H" aliases []
 wire {"quantity":"inductance","value":"1","unit":"nH"}
+quantity "information"
+unit "b" aliases []
+unit "B" aliases []
+unit "kB" aliases []
+unit "MB" aliases []
+unit "GB" aliases []
+unit "TB" aliases []
+unit "KiB" aliases []
+unit "MiB" aliases []
+unit "GiB" aliases []
+unit "TiB" aliases []
+wire {"quantity":"information","value":"1","unit":"b"}
 quantity "kinematic_viscosity"
 unit "mm²/s" aliases ["mm2/s","mm^2/s"]
 unit "m²/s" aliases ["m2/s","m^2/s"]

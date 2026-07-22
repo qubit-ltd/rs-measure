@@ -16,6 +16,7 @@ mod conversion_factor_tests;
 mod conversion_options_tests;
 mod decimal_conversion_tests;
 mod external_unit_tests;
+mod information_integer_tests;
 mod internal;
 mod internal_tests;
 mod measurement_error_tests;

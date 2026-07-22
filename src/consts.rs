@@ -603,6 +603,36 @@ pub(crate) mod inductance {
     pub(crate) const HENRY: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
+/// Conversion constants for information units, expressed in bytes.
+pub(crate) mod information {
+    use crate::measure::UnitDefinition;
+
+    /// Exact conversion definition for the `Bit` unit.
+    pub(crate) const BIT: UnitDefinition = definition!(1, 8, 0, 0);
+    /// Exact conversion definition for the `Byte` unit.
+    pub(crate) const BYTE: UnitDefinition = definition!(1, 1, 0, 0);
+    /// Exact conversion definition for the `Kilobyte` unit.
+    pub(crate) const KILOBYTE: UnitDefinition = definition!(1000, 1, 0, 0);
+    /// Exact conversion definition for the `Megabyte` unit.
+    pub(crate) const MEGABYTE: UnitDefinition = definition!(1000000, 1, 0, 0);
+    /// Exact conversion definition for the `Gigabyte` unit.
+    pub(crate) const GIGABYTE: UnitDefinition =
+        definition!(1000000000, 1, 0, 0);
+    /// Exact conversion definition for the `Terabyte` unit.
+    pub(crate) const TERABYTE: UnitDefinition =
+        definition!(1000000000000, 1, 0, 0);
+    /// Exact conversion definition for the `Kibibyte` unit.
+    pub(crate) const KIBIBYTE: UnitDefinition = definition!(1024, 1, 0, 0);
+    /// Exact conversion definition for the `Mebibyte` unit.
+    pub(crate) const MEBIBYTE: UnitDefinition = definition!(1048576, 1, 0, 0);
+    /// Exact conversion definition for the `Gibibyte` unit.
+    pub(crate) const GIBIBYTE: UnitDefinition =
+        definition!(1073741824, 1, 0, 0);
+    /// Exact conversion definition for the `Tebibyte` unit.
+    pub(crate) const TEBIBYTE: UnitDefinition =
+        definition!(1099511627776, 1, 0, 0);
+}
+
 /// Conversion constants for kinematic viscosity units.
 pub(crate) mod kinematic_viscosity {
     use crate::measure::UnitDefinition;

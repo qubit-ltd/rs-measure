@@ -8,6 +8,7 @@
 # NIST-HB-44-2026 https://doi.org/10.6028/NIST.HB.44-2026
 # CODATA-2022-V9.0 https://physics.nist.gov/cuu/Reference/versioncon.shtml
 # NIST-DLMF-3.12 https://dlmf.nist.gov/3.12
+# IEC-80000-13-2025 https://webstore.iec.ch/en/publication/87379
 quantity	unit	source_ids	numeric_policy	scope
 acceleration	mm/s²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
 acceleration	m/s²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
@@ -134,6 +135,16 @@ inductance	nH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
 inductance	µH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
 inductance	mH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
 inductance	H	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+information	b	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	B	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	kB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	MB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	GB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	TB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	KiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	MiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	GiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	TiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
 kinematic_viscosity	mm²/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
 kinematic_viscosity	m²/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
 kinematic_viscosity	St	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions

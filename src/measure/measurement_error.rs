@@ -81,6 +81,39 @@ pub enum MeasurementError {
         unit: String,
     },
 
+    /// A negative information measurement cannot represent a byte count.
+    #[error("negative information size: {value} {unit}")]
+    NegativeInformation {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original information unit.
+        unit: String,
+    },
+
+    /// An information measurement is not an exact whole number of bytes.
+    #[error("information size is not a whole number of bytes: {value} {unit}")]
+    FractionalByteInformation {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original information unit.
+        unit: String,
+    },
+
+    /// An exact byte count cannot be represented by the requested integer.
+    #[error("information size is out of range for {target}: {value} {unit}")]
+    InformationOutOfRange {
+        /// Original Decimal measurement value.
+        value: rust_decimal::Decimal,
+
+        /// Canonical symbol of the original information unit.
+        unit: String,
+
+        /// Name of the requested integer target type.
+        target: &'static str,
+    },
+
     /// Floating-point-to-decimal conversion failed.
     #[error("f64 value cannot be represented as Decimal: {0}")]
     DecimalConversion(String),
