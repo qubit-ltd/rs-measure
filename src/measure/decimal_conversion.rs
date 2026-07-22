@@ -48,7 +48,9 @@ pub(crate) fn convert_decimal(
     target: UnitDefinition,
     options: ConversionOptions,
 ) -> Result<Decimal, MeasurementError> {
-    if source == target {
+    if source == target
+        || definitions_are_mathematically_equivalent(source, target)
+    {
         return apply_output_scale(value, options);
     }
 
@@ -65,6 +67,32 @@ pub(crate) fn convert_decimal(
                 .ok_or(MeasurementError::OutputScaleUnrepresentable { scale })
         }
     }
+}
+
+/// Tests whether two unit definitions apply the same affine conversion.
+///
+/// # Parameters
+///
+/// * `source` - First validated unit definition.
+/// * `target` - Second validated unit definition.
+///
+/// # Returns
+///
+/// `true` when both definitions have the same offset and mathematically equal
+/// conversion factors, even if their stored Decimal ratio terms differ.
+fn definitions_are_mathematically_equivalent(
+    source: UnitDefinition,
+    target: UnitDefinition,
+) -> bool {
+    if source.offset() != target.offset() {
+        return false;
+    }
+    let source_factor = source.factor();
+    let target_factor = target.factor();
+    decimal_as_rational(source_factor.numerator())
+        * decimal_as_rational(target_factor.denominator())
+        == decimal_as_rational(target_factor.numerator())
+            * decimal_as_rational(source_factor.denominator())
 }
 
 /// Converts a Decimal value exactly between validated unit definitions.

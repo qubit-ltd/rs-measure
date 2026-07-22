@@ -229,9 +229,9 @@ where
     ///
     /// A measurement converted to `target` through exact rational factors and
     /// the default maximum-precision Decimal output policy.
-    /// When the source and target definitions are equal, this policy preserves
-    /// the original Decimal representation, including its scale and trailing
-    /// zeroes.
+    /// When the source and target definitions are mathematically equivalent,
+    /// this policy preserves the original Decimal representation, including
+    /// its scale and trailing zeroes.
     ///
     /// # Errors
     ///

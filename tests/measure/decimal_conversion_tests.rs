@@ -248,6 +248,23 @@ fn test_identical_definition_preserves_or_applies_scale() {
 }
 
 #[test]
+fn test_mathematically_equivalent_definitions_preserve_scale() {
+    let value = dec!(12.3400);
+    let options = ConversionOptions::maximum_precision();
+
+    let converted = convert(
+        value,
+        DecimalConversionUnit::DivideByPointOne,
+        DecimalConversionUnit::Ten,
+        options,
+    )
+    .expect("equivalent definitions should convert");
+
+    assert_eq!(converted, value);
+    assert_eq!(converted.scale(), value.scale());
+}
+
+#[test]
 fn test_identical_tiny_definition_applies_scale_without_ratio_underflow() {
     let options = ConversionOptions::fixed_scale(
         2,

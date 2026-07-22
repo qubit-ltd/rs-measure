@@ -105,9 +105,9 @@ that no fixed-scale strategy was selected; it does not mean that representation-
 rounding is impossible. `fixed_scale(0..=28, strategy)` instead rounds and retains
 exactly the requested number of decimal places. Values outside Decimal's range return
 `ValueOutOfRange`; a value that cannot retain the requested scale returns
-`OutputScaleUnrepresentable`. When the source and target definitions are equal,
-maximum-precision conversion is a no-op and preserves the original Decimal scale and
-trailing zeroes.
+`OutputScaleUnrepresentable`. When the source and target definitions are
+mathematically equivalent, maximum-precision conversion is a no-op and preserves
+the original Decimal scale and trailing zeroes.
 
 ## 4. Deterministic defaults
 
@@ -173,6 +173,12 @@ scanning begins.
 `Measurement<Time>` converts to and from `std::time::Duration` through standard
 `From` and `TryFrom` implementations. Conversion is exact to one nanosecond and
 rejects negative, subnanosecond, and out-of-range measurements without rounding.
+
+This adapter is not a replacement for the workspace Duration codecs. `Measurement<Time>`
+uses the three-field measurement record `{"quantity","value","unit"}` and accepts only
+the canonical unit symbol during Serde deserialization. Use `qubit-datatype` and
+`qubit-serde` for their established non-negative `Duration` formats: compact exact unit
+text or the explicitly lossy whole-millisecond representations used by downstream crates.
 
 ## 6. Ambiguous unit aliases
 

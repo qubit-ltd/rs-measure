@@ -17,6 +17,7 @@ use qubit_measure::{
     unit,
 };
 use rust_decimal::dec;
+use serde_json::from_str;
 
 #[test]
 fn test_builtin_revolution_factor_uses_reduced_terms() {
@@ -34,26 +35,45 @@ fn test_builtin_revolution_factor_uses_reduced_terms() {
 }
 
 #[test]
-fn test_unit_definition_provenance_covers_every_builtin_quantity() {
+fn test_unit_definition_provenance_covers_every_builtin_unit() {
     let manifest_path = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("docs/unit-definition-provenance.tsv");
     let manifest = fs::read_to_string(&manifest_path)
         .expect("unit-definition provenance manifest should exist");
-    let expected =
-        include_str!("measure/fixtures/unit_persistence_contract.txt")
-            .lines()
-            .filter_map(|line| {
-                line.strip_prefix("quantity \"")
-                    .and_then(|quantity| quantity.strip_suffix('"'))
-            })
-            .collect::<BTreeSet<_>>();
+    let mut expected = BTreeSet::new();
+    let mut current_quantity = None;
+    for line in
+        include_str!("measure/fixtures/unit_persistence_contract.txt").lines()
+    {
+        if let Some(quantity) = line
+            .strip_prefix("quantity \"")
+            .and_then(|quantity| quantity.strip_suffix('"'))
+        {
+            current_quantity = Some(quantity);
+            continue;
+        }
+        let Some(unit) = line.strip_prefix("unit ") else {
+            continue;
+        };
+        let (symbol, _) = unit
+            .split_once(" aliases ")
+            .expect("unit persistence contract should contain aliases");
+        let symbol = from_str::<String>(symbol)
+            .expect("unit symbol should be valid JSON text");
+        let quantity = current_quantity
+            .expect("unit persistence contract should declare its quantity");
+        assert!(
+            expected.insert((quantity.to_owned(), symbol)),
+            "duplicate unit persistence contract entry for {quantity}",
+        );
+    }
     let mut lines = manifest
         .lines()
         .filter(|line| !line.is_empty() && !line.starts_with('#'));
 
     assert_eq!(
         lines.next(),
-        Some("quantity\tsource_ids\tnumeric_policy\tscope"),
+        Some("quantity\tunit\tsource_ids\tnumeric_policy\tscope"),
     );
 
     let known_source_ids = BTreeSet::from([
@@ -68,18 +88,20 @@ fn test_unit_definition_provenance_covers_every_builtin_quantity() {
         let fields = line.split('\t').collect::<Vec<_>>();
         assert_eq!(
             fields.len(),
-            4,
-            "manifest row {} must contain four tab-separated fields",
+            5,
+            "manifest row {} must contain five tab-separated fields",
             index + 2,
         );
         let quantity = fields[0];
-        let source_ids = fields[1];
-        let numeric_policy = fields[2];
-        let scope = fields[3];
+        let unit = fields[1];
+        let source_ids = fields[2];
+        let numeric_policy = fields[3];
+        let scope = fields[4];
         assert!(
-            actual.insert(quantity),
-            "duplicate provenance quantity: {quantity}",
+            actual.insert((quantity.to_owned(), unit.to_owned())),
+            "duplicate provenance unit: {quantity} {unit}",
         );
+        assert!(!unit.is_empty(), "missing unit for {quantity}");
         assert!(!source_ids.is_empty(), "missing sources for {quantity}");
         for source_id in source_ids.split(';') {
             assert!(

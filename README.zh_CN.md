@@ -96,7 +96,7 @@ assert_eq!(feet.value.to_string(), "3.2808");
 边界上绝不会舍入。`fixed_scale(0..=28, strategy)` 则按指定策略舍入并保留恰好指定的小数
 位数。结果超出 Decimal 范围时返回 `ValueOutOfRange`；数值可表示但不能保留指定 scale 时
 返回 `OutputScaleUnrepresentable`。当源和目标定义相同时，maximum-precision 换算是 no-op，
-会保留原始 Decimal 的 scale 和末尾零。
+当源、目标定义在数学上等价时，会保留原始 Decimal 的 scale 和末尾零。
 
 ## 4. 确定性默认配置
 
@@ -155,6 +155,11 @@ assert_eq!(length.value.scale(), 2);
 `Measurement<Time>` 通过标准 `From` 和 `TryFrom` 实现与
 `std::time::Duration` 双向转换。转换精确到纳秒；负值、亚纳秒值和越界值会直接报错，
 不会隐式舍入。
+
+该适配不是工作区 Duration codec 的替代品。`Measurement<Time>` 使用
+`{"quantity","value","unit"}` 三字段 measurement 记录，Serde 反序列化只接受规范单位
+符号。既有的非负 `Duration` 持久化格式应继续使用 `qubit-datatype` 与 `qubit-serde`：
+精确紧凑单位文本，或下游 crate 已采用的显式有损整毫秒格式。
 
 ## 6. 歧义单位别名
 
