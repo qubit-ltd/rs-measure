@@ -326,19 +326,6 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 Use `uom` for dimensional calculations where binary floating-point behavior is
 appropriate, then explicitly adapt the result at the persistence boundary.
 
-## 9. Migration from 0.3 to 0.4
-
-| 0.3 | 0.4 |
-| --- | --- |
-| `qubit_measure::{Decimal, RoundingStrategy}` | Import both types directly from `rust_decimal` |
-| `FromStr` and default Serde accepted aliases | Canonical-only; use explicit `parse_lenient` for aliases |
-| Aliases could collide with canonical symbols | Canonical symbols and aliases must be disjoint |
-| Downstream macros resolved re-exported dependencies | Downstream crates declare `serde` and, when needed, `rust_decimal` directly |
-
-This release intentionally removes dependency re-exports and tightens parsing and
-unit-family metadata. Downstream crates must update imports, dependencies, and any
-persisted alias spellings.
-
 ## Testing
 
 ```bash

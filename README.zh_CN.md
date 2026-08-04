@@ -289,18 +289,6 @@ assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
 
 适合二进制浮点语义的量纲计算仍可使用 `uom`，然后在持久化边界显式适配结果。
 
-## 9. 从 0.3 迁移到 0.4
-
-| 0.3 | 0.4 |
-| --- | --- |
-| `qubit_measure::{Decimal, RoundingStrategy}` | 直接从 `rust_decimal` 导入这两个类型 |
-| `FromStr` 和默认 Serde 接受别名 | 只接受规范符号；别名使用显式 `parse_lenient` |
-| 别名可以与规范符号冲突 | 规范符号与别名必须互不相交 |
-| 下游宏通过本 crate 的重导出解析依赖 | 下游直接声明 `serde`，并在需要时声明 `rust_decimal` |
-
-本版本有意移除依赖项重导出，并收紧解析与单位族元数据契约。下游 crate 必须更新导入、
-依赖声明，以及持久化数据中的别名拼写。
-
 ## 测试
 
 ```bash
