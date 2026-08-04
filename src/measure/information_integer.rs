@@ -7,7 +7,7 @@
 // =============================================================================
 //! Exact integer-byte adapters for information measurements.
 
-use num_bigint::BigInt;
+use num_bigint_04::BigInt;
 use rust_decimal::Decimal;
 
 use crate::measure::decimal_conversion::convert_decimal_to_rational;

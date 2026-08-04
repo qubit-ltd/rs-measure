@@ -9,7 +9,7 @@
 
 use std::cmp::Ordering;
 
-use num_bigint::BigInt;
+use num_bigint_04::BigInt;
 use num_rational::BigRational;
 use rust_decimal::{
     Decimal,

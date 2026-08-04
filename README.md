@@ -16,7 +16,7 @@ The exact Decimal core is the default and does not compile `uom`:
 
 ```toml
 [dependencies]
-qubit-measure = "0.5"
+qubit-measure = "0.6"
 rust_decimal = "1.39"
 ```
 
@@ -24,7 +24,7 @@ Enable the approximate `f64` bridge explicitly:
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.5", features = ["uom"] }
+qubit-measure = { version = "0.6", features = ["uom"] }
 rust_decimal = "1.39"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
@@ -244,7 +244,7 @@ external families declare both dependencies directly:
 
 ```toml
 [dependencies]
-qubit-measure = "0.5"
+qubit-measure = "0.6"
 rust_decimal = "1.39"
 serde = "1.0"
 ```
@@ -309,7 +309,7 @@ Consumers that name `uom` types declare `uom` directly:
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.5", features = ["uom"] }
+qubit-measure = { version = "0.6", features = ["uom"] }
 rust_decimal = "1.39"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
