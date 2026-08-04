@@ -8,6 +8,7 @@
 //! Public core-type aggregation tests for the measure module.
 
 use qubit_measure::{
+    unit,
     ConversionFactor,
     ConversionOptions,
     Measurement,
@@ -15,7 +16,6 @@ use qubit_measure::{
     MeasurementParseOptions,
     Unit,
     UnitDefinition,
-    unit,
 };
 use rust_decimal::Decimal;
 
@@ -42,4 +42,13 @@ fn test_measure_module_core_types_are_reexported() {
         result.expect("measurement should be available").value,
         Decimal::ONE,
     );
+}
+
+#[test]
+fn test_measurement_parse_options_support_const_construction() {
+    const DEFAULT: MeasurementParseOptions = MeasurementParseOptions::DEFAULT;
+    const CUSTOM: MeasurementParseOptions = MeasurementParseOptions::new(4_096);
+
+    assert_eq!(DEFAULT.max_text_bytes(), 1_048_576);
+    assert_eq!(CUSTOM.max_text_bytes(), 4_096);
 }

@@ -19,6 +19,27 @@ impl MeasurementParseOptions {
     /// Default maximum measurement text length in bytes.
     pub const DEFAULT_MAX_TEXT_BYTES: usize = 1_048_576;
 
+    /// The default measurement text parsing limits.
+    pub const DEFAULT: Self = Self {
+        max_text_bytes: Self::DEFAULT_MAX_TEXT_BYTES,
+    };
+
+    /// Creates parsing options with the specified measurement text byte limit.
+    ///
+    /// # Parameters
+    ///
+    /// * `maximum` - Inclusive maximum number of UTF-8 bytes.
+    ///
+    /// # Returns
+    ///
+    /// Parsing options using the supplied byte limit.
+    #[inline(always)]
+    pub const fn new(maximum: usize) -> Self {
+        Self {
+            max_text_bytes: maximum,
+        }
+    }
+
     /// Returns the maximum accepted measurement text length in bytes.
     ///
     /// # Returns
@@ -50,8 +71,6 @@ impl Default for MeasurementParseOptions {
     /// Creates options using [`Self::DEFAULT_MAX_TEXT_BYTES`].
     #[inline(always)]
     fn default() -> Self {
-        Self {
-            max_text_bytes: Self::DEFAULT_MAX_TEXT_BYTES,
-        }
+        Self::DEFAULT
     }
 }
