@@ -18,7 +18,7 @@ include = [
     "/README.md",
     "/README.zh_CN.md",
     "/benches/**",
-    "/docs/unit-definition-provenance.tsv",
+    "/doc/unit-definition-provenance.tsv",
     "/examples/**",
     "/src/**",
     "/tests/**",

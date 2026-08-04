@@ -86,7 +86,7 @@ finite approximations: pi uses 23 decimal places from
 [NIST DLMF section 3.12](https://dlmf.nist.gov/3.12), the finite tau is exactly twice
 that value, and square degree uses 28 decimal places. The versioned source set,
 numeric policy, and coverage scope for every built-in quantity family are recorded
-in the machine-readable [unit-definition provenance manifest](docs/unit-definition-provenance.tsv).
+in the machine-readable [unit-definition provenance manifest](doc/unit-definition-provenance.tsv).
 
 ```rust
 use qubit_measure::{

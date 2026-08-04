@@ -1,0 +1,318 @@
+# Built-in unit-definition provenance manifest.
+# Each row identifies one canonical built-in unit returned by Unit::all().
+# source_ids are semicolon-separated stable identifiers from the catalog below.
+# numeric_policy is exact unless a unit uses a documented finite irrational approximation.
+#
+# BIPM-SI-9.3.01 https://www.bipm.org/documents/20126/41483022/SI-Brochure-9-EN.pdf/2d2b50bf-f2b4-9661-f402-5f9d66e4b507?version=4.0
+# NIST-SP-811-2008 https://doi.org/10.6028/NIST.SP.811e2008
+# NIST-HB-44-2026 https://doi.org/10.6028/NIST.HB.44-2026
+# CODATA-2022-V9.0 https://physics.nist.gov/cuu/Reference/versioncon.shtml
+# NIST-DLMF-3.12 https://dlmf.nist.gov/3.12
+# IEC-80000-13-2025 https://webstore.iec.ch/en/publication/87379
+quantity	unit	source_ids	numeric_policy	scope
+acceleration	mm/s²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
+acceleration	m/s²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
+acceleration	ft/s²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
+acceleration	g₀	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI acceleration, international foot, and standard gravity
+amount_of_substance	µmol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+amount_of_substance	mmol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+amount_of_substance	mol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+amount_of_substance	kmol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+amount_of_substance	particle	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
+angle	rad	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angle	°	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angle	r	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angle	′	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angle	″	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
+angular_velocity	rad/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+angular_velocity	°/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+angular_velocity	rps	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+angular_velocity	rpm	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+area	mm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	cm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	m²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	km²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	ha	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	ac	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	in²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	ft²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	yd²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+area	mi²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
+capacitance	pF	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+capacitance	nF	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+capacitance	µF	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+capacitance	mF	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+capacitance	F	BIPM-SI-9.3.01	exact	SI farad and decimal prefixes
+catalytic_activity	µkat	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity	mkat	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity	kat	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity	U	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity	mU	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI katal and enzyme-unit conversion
+catalytic_activity_concentration	kat/m³	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Catalytic activity divided by SI volume
+catalytic_activity_concentration	U/L	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Catalytic activity divided by SI volume
+catalytic_activity_concentration	mU/mL	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Catalytic activity divided by SI volume
+dynamic_viscosity	µPa · s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+dynamic_viscosity	mPa · s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+dynamic_viscosity	Pa · s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+dynamic_viscosity	P	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+dynamic_viscosity	cP	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI pascal second and poise conversions
+electric_charge	µC	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_charge	mC	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_charge	C	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_charge	kC	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_charge	A · h	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_charge	mA · h	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI coulomb and ampere-hour conversions
+electric_current	pA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	nA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	µA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	mA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	A	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	kA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current	MA	BIPM-SI-9.3.01	exact	SI ampere and decimal prefixes
+electric_current_density	A/m²	BIPM-SI-9.3.01	exact	SI current divided by SI area
+electric_current_density	A/cm²	BIPM-SI-9.3.01	exact	SI current divided by SI area
+electric_current_density	A/mm²	BIPM-SI-9.3.01	exact	SI current divided by SI area
+electric_field	V/m	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_field	V/cm	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_field	V/mm	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_field	V/µm	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_field	kV/mm	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_field	MV/m	BIPM-SI-9.3.01	exact	SI electric potential divided by SI length
+electric_potential	nV	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electric_potential	µV	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electric_potential	mV	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electric_potential	V	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electric_potential	kV	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electric_potential	MV	BIPM-SI-9.3.01	exact	SI volt and decimal prefixes
+electrical_conductance	µS	BIPM-SI-9.3.01	exact	SI siemens and decimal prefixes
+electrical_conductance	mS	BIPM-SI-9.3.01	exact	SI siemens and decimal prefixes
+electrical_conductance	S	BIPM-SI-9.3.01	exact	SI siemens and decimal prefixes
+electrical_conductivity	S/m	BIPM-SI-9.3.01	exact	SI conductance divided by SI length
+electrical_conductivity	S/cm	BIPM-SI-9.3.01	exact	SI conductance divided by SI length
+electrical_resistance	µΩ	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistance	mΩ	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistance	Ω	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistance	kΩ	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistance	MΩ	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistance	GΩ	BIPM-SI-9.3.01	exact	SI ohm and decimal prefixes
+electrical_resistivity	mΩ · m	BIPM-SI-9.3.01	exact	SI resistance-length combinations
+electrical_resistivity	Ω · m	BIPM-SI-9.3.01	exact	SI resistance-length combinations
+electrical_resistivity	Ω · cm	BIPM-SI-9.3.01	exact	SI resistance-length combinations
+electrical_resistivity	Ω · mm²/m	BIPM-SI-9.3.01	exact	SI resistance-length combinations
+energy	J	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	kJ	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	MJ	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	W · h	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	kW · h	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	eV	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	cal (th)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	kcal (th)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	Btu (IT)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+force	mN	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	N	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	kN	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	MN	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	gf	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	kgf	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+force	lbf	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
+frequency	Hz	BIPM-SI-9.3.01	exact	SI hertz and decimal prefixes
+frequency	kHz	BIPM-SI-9.3.01	exact	SI hertz and decimal prefixes
+frequency	MHz	BIPM-SI-9.3.01	exact	SI hertz and decimal prefixes
+frequency	GHz	BIPM-SI-9.3.01	exact	SI hertz and decimal prefixes
+heat_capacity	J/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_capacity	kJ/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_capacity	J/°C	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_capacity	cal (th)/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_capacity	Btu (IT)/°F	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_flux_density	mW/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
+heat_flux_density	W/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
+heat_flux_density	kW/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
+heat_flux_density	W/cm²	BIPM-SI-9.3.01	exact	SI power divided by SI area
+illuminance	lx	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI lux and footcandle conversion
+illuminance	klx	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI lux and footcandle conversion
+illuminance	fc	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI lux and footcandle conversion
+inductance	nH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+inductance	µH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+inductance	mH	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+inductance	H	BIPM-SI-9.3.01	exact	SI henry and decimal prefixes
+information	b	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	B	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	kB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	MB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	GB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	TB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	KiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	MiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	GiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+information	TiB	IEC-80000-13-2025	exact	Bit, byte, SI decimal prefixes, and IEC binary prefixes
+kinematic_viscosity	mm²/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
+kinematic_viscosity	m²/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
+kinematic_viscosity	St	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
+kinematic_viscosity	cSt	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI kinematic viscosity and stokes conversions
+length	nm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	µm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	mm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	cm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	m	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	km	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	in	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	ft	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	yd	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+length	mi	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
+luminance	cd/m²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminance	cd/cm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminance	cd/ft²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminance	fl	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminance	sb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminous_intensity	mcd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
+luminous_intensity	cd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
+luminous_intensity	kcd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
+magnetic_field_strength	A/m	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
+magnetic_field_strength	A/cm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
+magnetic_field_strength	Oe	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
+magnetic_flux	µWb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
+magnetic_flux	mWb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
+magnetic_flux	Wb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
+magnetic_flux	Mx	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
+magnetic_flux_density	nT	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+magnetic_flux_density	µT	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+magnetic_flux_density	mT	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+magnetic_flux_density	T	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+magnetic_flux_density	G	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI tesla and gauss conversion
+mass	µg	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	mg	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	g	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	kg	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	t	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	ct	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	oz	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	lb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	2000 lb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass	2240 lb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass and customary commercial mass relationships
+mass_concentration	µg/L	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_concentration	mg/L	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_concentration	g/L	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_concentration	kg/m³	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_concentration	mg/dL	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_concentration	g/dL	BIPM-SI-9.3.01	exact	SI mass divided by SI volume
+mass_density	kg/m³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_density	g/m³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_density	g/cm³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_density	lb/ft³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_density	lb/gal (US)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI density and customary mass-volume combinations
+mass_rate	mg/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+mass_rate	g/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+mass_rate	kg/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+mass_rate	kg/h	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+mass_rate	t/h	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+mass_rate	lb/h	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI mass flow and customary mass-time combinations
+molality	mol/kg	BIPM-SI-9.3.01	exact	SI amount of substance divided by SI mass
+molar_concentration	nmol/L	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_concentration	µmol/L	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_concentration	mmol/L	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_concentration	mol/L	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_concentration	mol/m³	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_concentration	particle/mL	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI molar concentration and Avogadro-based particle count
+molar_mass	mg/mol	BIPM-SI-9.3.01	exact	SI mass divided by amount of substance
+molar_mass	g/mol	BIPM-SI-9.3.01	exact	SI mass divided by amount of substance
+molar_mass	kg/mol	BIPM-SI-9.3.01	exact	SI mass divided by amount of substance
+molar_volume	cm³/mol	BIPM-SI-9.3.01	exact	SI volume divided by amount of substance
+molar_volume	dm³/mol	BIPM-SI-9.3.01	exact	SI volume divided by amount of substance
+molar_volume	m³/mol	BIPM-SI-9.3.01	exact	SI volume divided by amount of substance
+power	nW	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	µW	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	mW	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	W	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	kW	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	MW	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+power	hp (mechanical)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI watt and mechanical horsepower conversion
+pressure	nPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	µPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	mPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	Pa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	hPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	kPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	MPa	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	bar	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	mbar	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	atm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	mm Hg	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+pressure	psi	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI pressure, atmosphere, mercury, and pound-force conversions
+radioactivity	Bq	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	kBq	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	MBq	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	Ci	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	mCi	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	µCi	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+radioactivity	dpm	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
+solid_angle	sr	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
+solid_angle	sp	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
+solid_angle	°²	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
+specific_heat_capacity	J/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_heat_capacity	kJ/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_heat_capacity	J/(g · °C)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_heat_capacity	cal (th)/(g · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_heat_capacity	Btu (IT)/(lb · °F)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_radioactivity	Bq/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
+specific_radioactivity	Ci/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
+specific_radioactivity	dpm/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
+surface_tension	mN/m	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI surface tension and dyne conversion
+surface_tension	N/m	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI surface tension and dyne conversion
+surface_tension	dyn/cm	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI surface tension and dyne conversion
+surface_tension	J/m²	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI surface tension and dyne conversion
+temperature	K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine affine definitions
+temperature	°C	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine affine definitions
+temperature	°F	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine affine definitions
+temperature	°R	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine affine definitions
+temperature_interval	K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine intervals
+temperature_interval	°C	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine intervals
+temperature_interval	°F	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine intervals
+temperature_interval	°R	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Kelvin, Celsius, Fahrenheit, and Rankine intervals
+thermal_conductivity	mW/(m · K)	BIPM-SI-9.3.01	exact	SI thermal conductivity and decimal prefixes
+thermal_conductivity	W/(m · K)	BIPM-SI-9.3.01	exact	SI thermal conductivity and decimal prefixes
+thermal_conductivity	kW/(m · K)	BIPM-SI-9.3.01	exact	SI thermal conductivity and decimal prefixes
+thermal_conductivity	W/(m · °C)	BIPM-SI-9.3.01	exact	SI thermal conductivity and decimal prefixes
+thermal_resistance	K/mW	BIPM-SI-9.3.01	exact	SI thermal resistance and decimal prefixes
+thermal_resistance	K/W	BIPM-SI-9.3.01	exact	SI thermal resistance and decimal prefixes
+thermal_resistance	K/kW	BIPM-SI-9.3.01	exact	SI thermal resistance and decimal prefixes
+time	ns	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	µs	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	ms	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	s	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	min	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	h	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	d	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+time	a (365 d)	BIPM-SI-9.3.01	exact	SI second and accepted civil-time multiples
+torque	mN · m	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+torque	N · m	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+torque	kN · m	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+torque	lbf · ft	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+torque	lbf · in	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI torque and pound-force length conversions
+velocity	µm/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	mm/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	cm/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	m/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	km/h	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	ft/s	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	mi/h	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+velocity	kn	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI velocity, exact international-foot units, and knot
+volume	mm³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	cm³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	m³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	µL	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	mL	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	L	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	in³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	ft³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	yd³	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	fl oz (US)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	cup (US customary)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	pt (US liq)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	qt (US liq)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume	gal (US)	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume and U.S. customary liquid measures
+volume_rate	m³/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute
+volume_rate	m³/h	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute
+volume_rate	mL/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute
+volume_rate	L/s	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute
+volume_rate	L/min	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute
+volume_rate	gal (US)/min	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI volume flow and U.S. gallon per minute

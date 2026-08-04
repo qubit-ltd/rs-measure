@@ -78,7 +78,7 @@ Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不
 [2022 CODATA](https://physics.nist.gov/cuu/Constants/)。无理数只能使用有限近似：pi 采用
 [NIST DLMF 3.12](https://dlmf.nist.gov/3.12) 的 23 位小数，有限 tau 严格等于它的两倍，
 平方度采用 28 位小数。每个内建 quantity family 使用的版本化来源、数值策略和覆盖范围
-记录在机器可读的[单位定义来源清单](docs/unit-definition-provenance.tsv)中。
+记录在机器可读的[单位定义来源清单](doc/unit-definition-provenance.tsv)中。
 
 ```rust
 use qubit_measure::{

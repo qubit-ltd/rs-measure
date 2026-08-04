@@ -37,7 +37,7 @@ fn test_builtin_revolution_factor_uses_reduced_terms() {
 #[test]
 fn test_unit_definition_provenance_covers_every_builtin_unit() {
     let manifest_path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("docs/unit-definition-provenance.tsv");
+        .join("doc/unit-definition-provenance.tsv");
     let manifest = fs::read_to_string(&manifest_path)
         .expect("unit-definition provenance manifest should exist");
     let mut expected = BTreeSet::new();
