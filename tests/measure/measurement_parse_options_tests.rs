@@ -25,6 +25,14 @@ fn test_measurement_parse_options_exposes_default_limit() {
     );
 }
 
+/// Verifies that explicit construction stores the supplied byte limit.
+#[test]
+fn test_measurement_parse_options_new_sets_byte_limit() {
+    let options = MeasurementParseOptions::new(4_096);
+
+    assert_eq!(options.max_text_bytes(), 4_096);
+}
+
 /// Verifies that explicit parsing options are enforced before parsing.
 #[test]
 fn test_measurement_parse_with_options_enforces_byte_limit() {
