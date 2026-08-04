@@ -8,13 +8,13 @@
 //! Exact integer adapter tests for information measurements.
 
 use qubit_measure::{
+    unit::Information,
     Measurement,
     MeasurementError,
-    unit::Information,
 };
 use rust_decimal::{
-    Decimal,
     dec,
+    Decimal,
 };
 
 #[test]
@@ -27,6 +27,18 @@ fn test_information_constructs_u64_as_bytes() {
             Measurement::new(Decimal::from(value), Information::Byte),
         );
         assert_eq!(u64::try_from(measurement), Ok(value));
+    }
+}
+
+#[test]
+fn test_information_constructs_usize_as_bytes() {
+    for value in [0_usize, 2_048, usize::MAX] {
+        let measurement: Measurement<Information> = value.into();
+
+        assert_eq!(
+            measurement,
+            Measurement::new(Decimal::from(value), Information::Byte),
+        );
     }
 }
 

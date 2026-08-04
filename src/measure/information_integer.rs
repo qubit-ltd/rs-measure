@@ -77,6 +77,22 @@ impl From<u64> for Measurement<Information> {
     }
 }
 
+impl From<usize> for Measurement<Information> {
+    /// Creates an information measurement from an exact byte count.
+    ///
+    /// # Parameters
+    ///
+    /// * `bytes` - Non-negative number of bytes to store.
+    ///
+    /// # Returns
+    ///
+    /// An information measurement expressed in [`Information::Byte`].
+    #[inline(always)]
+    fn from(bytes: usize) -> Self {
+        Self::new(Decimal::from(bytes), Information::Byte)
+    }
+}
+
 impl TryFrom<Measurement<Information>> for u64 {
     type Error = MeasurementError;
 
