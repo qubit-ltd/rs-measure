@@ -8,7 +8,6 @@
 //! Public core-type aggregation tests for the measure module.
 
 use qubit_measure::{
-    unit,
     ConversionFactor,
     ConversionOptions,
     Measurement,
@@ -16,6 +15,7 @@ use qubit_measure::{
     MeasurementParseOptions,
     Unit,
     UnitDefinition,
+    unit,
 };
 use rust_decimal::Decimal;
 

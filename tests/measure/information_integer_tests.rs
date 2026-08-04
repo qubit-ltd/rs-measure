@@ -8,13 +8,13 @@
 //! Exact integer adapter tests for information measurements.
 
 use qubit_measure::{
-    unit::Information,
     Measurement,
     MeasurementError,
+    unit::Information,
 };
 use rust_decimal::{
-    dec,
     Decimal,
+    dec,
 };
 
 #[test]
