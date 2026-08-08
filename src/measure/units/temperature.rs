@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted thermodynamic temperature measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::ThermodynamicTemperature as UomTemperature;
 #[cfg(feature = "uom")]
 use uom::si::thermodynamic_temperature::kelvin;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted thermodynamic temperature measurements.

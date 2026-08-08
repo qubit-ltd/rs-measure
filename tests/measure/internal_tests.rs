@@ -7,22 +7,21 @@
 // =============================================================================
 //! Public behavior tests for the private measurement wire aggregation.
 
-use qubit_measure::{
-    measurement,
-    unit,
-};
+use qubit_measure::measurement;
+use qubit_measure::unit;
 use rust_decimal::dec;
+use serde_json::from_value;
 use serde_json::json;
+use serde_json::to_value;
 
 /// Verifies that Measurement Serde round-trips through its private wire type.
 #[test]
 fn test_measure_internal_wire_round_trips_public_measurement() {
     let value = measurement::Length::new(dec!(12.5), unit::Length::Centimeter);
-    let json = serde_json::to_value(value)
-        .expect("measurement should serialize through its wire type");
+    let json = to_value(value).expect("measurement should serialize through its wire type");
 
     assert_eq!(
-        serde_json::from_value::<measurement::Length>(json.clone())
+        from_value::<measurement::Length>(json.clone())
             .expect("measurement should deserialize through its wire type"),
         value,
     );

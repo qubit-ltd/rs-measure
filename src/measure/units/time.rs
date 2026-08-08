@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted time measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Time as UomTime;
 #[cfg(feature = "uom")]
 use uom::si::time::second;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted time measurements.

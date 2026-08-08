@@ -7,11 +7,9 @@
 // =============================================================================
 //! Hidden helper re-export contract tests.
 
-use qubit_measure::__private::{
-    assert_unit_family_metadata,
-    decimal_from_literal,
-    is_ascii_snake_case,
-};
+use qubit_measure::__private::assert_unit_family_metadata;
+use qubit_measure::__private::decimal_from_literal;
+use qubit_measure::__private::is_ascii_snake_case;
 
 #[test]
 fn test_private_module_exposes_only_crate_owned_macro_support() {

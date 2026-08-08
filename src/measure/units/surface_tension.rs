@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted surface tension measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SurfaceTension as UomSurfaceTension;
 #[cfg(feature = "uom")]
 use uom::si::surface_tension::newton_per_meter;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted surface tension measurements.

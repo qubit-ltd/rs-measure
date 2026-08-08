@@ -7,17 +7,15 @@
 // =============================================================================
 //! Opt-in compact measurement text Serde tests.
 
-use qubit_measure::{
-    measurement,
-    measurement_text,
-    unit,
-};
+use qubit_measure::measurement;
+use qubit_measure::measurement_text;
+use qubit_measure::unit;
 use rust_decimal::dec;
-use serde::{
-    Deserialize,
-    Serialize,
-};
+use serde::Deserialize;
+use serde::Serialize;
+use serde_json::from_value;
 use serde_json::json;
+use serde_json::to_value;
 
 /// Configuration carrying an information limit as compact text.
 #[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -38,17 +36,13 @@ struct TimeConfig {
 #[test]
 fn test_measurement_text_serde_round_trip_uses_canonical_compact_string() {
     let config = InformationConfig {
-        limit: measurement::Information::new(
-            dec!(2),
-            unit::Information::Mebibyte,
-        ),
+        limit: measurement::Information::new(dec!(2), unit::Information::Mebibyte),
     };
 
-    let value = serde_json::to_value(&config)
-        .expect("compact measurement should serialize");
+    let value = to_value(&config).expect("compact measurement should serialize");
     assert_eq!(value, json!({"limit": "2 MiB"}));
     assert_eq!(
-        serde_json::from_value::<InformationConfig>(value)
+        from_value::<InformationConfig>(value)
             .expect("canonical compact measurement should deserialize"),
         config,
     );
@@ -60,12 +54,10 @@ fn test_optional_measurement_text_serde_round_trip_uses_canonical_text() {
         timeout: Some(measurement::Time::new(dec!(2), unit::Time::Second)),
     };
 
-    let value = serde_json::to_value(&config)
-        .expect("optional compact measurement should serialize");
+    let value = to_value(&config).expect("optional compact measurement should serialize");
     assert_eq!(value, json!({"timeout": "2 s"}));
     assert_eq!(
-        serde_json::from_value::<TimeConfig>(value)
-            .expect("optional compact measurement should deserialize"),
+        from_value::<TimeConfig>(value).expect("optional compact measurement should deserialize"),
         config,
     );
 }
@@ -74,14 +66,13 @@ fn test_optional_measurement_text_serde_round_trip_uses_canonical_text() {
 fn test_optional_measurement_text_serde_accepts_null_and_missing_fields() {
     for value in [json!({"timeout": null}), json!({})] {
         assert_eq!(
-            serde_json::from_value::<TimeConfig>(value).expect(
-                "null or missing optional measurement should deserialize"
-            ),
+            from_value::<TimeConfig>(value)
+                .expect("null or missing optional measurement should deserialize"),
             TimeConfig { timeout: None },
         );
     }
     assert_eq!(
-        serde_json::to_value(TimeConfig { timeout: None })
+        to_value(TimeConfig { timeout: None })
             .expect("absent optional measurement should serialize"),
         json!({"timeout": null}),
     );
@@ -89,7 +80,7 @@ fn test_optional_measurement_text_serde_accepts_null_and_missing_fields() {
 
 #[test]
 fn test_measurement_text_serde_rejects_lenient_unit_aliases() {
-    let error = serde_json::from_value::<TimeConfig>(json!({
+    let error = from_value::<TimeConfig>(json!({
         "timeout": "1 year",
     }))
     .expect_err("compact adapter must reject non-canonical aliases");
@@ -99,7 +90,7 @@ fn test_measurement_text_serde_rejects_lenient_unit_aliases() {
 
 #[test]
 fn test_measurement_text_serde_rejects_non_string_values() {
-    let error = serde_json::from_value::<InformationConfig>(json!({
+    let error = from_value::<InformationConfig>(json!({
         "limit": 2,
     }))
     .expect_err("compact adapter must reject non-string values");
@@ -109,12 +100,10 @@ fn test_measurement_text_serde_rejects_non_string_values() {
 
 #[test]
 fn test_measurement_text_adapter_does_not_change_default_wire_format() {
-    let measurement =
-        measurement::Information::new(dec!(2), unit::Information::Mebibyte);
+    let measurement = measurement::Information::new(dec!(2), unit::Information::Mebibyte);
 
     assert_eq!(
-        serde_json::to_value(measurement)
-            .expect("default measurement should serialize"),
+        to_value(measurement).expect("default measurement should serialize"),
         json!({"quantity": "information", "value": "2", "unit": "MiB"}),
     );
 }

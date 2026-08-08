@@ -9,11 +9,9 @@
 
 use std::str::FromStr;
 
-use qubit_measure::{
-    MeasurementError,
-    measurement,
-    unit,
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::measurement;
+use qubit_measure::unit;
 use rust_decimal::dec;
 
 #[test]

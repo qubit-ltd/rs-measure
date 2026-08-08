@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted catalytic activity concentration measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::catalytic_activity_concentration::katal_per_cubic_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::CatalyticActivityConcentration as UomCatalyticActivityConcentration;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted catalytic activity concentration measurements.

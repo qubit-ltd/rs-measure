@@ -11,17 +11,13 @@ use std::cmp::Ordering;
 
 use num_bigint_04::BigInt;
 use num_rational::BigRational;
-use rust_decimal::{
-    Decimal,
-    RoundingStrategy,
-};
+use rust_decimal::Decimal;
+use rust_decimal::RoundingStrategy;
 
+use crate::measure::ConversionOptions;
+use crate::measure::MeasurementError;
+use crate::measure::UnitDefinition;
 use crate::measure::internal::ConversionMode;
-use crate::measure::{
-    ConversionOptions,
-    MeasurementError,
-    UnitDefinition,
-};
 
 /// Converts a value between validated unit definitions without using floats.
 ///
@@ -48,9 +44,7 @@ pub(crate) fn convert_decimal(
     target: UnitDefinition,
     options: ConversionOptions,
 ) -> Result<Decimal, MeasurementError> {
-    if source == target
-        || definitions_are_mathematically_equivalent(source, target)
-    {
+    if source == target || definitions_are_mathematically_equivalent(source, target) {
         return apply_output_scale(value, options);
     }
 
@@ -60,8 +54,9 @@ pub(crate) fn convert_decimal(
     }
 
     match options.mode() {
-        ConversionMode::MaximumPrecision => maximum_precision_decimal(&exact)
-            .ok_or(MeasurementError::ValueOutOfRange),
+        ConversionMode::MaximumPrecision => {
+            maximum_precision_decimal(&exact).ok_or(MeasurementError::ValueOutOfRange)
+        }
         ConversionMode::FixedScale { scale, rounding } => {
             fixed_scale_decimal(&exact, scale, rounding)
                 .ok_or(MeasurementError::OutputScaleUnrepresentable { scale })
@@ -112,8 +107,7 @@ pub(super) fn convert_decimal_to_rational(
     source: UnitDefinition,
     target: UnitDefinition,
 ) -> BigRational {
-    let adjusted =
-        decimal_as_rational(value) + decimal_as_rational(source.offset());
+    let adjusted = decimal_as_rational(value) + decimal_as_rational(source.offset());
     let source_factor = source.factor();
     let target_factor = target.factor();
     let scaled = adjusted * decimal_as_rational(source_factor.numerator())
@@ -143,11 +137,8 @@ pub(super) fn compare_decimal_values(
     right_value: Decimal,
     right_definition: UnitDefinition,
 ) -> Ordering {
-    let left_in_right_units = convert_decimal_to_rational(
-        left_value,
-        left_definition,
-        right_definition,
-    );
+    let left_in_right_units =
+        convert_decimal_to_rational(left_value, left_definition, right_definition);
     left_in_right_units.cmp(&decimal_as_rational(right_value))
 }
 
@@ -190,8 +181,7 @@ fn fits_decimal_range(value: &BigRational) -> bool {
 /// when even its integral magnitude exceeds Decimal's range.
 fn maximum_precision_decimal(value: &BigRational) -> Option<Decimal> {
     for scale in (0..=Decimal::MAX_SCALE).rev() {
-        let mantissa =
-            round_rational(value, scale, RoundingStrategy::MidpointNearestEven);
+        let mantissa = round_rational(value, scale, RoundingStrategy::MidpointNearestEven);
         if let Some(decimal) = decimal_from_mantissa(mantissa, scale) {
             return Some(decimal.normalize());
         }
@@ -232,11 +222,7 @@ fn fixed_scale_decimal(
 ///
 /// The signed rounded mantissa, without applying Decimal's 96-bit limit.
 #[allow(deprecated)]
-fn round_rational(
-    value: &BigRational,
-    scale: u32,
-    strategy: RoundingStrategy,
-) -> BigInt {
+fn round_rational(value: &BigRational, scale: u32, strategy: RoundingStrategy) -> BigInt {
     let zero = BigInt::from(0_u8);
     let scaled_numerator = value.numer() * BigInt::from(10_u8).pow(scale);
     let denominator = value.denom();
@@ -253,21 +239,18 @@ fn round_rational(
     let quotient_is_odd = (&quotient % 2_u8) != zero;
     let direction = if negative { -1_i8 } else { 1_i8 };
     let increment = match strategy {
-        RoundingStrategy::MidpointNearestEven
-        | RoundingStrategy::BankersRounding => {
+        RoundingStrategy::MidpointNearestEven | RoundingStrategy::BankersRounding => {
             midpoint_ordering == Ordering::Greater
                 || (midpoint_ordering == Ordering::Equal && quotient_is_odd)
         }
-        RoundingStrategy::MidpointAwayFromZero
-        | RoundingStrategy::RoundHalfUp => midpoint_ordering != Ordering::Less,
-        RoundingStrategy::MidpointTowardZero
-        | RoundingStrategy::RoundHalfDown => {
+        RoundingStrategy::MidpointAwayFromZero | RoundingStrategy::RoundHalfUp => {
+            midpoint_ordering != Ordering::Less
+        }
+        RoundingStrategy::MidpointTowardZero | RoundingStrategy::RoundHalfDown => {
             midpoint_ordering == Ordering::Greater
         }
         RoundingStrategy::ToZero | RoundingStrategy::RoundDown => false,
-        RoundingStrategy::AwayFromZero | RoundingStrategy::RoundUp => {
-            has_fraction
-        }
+        RoundingStrategy::AwayFromZero | RoundingStrategy::RoundUp => has_fraction,
         RoundingStrategy::ToNegativeInfinity => negative && has_fraction,
         RoundingStrategy::ToPositiveInfinity => !negative && has_fraction,
     };
@@ -294,8 +277,7 @@ fn decimal_from_mantissa(mantissa: BigInt, scale: u32) -> Option<Decimal> {
     if magnitude > BigInt::from((1_u128 << 96) - 1) {
         return None;
     }
-    Decimal::try_from_i128_with_scale(i128::try_from(mantissa).ok()?, scale)
-        .ok()
+    Decimal::try_from_i128_with_scale(i128::try_from(mantissa).ok()?, scale).ok()
 }
 
 /// Applies explicit final rounding and retains exactly the requested scale.

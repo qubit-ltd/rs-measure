@@ -26,15 +26,13 @@ pub mod measurement;
 pub mod measurement_text;
 pub mod unit;
 
+pub use measure::ConversionFactor;
+pub use measure::ConversionOptions;
+pub use measure::Measurement;
+pub use measure::MeasurementError;
+pub use measure::MeasurementParseOptions;
+pub use measure::Unit;
+pub use measure::UnitDefinition;
 #[cfg(feature = "uom")]
 pub use measure::UomUnit;
-pub use measure::{
-    ConversionFactor,
-    ConversionOptions,
-    Measurement,
-    MeasurementError,
-    MeasurementParseOptions,
-    Unit,
-    UnitDefinition,
-    assert_unit_family_valid,
-};
+pub use measure::assert_unit_family_valid;

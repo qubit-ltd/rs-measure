@@ -81,8 +81,6 @@ pub use electric_current::ElectricCurrent;
 pub use electric_current_density::ElectricCurrentDensity;
 pub use electric_field::ElectricField;
 pub use electric_potential::ElectricPotential;
-pub use voltage::Voltage;
-
 pub use electrical_conductance::ElectricalConductance;
 pub use electrical_conductivity::ElectricalConductivity;
 pub use electrical_resistance::ElectricalResistance;
@@ -124,5 +122,6 @@ pub use thermal_resistance::ThermalResistance;
 pub use time::Time;
 pub use torque::Torque;
 pub use velocity::Velocity;
+pub use voltage::Voltage;
 pub use volume::Volume;
 pub use volume_rate::VolumeRate;

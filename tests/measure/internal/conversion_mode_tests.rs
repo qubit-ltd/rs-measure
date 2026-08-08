@@ -13,8 +13,8 @@ use rust_decimal::RoundingStrategy;
 #[test]
 fn test_conversion_modes_expose_only_semantically_valid_state() {
     let maximum = ConversionOptions::maximum_precision();
-    let fixed = ConversionOptions::fixed_scale(2, RoundingStrategy::ToZero)
-        .expect("scale should be valid");
+    let fixed =
+        ConversionOptions::fixed_scale(2, RoundingStrategy::ToZero).expect("scale should be valid");
 
     assert_eq!((maximum.scale(), maximum.rounding()), (None, None));
     assert_eq!(

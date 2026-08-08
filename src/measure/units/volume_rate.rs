@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted volume rate measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::VolumeRate as UomVolumeRate;
 #[cfg(feature = "uom")]
 use uom::si::volume_rate::cubic_meter_per_second;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted volume rate measurements.

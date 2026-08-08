@@ -6,20 +6,18 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    Measurement,
-    MeasurementError,
-    Unit,
-    UnitDefinition,
-    assert_unit_family_valid,
-};
+use qubit_measure::Measurement;
+use qubit_measure::MeasurementError;
+use qubit_measure::Unit;
+use qubit_measure::UnitDefinition;
+use qubit_measure::assert_unit_family_valid;
 use rust_decimal::dec;
+use serde_json::from_value;
 use serde_json::json;
+use serde_json::to_value;
 
-use crate::measure::fixtures::{
-    CustomLength,
-    ManualUnit,
-};
+use crate::measure::fixtures::CustomLength;
+use crate::measure::fixtures::ManualUnit;
 
 #[test]
 fn test_external_family_supports_strict_and_lenient_parsing() {
@@ -55,9 +53,8 @@ fn test_spaced_measurement_round_trips_reserved_unit_prefixes() {
         assert_eq!(text, format!("1.25 {symbol}"));
         assert_eq!(text.parse::<Measurement<CustomLength>>(), Ok(measurement),);
         assert_eq!(
-            serde_json::from_value::<Measurement<CustomLength>>(
-                serde_json::to_value(measurement)
-                    .expect("measurement should serialize"),
+            from_value::<Measurement<CustomLength>>(
+                to_value(measurement).expect("measurement should serialize"),
             )
             .expect("measurement should deserialize"),
             measurement,
@@ -94,12 +91,11 @@ fn test_measurement_serde_uses_manual_unit_contract() {
     let measurement = Measurement::new(dec!(1.25), ManualUnit::Base);
 
     assert_eq!(
-        serde_json::to_value(measurement)
-            .expect("manual-unit measurement should serialize"),
+        to_value(measurement).expect("manual-unit measurement should serialize"),
         json!({"quantity": "manual", "value": "1.25", "unit": "manual"}),
     );
 
-    let error = serde_json::from_value::<Measurement<ManualUnit>>(json!({
+    let error = from_value::<Measurement<ManualUnit>>(json!({
         "quantity": "manual",
         "value": "1.25",
         "unit": "mnl",

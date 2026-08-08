@@ -6,33 +6,28 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    MeasurementError,
-    Unit,
-    assert_unit_family_valid,
-    measurement,
-    unit,
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::Unit;
+use qubit_measure::assert_unit_family_valid;
+use qubit_measure::measurement;
+use qubit_measure::unit;
 use rust_decimal::Decimal;
 
-use crate::measure::support::{
-    CANONICAL_ALIAS,
-    DISPLAY_MISMATCH,
-    DUPLICATE_ALIAS,
-    DUPLICATE_ALL,
-    DUPLICATE_SYMBOL,
-    INVALID_DEFINITION,
-    INVALID_QUANTITY,
-    LENIENT_FROM_STR,
-    ManualValidationUnit,
-    SELF_ALIAS,
-    VALID,
-};
+use crate::measure::support::CANONICAL_ALIAS;
+use crate::measure::support::DISPLAY_MISMATCH;
+use crate::measure::support::DUPLICATE_ALIAS;
+use crate::measure::support::DUPLICATE_ALL;
+use crate::measure::support::DUPLICATE_SYMBOL;
+use crate::measure::support::INVALID_DEFINITION;
+use crate::measure::support::INVALID_QUANTITY;
+use crate::measure::support::LENIENT_FROM_STR;
+use crate::measure::support::ManualValidationUnit;
+use crate::measure::support::SELF_ALIAS;
+use crate::measure::support::VALID;
 
 #[test]
 fn test_unit_trait_exposes_typed_quantity_metadata() {
-    let measurement =
-        measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
+    let measurement = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
 
     assert_eq!(measurement.quantity_name(), "length");
     assert_eq!(unit::Length::QUANTITY, "length");
@@ -59,8 +54,7 @@ fn test_ambiguous_aliases_resolve_leniently_and_fail_strictly() {
         unit::Volume::UsLiquidGallon,
     );
     assert_eq!(
-        unit::Power::parse_lenient("hp")
-            .expect("horsepower alias should parse"),
+        unit::Power::parse_lenient("hp").expect("horsepower alias should parse"),
         unit::Power::MechanicalHorsepower,
     );
 }

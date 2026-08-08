@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted inductance measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Inductance as UomInductance;
 #[cfg(feature = "uom")]
 use uom::si::inductance::henry;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted inductance measurements.

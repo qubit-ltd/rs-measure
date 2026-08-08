@@ -7,19 +7,14 @@
 // =============================================================================
 //! Focused tests for unit-definition construction and conversion.
 
-use qubit_measure::{
-    ConversionFactor,
-    UnitDefinition,
-};
-use rust_decimal::{
-    Decimal,
-    dec,
-};
+use qubit_measure::ConversionFactor;
+use qubit_measure::UnitDefinition;
+use rust_decimal::Decimal;
+use rust_decimal::dec;
 
 #[test]
 fn test_unit_definition_new_preserves_factor_and_offset() {
-    let factor = ConversionFactor::new(dec!(2), dec!(3))
-        .expect("factor should be valid");
+    let factor = ConversionFactor::new(dec!(2), dec!(3)).expect("factor should be valid");
     let definition = UnitDefinition::new(factor, dec!(4));
 
     assert_eq!(definition.factor(), factor);

@@ -10,11 +10,9 @@
 use std::fmt;
 use std::str::FromStr;
 
-use qubit_measure::{
-    MeasurementError,
-    Unit,
-    UnitDefinition,
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::Unit;
+use qubit_measure::UnitDefinition;
 
 /// Selects valid metadata.
 pub(crate) const VALID: u8 = 0;

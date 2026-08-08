@@ -12,10 +12,8 @@ use std::cmp::Ordering;
 use num_bigint_04::BigInt;
 use num_rational::BigRational;
 use qubit_measure::UnitDefinition;
-use rust_decimal::{
-    Decimal,
-    RoundingStrategy,
-};
+use rust_decimal::Decimal;
+use rust_decimal::RoundingStrategy;
 
 /// Converts a Decimal into its exact rational representation.
 ///
@@ -54,8 +52,7 @@ pub(crate) fn expected_conversion(
     let target_ratio = decimal_as_rational(target_factor.numerator())
         / decimal_as_rational(target_factor.denominator());
 
-    (decimal_as_rational(value) + decimal_as_rational(source.offset()))
-        * source_ratio
+    (decimal_as_rational(value) + decimal_as_rational(source.offset())) * source_ratio
         / target_ratio
         - decimal_as_rational(target.offset())
 }
@@ -110,17 +107,11 @@ pub(crate) fn round_rational(
         }
         RoundingStrategy::ToZero => None,
         RoundingStrategy::AwayFromZero => has_fraction.then_some(direction),
-        RoundingStrategy::ToNegativeInfinity => {
-            (negative && has_fraction).then_some(-1)
-        }
-        RoundingStrategy::ToPositiveInfinity => {
-            (!negative && has_fraction).then_some(1)
-        }
+        RoundingStrategy::ToNegativeInfinity => (negative && has_fraction).then_some(-1),
+        RoundingStrategy::ToPositiveInfinity => (!negative && has_fraction).then_some(1),
         _ => panic!("deprecated rounding strategy is outside this oracle"),
     };
     let rounded = quotient + BigInt::from(increment.unwrap_or(0));
-    let mantissa = i128::try_from(rounded)
-        .expect("rounded rational mantissa should fit i128");
-    Decimal::try_from_i128_with_scale(mantissa, scale)
-        .expect("rounded rational should fit Decimal")
+    let mantissa = i128::try_from(rounded).expect("rounded rational mantissa should fit i128");
+    Decimal::try_from_i128_with_scale(mantissa, scale).expect("rounded rational should fit Decimal")
 }

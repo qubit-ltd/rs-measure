@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted area measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::area::square_meter;
 #[cfg(feature = "uom")]
 use uom::si::f64::Area as UomArea;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted area measurements.

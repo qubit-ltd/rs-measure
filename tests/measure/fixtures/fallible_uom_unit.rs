@@ -10,12 +10,10 @@
 use std::fmt;
 use std::str::FromStr;
 
-use qubit_measure::{
-    MeasurementError,
-    Unit,
-    UnitDefinition,
-    impl_uom_unit,
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::Unit;
+use qubit_measure::UnitDefinition;
+use qubit_measure::impl_uom_unit;
 use uom::si::f64::Length as UomLength;
 use uom::si::length::meter;
 

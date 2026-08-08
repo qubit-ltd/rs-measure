@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted specific radioactivity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SpecificRadioactivity as UomSpecificRadioactivity;
 #[cfg(feature = "uom")]
 use uom::si::specific_radioactivity::becquerel_per_kilogram;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted specific radioactivity measurements.

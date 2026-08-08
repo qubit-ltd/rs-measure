@@ -13,17 +13,13 @@
 //! Optional fields can use
 //! `#[serde(default, with = "qubit_measure::measurement_text::option")]`.
 
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serializer;
 use serde::de::Error as _;
-use serde::{
-    Deserialize,
-    Deserializer,
-    Serializer,
-};
 
-use crate::{
-    Measurement,
-    Unit,
-};
+use crate::Measurement;
+use crate::Unit;
 
 /// Serializes a measurement as canonical `<value> <unit>` text.
 ///
@@ -40,10 +36,7 @@ use crate::{
 ///
 /// Returns the serializer's error when it cannot emit the string.
 #[inline]
-pub fn serialize<S, U>(
-    measurement: &Measurement<U>,
-    serializer: S,
-) -> Result<S::Ok, S::Error>
+pub fn serialize<S, U>(measurement: &Measurement<U>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
     U: Unit,
@@ -71,9 +64,7 @@ where
 /// invalid or unrepresentable Decimal text, a non-canonical alias, or an
 /// unknown unit.
 #[inline]
-pub fn deserialize<'de, D, U>(
-    deserializer: D,
-) -> Result<Measurement<U>, D::Error>
+pub fn deserialize<'de, D, U>(deserializer: D) -> Result<Measurement<U>, D::Error>
 where
     D: Deserializer<'de>,
     U: Unit,
@@ -89,18 +80,14 @@ where
 /// Present measurements use canonical `<value> <unit>` strings, while absent
 /// measurements use Serde's `null` representation.
 pub mod option {
+    use serde::Deserialize;
+    use serde::Deserializer;
+    use serde::Serialize;
+    use serde::Serializer;
     use serde::de::Error as _;
-    use serde::{
-        Deserialize,
-        Deserializer,
-        Serialize,
-        Serializer,
-    };
 
-    use crate::{
-        Measurement,
-        Unit,
-    };
+    use crate::Measurement;
+    use crate::Unit;
 
     /// Serializes an optional measurement as canonical text or `null`.
     ///
@@ -148,17 +135,13 @@ pub mod option {
     /// input, invalid or unrepresentable Decimal text, a non-canonical alias,
     /// or an unknown unit.
     #[inline]
-    pub fn deserialize<'de, D, U>(
-        deserializer: D,
-    ) -> Result<Option<Measurement<U>>, D::Error>
+    pub fn deserialize<'de, D, U>(deserializer: D) -> Result<Option<Measurement<U>>, D::Error>
     where
         D: Deserializer<'de>,
         U: Unit,
     {
         Option::<String>::deserialize(deserializer)?
-            .map(|text| {
-                Measurement::parse_strict(&text).map_err(D::Error::custom)
-            })
+            .map(|text| Measurement::parse_strict(&text).map_err(D::Error::custom))
             .transpose()
     }
 }

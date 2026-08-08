@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted mass concentration measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MassConcentration as UomMassConcentration;
 #[cfg(feature = "uom")]
 use uom::si::mass_concentration::kilogram_per_cubic_meter;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted mass concentration measurements.

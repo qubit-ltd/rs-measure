@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted length measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Length as UomLength;
 #[cfg(feature = "uom")]
 use uom::si::length::meter;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted length measurements.

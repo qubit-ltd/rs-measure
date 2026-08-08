@@ -15,19 +15,16 @@ mod unit_metadata;
 #[path = "private/uom_bridge.rs"]
 mod uom_bridge;
 
+pub use decimal_literal::decimal_from_literal;
 pub(crate) use decimal_literal::finalize_exact_decimal;
-pub use decimal_literal::{
-    decimal_from_literal,
-    positive_decimal_from_literal,
-};
-pub use unit_metadata::{
-    assert_unit_family_metadata,
-    is_ascii_snake_case,
-};
+pub use decimal_literal::positive_decimal_from_literal;
+pub use unit_metadata::assert_unit_family_metadata;
+pub use unit_metadata::is_ascii_snake_case;
 #[cfg(feature = "uom")]
-pub use uom_bridge::{
-    base_f64_to_unit_value,
-    decimal_from_f64_approx,
-    decimal_to_f64_approx,
-    unit_value_to_base_f64,
-};
+pub use uom_bridge::base_f64_to_unit_value;
+#[cfg(feature = "uom")]
+pub use uom_bridge::decimal_from_f64_approx;
+#[cfg(feature = "uom")]
+pub use uom_bridge::decimal_to_f64_approx;
+#[cfg(feature = "uom")]
+pub use uom_bridge::unit_value_to_base_f64;

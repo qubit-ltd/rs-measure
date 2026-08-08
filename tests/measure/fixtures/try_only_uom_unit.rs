@@ -10,19 +10,13 @@
 use std::fmt;
 use std::str::FromStr;
 
-use qubit_measure::{
-    MeasurementError,
-    Unit,
-    UnitDefinition,
-    UomUnit,
-};
-use rust_decimal::{
-    Decimal,
-    prelude::{
-        FromPrimitive,
-        ToPrimitive,
-    },
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::Unit;
+use qubit_measure::UnitDefinition;
+use qubit_measure::UomUnit;
+use rust_decimal::Decimal;
+use rust_decimal::prelude::FromPrimitive;
+use rust_decimal::prelude::ToPrimitive;
 use uom::si::f64::Length as UomLength;
 use uom::si::length::meter;
 
@@ -67,10 +61,7 @@ impl Unit for TryOnlyUomUnit {
 impl UomUnit for TryOnlyUomUnit {
     type Quantity = UomLength;
 
-    fn try_to_uom_approx(
-        self,
-        value: Decimal,
-    ) -> Result<Self::Quantity, MeasurementError> {
+    fn try_to_uom_approx(self, value: Decimal) -> Result<Self::Quantity, MeasurementError> {
         let _ = self.definition()?;
         Ok(UomLength::new::<meter>(
             value
@@ -79,15 +70,11 @@ impl UomUnit for TryOnlyUomUnit {
         ))
     }
 
-    fn value_from_uom_approx(
-        self,
-        quantity: Self::Quantity,
-    ) -> Result<Decimal, MeasurementError> {
+    fn value_from_uom_approx(self, quantity: Self::Quantity) -> Result<Decimal, MeasurementError> {
         let _ = self.definition()?;
         let value = quantity.get::<meter>();
-        Decimal::from_f64(value).ok_or_else(|| {
-            MeasurementError::DecimalConversion(value.to_string())
-        })
+        Decimal::from_f64(value)
+            .ok_or_else(|| MeasurementError::DecimalConversion(value.to_string()))
     }
 }
 

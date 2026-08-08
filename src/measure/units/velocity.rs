@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted velocity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Velocity as UomVelocity;
 #[cfg(feature = "uom")]
 use uom::si::velocity::meter_per_second;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted velocity measurements.

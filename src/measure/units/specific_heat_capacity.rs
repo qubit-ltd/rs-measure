@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted specific heat capacity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::SpecificHeatCapacity as UomSpecificHeatCapacity;
 #[cfg(feature = "uom")]
 use uom::si::specific_heat_capacity::joule_per_kilogram_kelvin;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted specific heat capacity measurements.

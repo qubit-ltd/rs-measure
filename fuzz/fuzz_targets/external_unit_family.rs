@@ -10,11 +10,9 @@
 #![no_main]
 
 use libfuzzer_sys::fuzz_target;
-use qubit_measure::{
-    Measurement,
-    Unit,
-    define_unit_family,
-};
+use qubit_measure::Measurement;
+use qubit_measure::Unit;
+use qubit_measure::define_unit_family;
 
 define_unit_family! {
     /// External family covering ordinary and numeric-prefix-sensitive symbols.

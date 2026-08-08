@@ -9,10 +9,8 @@
 
 use std::str::FromStr;
 
-use qubit_measure::{
-    Measurement,
-    MeasurementError,
-};
+use qubit_measure::Measurement;
+use qubit_measure::MeasurementError;
 
 use crate::measure::fixtures::CompactAmbiguityUnit;
 

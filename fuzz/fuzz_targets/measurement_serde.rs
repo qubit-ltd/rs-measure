@@ -10,10 +10,8 @@
 #![no_main]
 
 use libfuzzer_sys::fuzz_target;
-use qubit_measure::{
-    Measurement,
-    unit,
-};
+use qubit_measure::Measurement;
+use qubit_measure::unit;
 
 fuzz_target!(|data: &[u8]| {
     if let Ok(measurement) =

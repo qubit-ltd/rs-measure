@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted heat flux density measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::HeatFluxDensity as UomHeatFluxDensity;
 #[cfg(feature = "uom")]
 use uom::si::heat_flux_density::watt_per_square_meter;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted heat flux density measurements.

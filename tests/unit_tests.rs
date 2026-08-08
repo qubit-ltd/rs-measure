@@ -7,10 +7,8 @@
 // =============================================================================
 //! Unit-family module aggregation tests.
 
-use qubit_measure::{
-    Unit,
-    unit,
-};
+use qubit_measure::Unit;
+use qubit_measure::unit;
 
 /// Verifies that the public unit module aggregates the Length family.
 #[test]

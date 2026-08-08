@@ -6,29 +6,19 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    ConversionOptions,
-    measurement,
-    unit,
-};
-use rust_decimal::{
-    Decimal,
-    RoundingStrategy,
-};
+use qubit_measure::ConversionOptions;
+use qubit_measure::measurement;
+use qubit_measure::unit;
+use rust_decimal::Decimal;
+use rust_decimal::RoundingStrategy;
 use serde_json::json;
 
 /// Demonstrates exact conversion and persistence.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let centimeters = measurement::Length::new(
-        Decimal::new(500, 1),
-        unit::Length::Centimeter,
-    );
+    let centimeters = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
     let meters = centimeters.convert_to_with_options(
         unit::Length::Meter,
-        ConversionOptions::fixed_scale(
-            4,
-            RoundingStrategy::MidpointNearestEven,
-        )?,
+        ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven)?,
     )?;
     let json_value = serde_json::to_value(centimeters)?;
 

@@ -7,15 +7,11 @@
 // =============================================================================
 //! Exact integer adapter tests for information measurements.
 
-use qubit_measure::{
-    Measurement,
-    MeasurementError,
-    unit::Information,
-};
-use rust_decimal::{
-    Decimal,
-    dec,
-};
+use qubit_measure::Measurement;
+use qubit_measure::MeasurementError;
+use qubit_measure::unit::Information;
+use rust_decimal::Decimal;
+use rust_decimal::dec;
 
 #[test]
 fn test_information_constructs_u64_as_bytes() {

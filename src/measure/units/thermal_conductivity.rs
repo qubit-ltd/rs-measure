@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted thermal conductivity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::ThermalConductivity as UomThermalConductivity;
 #[cfg(feature = "uom")]
 use uom::si::thermal_conductivity::watt_per_meter_kelvin;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted thermal conductivity measurements.

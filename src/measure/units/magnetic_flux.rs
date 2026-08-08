@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted magnetic flux measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::MagneticFlux as UomMagneticFlux;
 #[cfg(feature = "uom")]
 use uom::si::magnetic_flux::weber;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted magnetic flux measurements.

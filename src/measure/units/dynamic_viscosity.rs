@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted dynamic viscosity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::dynamic_viscosity::pascal_second;
 #[cfg(feature = "uom")]
 use uom::si::f64::DynamicViscosity as UomDynamicViscosity;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted dynamic viscosity measurements.

@@ -10,11 +10,11 @@
 use std::fmt::Debug;
 
 use qubit_measure::Unit;
-use serde::{
-    Deserialize,
-    Serialize,
-};
+use serde::Deserialize;
+use serde::Serialize;
+use serde_json::from_value;
 use serde_json::json;
+use serde_json::to_value;
 
 /// Checks canonical parsing, display, and Serde for every family member.
 ///
@@ -37,12 +37,11 @@ where
         );
         assert_eq!(unit.to_string(), unit.symbol());
 
-        let value = serde_json::to_value(unit).expect("unit should serialize");
+        let value = to_value(unit).expect("unit should serialize");
 
         assert_eq!(value, json!(unit.symbol()));
         assert_eq!(
-            serde_json::from_value::<U>(value)
-                .expect("unit should deserialize"),
+            from_value::<U>(value).expect("unit should deserialize"),
             *unit,
         );
     }

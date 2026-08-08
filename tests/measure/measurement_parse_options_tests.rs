@@ -6,12 +6,10 @@
 //    Licensed under the Apache License, Version 2.0.
 // =============================================================================
 
-use qubit_measure::{
-    MeasurementError,
-    MeasurementParseOptions,
-    measurement,
-    unit,
-};
+use qubit_measure::MeasurementError;
+use qubit_measure::MeasurementParseOptions;
+use qubit_measure::measurement;
+use qubit_measure::unit;
 use rust_decimal::dec;
 
 /// Verifies the stable default measurement text limit.
@@ -77,9 +75,7 @@ fn test_measurement_parsing_classifies_decimal_errors() {
         Err(MeasurementError::UnrepresentableMeasurementValue),
     );
     assert_eq!(
-        measurement::Length::parse_strict(
-            "9999999999999999999999999999999999999999 m",
-        ),
+        measurement::Length::parse_strict("9999999999999999999999999999999999999999 m",),
         Err(MeasurementError::UnrepresentableMeasurementValue),
     );
     assert_eq!(

@@ -7,22 +7,16 @@
 // =============================================================================
 //! Approximate Decimal/f64 hidden-helper contract tests.
 
-use qubit_measure::{
-    __private::{
-        base_f64_to_unit_value,
-        decimal_from_f64_approx,
-        decimal_to_f64_approx,
-        unit_value_to_base_f64,
-    },
-    ConversionFactor,
-    MeasurementError,
-    UnitDefinition,
-};
+use qubit_measure::__private::base_f64_to_unit_value;
+use qubit_measure::__private::decimal_from_f64_approx;
+use qubit_measure::__private::decimal_to_f64_approx;
+use qubit_measure::__private::unit_value_to_base_f64;
+use qubit_measure::ConversionFactor;
+use qubit_measure::MeasurementError;
+use qubit_measure::UnitDefinition;
+use rust_decimal::Decimal;
+use rust_decimal::dec;
 use rust_decimal::prelude::ToPrimitive;
-use rust_decimal::{
-    Decimal,
-    dec,
-};
 
 #[test]
 fn test_uom_bridge_helpers_convert_finite_values() {
@@ -44,8 +38,7 @@ fn test_decimal_from_f64_approx_rejects_non_finite_values() {
 #[test]
 fn test_unit_value_and_base_f64_follow_exact_definition() {
     let definition = UnitDefinition::new(
-        ConversionFactor::new(dec!(5), dec!(9))
-            .expect("positive ratio should be valid"),
+        ConversionFactor::new(dec!(5), dec!(9)).expect("positive ratio should be valid"),
         dec!(459.67),
     );
 

@@ -7,10 +7,8 @@
 // =============================================================================
 //! Public contract tests covering top-level literal parser orchestration.
 
-use qubit_measure::__private::{
-    decimal_from_literal,
-    positive_decimal_from_literal,
-};
+use qubit_measure::__private::decimal_from_literal;
+use qubit_measure::__private::positive_decimal_from_literal;
 use rust_decimal::dec;
 
 #[test]

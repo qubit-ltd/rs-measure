@@ -7,13 +7,9 @@
 // =============================================================================
 //! Approximate Decimal/f64 conversion helpers for generated uom bridges.
 
-use rust_decimal::{
-    Decimal,
-    prelude::{
-        FromPrimitive,
-        ToPrimitive,
-    },
-};
+use rust_decimal::Decimal;
+use rust_decimal::prelude::FromPrimitive;
+use rust_decimal::prelude::ToPrimitive;
 
 use crate::UnitDefinition;
 
@@ -50,10 +46,7 @@ pub fn decimal_to_f64_approx(value: Decimal) -> f64 {
 /// The corresponding approximate `f64` SI base value.
 #[must_use]
 #[inline]
-pub fn unit_value_to_base_f64(
-    value: Decimal,
-    definition: UnitDefinition,
-) -> f64 {
+pub fn unit_value_to_base_f64(value: Decimal, definition: UnitDefinition) -> f64 {
     let factor = definition.factor();
     let value = decimal_to_f64_approx(value);
     let offset = decimal_to_f64_approx(definition.offset());
@@ -105,10 +98,7 @@ pub fn base_f64_to_unit_value(
 /// Returns [`crate::MeasurementError::DecimalConversion`] for NaN, infinity,
 /// or a finite value outside Decimal's representation.
 #[inline]
-pub fn decimal_from_f64_approx(
-    value: f64,
-) -> Result<Decimal, crate::MeasurementError> {
-    Decimal::from_f64(value).ok_or_else(|| {
-        crate::MeasurementError::DecimalConversion(value.to_string())
-    })
+pub fn decimal_from_f64_approx(value: f64) -> Result<Decimal, crate::MeasurementError> {
+    Decimal::from_f64(value)
+        .ok_or_else(|| crate::MeasurementError::DecimalConversion(value.to_string()))
 }

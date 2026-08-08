@@ -9,12 +9,10 @@
 
 use rust_decimal::Decimal;
 
+use crate::measure::ConversionFactor;
+use crate::measure::ConversionOptions;
+use crate::measure::MeasurementError;
 use crate::measure::decimal_conversion::convert_decimal;
-use crate::measure::{
-    ConversionFactor,
-    ConversionOptions,
-    MeasurementError,
-};
 
 /// Defines a unit relative to its quantity family's base unit.
 ///

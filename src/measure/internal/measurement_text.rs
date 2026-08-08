@@ -11,11 +11,9 @@ use rust_decimal::Decimal;
 
 use super::compact_candidate::CompactCandidate;
 use super::parse_decimal_text_exact;
-use crate::measure::{
-    MeasurementError,
-    MeasurementParseOptions,
-    Unit,
-};
+use crate::measure::MeasurementError;
+use crate::measure::MeasurementParseOptions;
+use crate::measure::Unit;
 
 /// Parses a measurement with canonical-only or lenient unit matching.
 ///
@@ -47,8 +45,7 @@ where
             maximum: options.max_text_bytes(),
         });
     }
-    if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input)
-    {
+    if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input) {
         return parse_measurement_parts::<U>(value_text, unit_text, strict);
     }
 
@@ -85,8 +82,8 @@ where
         return Err(MeasurementError::InvalidMeasurementSyntax);
     }
 
-    let (value_text, unit_text) = split_measurement_parts(input)
-        .ok_or(MeasurementError::InvalidMeasurementSyntax)?;
+    let (value_text, unit_text) =
+        split_measurement_parts(input).ok_or(MeasurementError::InvalidMeasurementSyntax)?;
     parse_measurement_parts::<U>(value_text, unit_text, strict)
 }
 
@@ -214,8 +211,7 @@ fn resolve_compact_candidates(
     ambiguous_units: Vec<String>,
 ) -> Result<Option<(Decimal, usize)>, MeasurementError> {
     if ambiguous_units.is_empty() {
-        Ok(first_candidate
-            .map(|candidate| (candidate.value, candidate.unit_index)))
+        Ok(first_candidate.map(|candidate| (candidate.value, candidate.unit_index)))
     } else {
         Err(MeasurementError::AmbiguousMeasurement {
             input: input.to_owned(),
@@ -295,9 +291,7 @@ fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let is_separated = unit_suffix.trim_start().len() != unit_suffix.len();
     let unit_text = unit_suffix.trim();
     if unit_text.is_empty()
-        || (!is_separated
-            && (value_text.ends_with('.')
-                || unit_text.starts_with(['.', '+', '-'])))
+        || (!is_separated && (value_text.ends_with('.') || unit_text.starts_with(['.', '+', '-'])))
     {
         None
     } else {

@@ -7,12 +7,12 @@
 // =============================================================================
 //! Assertions for exact unit definitions.
 
-use qubit_measure::{
-    Unit,
-    unit,
-};
-use rust_decimal::Decimal;
 use std::fmt::Debug;
+
+use qubit_measure::ConversionFactor;
+use qubit_measure::Unit;
+use qubit_measure::unit;
+use rust_decimal::Decimal;
 
 use crate::measure::support::DefinitionCase;
 
@@ -36,9 +36,8 @@ where
             *expected_unit, case.unit,
             "definition cases must follow Unit::all() order",
         );
-        let definition =
-            case.unit.definition().expect("definition should be valid");
-        let normalized = qubit_measure::ConversionFactor::new(
+        let definition = case.unit.definition().expect("definition should be valid");
+        let normalized = ConversionFactor::new(
             definition.factor().numerator(),
             definition.factor().denominator(),
         )
@@ -46,22 +45,19 @@ where
         assert_eq!(definition.factor(), normalized);
         assert_eq!(
             definition.factor().numerator(),
-            Decimal::from_str_exact(case.numerator)
-                .expect("numerator should be valid Decimal"),
+            Decimal::from_str_exact(case.numerator).expect("numerator should be valid Decimal"),
             "unexpected numerator for {:?}",
             case.unit,
         );
         assert_eq!(
             definition.factor().denominator(),
-            Decimal::from_str_exact(case.denominator)
-                .expect("denominator should be valid Decimal"),
+            Decimal::from_str_exact(case.denominator).expect("denominator should be valid Decimal"),
             "unexpected denominator for {:?}",
             case.unit,
         );
         assert_eq!(
             definition.offset(),
-            Decimal::from_str_exact(case.offset)
-                .expect("offset should be valid Decimal"),
+            Decimal::from_str_exact(case.offset).expect("offset should be valid Decimal"),
             "unexpected offset for {:?}",
             case.unit,
         );

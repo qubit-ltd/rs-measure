@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted luminous intensity measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::LuminousIntensity as UomLuminousIntensity;
 #[cfg(feature = "uom")]
 use uom::si::luminous_intensity::candela;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted luminous intensity measurements.

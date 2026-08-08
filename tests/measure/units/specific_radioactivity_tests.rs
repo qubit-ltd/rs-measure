@@ -8,16 +8,12 @@
 //! Exact definitions and contract tests for the specific radioactivity unit
 //! family.
 
-use qubit_measure::{
-    assert_unit_family_valid,
-    unit,
-};
+use qubit_measure::assert_unit_family_valid;
+use qubit_measure::unit;
 
-use crate::measure::support::{
-    DefinitionCase,
-    assert_definition_cases,
-    assert_unit_contract,
-};
+use crate::measure::support::DefinitionCase;
+use crate::measure::support::assert_definition_cases;
+use crate::measure::support::assert_unit_contract;
 
 #[test]
 fn test_specific_radioactivity_definitions_match_exact_golden_values() {
@@ -35,8 +31,7 @@ fn test_specific_radioactivity_definitions_match_exact_golden_values() {
             offset: "0",
         },
         DefinitionCase {
-            unit:
-                unit::SpecificRadioactivity::DisintegrationsPerMinutePerKilogram,
+            unit: unit::SpecificRadioactivity::DisintegrationsPerMinutePerKilogram,
             numerator: "1",
             denominator: "60",
             offset: "0",

@@ -135,25 +135,13 @@ pub use volume_rate::VolumeRate;
 macro_rules! __unit_factor {
     ($numerator:literal) => {
         $crate::ConversionFactor::from_decimal(
-            const {
-                $crate::__private::positive_decimal_from_literal(stringify!(
-                    $numerator
-                ))
-            },
+            const { $crate::__private::positive_decimal_from_literal(stringify!($numerator)) },
         )
     };
     ($numerator:literal / $denominator:literal) => {
         $crate::ConversionFactor::new(
-            const {
-                $crate::__private::positive_decimal_from_literal(stringify!(
-                    $numerator
-                ))
-            },
-            const {
-                $crate::__private::positive_decimal_from_literal(stringify!(
-                    $denominator
-                ))
-            },
+            const { $crate::__private::positive_decimal_from_literal(stringify!($numerator)) },
+            const { $crate::__private::positive_decimal_from_literal(stringify!($denominator)) },
         )
     };
 }
@@ -358,9 +346,7 @@ macro_rules! impl_uom_unit {
                 value: ::rust_decimal::Decimal,
             ) -> Result<Self::Quantity, $crate::MeasurementError> {
                 let definition = $crate::Unit::definition(self)?;
-                let base_value = $crate::__private::unit_value_to_base_f64(
-                    value, definition,
-                );
+                let base_value = $crate::__private::unit_value_to_base_f64(value, definition);
                 Ok(<$quantity_ty>::new::<$uom_base_unit>(base_value))
             }
 
@@ -371,9 +357,7 @@ macro_rules! impl_uom_unit {
             ) -> Result<::rust_decimal::Decimal, $crate::MeasurementError> {
                 let definition = $crate::Unit::definition(self)?;
                 let base_value = quantity.get::<$uom_base_unit>();
-                $crate::__private::base_f64_to_unit_value(
-                    base_value, definition,
-                )
+                $crate::__private::base_f64_to_unit_value(base_value, definition)
             }
         }
     };

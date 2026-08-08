@@ -7,16 +7,12 @@
 // =============================================================================
 //! Exact definitions and contract tests for the acceleration unit family.
 
-use qubit_measure::{
-    assert_unit_family_valid,
-    unit,
-};
+use qubit_measure::assert_unit_family_valid;
+use qubit_measure::unit;
 
-use crate::measure::support::{
-    DefinitionCase,
-    assert_definition_cases,
-    assert_unit_contract,
-};
+use crate::measure::support::DefinitionCase;
+use crate::measure::support::assert_definition_cases;
+use crate::measure::support::assert_unit_contract;
 
 #[test]
 fn test_acceleration_definitions_match_exact_golden_values() {

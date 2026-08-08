@@ -11,11 +11,9 @@
 #![no_main]
 
 use libfuzzer_sys::fuzz_target;
-use qubit_measure::{
-    Measurement,
-    MeasurementParseOptions,
-    unit,
-};
+use qubit_measure::Measurement;
+use qubit_measure::MeasurementParseOptions;
+use qubit_measure::unit;
 
 fuzz_target!(|data: &[u8]| {
     let Ok(input) = str::from_utf8(data) else {

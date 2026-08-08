@@ -7,30 +7,27 @@
 // =============================================================================
 //! Persisted measurement values and optional approximate adapters.
 
-#[cfg(feature = "uom")]
-use crate::measure::UomUnit;
-use crate::measure::decimal_conversion::compare_decimal_values;
-use crate::measure::internal::{
-    MeasurementWire,
-    parse_measurement_text,
-};
-use crate::measure::{
-    ConversionOptions,
-    MeasurementError,
-    MeasurementParseOptions,
-    Unit,
-};
-use rust_decimal::Decimal;
-use serde::ser::SerializeStruct;
-use serde::{
-    Deserialize,
-    Deserializer,
-    Serialize,
-    Serializer,
-};
 use std::cmp::Ordering;
 use std::fmt;
 use std::str::FromStr;
+
+use rust_decimal::Decimal;
+use serde::Deserialize;
+use serde::Deserializer;
+use serde::Serialize;
+use serde::Serializer;
+use serde::de::Error;
+use serde::ser::SerializeStruct;
+
+use crate::measure::ConversionOptions;
+use crate::measure::MeasurementError;
+use crate::measure::MeasurementParseOptions;
+use crate::measure::Unit;
+#[cfg(feature = "uom")]
+use crate::measure::UomUnit;
+use crate::measure::decimal_conversion::compare_decimal_values;
+use crate::measure::internal::MeasurementWire;
+use crate::measure::internal::parse_measurement_text;
 
 /// A persisted measurement value for one concrete quantity.
 ///
@@ -121,10 +118,7 @@ where
     /// cannot hold the value exactly, or a classified unit or ambiguity error.
     #[inline(always)]
     pub fn parse_strict(input: &str) -> Result<Self, MeasurementError> {
-        Self::parse_strict_with_options(
-            input,
-            &MeasurementParseOptions::default(),
-        )
+        Self::parse_strict_with_options(input, &MeasurementParseOptions::default())
     }
 
     /// Parses a canonical measurement using explicit resource limits.
@@ -184,10 +178,7 @@ where
     /// ```
     #[inline(always)]
     pub fn parse_lenient(input: &str) -> Result<Self, MeasurementError> {
-        Self::parse_lenient_with_options(
-            input,
-            &MeasurementParseOptions::default(),
-        )
+        Self::parse_lenient_with_options(input, &MeasurementParseOptions::default())
     }
 
     /// Parses a lenient measurement using explicit resource limits.
@@ -244,10 +235,7 @@ where
     /// Returns [`MeasurementError::InvalidUnitDefinition`] when either unit
     /// cannot provide a valid exact definition.
     #[inline]
-    pub fn try_cmp_exact(
-        &self,
-        other: &Self,
-    ) -> Result<Ordering, MeasurementError> {
+    pub fn try_cmp_exact(&self, other: &Self) -> Result<Ordering, MeasurementError> {
         let left_definition = self.unit.definition()?;
         let right_definition = other.unit.definition()?;
         Ok(compare_decimal_values(
@@ -277,10 +265,7 @@ where
     /// Returns [`MeasurementError::InvalidUnitDefinition`] when either unit
     /// cannot provide a valid exact definition.
     #[inline]
-    pub fn equivalent_to(
-        &self,
-        other: &Self,
-    ) -> Result<bool, MeasurementError> {
+    pub fn equivalent_to(&self, other: &Self) -> Result<bool, MeasurementError> {
         self.try_cmp_exact(other)
             .map(|ordering| ordering == Ordering::Equal)
     }
@@ -333,8 +318,7 @@ where
     ) -> Result<Self, MeasurementError> {
         let source = self.unit.definition()?;
         let target_definition = target.definition()?;
-        let value =
-            source.convert_value_to(self.value, target_definition, options)?;
+        let value = source.convert_value_to(self.value, target_definition, options)?;
         Ok(Self::new(value, target))
     }
 }
@@ -366,10 +350,7 @@ where
     /// [`MeasurementError::DecimalConversion`] when the approximate
     /// floating-point value cannot be represented as Decimal.
     #[inline(always)]
-    pub fn from_uom_approx(
-        quantity: U::Quantity,
-        unit: U,
-    ) -> Result<Self, MeasurementError> {
+    pub fn from_uom_approx(quantity: U::Quantity, unit: U) -> Result<Self, MeasurementError> {
         unit.value_from_uom_approx(quantity)
             .map(|value| Self::new(value, unit))
     }
@@ -469,15 +450,12 @@ where
     {
         let wire = MeasurementWire::deserialize(deserializer)?;
         if wire.quantity != U::QUANTITY {
-            return Err(serde::de::Error::custom(
-                MeasurementError::QuantityMismatch {
-                    expected: U::QUANTITY.to_owned(),
-                    actual: wire.quantity,
-                },
-            ));
+            return Err(Error::custom(MeasurementError::QuantityMismatch {
+                expected: U::QUANTITY.to_owned(),
+                actual: wire.quantity,
+            }));
         }
-        let unit =
-            U::parse_strict(&wire.unit).map_err(serde::de::Error::custom)?;
+        let unit = U::parse_strict(&wire.unit).map_err(Error::custom)?;
         Ok(Self::new(wire.value, unit))
     }
 }

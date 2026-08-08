@@ -7,10 +7,9 @@
 // =============================================================================
 //! Public Serde contract tests for the private measurement wire type.
 
-use qubit_measure::{
-    MeasurementParseOptions,
-    measurement,
-};
+use qubit_measure::MeasurementParseOptions;
+use qubit_measure::measurement;
+use serde_json::from_value;
 use serde_json::json;
 
 /// Verifies that every persisted measurement field remains required.
@@ -32,7 +31,7 @@ fn test_measurement_wire_rejects_missing_required_fields() {
     ];
 
     for (value, expected_message) in cases {
-        let error = serde_json::from_value::<measurement::Length>(value)
+        let error = from_value::<measurement::Length>(value)
             .expect_err("missing required field should fail");
 
         assert!(
@@ -45,7 +44,7 @@ fn test_measurement_wire_rejects_missing_required_fields() {
 /// Verifies that Decimal values remain string-only in JSON.
 #[test]
 fn test_measurement_wire_rejects_numeric_decimal_value() {
-    let error = serde_json::from_value::<measurement::Length>(json!({
+    let error = from_value::<measurement::Length>(json!({
         "quantity": "length",
         "value": 1,
         "unit": "m",
@@ -67,7 +66,7 @@ fn test_measurement_wire_rejects_numeric_decimal_value() {
 #[test]
 fn test_measurement_wire_rejects_lossy_decimal_text() {
     for value in ["9.000000000000000000000000000001", "2.5e-28"] {
-        let error = serde_json::from_value::<measurement::Length>(json!({
+        let error = from_value::<measurement::Length>(json!({
             "quantity": "length",
             "value": value,
             "unit": "m",
@@ -87,7 +86,7 @@ fn test_measurement_wire_rejects_lossy_decimal_text() {
 #[test]
 fn test_measurement_wire_rejects_malformed_decimal_text() {
     for value in ["1e2e3", "1e+", "+", "1..0"] {
-        let error = serde_json::from_value::<measurement::Length>(json!({
+        let error = from_value::<measurement::Length>(json!({
             "quantity": "length",
             "value": value,
             "unit": "m",
@@ -104,8 +103,7 @@ fn test_measurement_wire_rejects_malformed_decimal_text() {
 /// Verifies that every persisted string field uses the default byte limit.
 #[test]
 fn test_measurement_wire_rejects_oversized_string_fields() {
-    let oversized =
-        "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
+    let oversized = "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
     let values = [
         json!({
             "quantity": oversized.clone(),
@@ -125,8 +123,8 @@ fn test_measurement_wire_rejects_oversized_string_fields() {
     ];
 
     for value in values {
-        let error = serde_json::from_value::<measurement::Length>(value)
-            .expect_err("oversized wire field should fail");
+        let error =
+            from_value::<measurement::Length>(value).expect_err("oversized wire field should fail");
 
         assert!(
             error.to_string().contains("byte limit"),
@@ -139,7 +137,7 @@ fn test_measurement_wire_rejects_oversized_string_fields() {
 #[test]
 fn test_measurement_wire_accepts_exact_scientific_boundaries() {
     for value in ["1.0e-28", "100e-29", "0.1e29"] {
-        let _ = serde_json::from_value::<measurement::Length>(json!({
+        let _ = from_value::<measurement::Length>(json!({
             "quantity": "length",
             "value": value,
             "unit": "m",
@@ -151,7 +149,7 @@ fn test_measurement_wire_accepts_exact_scientific_boundaries() {
 /// Verifies that unknown units retain their quantity context.
 #[test]
 fn test_measurement_wire_rejects_unknown_unit_with_quantity_context() {
-    let error = serde_json::from_value::<measurement::Length>(json!({
+    let error = from_value::<measurement::Length>(json!({
         "quantity": "length",
         "value": "1",
         "unit": "kg",
@@ -164,7 +162,7 @@ fn test_measurement_wire_rejects_unknown_unit_with_quantity_context() {
 /// Verifies that future JSON fields remain forward-compatible.
 #[test]
 fn test_measurement_wire_ignores_additional_fields() {
-    let value = serde_json::from_value::<measurement::Length>(json!({
+    let value = from_value::<measurement::Length>(json!({
         "quantity": "length",
         "value": "1",
         "unit": "m",
@@ -178,7 +176,7 @@ fn test_measurement_wire_ignores_additional_fields() {
 /// Verifies that quantity mismatches identify expected and actual families.
 #[test]
 fn test_measurement_wire_rejects_quantity_mismatch_with_context() {
-    let error = serde_json::from_value::<measurement::Length>(json!({
+    let error = from_value::<measurement::Length>(json!({
         "quantity": "mass",
         "value": "1",
         "unit": "m",
@@ -195,7 +193,7 @@ fn test_measurement_wire_rejects_quantity_mismatch_with_context() {
 /// Verifies that persisted unit aliases are rejected as non-canonical.
 #[test]
 fn test_measurement_wire_rejects_alias() {
-    let error = serde_json::from_value::<measurement::Time>(json!({
+    let error = from_value::<measurement::Time>(json!({
         "quantity": "time",
         "value": "1",
         "unit": "year",

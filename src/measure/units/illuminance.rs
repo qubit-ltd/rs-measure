@@ -7,13 +7,14 @@
 // =============================================================================
 //! Units for persisted illuminance measurements.
 
-use crate::define_unit_family;
-#[cfg(feature = "uom")]
-use crate::impl_uom_unit;
 #[cfg(feature = "uom")]
 use uom::si::f64::Illuminance as UomIlluminance;
 #[cfg(feature = "uom")]
 use uom::si::illuminance::lux;
+
+use crate::define_unit_family;
+#[cfg(feature = "uom")]
+use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted illuminance measurements.
