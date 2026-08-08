@@ -64,15 +64,20 @@ impl ConversionFactor {
     ///
     /// Returns [`MeasurementError::InvalidUnitDefinition`] if either term is
     /// zero or negative.
-    pub fn new(numerator: Decimal, denominator: Decimal) -> Result<Self, MeasurementError> {
+    pub fn new(
+        numerator: Decimal,
+        denominator: Decimal,
+    ) -> Result<Self, MeasurementError> {
         if numerator <= Decimal::ZERO {
             return Err(MeasurementError::InvalidUnitDefinition {
-                reason: "conversion factor numerator must be positive".to_owned(),
+                reason: "conversion factor numerator must be positive"
+                    .to_owned(),
             });
         }
         if denominator <= Decimal::ZERO {
             return Err(MeasurementError::InvalidUnitDefinition {
-                reason: "conversion factor denominator must be positive".to_owned(),
+                reason: "conversion factor denominator must be positive"
+                    .to_owned(),
             });
         }
         if numerator.scale() == 0 && denominator.scale() == 0 {
@@ -81,7 +86,8 @@ impl ConversionFactor {
                 denominator.mantissa(),
             ));
         }
-        let (numerator, denominator) = reduce_ratio_terms(numerator, denominator);
+        let (numerator, denominator) =
+            reduce_ratio_terms(numerator, denominator);
         Ok(Self {
             numerator,
             denominator,
@@ -124,7 +130,10 @@ impl ConversionFactor {
     /// Panics if either term is non-positive or a reduced term exceeds
     /// Decimal's 96-bit coefficient range.
     #[inline]
-    pub const fn from_const_integers(numerator: i128, denominator: i128) -> Self {
+    pub const fn from_const_integers(
+        numerator: i128,
+        denominator: i128,
+    ) -> Self {
         assert!(numerator > 0);
         assert!(denominator > 0);
         let divisor = greatest_common_divisor(numerator, denominator);
@@ -168,16 +177,23 @@ impl ConversionFactor {
 ///
 /// An equivalent numerator and denominator with their mantissa GCD and common
 /// scale removed.
-pub(crate) fn reduce_ratio_terms(numerator: Decimal, denominator: Decimal) -> (Decimal, Decimal) {
+pub(crate) fn reduce_ratio_terms(
+    numerator: Decimal,
+    denominator: Decimal,
+) -> (Decimal, Decimal) {
     let numerator_scale = numerator.scale();
     let denominator_scale = denominator.scale();
     let common_scale = numerator_scale.min(denominator_scale);
     let numerator_mantissa = numerator.mantissa();
     let denominator_mantissa = denominator.mantissa();
-    let divisor = greatest_common_divisor(numerator_mantissa, denominator_mantissa);
+    let divisor =
+        greatest_common_divisor(numerator_mantissa, denominator_mantissa);
 
     (
-        Decimal::from_i128_with_scale(numerator_mantissa / divisor, numerator_scale - common_scale),
+        Decimal::from_i128_with_scale(
+            numerator_mantissa / divisor,
+            numerator_scale - common_scale,
+        ),
         Decimal::from_i128_with_scale(
             denominator_mantissa / divisor,
             denominator_scale - common_scale,

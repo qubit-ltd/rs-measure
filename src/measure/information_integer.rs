@@ -108,14 +108,18 @@ impl TryFrom<Measurement<Information>> for u64 {
     ///
     /// Returns a classified negative-value, fractional-byte, or `u64`
     /// out-of-range error.
-    fn try_from(measurement: Measurement<Information>) -> Result<Self, Self::Error> {
+    fn try_from(
+        measurement: Measurement<Information>,
+    ) -> Result<Self, Self::Error> {
         let value = measurement.value;
         let unit = measurement.unit.symbol().to_owned();
         let bytes = exact_nonnegative_bytes(measurement)?;
-        Self::try_from(bytes).map_err(|_| MeasurementError::InformationOutOfRange {
-            value,
-            unit,
-            target: "u64",
+        Self::try_from(bytes).map_err(|_| {
+            MeasurementError::InformationOutOfRange {
+                value,
+                unit,
+                target: "u64",
+            }
         })
     }
 }
@@ -137,14 +141,18 @@ impl TryFrom<Measurement<Information>> for usize {
     ///
     /// Returns a classified negative-value, fractional-byte, or `usize`
     /// out-of-range error.
-    fn try_from(measurement: Measurement<Information>) -> Result<Self, Self::Error> {
+    fn try_from(
+        measurement: Measurement<Information>,
+    ) -> Result<Self, Self::Error> {
         let value = measurement.value;
         let unit = measurement.unit.symbol().to_owned();
         let bytes = exact_nonnegative_bytes(measurement)?;
-        Self::try_from(bytes).map_err(|_| MeasurementError::InformationOutOfRange {
-            value,
-            unit,
-            target: "usize",
+        Self::try_from(bytes).map_err(|_| {
+            MeasurementError::InformationOutOfRange {
+                value,
+                unit,
+                target: "usize",
+            }
         })
     }
 }

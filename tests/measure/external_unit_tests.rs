@@ -91,7 +91,8 @@ fn test_measurement_serde_uses_manual_unit_contract() {
     let measurement = Measurement::new(dec!(1.25), ManualUnit::Base);
 
     assert_eq!(
-        to_value(measurement).expect("manual-unit measurement should serialize"),
+        to_value(measurement)
+            .expect("manual-unit measurement should serialize"),
         json!({"quantity": "manual", "value": "1.25", "unit": "manual"}),
     );
 

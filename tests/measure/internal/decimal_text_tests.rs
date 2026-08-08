@@ -79,8 +79,8 @@ fn test_decimal_text_accepts_zero_with_extreme_exponents() {
 /// Verifies that significant digits separated by zero runs remain exact.
 #[test]
 fn test_decimal_text_preserves_interleaved_and_trailing_zero_runs() {
-    let expected =
-        Decimal::from_str("100200300.004005000").expect("expected Decimal should be representable");
+    let expected = Decimal::from_str("100200300.004005000")
+        .expect("expected Decimal should be representable");
     let actual = "100200300.004005000 m"
         .parse::<measurement::Length>()
         .expect("zero runs should parse exactly")

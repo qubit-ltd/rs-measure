@@ -36,10 +36,14 @@ struct TimeConfig {
 #[test]
 fn test_measurement_text_serde_round_trip_uses_canonical_compact_string() {
     let config = InformationConfig {
-        limit: measurement::Information::new(dec!(2), unit::Information::Mebibyte),
+        limit: measurement::Information::new(
+            dec!(2),
+            unit::Information::Mebibyte,
+        ),
     };
 
-    let value = to_value(&config).expect("compact measurement should serialize");
+    let value =
+        to_value(&config).expect("compact measurement should serialize");
     assert_eq!(value, json!({"limit": "2 MiB"}));
     assert_eq!(
         from_value::<InformationConfig>(value)
@@ -54,10 +58,12 @@ fn test_optional_measurement_text_serde_round_trip_uses_canonical_text() {
         timeout: Some(measurement::Time::new(dec!(2), unit::Time::Second)),
     };
 
-    let value = to_value(&config).expect("optional compact measurement should serialize");
+    let value = to_value(&config)
+        .expect("optional compact measurement should serialize");
     assert_eq!(value, json!({"timeout": "2 s"}));
     assert_eq!(
-        from_value::<TimeConfig>(value).expect("optional compact measurement should deserialize"),
+        from_value::<TimeConfig>(value)
+            .expect("optional compact measurement should deserialize"),
         config,
     );
 }
@@ -66,8 +72,9 @@ fn test_optional_measurement_text_serde_round_trip_uses_canonical_text() {
 fn test_optional_measurement_text_serde_accepts_null_and_missing_fields() {
     for value in [json!({"timeout": null}), json!({})] {
         assert_eq!(
-            from_value::<TimeConfig>(value)
-                .expect("null or missing optional measurement should deserialize"),
+            from_value::<TimeConfig>(value).expect(
+                "null or missing optional measurement should deserialize"
+            ),
             TimeConfig { timeout: None },
         );
     }
@@ -100,7 +107,8 @@ fn test_measurement_text_serde_rejects_non_string_values() {
 
 #[test]
 fn test_measurement_text_adapter_does_not_change_default_wire_format() {
-    let measurement = measurement::Information::new(dec!(2), unit::Information::Mebibyte);
+    let measurement =
+        measurement::Information::new(dec!(2), unit::Information::Mebibyte);
 
     assert_eq!(
         to_value(measurement).expect("default measurement should serialize"),

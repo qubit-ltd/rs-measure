@@ -43,7 +43,10 @@ pub trait UomUnit: Unit {
     ///
     /// Returns [`MeasurementError::InvalidUnitDefinition`] when an external
     /// unit family cannot provide a valid exact definition.
-    fn try_to_uom_approx(self, value: Decimal) -> Result<Self::Quantity, MeasurementError>;
+    fn try_to_uom_approx(
+        self,
+        value: Decimal,
+    ) -> Result<Self::Quantity, MeasurementError>;
 
     /// Creates an approximate `uom` quantity from a Decimal value.
     ///
@@ -86,5 +89,8 @@ pub trait UomUnit: Unit {
     /// unit family cannot provide a valid exact definition. Returns
     /// [`MeasurementError::DecimalConversion`] if the floating-point result
     /// cannot be represented as Decimal.
-    fn value_from_uom_approx(self, quantity: Self::Quantity) -> Result<Decimal, MeasurementError>;
+    fn value_from_uom_approx(
+        self,
+        quantity: Self::Quantity,
+    ) -> Result<Decimal, MeasurementError>;
 }

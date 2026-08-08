@@ -75,7 +75,10 @@ impl ConversionOptions {
     /// Returns [`MeasurementError::InvalidScale`] when `scale` exceeds the
     /// Decimal limit.
     #[inline]
-    pub fn fixed_scale(scale: u32, rounding: RoundingStrategy) -> Result<Self, MeasurementError> {
+    pub fn fixed_scale(
+        scale: u32,
+        rounding: RoundingStrategy,
+    ) -> Result<Self, MeasurementError> {
         if scale > Decimal::MAX_SCALE {
             return Err(MeasurementError::InvalidScale {
                 scale,

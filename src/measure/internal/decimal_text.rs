@@ -34,13 +34,14 @@ use crate::measure::MeasurementParseOptions;
 pub(in crate::measure) fn parse_decimal_text_exact(
     value: &str,
 ) -> Result<Decimal, MeasurementError> {
-    let (base, scientific_exponent) =
-        split_scientific_text(value).ok_or(MeasurementError::InvalidMeasurementSyntax)?;
-    let (mantissa, trailing_zeroes, fraction_digits, negative) = parse_decimal_base(base)?;
-    let raw_exponent =
-        scientific_exponent.saturating_sub(i64::try_from(fraction_digits).unwrap_or(i64::MAX));
-    let normalized_exponent =
-        raw_exponent.saturating_add(i64::try_from(trailing_zeroes).unwrap_or(i64::MAX));
+    let (base, scientific_exponent) = split_scientific_text(value)
+        .ok_or(MeasurementError::InvalidMeasurementSyntax)?;
+    let (mantissa, trailing_zeroes, fraction_digits, negative) =
+        parse_decimal_base(base)?;
+    let raw_exponent = scientific_exponent
+        .saturating_sub(i64::try_from(fraction_digits).unwrap_or(i64::MAX));
+    let normalized_exponent = raw_exponent
+        .saturating_add(i64::try_from(trailing_zeroes).unwrap_or(i64::MAX));
     let preferred_scale = negative_exponent_scale(raw_exponent);
 
     crate::__private::finalize_exact_decimal(
@@ -128,7 +129,9 @@ fn parse_scientific_exponent(value: &str) -> Option<i64> {
 /// # Errors
 ///
 /// Returns a classified syntax or exact-representation error.
-fn parse_decimal_base(value: &str) -> Result<(u128, usize, usize, bool), MeasurementError> {
+fn parse_decimal_base(
+    value: &str,
+) -> Result<(u128, usize, usize, bool), MeasurementError> {
     let bytes = value.as_bytes();
     let (negative, start) = decimal_sign(bytes);
     let mut mantissa = 0_u128;
@@ -194,7 +197,10 @@ fn decimal_sign(bytes: &[u8]) -> (bool, usize) {
 ///
 /// Returns [`MeasurementError::UnrepresentableMeasurementValue`] when the
 /// exact mantissa exceeds `u128`.
-fn append_decimal_zeroes(mut value: u128, zeroes: usize) -> Result<u128, MeasurementError> {
+fn append_decimal_zeroes(
+    mut value: u128,
+    zeroes: usize,
+) -> Result<u128, MeasurementError> {
     for _ in 0..zeroes {
         value = value
             .checked_mul(10)
@@ -219,7 +225,10 @@ fn append_decimal_zeroes(mut value: u128, zeroes: usize) -> Result<u128, Measure
 /// Returns [`MeasurementError::UnrepresentableMeasurementValue`] when the
 /// exact mantissa exceeds `u128`.
 #[inline]
-fn append_decimal_digit(value: u128, digit: u8) -> Result<u128, MeasurementError> {
+fn append_decimal_digit(
+    value: u128,
+    digit: u8,
+) -> Result<u128, MeasurementError> {
     value
         .checked_mul(10)
         .and_then(|value| value.checked_add(u128::from(digit)))
@@ -259,7 +268,9 @@ fn negative_exponent_scale(exponent: i64) -> u32 {
 /// Returns the deserializer's error when the input is not a string, has
 /// invalid Decimal syntax, or cannot be represented without rounding.
 #[inline]
-pub(super) fn deserialize_decimal_text_exact<'de, D>(deserializer: D) -> Result<Decimal, D::Error>
+pub(super) fn deserialize_decimal_text_exact<'de, D>(
+    deserializer: D,
+) -> Result<Decimal, D::Error>
 where
     D: Deserializer<'de>,
 {
@@ -287,7 +298,9 @@ where
 /// subsequent parsing work; it is neither a transport payload limit nor an
 /// allocation limit enforced before deserialization.
 #[inline]
-pub(super) fn deserialize_bounded_string<'de, D>(deserializer: D) -> Result<String, D::Error>
+pub(super) fn deserialize_bounded_string<'de, D>(
+    deserializer: D,
+) -> Result<String, D::Error>
 where
     D: Deserializer<'de>,
 {

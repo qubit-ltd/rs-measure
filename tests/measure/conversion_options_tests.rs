@@ -31,7 +31,10 @@ fn test_fixed_scale_exposes_its_rounding_strategy() {
 #[test]
 fn test_conversion_options_reject_scale_above_decimal_limit() {
     assert_eq!(
-        ConversionOptions::fixed_scale(29, RoundingStrategy::MidpointNearestEven),
+        ConversionOptions::fixed_scale(
+            29,
+            RoundingStrategy::MidpointNearestEven
+        ),
         Err(MeasurementError::InvalidScale { scale: 29, max: 28 }),
     );
 }

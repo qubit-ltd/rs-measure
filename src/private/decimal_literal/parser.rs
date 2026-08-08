@@ -51,15 +51,22 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
         while index < length && bytes[index] == b'_' {
             index += 1;
         }
-        let (mantissa, digits, end, overflowed) = parse_digits(bytes, index, radix, 0);
-        if digits == 0 || end != length || overflowed || mantissa > MAX_MANTISSA {
+        let (mantissa, digits, end, overflowed) =
+            parse_digits(bytes, index, radix, 0);
+        if digits == 0 || end != length || overflowed || mantissa > MAX_MANTISSA
+        {
             panic!("invalid or unrepresentable radix Decimal literal");
         }
         return decimal_from_parts(mantissa, 0, negative);
     }
 
-    let (mut mantissa, mut trailing_zeroes, integer_digits, mut end, mut overflowed) =
-        parse_decimal_digits(bytes, index, 0, 0);
+    let (
+        mut mantissa,
+        mut trailing_zeroes,
+        integer_digits,
+        mut end,
+        mut overflowed,
+    ) = parse_decimal_digits(bytes, index, 0, 0);
     if integer_digits == 0 {
         panic!("Decimal literal must contain an integer part");
     }
@@ -73,7 +80,9 @@ pub const fn decimal_from_literal(value: &str) -> Decimal {
         end = fraction_end;
         overflowed = overflowed || fraction_overflowed;
         if digits == 0 && end < length {
-            panic!("Decimal literal fraction must contain digits before an exponent");
+            panic!(
+                "Decimal literal fraction must contain digits before an exponent"
+            );
         }
         if digits > i32::MAX as u32 || overflowed {
             panic!("Decimal literal precision exceeds Decimal's exact range");

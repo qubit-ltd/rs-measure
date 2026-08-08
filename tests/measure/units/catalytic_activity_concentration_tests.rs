@@ -16,7 +16,8 @@ use crate::measure::support::assert_definition_cases;
 use crate::measure::support::assert_unit_contract;
 
 #[test]
-fn test_catalytic_activity_concentration_definitions_match_exact_golden_values() {
+fn test_catalytic_activity_concentration_definitions_match_exact_golden_values()
+{
     assert_definition_cases(&[
         DefinitionCase {
             unit: unit::CatalyticActivityConcentration::KatalPerCubicMeter,

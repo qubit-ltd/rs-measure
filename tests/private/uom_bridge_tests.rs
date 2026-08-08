@@ -38,7 +38,8 @@ fn test_decimal_from_f64_approx_rejects_non_finite_values() {
 #[test]
 fn test_unit_value_and_base_f64_follow_exact_definition() {
     let definition = UnitDefinition::new(
-        ConversionFactor::new(dec!(5), dec!(9)).expect("positive ratio should be valid"),
+        ConversionFactor::new(dec!(5), dec!(9))
+            .expect("positive ratio should be valid"),
         dec!(459.67),
     );
 

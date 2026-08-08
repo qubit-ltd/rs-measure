@@ -75,7 +75,9 @@ fn test_measurement_parsing_classifies_decimal_errors() {
         Err(MeasurementError::UnrepresentableMeasurementValue),
     );
     assert_eq!(
-        measurement::Length::parse_strict("9999999999999999999999999999999999999999 m",),
+        measurement::Length::parse_strict(
+            "9999999999999999999999999999999999999999 m",
+        ),
         Err(MeasurementError::UnrepresentableMeasurementValue),
     );
     assert_eq!(

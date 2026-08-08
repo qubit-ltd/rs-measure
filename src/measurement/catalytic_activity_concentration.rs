@@ -11,4 +11,5 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted catalytic activity concentration measurement.
-pub type CatalyticActivityConcentration = Measurement<unit::CatalyticActivityConcentration>;
+pub type CatalyticActivityConcentration =
+    Measurement<unit::CatalyticActivityConcentration>;

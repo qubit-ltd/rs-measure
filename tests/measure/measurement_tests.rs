@@ -32,7 +32,10 @@ use super::support::ManualValidationUnit;
 
 #[test]
 fn test_length_measurement_serde_preserves_value_and_unit() {
-    let measurement = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let measurement = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
 
     let value = to_value(measurement).expect("measurement should serialize");
 
@@ -44,7 +47,10 @@ fn test_length_measurement_serde_preserves_value_and_unit() {
 
 #[test]
 fn test_measurement_serialization_propagates_writer_failures() {
-    let measurement = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let measurement = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
     let serialized_length = to_vec(&measurement)
         .expect("measurement should serialize")
         .len();
@@ -67,14 +73,18 @@ fn test_length_measurement_serde_deserializes_value_and_unit() {
 
     assert_eq!(
         measurement,
-        measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter),
+        measurement::Length::new(
+            Decimal::new(500, 1),
+            unit::Length::Centimeter
+        ),
     );
 }
 
 #[test]
 fn test_length_conversion_uses_decimal_without_f64_loss() {
     let source = measurement::Length::new(
-        Decimal::from_str("12345678901234567890.12345678").expect("source should be valid Decimal"),
+        Decimal::from_str("12345678901234567890.12345678")
+            .expect("source should be valid Decimal"),
         unit::Length::Centimeter,
     );
     let options = ConversionOptions::maximum_precision();
@@ -93,7 +103,8 @@ fn test_length_conversion_uses_decimal_without_f64_loss() {
 #[test]
 fn test_measurement_equivalent_to_compares_physical_values() {
     let meter = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
-    let centimeters = measurement::Length::new(dec!(100), unit::Length::Centimeter);
+    let centimeters =
+        measurement::Length::new(dec!(100), unit::Length::Centimeter);
 
     assert_ne!(meter, centimeters);
     assert_eq!(meter.equivalent_to(&centimeters), Ok(true));
@@ -103,7 +114,8 @@ fn test_measurement_equivalent_to_compares_physical_values() {
 #[test]
 fn test_measurement_try_cmp_exact_orders_cross_unit_values() {
     let meter = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
-    let centimeters = measurement::Length::new(dec!(99), unit::Length::Centimeter);
+    let centimeters =
+        measurement::Length::new(dec!(99), unit::Length::Centimeter);
 
     assert_eq!(meter.try_cmp_exact(&centimeters), Ok(Ordering::Greater));
     assert_eq!(centimeters.try_cmp_exact(&meter), Ok(Ordering::Less));
@@ -111,8 +123,12 @@ fn test_measurement_try_cmp_exact_orders_cross_unit_values() {
 
 #[test]
 fn test_measurement_try_cmp_exact_handles_affine_units() {
-    let celsius = measurement::Temperature::new(Decimal::ZERO, unit::Temperature::Celsius);
-    let fahrenheit = measurement::Temperature::new(dec!(32), unit::Temperature::Fahrenheit);
+    let celsius = measurement::Temperature::new(
+        Decimal::ZERO,
+        unit::Temperature::Celsius,
+    );
+    let fahrenheit =
+        measurement::Temperature::new(dec!(32), unit::Temperature::Fahrenheit);
 
     assert_eq!(celsius.try_cmp_exact(&fahrenheit), Ok(Ordering::Equal));
     assert_eq!(celsius.equivalent_to(&fahrenheit), Ok(true));
@@ -153,8 +169,11 @@ fn test_measurement_json_contains_and_validates_quantity() {
 #[test]
 fn test_measurement_explicit_scale_applies_to_same_unit() {
     let source = measurement::Length::new(dec!(12.345), unit::Length::Meter);
-    let options = ConversionOptions::fixed_scale(2, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let options = ConversionOptions::fixed_scale(
+        2,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     let converted = source
         .convert_to_with_options(unit::Length::Meter, options)
@@ -204,7 +223,8 @@ fn test_measurement_parse_strict_rejects_unit_alias() {
 #[test]
 fn test_measurement_parse_strict_accepts_canonical_input() {
     assert_eq!(
-        measurement::Time::parse_strict("1 s").expect("canonical measurement should parse"),
+        measurement::Time::parse_strict("1 s")
+            .expect("canonical measurement should parse"),
         measurement::Time::new(Decimal::ONE, unit::Time::Second),
     );
 }
@@ -243,10 +263,14 @@ fn test_measurement_text_parsing_rejects_lossy_decimal_inputs() {
 
 #[test]
 fn test_mass_measurement_convert_to_uses_decimal_conversion() {
-    let measurement = measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
+    let measurement =
+        measurement::Mass::new(Decimal::new(1, 1), unit::Mass::Gram);
 
     let converted = measurement
-        .convert_to_with_options(unit::Mass::Kilogram, ConversionOptions::default())
+        .convert_to_with_options(
+            unit::Mass::Kilogram,
+            ConversionOptions::default(),
+        )
         .expect("gram should convert to kilogram");
 
     assert_eq!(
@@ -257,10 +281,14 @@ fn test_mass_measurement_convert_to_uses_decimal_conversion() {
 
 #[test]
 fn test_measurement_convert_to_keeps_same_unit() {
-    let measurement = measurement::Length::new(Decimal::new(125, 2), unit::Length::Meter);
+    let measurement =
+        measurement::Length::new(Decimal::new(125, 2), unit::Length::Meter);
 
     let converted = measurement
-        .convert_to_with_options(unit::Length::Meter, ConversionOptions::default())
+        .convert_to_with_options(
+            unit::Length::Meter,
+            ConversionOptions::default(),
+        )
         .expect("same unit conversion should be a no-op");
 
     assert_eq!(converted, measurement);
@@ -303,7 +331,8 @@ fn test_measurement_conversion_propagates_target_definition_error() {
 
 #[test]
 fn test_measurement_convert_to_uses_immutable_default_options() {
-    let measurement = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+    let measurement =
+        measurement::Length::new(Decimal::ONE, unit::Length::Meter);
 
     let implicit = measurement
         .convert_to(unit::Length::Foot)
@@ -317,33 +346,54 @@ fn test_measurement_convert_to_uses_immutable_default_options() {
 
 #[test]
 fn test_measurement_convert_to_converts_length_area_volume_and_time_units() {
-    let millimeters = measurement::Length::new(Decimal::new(1000, 0), unit::Length::Millimeter);
-    let square_centimeters =
-        measurement::Area::new(Decimal::new(10000, 0), unit::Area::SquareCentimeter);
-    let milliliters = measurement::Volume::new(Decimal::new(1000, 0), unit::Volume::Milliliter);
-    let minutes = measurement::Time::new(Decimal::new(2, 0), unit::Time::Minute);
+    let millimeters = measurement::Length::new(
+        Decimal::new(1000, 0),
+        unit::Length::Millimeter,
+    );
+    let square_centimeters = measurement::Area::new(
+        Decimal::new(10000, 0),
+        unit::Area::SquareCentimeter,
+    );
+    let milliliters = measurement::Volume::new(
+        Decimal::new(1000, 0),
+        unit::Volume::Milliliter,
+    );
+    let minutes =
+        measurement::Time::new(Decimal::new(2, 0), unit::Time::Minute);
 
     assert_eq!(
         millimeters
-            .convert_to_with_options(unit::Length::Meter, ConversionOptions::default())
+            .convert_to_with_options(
+                unit::Length::Meter,
+                ConversionOptions::default()
+            )
             .expect("millimeter should convert to meter"),
         measurement::Length::new(Decimal::ONE, unit::Length::Meter),
     );
     assert_eq!(
         square_centimeters
-            .convert_to_with_options(unit::Area::SquareMeter, ConversionOptions::default())
+            .convert_to_with_options(
+                unit::Area::SquareMeter,
+                ConversionOptions::default()
+            )
             .expect("square centimeter should convert to square meter"),
         measurement::Area::new(Decimal::ONE, unit::Area::SquareMeter),
     );
     assert_eq!(
         milliliters
-            .convert_to_with_options(unit::Volume::Liter, ConversionOptions::default())
+            .convert_to_with_options(
+                unit::Volume::Liter,
+                ConversionOptions::default()
+            )
             .expect("milliliter should convert to liter"),
         measurement::Volume::new(Decimal::ONE, unit::Volume::Liter),
     );
     assert_eq!(
         minutes
-            .convert_to_with_options(unit::Time::Second, ConversionOptions::default())
+            .convert_to_with_options(
+                unit::Time::Second,
+                ConversionOptions::default()
+            )
             .expect("minute should convert to second"),
         measurement::Time::new(Decimal::new(120, 0), unit::Time::Second),
     );
@@ -354,7 +404,10 @@ fn test_angle_conversion_constants_preserve_full_revolution_identity() {
     let degrees = measurement::Angle::new(dec!(360), unit::Angle::Degree);
 
     let revolution = degrees
-        .convert_to_with_options(unit::Angle::Revolution, ConversionOptions::default())
+        .convert_to_with_options(
+            unit::Angle::Revolution,
+            ConversionOptions::default(),
+        )
         .expect("degrees should convert to revolutions");
 
     assert_eq!(revolution.value, Decimal::ONE);
@@ -362,8 +415,10 @@ fn test_angle_conversion_constants_preserve_full_revolution_identity() {
 
 #[test]
 fn test_angular_velocity_constants_preserve_minute_second_identity() {
-    let revolutions_per_minute =
-        measurement::AngularVelocity::new(dec!(60), unit::AngularVelocity::RevolutionPerMinute);
+    let revolutions_per_minute = measurement::AngularVelocity::new(
+        dec!(60),
+        unit::AngularVelocity::RevolutionPerMinute,
+    );
 
     let revolutions_per_second = revolutions_per_minute
         .convert_to_with_options(
@@ -377,19 +432,22 @@ fn test_angular_velocity_constants_preserve_minute_second_identity() {
 
 #[test]
 fn test_measurement_from_str_parses_compact_value_and_typed_unit() {
-    let measurement =
-        measurement::Length::from_str("50.0cm").expect("compact measurement should parse");
+    let measurement = measurement::Length::from_str("50.0cm")
+        .expect("compact measurement should parse");
 
     assert_eq!(
         measurement,
-        measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter),
+        measurement::Length::new(
+            Decimal::new(500, 1),
+            unit::Length::Centimeter
+        ),
     );
 }
 
 #[test]
 fn test_measurement_from_str_parses_spaced_value_and_typed_unit() {
-    let measurement =
-        measurement::Mass::from_str("  1.25 kg  ").expect("spaced measurement should parse");
+    let measurement = measurement::Mass::from_str("  1.25 kg  ")
+        .expect("spaced measurement should parse");
 
     assert_eq!(
         measurement,
@@ -400,15 +458,18 @@ fn test_measurement_from_str_parses_spaced_value_and_typed_unit() {
 #[test]
 fn test_measurement_from_str_parses_signed_and_fractional_values() {
     assert_eq!(
-        measurement::Mass::from_str("-1.25kg").expect("negative measurement should parse"),
+        measurement::Mass::from_str("-1.25kg")
+            .expect("negative measurement should parse"),
         measurement::Mass::new(Decimal::new(-125, 2), unit::Mass::Kilogram),
     );
     assert_eq!(
-        measurement::Length::from_str("+3cm").expect("positive measurement should parse"),
+        measurement::Length::from_str("+3cm")
+            .expect("positive measurement should parse"),
         measurement::Length::new(Decimal::new(3, 0), unit::Length::Centimeter),
     );
     assert_eq!(
-        measurement::Length::from_str(".5m").expect("fractional measurement should parse"),
+        measurement::Length::from_str(".5m")
+            .expect("fractional measurement should parse"),
         measurement::Length::new(Decimal::new(5, 1), unit::Length::Meter),
     );
 }
@@ -416,19 +477,25 @@ fn test_measurement_from_str_parses_signed_and_fractional_values() {
 #[test]
 fn test_measurement_from_str_parses_scientific_notation_values() {
     assert_eq!(
-        measurement::Length::from_str("1e-3 m").expect("scientific length should parse"),
+        measurement::Length::from_str("1e-3 m")
+            .expect("scientific length should parse"),
         measurement::Length::new(Decimal::new(1, 3), unit::Length::Meter),
     );
     assert_eq!(
-        measurement::Pressure::from_str("-2.5E+3Pa").expect("scientific pressure should parse"),
-        measurement::Pressure::new(Decimal::new(-2500, 0), unit::Pressure::Pascal),
+        measurement::Pressure::from_str("-2.5E+3Pa")
+            .expect("scientific pressure should parse"),
+        measurement::Pressure::new(
+            Decimal::new(-2500, 0),
+            unit::Pressure::Pascal
+        ),
     );
 }
 
 #[test]
 fn test_measurement_from_str_keeps_unit_starting_with_e() {
     assert_eq!(
-        measurement::Energy::from_str("1eV").expect("electronvolt should parse without a space"),
+        measurement::Energy::from_str("1eV")
+            .expect("electronvolt should parse without a space"),
         measurement::Energy::new(Decimal::ONE, unit::Energy::Electronvolt),
     );
 }
@@ -451,19 +518,27 @@ fn test_compact_measurement_accepts_exponent_like_known_unit() {
     assert_eq!(
         CompactMeasurement::from_str("1e3")
             .expect("known suffix should win over a missing-unit parse"),
-        CompactMeasurement::new(Decimal::ONE, CompactAmbiguityUnit::ExponentLike,),
+        CompactMeasurement::new(
+            Decimal::ONE,
+            CompactAmbiguityUnit::ExponentLike,
+        ),
     );
 }
 
 #[test]
 fn test_measurement_parse_lenient_parses_compact_ascii_unit_aliases() {
     assert_eq!(
-        measurement::Area::parse_lenient("1m2").expect("compact square meter alias should parse"),
+        measurement::Area::parse_lenient("1m2")
+            .expect("compact square meter alias should parse"),
         measurement::Area::new(Decimal::ONE, unit::Area::SquareMeter),
     );
     assert_eq!(
-        measurement::Velocity::parse_lenient("65mph").expect("compact mph alias should parse"),
-        measurement::Velocity::new(Decimal::new(65, 0), unit::Velocity::MilePerHour),
+        measurement::Velocity::parse_lenient("65mph")
+            .expect("compact mph alias should parse"),
+        measurement::Velocity::new(
+            Decimal::new(65, 0),
+            unit::Velocity::MilePerHour
+        ),
     );
 }
 
@@ -477,8 +552,8 @@ fn test_measurement_from_str_rejects_compact_unit_alias() {
 
 #[test]
 fn test_typed_measurement_from_str_rejects_unit_from_other_quantity() {
-    let error =
-        measurement::Length::from_str("12 kg").expect_err("mass unit should not parse as length");
+    let error = measurement::Length::from_str("12 kg")
+        .expect_err("mass unit should not parse as length");
 
     assert_eq!(
         error,
@@ -491,8 +566,8 @@ fn test_typed_measurement_from_str_rejects_unit_from_other_quantity() {
 
 #[test]
 fn test_compact_measurement_reports_unknown_unit_after_valid_value() {
-    let error =
-        measurement::Length::from_str("12bogus").expect_err("unknown compact unit should fail");
+    let error = measurement::Length::from_str("12bogus")
+        .expect_err("unknown compact unit should fail");
 
     assert_eq!(
         error,
@@ -506,8 +581,8 @@ fn test_compact_measurement_reports_unknown_unit_after_valid_value() {
 #[test]
 fn test_compact_measurement_rejects_reserved_suffix_boundaries() {
     for input in ["1.foo", "1+bogus", "1-bogus"] {
-        let error =
-            measurement::Length::from_str(input).expect_err("reserved compact suffix should fail");
+        let error = measurement::Length::from_str(input)
+            .expect_err("reserved compact suffix should fail");
 
         assert_eq!(error, MeasurementError::InvalidMeasurementSyntax,);
     }
@@ -515,14 +590,16 @@ fn test_compact_measurement_rejects_reserved_suffix_boundaries() {
 
 #[test]
 fn test_measurement_from_str_rejects_missing_unit() {
-    let error = measurement::Length::from_str("12").expect_err("missing unit should fail");
+    let error = measurement::Length::from_str("12")
+        .expect_err("missing unit should fail");
 
     assert_eq!(error, MeasurementError::InvalidMeasurementSyntax);
 }
 
 #[test]
 fn test_measurement_from_str_rejects_missing_value() {
-    let error = measurement::Length::from_str("cm").expect_err("missing value should fail");
+    let error = measurement::Length::from_str("cm")
+        .expect_err("missing value should fail");
 
     assert_eq!(error, MeasurementError::InvalidMeasurementSyntax);
 }
@@ -530,7 +607,8 @@ fn test_measurement_from_str_rejects_missing_value() {
 #[test]
 fn test_measurement_from_str_rejects_invalid_value() {
     for input in ["1..2cm", "1+2", "1.2.3m"] {
-        let error = measurement::Length::from_str(input).expect_err("invalid decimal should fail");
+        let error = measurement::Length::from_str(input)
+            .expect_err("invalid decimal should fail");
 
         assert_eq!(error, MeasurementError::InvalidMeasurementSyntax,);
     }
@@ -540,14 +618,18 @@ fn test_measurement_from_str_rejects_invalid_value() {
 fn test_measurement_from_str_rejects_decimal_overflow() {
     let input = "792281625142643375935439503360 m";
 
-    let error = measurement::Length::from_str(input).expect_err("overflowing decimal should fail");
+    let error = measurement::Length::from_str(input)
+        .expect_err("overflowing decimal should fail");
 
     assert_eq!(error, MeasurementError::UnrepresentableMeasurementValue);
 }
 
 #[test]
 fn test_measurement_display_formats_value_and_unit() {
-    let measurement = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let measurement = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
 
     assert_eq!(measurement.to_string(), "50.0 cm");
 }
@@ -558,11 +640,16 @@ fn test_generic_measurement_type_remains_available_for_helpers() {
         measurement.to_string()
     }
 
-    let measurement = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-    let _: measurement::Length = Measurement::new(Decimal::ONE, unit::Length::Meter);
+    let measurement = measurement::Length::new(
+        Decimal::new(500, 1),
+        unit::Length::Centimeter,
+    );
+    let _: measurement::Length =
+        Measurement::new(Decimal::ONE, unit::Length::Meter);
     let _: measurement::ElectricPotential =
         Measurement::new(Decimal::ONE, unit::ElectricPotential::Volt);
-    let _: measurement::Voltage = Measurement::new(Decimal::ONE, unit::ElectricPotential::Volt);
+    let _: measurement::Voltage =
+        Measurement::new(Decimal::ONE, unit::ElectricPotential::Volt);
 
     assert_eq!(format_measurement(measurement), "50.0 cm");
 }

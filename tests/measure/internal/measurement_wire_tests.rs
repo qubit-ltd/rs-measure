@@ -103,7 +103,8 @@ fn test_measurement_wire_rejects_malformed_decimal_text() {
 /// Verifies that every persisted string field uses the default byte limit.
 #[test]
 fn test_measurement_wire_rejects_oversized_string_fields() {
-    let oversized = "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
+    let oversized =
+        "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
     let values = [
         json!({
             "quantity": oversized.clone(),
@@ -123,8 +124,8 @@ fn test_measurement_wire_rejects_oversized_string_fields() {
     ];
 
     for value in values {
-        let error =
-            from_value::<measurement::Length>(value).expect_err("oversized wire field should fail");
+        let error = from_value::<measurement::Length>(value)
+            .expect_err("oversized wire field should fail");
 
         assert!(
             error.to_string().contains("byte limit"),

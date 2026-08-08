@@ -76,8 +76,11 @@ fn test_maximum_precision_rounds_repeating_result_to_nearest_even() {
 
 #[test]
 fn test_decimal_conversion_applies_requested_scale() {
-    let options = ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let options = ConversionOptions::fixed_scale(
+        4,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     let result = convert(
         dec!(1),
@@ -93,8 +96,9 @@ fn test_decimal_conversion_applies_requested_scale() {
 /// Verifies that a representable result survives a larger intermediate product.
 #[test]
 fn test_decimal_conversion_avoids_intermediate_ratio_rounding() {
-    let value = Decimal::try_from_i128_with_scale(Decimal::MAX.mantissa() - 3, 1)
-        .expect("boundary input should fit Decimal");
+    let value =
+        Decimal::try_from_i128_with_scale(Decimal::MAX.mantissa() - 3, 1)
+            .expect("boundary input should fit Decimal");
 
     assert_eq!(
         convert(
@@ -126,15 +130,19 @@ fn test_fixed_scale_rounding_matches_independent_rational_oracle() {
         dec!(0.4572),
         dec!(-0.4572),
     ] {
-        let exact = expected_conversion(value, source_definition, target_definition);
+        let exact =
+            expected_conversion(value, source_definition, target_definition);
         for strategy in ROUNDING_STRATEGIES {
-            let options =
-                ConversionOptions::fixed_scale(0, strategy).expect("scale should be valid");
+            let options = ConversionOptions::fixed_scale(0, strategy)
+                .expect("scale should be valid");
             let actual = convert(value, source, target, options)
                 .expect("selected conversion should fit Decimal");
             let expected = round_rational(&exact, 0, strategy);
 
-            assert_eq!(actual, expected, "value={value}, strategy={strategy:?}");
+            assert_eq!(
+                actual, expected,
+                "value={value}, strategy={strategy:?}"
+            );
             assert_eq!(actual.scale(), 0);
         }
     }
@@ -152,11 +160,12 @@ fn test_affine_fixed_scale_rounding_matches_independent_rational_oracle() {
         .expect("target definition should be valid");
 
     for value in [dec!(-459.67), dec!(-40), dec!(0), dec!(32), dec!(212)] {
-        let exact = expected_conversion(value, source_definition, target_definition);
+        let exact =
+            expected_conversion(value, source_definition, target_definition);
         for scale in [0, 2, 6] {
             for strategy in ROUNDING_STRATEGIES {
-                let options =
-                    ConversionOptions::fixed_scale(scale, strategy).expect("scale should be valid");
+                let options = ConversionOptions::fixed_scale(scale, strategy)
+                    .expect("scale should be valid");
                 let actual = convert(value, source, target, options)
                     .expect("selected affine conversion should fit Decimal");
                 let expected = round_rational(&exact, scale, strategy);
@@ -203,8 +212,11 @@ fn test_conversion_factor_from_decimal_uses_identity_denominator() {
 fn test_identical_definition_preserves_or_applies_scale() {
     let value = dec!(12.3400);
     let maximum = ConversionOptions::maximum_precision();
-    let fixed = ConversionOptions::fixed_scale(2, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let fixed = ConversionOptions::fixed_scale(
+        2,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     let preserved = convert(
         value,
@@ -246,8 +258,11 @@ fn test_mathematically_equivalent_definitions_preserve_scale() {
 
 #[test]
 fn test_identical_tiny_definition_applies_scale_without_ratio_underflow() {
-    let options = ConversionOptions::fixed_scale(2, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let options = ConversionOptions::fixed_scale(
+        2,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     let converted = convert(
         dec!(12.345),
@@ -333,8 +348,11 @@ fn test_decimal_conversion_falls_back_when_combined_factor_would_round() {
 
 #[test]
 fn test_decimal_conversion_reports_unrepresentable_requested_scale() {
-    let options = ConversionOptions::fixed_scale(1, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let options = ConversionOptions::fixed_scale(
+        1,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     assert_eq!(
         convert(
@@ -460,8 +478,11 @@ fn test_decimal_conversion_reports_value_out_of_range() {
 /// Verifies that fixed-scale output preserves value-range classification.
 #[test]
 fn test_fixed_scale_conversion_preserves_value_range_error() {
-    let options = ConversionOptions::fixed_scale(0, RoundingStrategy::MidpointNearestEven)
-        .expect("scale should be valid");
+    let options = ConversionOptions::fixed_scale(
+        0,
+        RoundingStrategy::MidpointNearestEven,
+    )
+    .expect("scale should be valid");
 
     assert_eq!(
         convert(

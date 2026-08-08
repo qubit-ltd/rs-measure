@@ -18,7 +18,8 @@ use serde_json::to_value;
 #[test]
 fn test_measure_internal_wire_round_trips_public_measurement() {
     let value = measurement::Length::new(dec!(12.5), unit::Length::Centimeter);
-    let json = to_value(value).expect("measurement should serialize through its wire type");
+    let json = to_value(value)
+        .expect("measurement should serialize through its wire type");
 
     assert_eq!(
         from_value::<measurement::Length>(json.clone())

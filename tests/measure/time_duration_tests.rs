@@ -103,8 +103,11 @@ fn test_subnanosecond_time_cannot_convert_to_duration() {
 
 #[test]
 fn test_large_subnanosecond_time_cannot_convert_to_duration() {
-    let value = Decimal::try_from_i128_with_scale(30_000_000_000_000_000_000_000_000_001, 11)
-        .expect("large minute value should fit Decimal exactly");
+    let value = Decimal::try_from_i128_with_scale(
+        30_000_000_000_000_000_000_000_000_001,
+        11,
+    )
+    .expect("large minute value should fit Decimal exactly");
     let measurement = Measurement::new(value, Time::Minute);
 
     assert_eq!(

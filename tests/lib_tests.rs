@@ -17,7 +17,8 @@ use rust_decimal::Decimal;
 /// Verifies that the crate root exposes its core types and public modules.
 #[test]
 fn test_crate_root_reexports_measurement_and_unit_api() {
-    let value: measurement::Length = Measurement::new(Decimal::ONE, unit::Length::Meter);
+    let value: measurement::Length =
+        Measurement::new(Decimal::ONE, unit::Length::Meter);
 
     assert_eq!(value.quantity_name(), unit::Length::QUANTITY);
     assert_eq!(

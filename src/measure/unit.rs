@@ -36,7 +36,9 @@ use crate::measure::UnitDefinition;
 /// rules at compilation. Manual implementations should call
 /// [`assert_unit_family_valid`] in tests. Stable Rust cannot prove that a
 /// manual enum omitted no variant from [`Unit::all`].
-pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static {
+pub trait Unit:
+    Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'static
+{
     /// Stable quantity identifier used in persistence and errors.
     ///
     /// This value must be non-empty ASCII `snake_case`, start with a lowercase
@@ -231,9 +233,9 @@ where
             symbol.parse::<U>() == Ok(unit),
             "FromStr must accept canonical symbol: {symbol}",
         );
-        let _ = unit
-            .definition()
-            .unwrap_or_else(|error| panic!("invalid definition for {symbol}: {error}"));
+        let _ = unit.definition().unwrap_or_else(|error| {
+            panic!("invalid definition for {symbol}: {error}")
+        });
         assert!(
             U::parse_strict(symbol) == Ok(unit),
             "strict canonical parse failed for {symbol}",

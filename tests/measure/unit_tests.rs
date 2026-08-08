@@ -27,7 +27,8 @@ use crate::measure::support::VALID;
 
 #[test]
 fn test_unit_trait_exposes_typed_quantity_metadata() {
-    let measurement = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
+    let measurement =
+        measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
 
     assert_eq!(measurement.quantity_name(), "length");
     assert_eq!(unit::Length::QUANTITY, "length");
@@ -54,7 +55,8 @@ fn test_ambiguous_aliases_resolve_leniently_and_fail_strictly() {
         unit::Volume::UsLiquidGallon,
     );
     assert_eq!(
-        unit::Power::parse_lenient("hp").expect("horsepower alias should parse"),
+        unit::Power::parse_lenient("hp")
+            .expect("horsepower alias should parse"),
         unit::Power::MechanicalHorsepower,
     );
 }

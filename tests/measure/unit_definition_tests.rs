@@ -14,7 +14,8 @@ use rust_decimal::dec;
 
 #[test]
 fn test_unit_definition_new_preserves_factor_and_offset() {
-    let factor = ConversionFactor::new(dec!(2), dec!(3)).expect("factor should be valid");
+    let factor = ConversionFactor::new(dec!(2), dec!(3))
+        .expect("factor should be valid");
     let definition = UnitDefinition::new(factor, dec!(4));
 
     assert_eq!(definition.factor(), factor);
