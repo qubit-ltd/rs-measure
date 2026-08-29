@@ -36,10 +36,7 @@ use crate::Unit;
 ///
 /// Returns the serializer's error when it cannot emit the string.
 #[inline]
-pub fn serialize<S, U>(
-    measurement: &Measurement<U>,
-    serializer: S,
-) -> Result<S::Ok, S::Error>
+pub fn serialize<S, U>(measurement: &Measurement<U>, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: Serializer,
     U: Unit,
@@ -67,9 +64,7 @@ where
 /// invalid or unrepresentable Decimal text, a non-canonical alias, or an
 /// unknown unit.
 #[inline]
-pub fn deserialize<'de, D, U>(
-    deserializer: D,
-) -> Result<Measurement<U>, D::Error>
+pub fn deserialize<'de, D, U>(deserializer: D) -> Result<Measurement<U>, D::Error>
 where
     D: Deserializer<'de>,
     U: Unit,
@@ -109,18 +104,12 @@ pub mod option {
     ///
     /// Returns the serializer's error when it cannot emit the value.
     #[inline]
-    pub fn serialize<S, U>(
-        measurement: &Option<Measurement<U>>,
-        serializer: S,
-    ) -> Result<S::Ok, S::Error>
+    pub fn serialize<S, U>(measurement: &Option<Measurement<U>>, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
         U: Unit,
     {
-        measurement
-            .as_ref()
-            .map(ToString::to_string)
-            .serialize(serializer)
+        measurement.as_ref().map(ToString::to_string).serialize(serializer)
     }
 
     /// Deserializes optional canonical text from a string or `null`.
@@ -140,17 +129,13 @@ pub mod option {
     /// input, invalid or unrepresentable Decimal text, a non-canonical alias,
     /// or an unknown unit.
     #[inline]
-    pub fn deserialize<'de, D, U>(
-        deserializer: D,
-    ) -> Result<Option<Measurement<U>>, D::Error>
+    pub fn deserialize<'de, D, U>(deserializer: D) -> Result<Option<Measurement<U>>, D::Error>
     where
         D: Deserializer<'de>,
         U: Unit,
     {
         Option::<String>::deserialize(deserializer)?
-            .map(|text| {
-                Measurement::parse_strict(&text).map_err(D::Error::custom)
-            })
+            .map(|text| Measurement::parse_strict(&text).map_err(D::Error::custom))
             .transpose()
     }
 }

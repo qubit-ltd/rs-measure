@@ -38,18 +38,15 @@ fn test_decimal_from_f64_approx_rejects_non_finite_values() {
 #[test]
 fn test_unit_value_and_base_f64_follow_exact_definition() {
     let definition = UnitDefinition::new(
-        ConversionFactor::new(dec!(5), dec!(9))
-            .expect("positive ratio should be valid"),
+        ConversionFactor::new(dec!(5), dec!(9)).expect("positive ratio should be valid"),
         dec!(459.67),
     );
 
     let base = unit_value_to_base_f64(dec!(32), definition);
     assert!((base - 273.15).abs() <= 1.0E-12);
 
-    let round_trip = base_f64_to_unit_value(base, definition)
-        .expect("finite base value should convert back to Decimal");
-    let round_trip = round_trip
-        .to_f64()
-        .expect("round-trip Decimal should fit f64");
+    let round_trip =
+        base_f64_to_unit_value(base, definition).expect("finite base value should convert back to Decimal");
+    let round_trip = round_trip.to_f64().expect("round-trip Decimal should fit f64");
     assert!((round_trip - 32.0).abs() <= 1.0E-12);
 }

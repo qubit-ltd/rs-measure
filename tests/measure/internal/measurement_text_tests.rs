@@ -21,14 +21,8 @@ fn test_measurement_text_handles_signed_fractional_and_exponent_boundaries() {
             "  +1.25e+2   m  ",
             measurement::Length::new(dec!(125), unit::Length::Meter),
         ),
-        (
-            "-.5 m",
-            measurement::Length::new(dec!(-0.5), unit::Length::Meter),
-        ),
-        (
-            ".5\tm",
-            measurement::Length::new(dec!(0.5), unit::Length::Meter),
-        ),
+        ("-.5 m", measurement::Length::new(dec!(-0.5), unit::Length::Meter)),
+        (".5\tm", measurement::Length::new(dec!(0.5), unit::Length::Meter)),
     ] {
         assert_eq!(measurement::Length::from_str(input), Ok(expected));
     }

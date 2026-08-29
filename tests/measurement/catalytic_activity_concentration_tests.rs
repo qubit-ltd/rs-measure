@@ -9,7 +9,4 @@
 
 use crate::measurement::support::assert_measurement_alias;
 
-assert_measurement_alias!(
-    CatalyticActivityConcentration,
-    CatalyticActivityConcentration
-);
+assert_measurement_alias!(CatalyticActivityConcentration, CatalyticActivityConcentration);

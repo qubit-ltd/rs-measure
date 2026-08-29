@@ -31,18 +31,12 @@ where
     U: Unit + Serialize + for<'de> Deserialize<'de> + Debug,
 {
     for unit in U::all() {
-        assert_eq!(
-            U::from_str(unit.symbol()).expect("unit symbol should parse"),
-            *unit,
-        );
+        assert_eq!(U::from_str(unit.symbol()).expect("unit symbol should parse"), *unit,);
         assert_eq!(unit.to_string(), unit.symbol());
 
         let value = to_value(unit).expect("unit should serialize");
 
         assert_eq!(value, json!(unit.symbol()));
-        assert_eq!(
-            from_value::<U>(value).expect("unit should deserialize"),
-            *unit,
-        );
+        assert_eq!(from_value::<U>(value).expect("unit should deserialize"), *unit,);
     }
 }

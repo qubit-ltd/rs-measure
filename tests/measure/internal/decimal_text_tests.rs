@@ -29,8 +29,8 @@ fn test_decimal_text_accepts_exact_scientific_values() {
 /// Verifies that scientific exponent and coefficient scale cancel exactly.
 #[test]
 fn test_decimal_text_accepts_scientific_scale_cancellation() {
-    let large = Decimal::try_from_i128_with_scale(10_i128.pow(28), 0)
-        .expect("ten to the twenty-eighth should fit Decimal");
+    let large =
+        Decimal::try_from_i128_with_scale(10_i128.pow(28), 0).expect("ten to the twenty-eighth should fit Decimal");
     let cases = [
         ("1.0e-28 m", Decimal::new(1, 28), 28),
         ("100e-29 m", Decimal::new(10, 28), 28),
@@ -79,8 +79,7 @@ fn test_decimal_text_accepts_zero_with_extreme_exponents() {
 /// Verifies that significant digits separated by zero runs remain exact.
 #[test]
 fn test_decimal_text_preserves_interleaved_and_trailing_zero_runs() {
-    let expected = Decimal::from_str("100200300.004005000")
-        .expect("expected Decimal should be representable");
+    let expected = Decimal::from_str("100200300.004005000").expect("expected Decimal should be representable");
     let actual = "100200300.004005000 m"
         .parse::<measurement::Length>()
         .expect("zero runs should parse exactly")

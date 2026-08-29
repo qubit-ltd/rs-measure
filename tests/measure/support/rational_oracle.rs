@@ -40,21 +40,15 @@ pub(crate) fn decimal_as_rational(value: Decimal) -> BigRational {
 /// # Returns
 ///
 /// The exact mathematical result as a rational number.
-pub(crate) fn expected_conversion(
-    value: Decimal,
-    source: UnitDefinition,
-    target: UnitDefinition,
-) -> BigRational {
+pub(crate) fn expected_conversion(value: Decimal, source: UnitDefinition, target: UnitDefinition) -> BigRational {
     let source_factor = source.factor();
     let target_factor = target.factor();
-    let source_ratio = decimal_as_rational(source_factor.numerator())
-        / decimal_as_rational(source_factor.denominator());
-    let target_ratio = decimal_as_rational(target_factor.numerator())
-        / decimal_as_rational(target_factor.denominator());
+    let source_ratio =
+        decimal_as_rational(source_factor.numerator()) / decimal_as_rational(source_factor.denominator());
+    let target_ratio =
+        decimal_as_rational(target_factor.numerator()) / decimal_as_rational(target_factor.denominator());
 
-    (decimal_as_rational(value) + decimal_as_rational(source.offset()))
-        * source_ratio
-        / target_ratio
+    (decimal_as_rational(value) + decimal_as_rational(source.offset())) * source_ratio / target_ratio
         - decimal_as_rational(target.offset())
 }
 
@@ -74,11 +68,7 @@ pub(crate) fn expected_conversion(
 ///
 /// Panics when the rounded mantissa does not fit Decimal or a deprecated
 /// strategy is supplied by a test.
-pub(crate) fn round_rational(
-    value: &BigRational,
-    scale: u32,
-    strategy: RoundingStrategy,
-) -> Decimal {
+pub(crate) fn round_rational(value: &BigRational, scale: u32, strategy: RoundingStrategy) -> Decimal {
     let zero = BigInt::from(0_u8);
     let scaled_numerator = value.numer() * BigInt::from(10_u8).pow(scale);
     let denominator = value.denom();
@@ -96,29 +86,18 @@ pub(crate) fn round_rational(
     let increment = match strategy {
         RoundingStrategy::MidpointNearestEven => {
             let quotient_is_odd = (&quotient % 2_u8) != zero;
-            (midpoint_ordering == Ordering::Greater
-                || (midpoint_ordering == Ordering::Equal && quotient_is_odd))
+            (midpoint_ordering == Ordering::Greater || (midpoint_ordering == Ordering::Equal && quotient_is_odd))
                 .then_some(direction)
         }
-        RoundingStrategy::MidpointAwayFromZero => {
-            (midpoint_ordering != Ordering::Less).then_some(direction)
-        }
-        RoundingStrategy::MidpointTowardZero => {
-            (midpoint_ordering == Ordering::Greater).then_some(direction)
-        }
+        RoundingStrategy::MidpointAwayFromZero => (midpoint_ordering != Ordering::Less).then_some(direction),
+        RoundingStrategy::MidpointTowardZero => (midpoint_ordering == Ordering::Greater).then_some(direction),
         RoundingStrategy::ToZero => None,
         RoundingStrategy::AwayFromZero => has_fraction.then_some(direction),
-        RoundingStrategy::ToNegativeInfinity => {
-            (negative && has_fraction).then_some(-1)
-        }
-        RoundingStrategy::ToPositiveInfinity => {
-            (!negative && has_fraction).then_some(1)
-        }
+        RoundingStrategy::ToNegativeInfinity => (negative && has_fraction).then_some(-1),
+        RoundingStrategy::ToPositiveInfinity => (!negative && has_fraction).then_some(1),
         _ => panic!("deprecated rounding strategy is outside this oracle"),
     };
     let rounded = quotient + BigInt::from(increment.unwrap_or(0));
-    let mantissa = i128::try_from(rounded)
-        .expect("rounded rational mantissa should fit i128");
-    Decimal::try_from_i128_with_scale(mantissa, scale)
-        .expect("rounded rational should fit Decimal")
+    let mantissa = i128::try_from(rounded).expect("rounded rational mantissa should fit i128");
+    Decimal::try_from_i128_with_scale(mantissa, scale).expect("rounded rational should fit Decimal")
 }

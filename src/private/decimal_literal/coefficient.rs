@@ -28,27 +28,13 @@ pub(super) const MAX_MANTISSA: u128 = (1_u128 << 96) - 1;
 /// # Panics
 ///
 /// Panics when the scale or expanded mantissa is outside Decimal's range.
-pub(super) const fn finalize_decimal(
-    mantissa: u128,
-    exponent: i32,
-    trailing_zeroes: u32,
-    negative: bool,
-) -> Decimal {
-    let preferred_scale = if exponent < 0 {
-        exponent.unsigned_abs()
-    } else {
-        0
-    };
+pub(super) const fn finalize_decimal(mantissa: u128, exponent: i32, trailing_zeroes: u32, negative: bool) -> Decimal {
+    let preferred_scale = if exponent < 0 { exponent.unsigned_abs() } else { 0 };
     let exponent = match exponent.checked_add_unsigned(trailing_zeroes) {
         Some(value) => value,
         None => panic!("Decimal literal exponent is out of range"),
     };
-    match finalize_exact_decimal(
-        mantissa,
-        exponent as i64,
-        preferred_scale,
-        negative,
-    ) {
+    match finalize_exact_decimal(mantissa, exponent as i64, preferred_scale, negative) {
         Some(value) => value,
         None => panic!("Decimal literal cannot be represented exactly"),
     }
@@ -87,9 +73,7 @@ pub(crate) const fn finalize_exact_decimal(
             negative,
         ));
     }
-    if exponent < -(Decimal::MAX_SCALE as i64)
-        || exponent > Decimal::MAX_SCALE as i64
-    {
+    if exponent < -(Decimal::MAX_SCALE as i64) || exponent > Decimal::MAX_SCALE as i64 {
         return None;
     }
     let mut scale = if exponent < 0 { (-exponent) as u32 } else { 0 };
@@ -134,11 +118,7 @@ pub(crate) const fn finalize_exact_decimal(
 ///
 /// The exact Decimal represented by the supplied parts.
 #[inline(always)]
-pub(crate) const fn decimal_from_parts(
-    mantissa: u128,
-    scale: u32,
-    negative: bool,
-) -> Decimal {
+pub(crate) const fn decimal_from_parts(mantissa: u128, scale: u32, negative: bool) -> Decimal {
     Decimal::from_parts(
         mantissa as u32,
         (mantissa >> 32) as u32,

@@ -15,24 +15,15 @@ use serde_json::json;
 
 /// Demonstrates exact conversion and persistence.
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let centimeters = measurement::Length::new(
-        Decimal::new(500, 1),
-        unit::Length::Centimeter,
-    );
+    let centimeters = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
     let meters = centimeters.convert_to_with_options(
         unit::Length::Meter,
-        ConversionOptions::fixed_scale(
-            4,
-            RoundingStrategy::MidpointNearestEven,
-        )?,
+        ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven)?,
     )?;
     let json_value = serde_json::to_value(centimeters)?;
 
     assert_eq!(meters.value.to_string(), "0.5000");
-    assert_eq!(
-        json_value,
-        json!({"quantity": "length", "value": "50.0", "unit": "cm"}),
-    );
+    assert_eq!(json_value, json!({"quantity": "length", "value": "50.0", "unit": "cm"}),);
     println!("{centimeters} = {meters}");
     Ok(())
 }

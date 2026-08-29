@@ -61,27 +61,17 @@ impl Unit for TryOnlyUomUnit {
 impl UomUnit for TryOnlyUomUnit {
     type Quantity = UomLength;
 
-    fn try_to_uom_approx(
-        self,
-        value: Decimal,
-    ) -> Result<Self::Quantity, MeasurementError> {
+    fn try_to_uom_approx(self, value: Decimal) -> Result<Self::Quantity, MeasurementError> {
         let _ = self.definition()?;
         Ok(UomLength::new::<meter>(
-            value
-                .to_f64()
-                .expect("Decimal is representable as finite f64"),
+            value.to_f64().expect("Decimal is representable as finite f64"),
         ))
     }
 
-    fn value_from_uom_approx(
-        self,
-        quantity: Self::Quantity,
-    ) -> Result<Decimal, MeasurementError> {
+    fn value_from_uom_approx(self, quantity: Self::Quantity) -> Result<Decimal, MeasurementError> {
         let _ = self.definition()?;
         let value = quantity.get::<meter>();
-        Decimal::from_f64(value).ok_or_else(|| {
-            MeasurementError::DecimalConversion(value.to_string())
-        })
+        Decimal::from_f64(value).ok_or_else(|| MeasurementError::DecimalConversion(value.to_string()))
     }
 }
 

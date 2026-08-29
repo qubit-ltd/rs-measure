@@ -19,9 +19,7 @@
 pub(super) const fn parse_sign(bytes: &[u8]) -> (bool, usize) {
     if !bytes.is_empty() && bytes[0] == b'-' {
         let mut index = 1;
-        while index < bytes.len()
-            && matches!(bytes[index], b' ' | b'\t' | b'\n' | b'\r')
-        {
+        while index < bytes.len() && matches!(bytes[index], b' ' | b'\t' | b'\n' | b'\r') {
             index += 1;
         }
         (true, index)
@@ -135,13 +133,11 @@ pub(super) const fn parse_decimal_digits(
         if byte == b'0' {
             pending_zeroes = pending_zeroes.saturating_add(1);
         } else {
-            let (flushed, flush_overflowed) =
-                flush_decimal_zeroes(initial, pending_zeroes, overflowed);
+            let (flushed, flush_overflowed) = flush_decimal_zeroes(initial, pending_zeroes, overflowed);
             initial = flushed;
             overflowed = flush_overflowed;
             pending_zeroes = 0;
-            let (appended, append_overflowed) =
-                append_decimal_digit(initial, byte - b'0', overflowed);
+            let (appended, append_overflowed) = append_decimal_digit(initial, byte - b'0', overflowed);
             initial = appended;
             overflowed = append_overflowed;
         }
@@ -161,14 +157,9 @@ pub(super) const fn parse_decimal_digits(
 /// # Returns
 ///
 /// The saturated mantissa and cumulative overflow flag.
-const fn flush_decimal_zeroes(
-    mut value: u128,
-    mut zeroes: u32,
-    mut overflowed: bool,
-) -> (u128, bool) {
+const fn flush_decimal_zeroes(mut value: u128, mut zeroes: u32, mut overflowed: bool) -> (u128, bool) {
     while zeroes > 0 {
-        let (multiplied, multiply_overflowed) =
-            multiply_decimal(value, overflowed);
+        let (multiplied, multiply_overflowed) = multiply_decimal(value, overflowed);
         value = multiplied;
         overflowed = multiply_overflowed;
         zeroes -= 1;
@@ -187,11 +178,7 @@ const fn flush_decimal_zeroes(
 /// # Returns
 ///
 /// The saturated mantissa and cumulative overflow flag.
-const fn append_decimal_digit(
-    value: u128,
-    digit: u8,
-    overflowed: bool,
-) -> (u128, bool) {
+const fn append_decimal_digit(value: u128, digit: u8, overflowed: bool) -> (u128, bool) {
     let (multiplied, multiply_overflowed) = multiply_decimal(value, overflowed);
     match multiplied.checked_add(digit as u128) {
         Some(value) => (value, multiply_overflowed),
@@ -231,11 +218,7 @@ const fn multiply_decimal(value: u128, overflowed: bool) -> (u128, bool) {
 /// # Panics
 ///
 /// Panics for a missing, malformed, or out-of-range exponent.
-pub(super) const fn parse_exponent(
-    bytes: &[u8],
-    mut index: usize,
-    current: i32,
-) -> (i32, usize) {
+pub(super) const fn parse_exponent(bytes: &[u8], mut index: usize, current: i32) -> (i32, usize) {
     let mut negative = false;
     if index < bytes.len() && (bytes[index] == b'+' || bytes[index] == b'-') {
         negative = bytes[index] == b'-';

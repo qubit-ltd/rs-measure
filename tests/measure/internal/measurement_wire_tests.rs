@@ -16,23 +16,13 @@ use serde_json::json;
 #[test]
 fn test_measurement_wire_rejects_missing_required_fields() {
     let cases = [
-        (
-            json!({"value": "1", "unit": "m"}),
-            "missing field `quantity`",
-        ),
-        (
-            json!({"quantity": "length", "unit": "m"}),
-            "missing field `value`",
-        ),
-        (
-            json!({"quantity": "length", "value": "1"}),
-            "missing field `unit`",
-        ),
+        (json!({"value": "1", "unit": "m"}), "missing field `quantity`"),
+        (json!({"quantity": "length", "unit": "m"}), "missing field `value`"),
+        (json!({"quantity": "length", "value": "1"}), "missing field `unit`"),
     ];
 
     for (value, expected_message) in cases {
-        let error = from_value::<measurement::Length>(value)
-            .expect_err("missing required field should fail");
+        let error = from_value::<measurement::Length>(value).expect_err("missing required field should fail");
 
         assert!(
             error.to_string().contains(expected_message),
@@ -52,14 +42,8 @@ fn test_measurement_wire_rejects_numeric_decimal_value() {
     .expect_err("numeric Decimal value should fail");
     let message = error.to_string();
 
-    assert!(
-        message.contains("invalid type: integer"),
-        "unexpected error: {error}",
-    );
-    assert!(
-        message.contains("expected a string"),
-        "unexpected error: {error}",
-    );
+    assert!(message.contains("invalid type: integer"), "unexpected error: {error}",);
+    assert!(message.contains("expected a string"), "unexpected error: {error}",);
 }
 
 /// Verifies that persisted Decimal text is never rounded during decoding.
@@ -74,9 +58,7 @@ fn test_measurement_wire_rejects_lossy_decimal_text() {
         .expect_err("lossy Decimal text should fail");
 
         assert!(
-            error
-                .to_string()
-                .contains("cannot be represented exactly as Decimal"),
+            error.to_string().contains("cannot be represented exactly as Decimal"),
             "unexpected error for {value:?}: {error}",
         );
     }
@@ -103,8 +85,7 @@ fn test_measurement_wire_rejects_malformed_decimal_text() {
 /// Verifies that every persisted string field uses the default byte limit.
 #[test]
 fn test_measurement_wire_rejects_oversized_string_fields() {
-    let oversized =
-        "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
+    let oversized = "x".repeat(MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES + 1);
     let values = [
         json!({
             "quantity": oversized.clone(),
@@ -124,8 +105,7 @@ fn test_measurement_wire_rejects_oversized_string_fields() {
     ];
 
     for value in values {
-        let error = from_value::<measurement::Length>(value)
-            .expect_err("oversized wire field should fail");
+        let error = from_value::<measurement::Length>(value).expect_err("oversized wire field should fail");
 
         assert!(
             error.to_string().contains("byte limit"),

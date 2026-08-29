@@ -26,10 +26,7 @@ fn test_ambiguous_measurement_error_lists_candidate_units() {
         units: vec!["x".to_owned(), "2x".to_owned()],
     };
 
-    assert_eq!(
-        error.to_string(),
-        "ambiguous measurement 12x; matching units: x, 2x",
-    );
+    assert_eq!(error.to_string(), "ambiguous measurement 12x; matching units: x, 2x",);
 }
 
 #[test]
@@ -39,10 +36,7 @@ fn test_measurement_error_new_variants_include_context() {
             MeasurementError::MeasurementTextLimitExceeded { maximum: 3 },
             "measurement text exceeds the 3-byte limit",
         ),
-        (
-            MeasurementError::InvalidMeasurementSyntax,
-            "invalid measurement syntax",
-        ),
+        (MeasurementError::InvalidMeasurementSyntax, "invalid measurement syntax"),
         (
             MeasurementError::UnrepresentableMeasurementValue,
             "measurement value cannot be represented exactly as Decimal",

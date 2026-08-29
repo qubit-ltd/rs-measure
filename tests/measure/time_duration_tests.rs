@@ -48,18 +48,9 @@ fn test_time_units_convert_to_duration_exactly() {
             Measurement::new(Decimal::ONE, Time::Millisecond),
             Duration::from_millis(1),
         ),
-        (
-            Measurement::new(Decimal::ONE, Time::Minute),
-            Duration::from_secs(60),
-        ),
-        (
-            Measurement::new(Decimal::ONE, Time::Hour),
-            Duration::from_secs(3_600),
-        ),
-        (
-            Measurement::new(Decimal::ONE, Time::Day),
-            Duration::from_secs(86_400),
-        ),
+        (Measurement::new(Decimal::ONE, Time::Minute), Duration::from_secs(60)),
+        (Measurement::new(Decimal::ONE, Time::Hour), Duration::from_secs(3_600)),
+        (Measurement::new(Decimal::ONE, Time::Day), Duration::from_secs(86_400)),
     ] {
         assert_eq!(Duration::try_from(measurement), Ok(expected));
     }
@@ -103,11 +94,8 @@ fn test_subnanosecond_time_cannot_convert_to_duration() {
 
 #[test]
 fn test_large_subnanosecond_time_cannot_convert_to_duration() {
-    let value = Decimal::try_from_i128_with_scale(
-        30_000_000_000_000_000_000_000_000_001,
-        11,
-    )
-    .expect("large minute value should fit Decimal exactly");
+    let value = Decimal::try_from_i128_with_scale(30_000_000_000_000_000_000_000_000_001, 11)
+        .expect("large minute value should fit Decimal exactly");
     let measurement = Measurement::new(value, Time::Minute);
 
     assert_eq!(

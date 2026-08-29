@@ -29,10 +29,7 @@ fn test_external_family_supports_strict_and_lenient_parsing() {
         CustomLength::parse_strict("half-cu"),
         Err(MeasurementError::NonCanonicalUnit { .. }),
     ));
-    assert_eq!(
-        CustomLength::parse_lenient("half-cu"),
-        Ok(CustomLength::Half)
-    );
+    assert_eq!(CustomLength::parse_lenient("half-cu"), Ok(CustomLength::Half));
     assert!(matches!(
         "half-cu".parse::<CustomLength>(),
         Err(MeasurementError::NonCanonicalUnit { .. }),
@@ -53,10 +50,8 @@ fn test_spaced_measurement_round_trips_reserved_unit_prefixes() {
         assert_eq!(text, format!("1.25 {symbol}"));
         assert_eq!(text.parse::<Measurement<CustomLength>>(), Ok(measurement),);
         assert_eq!(
-            from_value::<Measurement<CustomLength>>(
-                to_value(measurement).expect("measurement should serialize"),
-            )
-            .expect("measurement should deserialize"),
+            from_value::<Measurement<CustomLength>>(to_value(measurement).expect("measurement should serialize"),)
+                .expect("measurement should deserialize"),
             measurement,
         );
     }
@@ -91,8 +86,7 @@ fn test_measurement_serde_uses_manual_unit_contract() {
     let measurement = Measurement::new(dec!(1.25), ManualUnit::Base);
 
     assert_eq!(
-        to_value(measurement)
-            .expect("manual-unit measurement should serialize"),
+        to_value(measurement).expect("manual-unit measurement should serialize"),
         json!({"quantity": "manual", "value": "1.25", "unit": "manual"}),
     );
 

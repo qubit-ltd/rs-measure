@@ -24,11 +24,7 @@
 /// whitespace, canonical symbols repeat, aliases are empty or repeat, or an
 /// alias matches any canonical symbol.
 #[doc(hidden)]
-pub const fn assert_unit_family_metadata(
-    quantity: &str,
-    symbols: &[&str],
-    aliases: &[&str],
-) {
+pub const fn assert_unit_family_metadata(quantity: &str, symbols: &[&str], aliases: &[&str]) {
     assert!(
         is_ascii_snake_case(quantity),
         "unit quantity must be non-empty ASCII snake_case",
@@ -38,21 +34,14 @@ pub const fn assert_unit_family_metadata(
     let mut index = 0;
     while index < symbols.len() {
         let symbol = symbols[index];
+        assert!(!symbol.is_empty(), "canonical unit symbol must not be empty",);
         assert!(
-            !symbol.is_empty(),
-            "canonical unit symbol must not be empty",
-        );
-        assert!(
-            !has_leading_unit_whitespace(symbol)
-                && !has_trailing_unit_whitespace(symbol),
+            !has_leading_unit_whitespace(symbol) && !has_trailing_unit_whitespace(symbol),
             "canonical unit symbol must not contain surrounding whitespace",
         );
         let mut other = index + 1;
         while other < symbols.len() {
-            assert!(
-                !str_eq(symbol, symbols[other]),
-                "canonical unit symbols must be unique",
-            );
+            assert!(!str_eq(symbol, symbols[other]), "canonical unit symbols must be unique",);
             other += 1;
         }
         index += 1;
@@ -63,16 +52,12 @@ pub const fn assert_unit_family_metadata(
         let alias = aliases[index];
         assert!(!alias.is_empty(), "unit alias must not be empty",);
         assert!(
-            !has_leading_unit_whitespace(alias)
-                && !has_trailing_unit_whitespace(alias),
+            !has_leading_unit_whitespace(alias) && !has_trailing_unit_whitespace(alias),
             "unit alias must not contain surrounding whitespace",
         );
         let mut other = index + 1;
         while other < aliases.len() {
-            assert!(
-                !str_eq(alias, aliases[other]),
-                "unit aliases must be unique",
-            );
+            assert!(!str_eq(alias, aliases[other]), "unit aliases must be unique",);
             other += 1;
         }
         let mut symbol_index = 0;
@@ -110,9 +95,7 @@ const fn has_leading_unit_whitespace(value: &str) -> bool {
     }
     if bytes.len() >= 3 {
         return (bytes[0] == 0xE1 && bytes[1] == 0x9A && bytes[2] == 0x80)
-            || (bytes[0] == 0xE2
-                && bytes[1] == 0x80
-                && matches!(bytes[2], 0x80..=0x8A | 0xA8 | 0xA9 | 0xAF))
+            || (bytes[0] == 0xE2 && bytes[1] == 0x80 && matches!(bytes[2], 0x80..=0x8A | 0xA8 | 0xA9 | 0xAF))
             || (bytes[0] == 0xE2 && bytes[1] == 0x81 && bytes[2] == 0x9F)
             || (bytes[0] == 0xE3 && bytes[1] == 0x80 && bytes[2] == 0x80);
     }
@@ -138,28 +121,16 @@ const fn has_trailing_unit_whitespace(value: &str) -> bool {
     if matches!(bytes[length - 1], b'\t'..=b'\r' | b' ') {
         return true;
     }
-    if length >= 2
-        && bytes[length - 2] == 0xC2
-        && matches!(bytes[length - 1], 0x85 | 0xA0)
-    {
+    if length >= 2 && bytes[length - 2] == 0xC2 && matches!(bytes[length - 1], 0x85 | 0xA0) {
         return true;
     }
     if length >= 3 {
-        return (bytes[length - 3] == 0xE1
-            && bytes[length - 2] == 0x9A
-            && bytes[length - 1] == 0x80)
+        return (bytes[length - 3] == 0xE1 && bytes[length - 2] == 0x9A && bytes[length - 1] == 0x80)
             || (bytes[length - 3] == 0xE2
                 && bytes[length - 2] == 0x80
-                && matches!(
-                    bytes[length - 1],
-                    0x80..=0x8A | 0xA8 | 0xA9 | 0xAF
-                ))
-            || (bytes[length - 3] == 0xE2
-                && bytes[length - 2] == 0x81
-                && bytes[length - 1] == 0x9F)
-            || (bytes[length - 3] == 0xE3
-                && bytes[length - 2] == 0x80
-                && bytes[length - 1] == 0x80);
+                && matches!(bytes[length - 1], 0x80..=0x8A | 0xA8 | 0xA9 | 0xAF))
+            || (bytes[length - 3] == 0xE2 && bytes[length - 2] == 0x81 && bytes[length - 1] == 0x9F)
+            || (bytes[length - 3] == 0xE3 && bytes[length - 2] == 0x80 && bytes[length - 1] == 0x80);
     }
     false
 }
@@ -192,9 +163,7 @@ pub const fn is_ascii_snake_case(value: &str) -> bool {
                 return false;
             }
             previous_underscore = true;
-        } else if (byte >= b'a' && byte <= b'z')
-            || (byte >= b'0' && byte <= b'9')
-        {
+        } else if (byte >= b'a' && byte <= b'z') || (byte >= b'0' && byte <= b'9') {
             previous_underscore = false;
         } else {
             return false;

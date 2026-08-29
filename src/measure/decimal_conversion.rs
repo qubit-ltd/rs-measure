@@ -44,9 +44,7 @@ pub(crate) fn convert_decimal(
     target: UnitDefinition,
     options: ConversionOptions,
 ) -> Result<Decimal, MeasurementError> {
-    if source == target
-        || definitions_are_mathematically_equivalent(source, target)
-    {
+    if source == target || definitions_are_mathematically_equivalent(source, target) {
         return apply_output_scale(value, options);
     }
 
@@ -56,11 +54,9 @@ pub(crate) fn convert_decimal(
     }
 
     match options.mode() {
-        ConversionMode::MaximumPrecision => maximum_precision_decimal(&exact)
-            .ok_or(MeasurementError::ValueOutOfRange),
+        ConversionMode::MaximumPrecision => maximum_precision_decimal(&exact).ok_or(MeasurementError::ValueOutOfRange),
         ConversionMode::FixedScale { scale, rounding } => {
-            fixed_scale_decimal(&exact, scale, rounding)
-                .ok_or(MeasurementError::OutputScaleUnrepresentable { scale })
+            fixed_scale_decimal(&exact, scale, rounding).ok_or(MeasurementError::OutputScaleUnrepresentable { scale })
         }
     }
 }
@@ -76,19 +72,14 @@ pub(crate) fn convert_decimal(
 ///
 /// `true` when both definitions have the same offset and mathematically equal
 /// conversion factors, even if their stored Decimal ratio terms differ.
-fn definitions_are_mathematically_equivalent(
-    source: UnitDefinition,
-    target: UnitDefinition,
-) -> bool {
+fn definitions_are_mathematically_equivalent(source: UnitDefinition, target: UnitDefinition) -> bool {
     if source.offset() != target.offset() {
         return false;
     }
     let source_factor = source.factor();
     let target_factor = target.factor();
-    decimal_as_rational(source_factor.numerator())
-        * decimal_as_rational(target_factor.denominator())
-        == decimal_as_rational(target_factor.numerator())
-            * decimal_as_rational(source_factor.denominator())
+    decimal_as_rational(source_factor.numerator()) * decimal_as_rational(target_factor.denominator())
+        == decimal_as_rational(target_factor.numerator()) * decimal_as_rational(source_factor.denominator())
 }
 
 /// Converts a Decimal value exactly between validated unit definitions.
@@ -108,8 +99,7 @@ pub(super) fn convert_decimal_to_rational(
     source: UnitDefinition,
     target: UnitDefinition,
 ) -> BigRational {
-    let adjusted =
-        decimal_as_rational(value) + decimal_as_rational(source.offset());
+    let adjusted = decimal_as_rational(value) + decimal_as_rational(source.offset());
     let source_factor = source.factor();
     let target_factor = target.factor();
     let scaled = adjusted * decimal_as_rational(source_factor.numerator())
@@ -139,11 +129,7 @@ pub(super) fn compare_decimal_values(
     right_value: Decimal,
     right_definition: UnitDefinition,
 ) -> Ordering {
-    let left_in_right_units = convert_decimal_to_rational(
-        left_value,
-        left_definition,
-        right_definition,
-    );
+    let left_in_right_units = convert_decimal_to_rational(left_value, left_definition, right_definition);
     left_in_right_units.cmp(&decimal_as_rational(right_value))
 }
 
@@ -158,10 +144,7 @@ pub(super) fn compare_decimal_values(
 /// The signed mantissa divided by the power of ten selected by its scale.
 #[inline]
 fn decimal_as_rational(value: Decimal) -> BigRational {
-    BigRational::new(
-        BigInt::from(value.mantissa()),
-        BigInt::from(10_u8).pow(value.scale()),
-    )
+    BigRational::new(BigInt::from(value.mantissa()), BigInt::from(10_u8).pow(value.scale()))
 }
 
 /// Tests whether an exact rational lies within Decimal's closed value range.
@@ -186,8 +169,7 @@ fn fits_decimal_range(value: &BigRational) -> bool {
 /// when even its integral magnitude exceeds Decimal's range.
 fn maximum_precision_decimal(value: &BigRational) -> Option<Decimal> {
     for scale in (0..=Decimal::MAX_SCALE).rev() {
-        let mantissa =
-            round_rational(value, scale, RoundingStrategy::MidpointNearestEven);
+        let mantissa = round_rational(value, scale, RoundingStrategy::MidpointNearestEven);
         if let Some(decimal) = decimal_from_mantissa(mantissa, scale) {
             return Some(decimal.normalize());
         }
@@ -208,11 +190,7 @@ fn maximum_precision_decimal(value: &BigRational) -> Option<Decimal> {
 /// The rounded Decimal retaining `scale`, or `None` when its mantissa exceeds
 /// Decimal's range.
 #[inline(always)]
-fn fixed_scale_decimal(
-    value: &BigRational,
-    scale: u32,
-    rounding: RoundingStrategy,
-) -> Option<Decimal> {
+fn fixed_scale_decimal(value: &BigRational, scale: u32, rounding: RoundingStrategy) -> Option<Decimal> {
     decimal_from_mantissa(round_rational(value, scale, rounding), scale)
 }
 
@@ -228,42 +206,28 @@ fn fixed_scale_decimal(
 ///
 /// The signed rounded mantissa, without applying Decimal's 96-bit limit.
 #[allow(deprecated)]
-fn round_rational(
-    value: &BigRational,
-    scale: u32,
-    strategy: RoundingStrategy,
-) -> BigInt {
+fn round_rational(value: &BigRational, scale: u32, strategy: RoundingStrategy) -> BigInt {
     let zero = BigInt::from(0_u8);
     let scaled_numerator = value.numer() * BigInt::from(10_u8).pow(scale);
     let denominator = value.denom();
     let quotient = &scaled_numerator / denominator;
     let remainder = &scaled_numerator % denominator;
     let negative = scaled_numerator < zero;
-    let remainder_magnitude = if remainder < zero {
-        -remainder
-    } else {
-        remainder
-    };
+    let remainder_magnitude = if remainder < zero { -remainder } else { remainder };
     let midpoint_ordering = (&remainder_magnitude * 2_u8).cmp(denominator);
     let has_fraction = remainder_magnitude != zero;
     let quotient_is_odd = (&quotient % 2_u8) != zero;
     let direction = if negative { -1_i8 } else { 1_i8 };
     let increment = match strategy {
-        RoundingStrategy::MidpointNearestEven
-        | RoundingStrategy::BankersRounding => {
-            midpoint_ordering == Ordering::Greater
-                || (midpoint_ordering == Ordering::Equal && quotient_is_odd)
+        RoundingStrategy::MidpointNearestEven | RoundingStrategy::BankersRounding => {
+            midpoint_ordering == Ordering::Greater || (midpoint_ordering == Ordering::Equal && quotient_is_odd)
         }
-        RoundingStrategy::MidpointAwayFromZero
-        | RoundingStrategy::RoundHalfUp => midpoint_ordering != Ordering::Less,
-        RoundingStrategy::MidpointTowardZero
-        | RoundingStrategy::RoundHalfDown => {
+        RoundingStrategy::MidpointAwayFromZero | RoundingStrategy::RoundHalfUp => midpoint_ordering != Ordering::Less,
+        RoundingStrategy::MidpointTowardZero | RoundingStrategy::RoundHalfDown => {
             midpoint_ordering == Ordering::Greater
         }
         RoundingStrategy::ToZero | RoundingStrategy::RoundDown => false,
-        RoundingStrategy::AwayFromZero | RoundingStrategy::RoundUp => {
-            has_fraction
-        }
+        RoundingStrategy::AwayFromZero | RoundingStrategy::RoundUp => has_fraction,
         RoundingStrategy::ToNegativeInfinity => negative && has_fraction,
         RoundingStrategy::ToPositiveInfinity => !negative && has_fraction,
     };
@@ -290,8 +254,7 @@ fn decimal_from_mantissa(mantissa: BigInt, scale: u32) -> Option<Decimal> {
     if magnitude > BigInt::from((1_u128 << 96) - 1) {
         return None;
     }
-    Decimal::try_from_i128_with_scale(i128::try_from(mantissa).ok()?, scale)
-        .ok()
+    Decimal::try_from_i128_with_scale(i128::try_from(mantissa).ok()?, scale).ok()
 }
 
 /// Applies explicit final rounding and retains exactly the requested scale.
@@ -311,10 +274,7 @@ fn decimal_from_mantissa(mantissa: BigInt, scale: u32) -> Option<Decimal> {
 /// Returns [`MeasurementError::OutputScaleUnrepresentable`] when Decimal cannot
 /// retain the requested scale.
 #[inline]
-fn apply_output_scale(
-    mut value: Decimal,
-    options: ConversionOptions,
-) -> Result<Decimal, MeasurementError> {
+fn apply_output_scale(mut value: Decimal, options: ConversionOptions) -> Result<Decimal, MeasurementError> {
     let (scale, rounding) = match options.mode() {
         ConversionMode::MaximumPrecision => return Ok(value),
         ConversionMode::FixedScale { scale, rounding } => (scale, rounding),

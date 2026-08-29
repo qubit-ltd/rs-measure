@@ -20,9 +20,7 @@ fn test_decimal_from_literal_matches_supported_literal_subset() {
     macro_rules! assert_literal {
         ($literal:literal) => {
             assert_eq!(
-                decimal_from_literal(std::hint::black_box(stringify!(
-                    $literal
-                ))),
+                decimal_from_literal(std::hint::black_box(stringify!($literal))),
                 dec!($literal),
                 stringify!($literal),
             );
@@ -77,10 +75,7 @@ fn test_decimal_from_literal_rejects_invalid_or_unrepresentable_values() {
 #[test]
 fn test_decimal_from_literal_reports_arithmetic_overflow_boundaries() {
     for (value, expected_message) in [
-        (
-            "340282366920938463463374607431768211456",
-            "invalid Decimal literal",
-        ),
+        ("340282366920938463463374607431768211456", "invalid Decimal literal"),
         (
             "3402823669209384634633746074317682114550",
             "Decimal literal cannot be represented exactly",
@@ -89,10 +84,7 @@ fn test_decimal_from_literal_reports_arithmetic_overflow_boundaries() {
             "340282366920938463463374607431768211455e1",
             "Decimal literal cannot be represented exactly",
         ),
-        (
-            "1.00e-2147483647",
-            "Decimal literal exponent is out of range",
-        ),
+        ("1.00e-2147483647", "Decimal literal exponent is out of range"),
     ] {
         let panic = std::panic::catch_unwind(|| {
             decimal_from_literal(std::hint::black_box(value));
@@ -131,8 +123,7 @@ fn test_decimal_from_literal_exercises_scanner_overflow_paths() {
 
 #[test]
 fn test_decimal_from_literal_preserves_interleaved_zero_runs() {
-    let expected = Decimal::from_str("100200300.004005000")
-        .expect("expected Decimal should be representable");
+    let expected = Decimal::from_str("100200300.004005000").expect("expected Decimal should be representable");
 
     assert_eq!(decimal_from_literal("100200300.004005000"), expected);
 }

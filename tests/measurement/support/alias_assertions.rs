@@ -21,8 +21,7 @@ macro_rules! assert_measurement_alias {
             let selected_unit = *unit::$unit::all()
                 .first()
                 .expect("unit family should not be empty");
-            let value: measurement::$alias =
-                Measurement::new(Decimal::ONE, selected_unit);
+            let value: measurement::$alias = Measurement::new(Decimal::ONE, selected_unit);
 
             assert_eq!(value.quantity_name(), unit::$unit::QUANTITY);
         }

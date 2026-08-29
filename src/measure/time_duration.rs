@@ -32,12 +32,10 @@ impl From<Duration> for Measurement<Time> {
     /// An exact time measurement using [`Time::Second`].
     #[inline]
     fn from(duration: Duration) -> Self {
-        let total_nanos = u128::from(duration.as_secs()) * NANOS_PER_SECOND
-            + u128::from(duration.subsec_nanos());
-        let mantissa = i128::try_from(total_nanos)
-            .expect("Duration total nanoseconds always fit i128");
-        let value = Decimal::try_from_i128_with_scale(mantissa, 9)
-            .expect("Duration total nanoseconds always fit Decimal");
+        let total_nanos = u128::from(duration.as_secs()) * NANOS_PER_SECOND + u128::from(duration.subsec_nanos());
+        let mantissa = i128::try_from(total_nanos).expect("Duration total nanoseconds always fit i128");
+        let value =
+            Decimal::try_from_i128_with_scale(mantissa, 9).expect("Duration total nanoseconds always fit Decimal");
         Self::new(value, Time::Second)
     }
 }
@@ -78,8 +76,7 @@ impl TryFrom<Measurement<Time>> for Duration {
         let target = Time::Nanosecond
             .definition()
             .expect("built-in Time definitions are valid");
-        let nanoseconds =
-            convert_decimal_to_rational(original_value, source, target);
+        let nanoseconds = convert_decimal_to_rational(original_value, source, target);
         if !nanoseconds.is_integer() {
             return Err(MeasurementError::SubnanosecondDuration {
                 value: original_value,
@@ -88,14 +85,11 @@ impl TryFrom<Measurement<Time>> for Duration {
         }
 
         let total_nanos =
-            u128::try_from(nanoseconds.to_integer()).map_err(|_| {
-                MeasurementError::DurationOutOfRange {
-                    value: original_value,
-                    unit: original_unit.clone(),
-                }
+            u128::try_from(nanoseconds.to_integer()).map_err(|_| MeasurementError::DurationOutOfRange {
+                value: original_value,
+                unit: original_unit.clone(),
             })?;
-        let maximum_nanos = u128::from(u64::MAX) * NANOS_PER_SECOND
-            + u128::from(Duration::MAX.subsec_nanos());
+        let maximum_nanos = u128::from(u64::MAX) * NANOS_PER_SECOND + u128::from(Duration::MAX.subsec_nanos());
         if total_nanos > maximum_nanos {
             return Err(MeasurementError::DurationOutOfRange {
                 value: original_value,

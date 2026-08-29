@@ -45,8 +45,7 @@ where
             maximum: options.max_text_bytes(),
         });
     }
-    if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input)
-    {
+    if let Some((value_text, unit_text)) = split_spaced_measurement_parts(input) {
         return parse_measurement_parts::<U>(value_text, unit_text, strict);
     }
 
@@ -63,28 +62,19 @@ where
         );
         if !strict {
             for alias in unit.aliases() {
-                collect_compact_candidate(
-                    trimmed,
-                    unit_index,
-                    alias,
-                    &mut first_candidate,
-                    &mut ambiguous_units,
-                );
+                collect_compact_candidate(trimmed, unit_index, alias, &mut first_candidate, &mut ambiguous_units);
             }
         }
     }
 
-    if let Some((value, unit_index)) =
-        resolve_compact_candidates(input, first_candidate, ambiguous_units)?
-    {
+    if let Some((value, unit_index)) = resolve_compact_candidates(input, first_candidate, ambiguous_units)? {
         return Ok((value, U::all()[unit_index]));
     }
     if has_malformed_scientific_suffix(trimmed) {
         return Err(MeasurementError::InvalidMeasurementSyntax);
     }
 
-    let (value_text, unit_text) = split_measurement_parts(input)
-        .ok_or(MeasurementError::InvalidMeasurementSyntax)?;
+    let (value_text, unit_text) = split_measurement_parts(input).ok_or(MeasurementError::InvalidMeasurementSyntax)?;
     parse_measurement_parts::<U>(value_text, unit_text, strict)
 }
 
@@ -106,10 +96,7 @@ fn has_malformed_scientific_suffix(input: &str) -> bool {
         return false;
     };
     let suffix = &input[value_len..];
-    let Some(rest) = suffix
-        .strip_prefix('e')
-        .or_else(|| suffix.strip_prefix('E'))
-    else {
+    let Some(rest) = suffix.strip_prefix('e').or_else(|| suffix.strip_prefix('E')) else {
         return false;
     };
     if rest.is_empty() || rest.starts_with(char::is_whitespace) {
@@ -145,10 +132,7 @@ fn collect_compact_candidate(
     let Some(value_text) = input.strip_suffix(symbol) else {
         return;
     };
-    if value_text.is_empty()
-        || value_text.ends_with(char::is_whitespace)
-        || value_text.ends_with('.')
-    {
+    if value_text.is_empty() || value_text.ends_with(char::is_whitespace) || value_text.ends_with('.') {
         return;
     }
     if let Ok(value) = parse_decimal_text_exact(value_text) {
@@ -212,8 +196,7 @@ fn resolve_compact_candidates(
     ambiguous_units: Vec<String>,
 ) -> Result<Option<(Decimal, usize)>, MeasurementError> {
     if ambiguous_units.is_empty() {
-        Ok(first_candidate
-            .map(|candidate| (candidate.value, candidate.unit_index)))
+        Ok(first_candidate.map(|candidate| (candidate.value, candidate.unit_index)))
     } else {
         Err(MeasurementError::AmbiguousMeasurement {
             input: input.to_owned(),
@@ -237,11 +220,7 @@ fn resolve_compact_candidates(
 /// # Errors
 ///
 /// Returns invalid-measurement, unknown-unit, or non-canonical-unit errors.
-fn parse_measurement_parts<U>(
-    value_text: &str,
-    unit_text: &str,
-    strict: bool,
-) -> Result<(Decimal, U), MeasurementError>
+fn parse_measurement_parts<U>(value_text: &str, unit_text: &str, strict: bool) -> Result<(Decimal, U), MeasurementError>
 where
     U: Unit,
 {
@@ -292,10 +271,7 @@ fn split_measurement_parts(input: &str) -> Option<(&str, &str)> {
     let (value_text, unit_suffix) = trimmed.split_at(value_len);
     let is_separated = unit_suffix.trim_start().len() != unit_suffix.len();
     let unit_text = unit_suffix.trim();
-    if unit_text.is_empty()
-        || (!is_separated
-            && (value_text.ends_with('.')
-                || unit_text.starts_with(['.', '+', '-'])))
+    if unit_text.is_empty() || (!is_separated && (value_text.ends_with('.') || unit_text.starts_with(['.', '+', '-'])))
     {
         None
     } else {

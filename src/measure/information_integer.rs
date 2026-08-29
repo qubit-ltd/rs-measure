@@ -31,9 +31,7 @@ use crate::measure::decimal_conversion::convert_decimal_to_rational;
 /// Returns [`MeasurementError::NegativeInformation`] for negative values or
 /// [`MeasurementError::FractionalByteInformation`] when the value is not a
 /// whole number of bytes.
-fn exact_nonnegative_bytes(
-    measurement: Measurement<Information>,
-) -> Result<BigInt, MeasurementError> {
+fn exact_nonnegative_bytes(measurement: Measurement<Information>) -> Result<BigInt, MeasurementError> {
     let original_value = measurement.value;
     let original_unit = measurement.unit.symbol().to_owned();
     if original_value < Decimal::ZERO {
@@ -108,18 +106,14 @@ impl TryFrom<Measurement<Information>> for u64 {
     ///
     /// Returns a classified negative-value, fractional-byte, or `u64`
     /// out-of-range error.
-    fn try_from(
-        measurement: Measurement<Information>,
-    ) -> Result<Self, Self::Error> {
+    fn try_from(measurement: Measurement<Information>) -> Result<Self, Self::Error> {
         let value = measurement.value;
         let unit = measurement.unit.symbol().to_owned();
         let bytes = exact_nonnegative_bytes(measurement)?;
-        Self::try_from(bytes).map_err(|_| {
-            MeasurementError::InformationOutOfRange {
-                value,
-                unit,
-                target: "u64",
-            }
+        Self::try_from(bytes).map_err(|_| MeasurementError::InformationOutOfRange {
+            value,
+            unit,
+            target: "u64",
         })
     }
 }
@@ -141,18 +135,14 @@ impl TryFrom<Measurement<Information>> for usize {
     ///
     /// Returns a classified negative-value, fractional-byte, or `usize`
     /// out-of-range error.
-    fn try_from(
-        measurement: Measurement<Information>,
-    ) -> Result<Self, Self::Error> {
+    fn try_from(measurement: Measurement<Information>) -> Result<Self, Self::Error> {
         let value = measurement.value;
         let unit = measurement.unit.symbol().to_owned();
         let bytes = exact_nonnegative_bytes(measurement)?;
-        Self::try_from(bytes).map_err(|_| {
-            MeasurementError::InformationOutOfRange {
-                value,
-                unit,
-                target: "usize",
-            }
+        Self::try_from(bytes).map_err(|_| MeasurementError::InformationOutOfRange {
+            value,
+            unit,
+            target: "usize",
         })
     }
 }

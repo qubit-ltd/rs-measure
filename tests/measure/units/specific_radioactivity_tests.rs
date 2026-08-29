@@ -31,8 +31,7 @@ fn test_specific_radioactivity_definitions_match_exact_golden_values() {
             offset: "0",
         },
         DefinitionCase {
-            unit:
-                unit::SpecificRadioactivity::DisintegrationsPerMinutePerKilogram,
+            unit: unit::SpecificRadioactivity::DisintegrationsPerMinutePerKilogram,
             numerator: "1",
             denominator: "60",
             offset: "0",

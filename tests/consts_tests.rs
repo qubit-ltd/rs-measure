@@ -23,26 +23,19 @@ fn test_builtin_revolution_factor_uses_reduced_terms() {
         .definition()
         .expect("revolution definition should be valid")
         .factor();
-    let normalized = ConversionFactor::new(
-        dec!(39269908169872415480783),
-        dec!(6250000000000000000000),
-    )
-    .expect("normalized revolution factor should be valid");
+    let normalized = ConversionFactor::new(dec!(39269908169872415480783), dec!(6250000000000000000000))
+        .expect("normalized revolution factor should be valid");
 
     assert_eq!(builtin, normalized);
 }
 
 #[test]
 fn test_unit_definition_provenance_covers_every_builtin_unit() {
-    let manifest_path = Path::new(env!("CARGO_MANIFEST_DIR"))
-        .join("doc/unit-definition-provenance.tsv");
-    let manifest = fs::read_to_string(&manifest_path)
-        .expect("unit-definition provenance manifest should exist");
+    let manifest_path = Path::new(env!("CARGO_MANIFEST_DIR")).join("doc/unit-definition-provenance.tsv");
+    let manifest = fs::read_to_string(&manifest_path).expect("unit-definition provenance manifest should exist");
     let mut expected = BTreeSet::new();
     let mut current_quantity = None;
-    for line in
-        include_str!("measure/fixtures/unit_persistence_contract.txt").lines()
-    {
+    for line in include_str!("measure/fixtures/unit_persistence_contract.txt").lines() {
         if let Some(quantity) = line
             .strip_prefix("quantity \"")
             .and_then(|quantity| quantity.strip_suffix('"'))
@@ -56,10 +49,8 @@ fn test_unit_definition_provenance_covers_every_builtin_unit() {
         let (symbol, _) = unit
             .split_once(" aliases ")
             .expect("unit persistence contract should contain aliases");
-        let symbol = from_str::<String>(symbol)
-            .expect("unit symbol should be valid JSON text");
-        let quantity = current_quantity
-            .expect("unit persistence contract should declare its quantity");
+        let symbol = from_str::<String>(symbol).expect("unit symbol should be valid JSON text");
+        let quantity = current_quantity.expect("unit persistence contract should declare its quantity");
         assert!(
             expected.insert((quantity.to_owned(), symbol)),
             "duplicate unit persistence contract entry for {quantity}",
@@ -69,10 +60,7 @@ fn test_unit_definition_provenance_covers_every_builtin_unit() {
         .lines()
         .filter(|line| !line.is_empty() && !line.starts_with('#'));
 
-    assert_eq!(
-        lines.next(),
-        Some("quantity\tunit\tsource_ids\tnumeric_policy\tscope"),
-    );
+    assert_eq!(lines.next(), Some("quantity\tunit\tsource_ids\tnumeric_policy\tscope"),);
 
     let known_source_ids = BTreeSet::from([
         "BIPM-SI-9.3.01",

@@ -39,10 +39,8 @@ const TAU_DECIMAL_DENOMINATOR: i128 = PI_DECIMAL_DENOMINATOR;
 const TAU_DECIMAL_NUMERATOR: i128 = 2 * PI_DECIMAL_NUMERATOR;
 
 /// Ensures the finite standard-library representations remain coherent.
-const _: () = assert!(
-    TAU_DECIMAL_DENOMINATOR == PI_DECIMAL_DENOMINATOR
-        && TAU_DECIMAL_NUMERATOR == 2 * PI_DECIMAL_NUMERATOR,
-);
+const _: () =
+    assert!(TAU_DECIMAL_DENOMINATOR == PI_DECIMAL_DENOMINATOR && TAU_DECIMAL_NUMERATOR == 2 * PI_DECIMAL_NUMERATOR,);
 
 /// Builds an exact Decimal constant and validates its representation.
 macro_rules! decimal {
@@ -72,14 +70,8 @@ macro_rules! definition {
     ($numerator:expr, $denominator:expr, $offset_mantissa:expr, $offset_scale:expr $(,)?) => {{
         let numerator: i128 = $numerator;
         let denominator: i128 = $denominator;
-        let factor = crate::measure::ConversionFactor::from_const_integers(
-            numerator,
-            denominator,
-        );
-        crate::measure::UnitDefinition::new(
-            factor,
-            decimal!($offset_mantissa, $offset_scale),
-        )
+        let factor = crate::measure::ConversionFactor::from_const_integers(numerator, denominator);
+        crate::measure::UnitDefinition::new(factor, decimal!($offset_mantissa, $offset_scale))
     }};
 }
 
@@ -88,17 +80,13 @@ pub(crate) mod acceleration {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MillimeterPerSecondSquared` unit.
-    pub(crate) const MILLIMETER_PER_SECOND_SQUARED: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIMETER_PER_SECOND_SQUARED: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `MeterPerSecondSquared` unit.
-    pub(crate) const METER_PER_SECOND_SQUARED: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const METER_PER_SECOND_SQUARED: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `FootPerSecondSquared` unit.
-    pub(crate) const FOOT_PER_SECOND_SQUARED: UnitDefinition =
-        definition!(381, 1250, 0, 0);
+    pub(crate) const FOOT_PER_SECOND_SQUARED: UnitDefinition = definition!(381, 1250, 0, 0);
     /// Exact conversion definition for the `StandardGravity` unit.
-    pub(crate) const STANDARD_GRAVITY: UnitDefinition =
-        definition!(196133, 20000, 0, 0);
+    pub(crate) const STANDARD_GRAVITY: UnitDefinition = definition!(196133, 20000, 0, 0);
 }
 
 /// Conversion constants for amount of substance units.
@@ -114,8 +102,7 @@ pub(crate) mod amount_of_substance {
     /// Exact conversion definition for the `Kilomole` unit.
     pub(crate) const KILOMOLE: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `Particle` unit.
-    pub(crate) const PARTICLE: UnitDefinition =
-        definition!(1, 602214076000000000000000, 0, 0);
+    pub(crate) const PARTICLE: UnitDefinition = definition!(1, 602214076000000000000000, 0, 0);
 }
 
 /// Conversion constants for angle units.
@@ -143,26 +130,18 @@ pub(crate) mod angle {
         0,
     );
     /// Exact conversion definition for the `Revolution` unit.
-    pub(crate) const REVOLUTION: UnitDefinition =
-        definition!(TAU_DECIMAL_NUMERATOR, TAU_DECIMAL_DENOMINATOR, 0, 0,);
+    pub(crate) const REVOLUTION: UnitDefinition = definition!(TAU_DECIMAL_NUMERATOR, TAU_DECIMAL_DENOMINATOR, 0, 0,);
     /// Exact conversion definition for the `Minute` unit.
     pub(crate) const MINUTE: UnitDefinition = definition!(
         PI_DECIMAL_NUMERATOR,
-        PI_DECIMAL_DENOMINATOR
-            * DEGREES_PER_REVOLUTION
-            * ARC_MINUTES_PER_DEGREE
-            / 2,
+        PI_DECIMAL_DENOMINATOR * DEGREES_PER_REVOLUTION * ARC_MINUTES_PER_DEGREE / 2,
         0,
         0,
     );
     /// Exact conversion definition for the `Second` unit.
     pub(crate) const SECOND: UnitDefinition = definition!(
         PI_DECIMAL_NUMERATOR,
-        PI_DECIMAL_DENOMINATOR
-            * DEGREES_PER_REVOLUTION
-            * ARC_MINUTES_PER_DEGREE
-            * ARC_SECONDS_PER_MINUTE
-            / 2,
+        PI_DECIMAL_DENOMINATOR * DEGREES_PER_REVOLUTION * ARC_MINUTES_PER_DEGREE * ARC_SECONDS_PER_MINUTE / 2,
         0,
         0,
     );
@@ -179,8 +158,7 @@ pub(crate) mod angular_velocity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `RadianPerSecond` unit.
-    pub(crate) const RADIAN_PER_SECOND: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const RADIAN_PER_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `DegreePerSecond` unit.
     pub(crate) const DEGREE_PER_SECOND: UnitDefinition = definition!(
         PI_DECIMAL_NUMERATOR,
@@ -205,32 +183,25 @@ pub(crate) mod area {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `SquareMillimeter` unit.
-    pub(crate) const SQUARE_MILLIMETER: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const SQUARE_MILLIMETER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `SquareCentimeter` unit.
-    pub(crate) const SQUARE_CENTIMETER: UnitDefinition =
-        definition!(1, 10000, 0, 0);
+    pub(crate) const SQUARE_CENTIMETER: UnitDefinition = definition!(1, 10000, 0, 0);
     /// Exact conversion definition for the `SquareMeter` unit.
     pub(crate) const SQUARE_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `SquareKilometer` unit.
-    pub(crate) const SQUARE_KILOMETER: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const SQUARE_KILOMETER: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `Hectare` unit.
     pub(crate) const HECTARE: UnitDefinition = definition!(10000, 1, 0, 0);
     /// Exact conversion definition for the `Acre` unit.
     pub(crate) const ACRE: UnitDefinition = definition!(316160658, 78125, 0, 0);
     /// Exact conversion definition for the `SquareInch` unit.
-    pub(crate) const SQUARE_INCH: UnitDefinition =
-        definition!(16129, 25000000, 0, 0);
+    pub(crate) const SQUARE_INCH: UnitDefinition = definition!(16129, 25000000, 0, 0);
     /// Exact conversion definition for the `SquareFoot` unit.
-    pub(crate) const SQUARE_FOOT: UnitDefinition =
-        definition!(145161, 1562500, 0, 0);
+    pub(crate) const SQUARE_FOOT: UnitDefinition = definition!(145161, 1562500, 0, 0);
     /// Exact conversion definition for the `SquareYard` unit.
-    pub(crate) const SQUARE_YARD: UnitDefinition =
-        definition!(1306449, 1562500, 0, 0);
+    pub(crate) const SQUARE_YARD: UnitDefinition = definition!(1306449, 1562500, 0, 0);
     /// Exact conversion definition for the `SquareMile` unit.
-    pub(crate) const SQUARE_MILE: UnitDefinition =
-        definition!(40468564224, 15625, 0, 0);
+    pub(crate) const SQUARE_MILE: UnitDefinition = definition!(40468564224, 15625, 0, 0);
 }
 
 /// Conversion constants for capacitance units.
@@ -238,11 +209,9 @@ pub(crate) mod capacitance {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Picofarad` unit.
-    pub(crate) const PICOFARAD: UnitDefinition =
-        definition!(1, 1000000000000, 0, 0);
+    pub(crate) const PICOFARAD: UnitDefinition = definition!(1, 1000000000000, 0, 0);
     /// Exact conversion definition for the `Nanofarad` unit.
-    pub(crate) const NANOFARAD: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOFARAD: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microfarad` unit.
     pub(crate) const MICROFARAD: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millifarad` unit.
@@ -262,11 +231,9 @@ pub(crate) mod catalytic_activity {
     /// Exact conversion definition for the `Katal` unit.
     pub(crate) const KATAL: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `EnzymeUnit` unit.
-    pub(crate) const ENZYME_UNIT: UnitDefinition =
-        definition!(1, 60000000, 0, 0);
+    pub(crate) const ENZYME_UNIT: UnitDefinition = definition!(1, 60000000, 0, 0);
     /// Exact conversion definition for the `MilliEnzymeUnit` unit.
-    pub(crate) const MILLI_ENZYME_UNIT: UnitDefinition =
-        definition!(1, 60000000000, 0, 0);
+    pub(crate) const MILLI_ENZYME_UNIT: UnitDefinition = definition!(1, 60000000000, 0, 0);
 }
 
 /// Conversion constants for catalytic activity concentration units.
@@ -274,14 +241,11 @@ pub(crate) mod catalytic_activity_concentration {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `KatalPerCubicMeter` unit.
-    pub(crate) const KATAL_PER_CUBIC_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const KATAL_PER_CUBIC_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `EnzymeUnitPerLiter` unit.
-    pub(crate) const ENZYME_UNIT_PER_LITER: UnitDefinition =
-        definition!(1, 60000, 0, 0);
+    pub(crate) const ENZYME_UNIT_PER_LITER: UnitDefinition = definition!(1, 60000, 0, 0);
     /// Exact conversion definition for the `MilliEnzymeUnitPerMilliliter` unit.
-    pub(crate) const MILLI_ENZYME_UNIT_PER_MILLILITER: UnitDefinition =
-        definition!(1, 60000, 0, 0);
+    pub(crate) const MILLI_ENZYME_UNIT_PER_MILLILITER: UnitDefinition = definition!(1, 60000, 0, 0);
 }
 
 /// Conversion constants for dynamic viscosity units.
@@ -289,11 +253,9 @@ pub(crate) mod dynamic_viscosity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MicropascalSecond` unit.
-    pub(crate) const MICROPASCAL_SECOND: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROPASCAL_SECOND: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `MillipascalSecond` unit.
-    pub(crate) const MILLIPASCAL_SECOND: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIPASCAL_SECOND: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `PascalSecond` unit.
     pub(crate) const PASCAL_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Poise` unit.
@@ -307,8 +269,7 @@ pub(crate) mod electric_charge {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Microcoulomb` unit.
-    pub(crate) const MICROCOULOMB: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROCOULOMB: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millicoulomb` unit.
     pub(crate) const MILLICOULOMB: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `Coulomb` unit.
@@ -318,8 +279,7 @@ pub(crate) mod electric_charge {
     /// Exact conversion definition for the `AmpereHour` unit.
     pub(crate) const AMPERE_HOUR: UnitDefinition = definition!(3600, 1, 0, 0);
     /// Exact conversion definition for the `MilliampereHour` unit.
-    pub(crate) const MILLIAMPERE_HOUR: UnitDefinition =
-        definition!(18, 5, 0, 0);
+    pub(crate) const MILLIAMPERE_HOUR: UnitDefinition = definition!(18, 5, 0, 0);
 }
 
 /// Conversion constants for electric current units.
@@ -327,14 +287,11 @@ pub(crate) mod electric_current {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Picoampere` unit.
-    pub(crate) const PICOAMPERE: UnitDefinition =
-        definition!(1, 1000000000000, 0, 0);
+    pub(crate) const PICOAMPERE: UnitDefinition = definition!(1, 1000000000000, 0, 0);
     /// Exact conversion definition for the `Nanoampere` unit.
-    pub(crate) const NANOAMPERE: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOAMPERE: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microampere` unit.
-    pub(crate) const MICROAMPERE: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROAMPERE: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Milliampere` unit.
     pub(crate) const MILLIAMPERE: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `Ampere` unit.
@@ -350,14 +307,11 @@ pub(crate) mod electric_current_density {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `AmperePerSquareMeter` unit.
-    pub(crate) const AMPERE_PER_SQUARE_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const AMPERE_PER_SQUARE_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `AmperePerSquareCentimeter` unit.
-    pub(crate) const AMPERE_PER_SQUARE_CENTIMETER: UnitDefinition =
-        definition!(10000, 1, 0, 0);
+    pub(crate) const AMPERE_PER_SQUARE_CENTIMETER: UnitDefinition = definition!(10000, 1, 0, 0);
     /// Exact conversion definition for the `AmperePerSquareMillimeter` unit.
-    pub(crate) const AMPERE_PER_SQUARE_MILLIMETER: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const AMPERE_PER_SQUARE_MILLIMETER: UnitDefinition = definition!(1000000, 1, 0, 0);
 }
 
 /// Conversion constants for electric field units.
@@ -367,20 +321,15 @@ pub(crate) mod electric_field {
     /// Exact conversion definition for the `VoltPerMeter` unit.
     pub(crate) const VOLT_PER_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `VoltPerCentimeter` unit.
-    pub(crate) const VOLT_PER_CENTIMETER: UnitDefinition =
-        definition!(100, 1, 0, 0);
+    pub(crate) const VOLT_PER_CENTIMETER: UnitDefinition = definition!(100, 1, 0, 0);
     /// Exact conversion definition for the `VoltPerMillimeter` unit.
-    pub(crate) const VOLT_PER_MILLIMETER: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const VOLT_PER_MILLIMETER: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `VoltPerMicrometer` unit.
-    pub(crate) const VOLT_PER_MICROMETER: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const VOLT_PER_MICROMETER: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `KilovoltPerMillimeter` unit.
-    pub(crate) const KILOVOLT_PER_MILLIMETER: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const KILOVOLT_PER_MILLIMETER: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `MegavoltPerMeter` unit.
-    pub(crate) const MEGAVOLT_PER_METER: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const MEGAVOLT_PER_METER: UnitDefinition = definition!(1000000, 1, 0, 0);
 }
 
 /// Conversion constants for electric potential units.
@@ -388,8 +337,7 @@ pub(crate) mod electric_potential {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanovolt` unit.
-    pub(crate) const NANOVOLT: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOVOLT: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microvolt` unit.
     pub(crate) const MICROVOLT: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millivolt` unit.
@@ -407,8 +355,7 @@ pub(crate) mod electrical_conductance {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Microsiemens` unit.
-    pub(crate) const MICROSIEMENS: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROSIEMENS: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millisiemens` unit.
     pub(crate) const MILLISIEMENS: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `Siemens` unit.
@@ -420,11 +367,9 @@ pub(crate) mod electrical_conductivity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `SiemensPerMeter` unit.
-    pub(crate) const SIEMENS_PER_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const SIEMENS_PER_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `SiemensPerCentimeter` unit.
-    pub(crate) const SIEMENS_PER_CENTIMETER: UnitDefinition =
-        definition!(100, 1, 0, 0);
+    pub(crate) const SIEMENS_PER_CENTIMETER: UnitDefinition = definition!(100, 1, 0, 0);
 }
 
 /// Conversion constants for electrical resistance units.
@@ -450,15 +395,13 @@ pub(crate) mod electrical_resistivity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MilliohmMeter` unit.
-    pub(crate) const MILLIOHM_METER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIOHM_METER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `OhmMeter` unit.
     pub(crate) const OHM_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `OhmCentimeter` unit.
     pub(crate) const OHM_CENTIMETER: UnitDefinition = definition!(1, 100, 0, 0);
     /// Exact conversion definition for the `OhmSquareMillimeterPerMeter` unit.
-    pub(crate) const OHM_SQUARE_MILLIMETER_PER_METER: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const OHM_SQUARE_MILLIMETER_PER_METER: UnitDefinition = definition!(1, 1000000, 0, 0);
 }
 
 /// Conversion constants for energy units.
@@ -474,21 +417,16 @@ pub(crate) mod energy {
     /// Exact conversion definition for the `WattHour` unit.
     pub(crate) const WATT_HOUR: UnitDefinition = definition!(3600, 1, 0, 0);
     /// Exact conversion definition for the `KilowattHour` unit.
-    pub(crate) const KILOWATT_HOUR: UnitDefinition =
-        definition!(3600000, 1, 0, 0);
+    pub(crate) const KILOWATT_HOUR: UnitDefinition = definition!(3600000, 1, 0, 0);
     /// Exact conversion definition for the `Electronvolt` unit.
-    pub(crate) const ELECTRONVOLT: UnitDefinition =
-        definition!(801088317, 5000000000000000000000000000, 0, 0);
+    pub(crate) const ELECTRONVOLT: UnitDefinition = definition!(801088317, 5000000000000000000000000000, 0, 0);
     /// Exact conversion definition for the `ThermochemicalCalorie` unit.
-    pub(crate) const THERMOCHEMICAL_CALORIE: UnitDefinition =
-        definition!(523, 125, 0, 0);
+    pub(crate) const THERMOCHEMICAL_CALORIE: UnitDefinition = definition!(523, 125, 0, 0);
     /// Exact conversion definition for the `ThermochemicalKilocalorie` unit.
-    pub(crate) const THERMOCHEMICAL_KILOCALORIE: UnitDefinition =
-        definition!(4184, 1, 0, 0);
+    pub(crate) const THERMOCHEMICAL_KILOCALORIE: UnitDefinition = definition!(4184, 1, 0, 0);
     /// Exact conversion definition for the
     /// `BritishThermalUnitInternationalTable` unit.
-    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE: UnitDefinition =
-        definition!(131882, 125, 0, 0);
+    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE: UnitDefinition = definition!(131882, 125, 0, 0);
 }
 
 /// Conversion constants for force units.
@@ -504,14 +442,11 @@ pub(crate) mod force {
     /// Exact conversion definition for the `Meganewton` unit.
     pub(crate) const MEGANEWTON: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `GramForce` unit.
-    pub(crate) const GRAM_FORCE: UnitDefinition =
-        definition!(196133, 20000000, 0, 0);
+    pub(crate) const GRAM_FORCE: UnitDefinition = definition!(196133, 20000000, 0, 0);
     /// Exact conversion definition for the `KilogramForce` unit.
-    pub(crate) const KILOGRAM_FORCE: UnitDefinition =
-        definition!(196133, 20000, 0, 0);
+    pub(crate) const KILOGRAM_FORCE: UnitDefinition = definition!(196133, 20000, 0, 0);
     /// Exact conversion definition for the `PoundForce` unit.
-    pub(crate) const POUND_FORCE: UnitDefinition =
-        definition!(8896443230521, 2000000000000, 0, 0);
+    pub(crate) const POUND_FORCE: UnitDefinition = definition!(8896443230521, 2000000000000, 0, 0);
 }
 
 /// Conversion constants for frequency units.
@@ -525,8 +460,7 @@ pub(crate) mod frequency {
     /// Exact conversion definition for the `Megahertz` unit.
     pub(crate) const MEGAHERTZ: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `Gigahertz` unit.
-    pub(crate) const GIGAHERTZ: UnitDefinition =
-        definition!(1000000000, 1, 0, 0);
+    pub(crate) const GIGAHERTZ: UnitDefinition = definition!(1000000000, 1, 0, 0);
 }
 
 /// Conversion constants for heat capacity units.
@@ -536,19 +470,16 @@ pub(crate) mod heat_capacity {
     /// Exact conversion definition for the `JoulePerKelvin` unit.
     pub(crate) const JOULE_PER_KELVIN: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilojoulePerKelvin` unit.
-    pub(crate) const KILOJOULE_PER_KELVIN: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KILOJOULE_PER_KELVIN: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `JoulePerDegreeCelsius` unit.
-    pub(crate) const JOULE_PER_DEGREE_CELSIUS: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const JOULE_PER_DEGREE_CELSIUS: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `ThermochemicalCaloriePerKelvin`
     /// unit.
-    pub(crate) const THERMOCHEMICAL_CALORIE_PER_KELVIN: UnitDefinition =
-        definition!(523, 125, 0, 0);
+    pub(crate) const THERMOCHEMICAL_CALORIE_PER_KELVIN: UnitDefinition = definition!(523, 125, 0, 0);
     /// Exact conversion definition for the
     /// `BritishThermalUnitInternationalTablePerDegreeFahrenheit` unit.
-    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_DEGREE_FAHRENHEIT:
-        UnitDefinition = definition!(1186938, 625, 0, 0);
+    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_DEGREE_FAHRENHEIT: UnitDefinition =
+        definition!(1186938, 625, 0, 0);
 }
 
 /// Conversion constants for heat flux density units.
@@ -556,17 +487,13 @@ pub(crate) mod heat_flux_density {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MilliwattPerSquareMeter` unit.
-    pub(crate) const MILLIWATT_PER_SQUARE_METER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIWATT_PER_SQUARE_METER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `WattPerSquareMeter` unit.
-    pub(crate) const WATT_PER_SQUARE_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const WATT_PER_SQUARE_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilowattPerSquareMeter` unit.
-    pub(crate) const KILOWATT_PER_SQUARE_METER: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KILOWATT_PER_SQUARE_METER: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `WattPerSquareCentimeter` unit.
-    pub(crate) const WATT_PER_SQUARE_CENTIMETER: UnitDefinition =
-        definition!(10000, 1, 0, 0);
+    pub(crate) const WATT_PER_SQUARE_CENTIMETER: UnitDefinition = definition!(10000, 1, 0, 0);
 }
 
 /// Conversion constants for illuminance units.
@@ -578,8 +505,7 @@ pub(crate) mod illuminance {
     /// Exact conversion definition for the `Kilolux` unit.
     pub(crate) const KILOLUX: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `Footcandle` unit.
-    pub(crate) const FOOTCANDLE: UnitDefinition =
-        definition!(1562500, 145161, 0, 0);
+    pub(crate) const FOOTCANDLE: UnitDefinition = definition!(1562500, 145161, 0, 0);
 }
 
 /// Conversion constants for inductance units.
@@ -587,8 +513,7 @@ pub(crate) mod inductance {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanohenry` unit.
-    pub(crate) const NANOHENRY: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOHENRY: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microhenry` unit.
     pub(crate) const MICROHENRY: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millihenry` unit.
@@ -610,21 +535,17 @@ pub(crate) mod information {
     /// Exact conversion definition for the `Megabyte` unit.
     pub(crate) const MEGABYTE: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `Gigabyte` unit.
-    pub(crate) const GIGABYTE: UnitDefinition =
-        definition!(1000000000, 1, 0, 0);
+    pub(crate) const GIGABYTE: UnitDefinition = definition!(1000000000, 1, 0, 0);
     /// Exact conversion definition for the `Terabyte` unit.
-    pub(crate) const TERABYTE: UnitDefinition =
-        definition!(1000000000000, 1, 0, 0);
+    pub(crate) const TERABYTE: UnitDefinition = definition!(1000000000000, 1, 0, 0);
     /// Exact conversion definition for the `Kibibyte` unit.
     pub(crate) const KIBIBYTE: UnitDefinition = definition!(1024, 1, 0, 0);
     /// Exact conversion definition for the `Mebibyte` unit.
     pub(crate) const MEBIBYTE: UnitDefinition = definition!(1048576, 1, 0, 0);
     /// Exact conversion definition for the `Gibibyte` unit.
-    pub(crate) const GIBIBYTE: UnitDefinition =
-        definition!(1073741824, 1, 0, 0);
+    pub(crate) const GIBIBYTE: UnitDefinition = definition!(1073741824, 1, 0, 0);
     /// Exact conversion definition for the `Tebibyte` unit.
-    pub(crate) const TEBIBYTE: UnitDefinition =
-        definition!(1099511627776, 1, 0, 0);
+    pub(crate) const TEBIBYTE: UnitDefinition = definition!(1099511627776, 1, 0, 0);
 }
 
 /// Conversion constants for kinematic viscosity units.
@@ -632,16 +553,13 @@ pub(crate) mod kinematic_viscosity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `SquareMillimeterPerSecond` unit.
-    pub(crate) const SQUARE_MILLIMETER_PER_SECOND: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const SQUARE_MILLIMETER_PER_SECOND: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `SquareMeterPerSecond` unit.
-    pub(crate) const SQUARE_METER_PER_SECOND: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const SQUARE_METER_PER_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Stokes` unit.
     pub(crate) const STOKES: UnitDefinition = definition!(1, 10000, 0, 0);
     /// Exact conversion definition for the `Centistokes` unit.
-    pub(crate) const CENTISTOKES: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const CENTISTOKES: UnitDefinition = definition!(1, 1000000, 0, 0);
 }
 
 /// Conversion constants for length units.
@@ -649,8 +567,7 @@ pub(crate) mod length {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanometer` unit.
-    pub(crate) const NANOMETER: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOMETER: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Micrometer` unit.
     pub(crate) const MICROMETER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millimeter` unit.
@@ -676,17 +593,13 @@ pub(crate) mod luminance {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `CandelaPerSquareMeter` unit.
-    pub(crate) const CANDELA_PER_SQUARE_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const CANDELA_PER_SQUARE_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `CandelaPerSquareCentimeter` unit.
-    pub(crate) const CANDELA_PER_SQUARE_CENTIMETER: UnitDefinition =
-        definition!(10000, 1, 0, 0);
+    pub(crate) const CANDELA_PER_SQUARE_CENTIMETER: UnitDefinition = definition!(10000, 1, 0, 0);
     /// Exact conversion definition for the `CandelaPerSquareFoot` unit.
-    pub(crate) const CANDELA_PER_SQUARE_FOOT: UnitDefinition =
-        definition!(1562500, 145161, 0, 0);
+    pub(crate) const CANDELA_PER_SQUARE_FOOT: UnitDefinition = definition!(1562500, 145161, 0, 0);
     /// Exact conversion definition for the `Footlambert` unit.
-    pub(crate) const FOOTLAMBERT: UnitDefinition =
-        definition!(6852518199270781, 2000000000000000, 0, 0);
+    pub(crate) const FOOTLAMBERT: UnitDefinition = definition!(6852518199270781, 2000000000000000, 0, 0);
     /// Exact conversion definition for the `Stilb` unit.
     pub(crate) const STILB: UnitDefinition = definition!(10000, 1, 0, 0);
 }
@@ -710,11 +623,9 @@ pub(crate) mod magnetic_field_strength {
     /// Exact conversion definition for the `AmperePerMeter` unit.
     pub(crate) const AMPERE_PER_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `AmperePerCentimeter` unit.
-    pub(crate) const AMPERE_PER_CENTIMETER: UnitDefinition =
-        definition!(100, 1, 0, 0);
+    pub(crate) const AMPERE_PER_CENTIMETER: UnitDefinition = definition!(100, 1, 0, 0);
     /// Exact conversion definition for the `Oersted` unit.
-    pub(crate) const OERSTED: UnitDefinition =
-        definition!(7957747154594767, 100000000000000, 0, 0);
+    pub(crate) const OERSTED: UnitDefinition = definition!(7957747154594767, 100000000000000, 0, 0);
 }
 
 /// Conversion constants for magnetic flux units.
@@ -736,8 +647,7 @@ pub(crate) mod magnetic_flux_density {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanotesla` unit.
-    pub(crate) const NANOTESLA: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOTESLA: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microtesla` unit.
     pub(crate) const MICROTESLA: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millitesla` unit.
@@ -753,8 +663,7 @@ pub(crate) mod mass {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Microgram` unit.
-    pub(crate) const MICROGRAM: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const MICROGRAM: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Milligram` unit.
     pub(crate) const MILLIGRAM: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Gram` unit.
@@ -766,17 +675,13 @@ pub(crate) mod mass {
     /// Exact conversion definition for the `Carat` unit.
     pub(crate) const CARAT: UnitDefinition = definition!(1, 5000, 0, 0);
     /// Exact conversion definition for the `Ounce` unit.
-    pub(crate) const OUNCE: UnitDefinition =
-        definition!(45359237, 1600000000, 0, 0);
+    pub(crate) const OUNCE: UnitDefinition = definition!(45359237, 1600000000, 0, 0);
     /// Exact conversion definition for the `Pound` unit.
-    pub(crate) const POUND: UnitDefinition =
-        definition!(45359237, 100000000, 0, 0);
+    pub(crate) const POUND: UnitDefinition = definition!(45359237, 100000000, 0, 0);
     /// Exact conversion definition for the `TonShort` unit.
-    pub(crate) const TON_SHORT: UnitDefinition =
-        definition!(45359237, 50000, 0, 0);
+    pub(crate) const TON_SHORT: UnitDefinition = definition!(45359237, 50000, 0, 0);
     /// Exact conversion definition for the `TonLong` unit.
-    pub(crate) const TON_LONG: UnitDefinition =
-        definition!(317514659, 312500, 0, 0);
+    pub(crate) const TON_LONG: UnitDefinition = definition!(317514659, 312500, 0, 0);
 }
 
 /// Conversion constants for mass concentration units.
@@ -784,22 +689,17 @@ pub(crate) mod mass_concentration {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MicrogramPerLiter` unit.
-    pub(crate) const MICROGRAM_PER_LITER: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROGRAM_PER_LITER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `MilligramPerLiter` unit.
-    pub(crate) const MILLIGRAM_PER_LITER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIGRAM_PER_LITER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `GramPerLiter` unit.
     pub(crate) const GRAM_PER_LITER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilogramPerCubicMeter` unit.
-    pub(crate) const KILOGRAM_PER_CUBIC_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const KILOGRAM_PER_CUBIC_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `MilligramPerDeciliter` unit.
-    pub(crate) const MILLIGRAM_PER_DECILITER: UnitDefinition =
-        definition!(1, 100, 0, 0);
+    pub(crate) const MILLIGRAM_PER_DECILITER: UnitDefinition = definition!(1, 100, 0, 0);
     /// Exact conversion definition for the `GramPerDeciliter` unit.
-    pub(crate) const GRAM_PER_DECILITER: UnitDefinition =
-        definition!(10, 1, 0, 0);
+    pub(crate) const GRAM_PER_DECILITER: UnitDefinition = definition!(10, 1, 0, 0);
 }
 
 /// Conversion constants for mass density units.
@@ -807,20 +707,15 @@ pub(crate) mod mass_density {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `KilogramPerCubicMeter` unit.
-    pub(crate) const KILOGRAM_PER_CUBIC_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const KILOGRAM_PER_CUBIC_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `GramPerCubicMeter` unit.
-    pub(crate) const GRAM_PER_CUBIC_METER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const GRAM_PER_CUBIC_METER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `GramPerCubicCentimeter` unit.
-    pub(crate) const GRAM_PER_CUBIC_CENTIMETER: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const GRAM_PER_CUBIC_CENTIMETER: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `PoundPerCubicFoot` unit.
-    pub(crate) const POUND_PER_CUBIC_FOOT: UnitDefinition =
-        definition!(28349523125, 1769802912, 0, 0);
+    pub(crate) const POUND_PER_CUBIC_FOOT: UnitDefinition = definition!(28349523125, 1769802912, 0, 0);
     /// Exact conversion definition for the `PoundPerUsGallon` unit.
-    pub(crate) const POUND_PER_US_GALLON: UnitDefinition =
-        definition!(736351250, 6145149, 0, 0);
+    pub(crate) const POUND_PER_US_GALLON: UnitDefinition = definition!(736351250, 6145149, 0, 0);
 }
 
 /// Conversion constants for mass rate units.
@@ -828,22 +723,17 @@ pub(crate) mod mass_rate {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MilligramPerSecond` unit.
-    pub(crate) const MILLIGRAM_PER_SECOND: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MILLIGRAM_PER_SECOND: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `GramPerSecond` unit.
-    pub(crate) const GRAM_PER_SECOND: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const GRAM_PER_SECOND: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `KilogramPerSecond` unit.
-    pub(crate) const KILOGRAM_PER_SECOND: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const KILOGRAM_PER_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilogramPerHour` unit.
-    pub(crate) const KILOGRAM_PER_HOUR: UnitDefinition =
-        definition!(1, 3600, 0, 0);
+    pub(crate) const KILOGRAM_PER_HOUR: UnitDefinition = definition!(1, 3600, 0, 0);
     /// Exact conversion definition for the `TonnePerHour` unit.
     pub(crate) const TONNE_PER_HOUR: UnitDefinition = definition!(5, 18, 0, 0);
     /// Exact conversion definition for the `PoundPerHour` unit.
-    pub(crate) const POUND_PER_HOUR: UnitDefinition =
-        definition!(45359237, 360000000000, 0, 0);
+    pub(crate) const POUND_PER_HOUR: UnitDefinition = definition!(45359237, 360000000000, 0, 0);
 }
 
 /// Conversion constants for molality units.
@@ -851,8 +741,7 @@ pub(crate) mod molality {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MolePerKilogram` unit.
-    pub(crate) const MOLE_PER_KILOGRAM: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const MOLE_PER_KILOGRAM: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
 /// Conversion constants for molar concentration units.
@@ -860,23 +749,17 @@ pub(crate) mod molar_concentration {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `NanomolePerLiter` unit.
-    pub(crate) const NANOMOLE_PER_LITER: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const NANOMOLE_PER_LITER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `MicromolePerLiter` unit.
-    pub(crate) const MICROMOLE_PER_LITER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MICROMOLE_PER_LITER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `MillimolePerLiter` unit.
-    pub(crate) const MILLIMOLE_PER_LITER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const MILLIMOLE_PER_LITER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `MolePerLiter` unit.
-    pub(crate) const MOLE_PER_LITER: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const MOLE_PER_LITER: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `MolePerCubicMeter` unit.
-    pub(crate) const MOLE_PER_CUBIC_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const MOLE_PER_CUBIC_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `ParticlePerMilliliter` unit.
-    pub(crate) const PARTICLE_PER_MILLILITER: UnitDefinition =
-        definition!(1, 602214076000000000, 0, 0);
+    pub(crate) const PARTICLE_PER_MILLILITER: UnitDefinition = definition!(1, 602214076000000000, 0, 0);
 }
 
 /// Conversion constants for molar mass units.
@@ -884,13 +767,11 @@ pub(crate) mod molar_mass {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MilligramPerMole` unit.
-    pub(crate) const MILLIGRAM_PER_MOLE: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MILLIGRAM_PER_MOLE: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `GramPerMole` unit.
     pub(crate) const GRAM_PER_MOLE: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `KilogramPerMole` unit.
-    pub(crate) const KILOGRAM_PER_MOLE: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const KILOGRAM_PER_MOLE: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
 /// Conversion constants for molar volume units.
@@ -898,14 +779,11 @@ pub(crate) mod molar_volume {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `CubicCentimeterPerMole` unit.
-    pub(crate) const CUBIC_CENTIMETER_PER_MOLE: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const CUBIC_CENTIMETER_PER_MOLE: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `CubicDecimeterPerMole` unit.
-    pub(crate) const CUBIC_DECIMETER_PER_MOLE: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const CUBIC_DECIMETER_PER_MOLE: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `CubicMeterPerMole` unit.
-    pub(crate) const CUBIC_METER_PER_MOLE: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const CUBIC_METER_PER_MOLE: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
 /// Conversion constants for power units.
@@ -913,8 +791,7 @@ pub(crate) mod power {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanowatt` unit.
-    pub(crate) const NANOWATT: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOWATT: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Microwatt` unit.
     pub(crate) const MICROWATT: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Milliwatt` unit.
@@ -926,8 +803,7 @@ pub(crate) mod power {
     /// Exact conversion definition for the `Megawatt` unit.
     pub(crate) const MEGAWATT: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `MechanicalHorsepower` unit.
-    pub(crate) const MECHANICAL_HORSEPOWER: UnitDefinition =
-        definition!(37284993579113511, 50000000000000, 0, 0);
+    pub(crate) const MECHANICAL_HORSEPOWER: UnitDefinition = definition!(37284993579113511, 50000000000000, 0, 0);
 }
 
 /// Conversion constants for pressure units.
@@ -935,11 +811,9 @@ pub(crate) mod pressure {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `Nanopascal` unit.
-    pub(crate) const NANOPASCAL: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const NANOPASCAL: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Micropascal` unit.
-    pub(crate) const MICROPASCAL: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROPASCAL: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Millipascal` unit.
     pub(crate) const MILLIPASCAL: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `Pascal` unit.
@@ -957,11 +831,9 @@ pub(crate) mod pressure {
     /// Exact conversion definition for the `Atmosphere` unit.
     pub(crate) const ATMOSPHERE: UnitDefinition = definition!(101325, 1, 0, 0);
     /// Exact conversion definition for the `MillimeterOfMercury` unit.
-    pub(crate) const MILLIMETER_OF_MERCURY: UnitDefinition =
-        definition!(20265, 152, 0, 0);
+    pub(crate) const MILLIMETER_OF_MERCURY: UnitDefinition = definition!(20265, 152, 0, 0);
     /// Exact conversion definition for the `Psi` unit.
-    pub(crate) const PSI: UnitDefinition =
-        definition!(8896443230521, 1290320000, 0, 0);
+    pub(crate) const PSI: UnitDefinition = definition!(8896443230521, 1290320000, 0, 0);
 }
 
 /// Conversion constants for radioactivity units.
@@ -973,18 +845,15 @@ pub(crate) mod radioactivity {
     /// Exact conversion definition for the `Kilobecquerel` unit.
     pub(crate) const KILOBECQUEREL: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `Megabecquerel` unit.
-    pub(crate) const MEGABECQUEREL: UnitDefinition =
-        definition!(1000000, 1, 0, 0);
+    pub(crate) const MEGABECQUEREL: UnitDefinition = definition!(1000000, 1, 0, 0);
     /// Exact conversion definition for the `Curie` unit.
     pub(crate) const CURIE: UnitDefinition = definition!(37000000000, 1, 0, 0);
     /// Exact conversion definition for the `Millicurie` unit.
-    pub(crate) const MILLICURIE: UnitDefinition =
-        definition!(37000000, 1, 0, 0);
+    pub(crate) const MILLICURIE: UnitDefinition = definition!(37000000, 1, 0, 0);
     /// Exact conversion definition for the `Microcurie` unit.
     pub(crate) const MICROCURIE: UnitDefinition = definition!(37000, 1, 0, 0);
     /// Exact conversion definition for the `DisintegrationsPerMinute` unit.
-    pub(crate) const DISINTEGRATIONS_PER_MINUTE: UnitDefinition =
-        definition!(1, 60, 0, 0);
+    pub(crate) const DISINTEGRATIONS_PER_MINUTE: UnitDefinition = definition!(1, 60, 0, 0);
 }
 
 /// Conversion constants for solid angle units.
@@ -994,8 +863,7 @@ pub(crate) mod solid_angle {
     use crate::measure::UnitDefinition;
 
     /// Denominator used for the finite 28-place square-degree factor.
-    const SQUARE_DEGREE_DENOMINATOR: i128 =
-        10_000_000_000_000_000_000_000_000_000;
+    const SQUARE_DEGREE_DENOMINATOR: i128 = 10_000_000_000_000_000_000_000_000_000;
 
     /// Rounded numerator for `(pi / 180)^2` from the NIST DLMF digits of pi.
     const SQUARE_DEGREE_NUMERATOR: i128 = 3_046_174_197_867_085_993_467_435;
@@ -1003,8 +871,7 @@ pub(crate) mod solid_angle {
     /// Exact conversion definition for the `Steradian` unit.
     pub(crate) const STERADIAN: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Spat` unit.
-    pub(crate) const SPAT: UnitDefinition =
-        definition!(2 * TAU_DECIMAL_NUMERATOR, TAU_DECIMAL_DENOMINATOR, 0, 0,);
+    pub(crate) const SPAT: UnitDefinition = definition!(2 * TAU_DECIMAL_NUMERATOR, TAU_DECIMAL_DENOMINATOR, 0, 0,);
     /// Exact conversion definition for the `SquareDegree` unit.
     pub(crate) const SQUARE_DEGREE: UnitDefinition =
         definition!(SQUARE_DEGREE_NUMERATOR, SQUARE_DEGREE_DENOMINATOR, 0, 0,);
@@ -1015,22 +882,18 @@ pub(crate) mod specific_heat_capacity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `JoulePerKilogramKelvin` unit.
-    pub(crate) const JOULE_PER_KILOGRAM_KELVIN: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const JOULE_PER_KILOGRAM_KELVIN: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilojoulePerKilogramKelvin` unit.
-    pub(crate) const KILOJOULE_PER_KILOGRAM_KELVIN: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KILOJOULE_PER_KILOGRAM_KELVIN: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `JoulePerGramDegreeCelsius` unit.
-    pub(crate) const JOULE_PER_GRAM_DEGREE_CELSIUS: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const JOULE_PER_GRAM_DEGREE_CELSIUS: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `ThermochemicalCaloriePerGramKelvin`
     /// unit.
-    pub(crate) const THERMOCHEMICAL_CALORIE_PER_GRAM_KELVIN: UnitDefinition =
-        definition!(4184, 1, 0, 0);
+    pub(crate) const THERMOCHEMICAL_CALORIE_PER_GRAM_KELVIN: UnitDefinition = definition!(4184, 1, 0, 0);
     /// Exact conversion definition for the
     /// `BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit` unit.
-    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_POUND_DEGREE_FAHRENHEIT:
-        UnitDefinition = definition!(189910080000, 45359237, 0, 0);
+    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_POUND_DEGREE_FAHRENHEIT: UnitDefinition =
+        definition!(189910080000, 45359237, 0, 0);
 }
 
 /// Conversion constants for specific radioactivity units.
@@ -1038,15 +901,12 @@ pub(crate) mod specific_radioactivity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `BecquerelPerKilogram` unit.
-    pub(crate) const BECQUEREL_PER_KILOGRAM: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const BECQUEREL_PER_KILOGRAM: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `CuriePerKilogram` unit.
-    pub(crate) const CURIE_PER_KILOGRAM: UnitDefinition =
-        definition!(37000000000, 1, 0, 0);
+    pub(crate) const CURIE_PER_KILOGRAM: UnitDefinition = definition!(37000000000, 1, 0, 0);
     /// Exact conversion definition for the
     /// `DisintegrationsPerMinutePerKilogram` unit.
-    pub(crate) const DISINTEGRATIONS_PER_MINUTE_PER_KILOGRAM: UnitDefinition =
-        definition!(1, 60, 0, 0);
+    pub(crate) const DISINTEGRATIONS_PER_MINUTE_PER_KILOGRAM: UnitDefinition = definition!(1, 60, 0, 0);
 }
 
 /// Conversion constants for surface tension units.
@@ -1054,16 +914,13 @@ pub(crate) mod surface_tension {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MillinewtonPerMeter` unit.
-    pub(crate) const MILLINEWTON_PER_METER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLINEWTON_PER_METER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `NewtonPerMeter` unit.
     pub(crate) const NEWTON_PER_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `DynePerCentimeter` unit.
-    pub(crate) const DYNE_PER_CENTIMETER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const DYNE_PER_CENTIMETER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `JoulePerSquareMeter` unit.
-    pub(crate) const JOULE_PER_SQUARE_METER: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const JOULE_PER_SQUARE_METER: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
 /// Conversion constants for temperature units.
@@ -1099,17 +956,13 @@ pub(crate) mod thermal_conductivity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MilliwattPerMeterKelvin` unit.
-    pub(crate) const MILLIWATT_PER_METER_KELVIN: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIWATT_PER_METER_KELVIN: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `WattPerMeterKelvin` unit.
-    pub(crate) const WATT_PER_METER_KELVIN: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const WATT_PER_METER_KELVIN: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilowattPerMeterKelvin` unit.
-    pub(crate) const KILOWATT_PER_METER_KELVIN: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KILOWATT_PER_METER_KELVIN: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `WattPerMeterDegreeCelsius` unit.
-    pub(crate) const WATT_PER_METER_DEGREE_CELSIUS: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const WATT_PER_METER_DEGREE_CELSIUS: UnitDefinition = definition!(1, 1, 0, 0);
 }
 
 /// Conversion constants for thermal resistance units.
@@ -1117,13 +970,11 @@ pub(crate) mod thermal_resistance {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `KelvinPerMilliwatt` unit.
-    pub(crate) const KELVIN_PER_MILLIWATT: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KELVIN_PER_MILLIWATT: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `KelvinPerWatt` unit.
     pub(crate) const KELVIN_PER_WATT: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KelvinPerKilowatt` unit.
-    pub(crate) const KELVIN_PER_KILOWATT: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const KELVIN_PER_KILOWATT: UnitDefinition = definition!(1, 1000, 0, 0);
 }
 
 /// Conversion constants for time units.
@@ -1146,35 +997,22 @@ pub(crate) mod time {
     pub(crate) const DAYS_PER_COMMON_YEAR: i128 = 365;
 
     /// Exact conversion definition for the `Nanosecond` unit.
-    pub(crate) const NANOSECOND: UnitDefinition =
-        definition!(1, NANOSECONDS_PER_SECOND, 0, 0);
+    pub(crate) const NANOSECOND: UnitDefinition = definition!(1, NANOSECONDS_PER_SECOND, 0, 0);
     /// Exact conversion definition for the `Microsecond` unit.
-    pub(crate) const MICROSECOND: UnitDefinition =
-        definition!(1, MICROSECONDS_PER_SECOND, 0, 0);
+    pub(crate) const MICROSECOND: UnitDefinition = definition!(1, MICROSECONDS_PER_SECOND, 0, 0);
     /// Exact conversion definition for the `Millisecond` unit.
-    pub(crate) const MILLISECOND: UnitDefinition =
-        definition!(1, MILLISECONDS_PER_SECOND, 0, 0);
+    pub(crate) const MILLISECOND: UnitDefinition = definition!(1, MILLISECONDS_PER_SECOND, 0, 0);
     /// Exact conversion definition for the `Second` unit.
     pub(crate) const SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Minute` unit.
-    pub(crate) const MINUTE: UnitDefinition =
-        definition!(SECONDS_PER_MINUTE, 1, 0, 0);
+    pub(crate) const MINUTE: UnitDefinition = definition!(SECONDS_PER_MINUTE, 1, 0, 0);
     /// Exact conversion definition for the `Hour` unit.
-    pub(crate) const HOUR: UnitDefinition =
-        definition!(SECONDS_PER_MINUTE * MINUTES_PER_HOUR, 1, 0, 0);
+    pub(crate) const HOUR: UnitDefinition = definition!(SECONDS_PER_MINUTE * MINUTES_PER_HOUR, 1, 0, 0);
     /// Exact conversion definition for the `Day` unit.
-    pub(crate) const DAY: UnitDefinition = definition!(
-        SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY,
-        1,
-        0,
-        0,
-    );
+    pub(crate) const DAY: UnitDefinition = definition!(SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY, 1, 0, 0,);
     /// Exact conversion definition for the `CommonYear365` unit.
     pub(crate) const COMMON_YEAR365: UnitDefinition = definition!(
-        SECONDS_PER_MINUTE
-            * MINUTES_PER_HOUR
-            * HOURS_PER_DAY
-            * DAYS_PER_COMMON_YEAR,
+        SECONDS_PER_MINUTE * MINUTES_PER_HOUR * HOURS_PER_DAY * DAYS_PER_COMMON_YEAR,
         1,
         0,
         0,
@@ -1186,19 +1024,15 @@ pub(crate) mod torque {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MillinewtonMeter` unit.
-    pub(crate) const MILLINEWTON_METER: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLINEWTON_METER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `NewtonMeter` unit.
     pub(crate) const NEWTON_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilonewtonMeter` unit.
-    pub(crate) const KILONEWTON_METER: UnitDefinition =
-        definition!(1000, 1, 0, 0);
+    pub(crate) const KILONEWTON_METER: UnitDefinition = definition!(1000, 1, 0, 0);
     /// Exact conversion definition for the `PoundForceFoot` unit.
-    pub(crate) const POUND_FORCE_FOOT: UnitDefinition =
-        definition!(3389544870828501, 2500000000000000, 0, 0);
+    pub(crate) const POUND_FORCE_FOOT: UnitDefinition = definition!(3389544870828501, 2500000000000000, 0, 0);
     /// Exact conversion definition for the `PoundForceInch` unit.
-    pub(crate) const POUND_FORCE_INCH: UnitDefinition =
-        definition!(1129848290276167, 10000000000000000, 0, 0);
+    pub(crate) const POUND_FORCE_INCH: UnitDefinition = definition!(1129848290276167, 10000000000000000, 0, 0);
 }
 
 /// Conversion constants for velocity units.
@@ -1206,25 +1040,19 @@ pub(crate) mod velocity {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `MicrometerPerSecond` unit.
-    pub(crate) const MICROMETER_PER_SECOND: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MICROMETER_PER_SECOND: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `MillimeterPerSecond` unit.
-    pub(crate) const MILLIMETER_PER_SECOND: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const MILLIMETER_PER_SECOND: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `CentimeterPerSecond` unit.
-    pub(crate) const CENTIMETER_PER_SECOND: UnitDefinition =
-        definition!(1, 100, 0, 0);
+    pub(crate) const CENTIMETER_PER_SECOND: UnitDefinition = definition!(1, 100, 0, 0);
     /// Exact conversion definition for the `MeterPerSecond` unit.
     pub(crate) const METER_PER_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `KilometerPerHour` unit.
-    pub(crate) const KILOMETER_PER_HOUR: UnitDefinition =
-        definition!(5, 18, 0, 0);
+    pub(crate) const KILOMETER_PER_HOUR: UnitDefinition = definition!(5, 18, 0, 0);
     /// Exact conversion definition for the `FootPerSecond` unit.
-    pub(crate) const FOOT_PER_SECOND: UnitDefinition =
-        definition!(381, 1250, 0, 0);
+    pub(crate) const FOOT_PER_SECOND: UnitDefinition = definition!(381, 1250, 0, 0);
     /// Exact conversion definition for the `MilePerHour` unit.
-    pub(crate) const MILE_PER_HOUR: UnitDefinition =
-        definition!(1397, 3125, 0, 0);
+    pub(crate) const MILE_PER_HOUR: UnitDefinition = definition!(1397, 3125, 0, 0);
     /// Exact conversion definition for the `Knot` unit.
     pub(crate) const KNOT: UnitDefinition = definition!(463, 900, 0, 0);
 }
@@ -1234,44 +1062,33 @@ pub(crate) mod volume {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `CubicMillimeter` unit.
-    pub(crate) const CUBIC_MILLIMETER: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const CUBIC_MILLIMETER: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `CubicCentimeter` unit.
-    pub(crate) const CUBIC_CENTIMETER: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const CUBIC_CENTIMETER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `CubicMeter` unit.
     pub(crate) const CUBIC_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Microliter` unit.
-    pub(crate) const MICROLITER: UnitDefinition =
-        definition!(1, 1000000000, 0, 0);
+    pub(crate) const MICROLITER: UnitDefinition = definition!(1, 1000000000, 0, 0);
     /// Exact conversion definition for the `Milliliter` unit.
     pub(crate) const MILLILITER: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `Liter` unit.
     pub(crate) const LITER: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `CubicInch` unit.
-    pub(crate) const CUBIC_INCH: UnitDefinition =
-        definition!(2048383, 125000000000, 0, 0);
+    pub(crate) const CUBIC_INCH: UnitDefinition = definition!(2048383, 125000000000, 0, 0);
     /// Exact conversion definition for the `CubicFoot` unit.
-    pub(crate) const CUBIC_FOOT: UnitDefinition =
-        definition!(55306341, 1953125000, 0, 0);
+    pub(crate) const CUBIC_FOOT: UnitDefinition = definition!(55306341, 1953125000, 0, 0);
     /// Exact conversion definition for the `CubicYard` unit.
-    pub(crate) const CUBIC_YARD: UnitDefinition =
-        definition!(1493271207, 1953125000, 0, 0);
+    pub(crate) const CUBIC_YARD: UnitDefinition = definition!(1493271207, 1953125000, 0, 0);
     /// Exact conversion definition for the `UsFluidOunce` unit.
-    pub(crate) const US_FLUID_OUNCE: UnitDefinition =
-        definition!(473176473, 16000000000000, 0, 0);
+    pub(crate) const US_FLUID_OUNCE: UnitDefinition = definition!(473176473, 16000000000000, 0, 0);
     /// Exact conversion definition for the `UsCustomaryCup` unit.
-    pub(crate) const US_CUSTOMARY_CUP: UnitDefinition =
-        definition!(473176473, 2000000000000, 0, 0);
+    pub(crate) const US_CUSTOMARY_CUP: UnitDefinition = definition!(473176473, 2000000000000, 0, 0);
     /// Exact conversion definition for the `UsLiquidPint` unit.
-    pub(crate) const US_LIQUID_PINT: UnitDefinition =
-        definition!(473176473, 1000000000000, 0, 0);
+    pub(crate) const US_LIQUID_PINT: UnitDefinition = definition!(473176473, 1000000000000, 0, 0);
     /// Exact conversion definition for the `UsLiquidQuart` unit.
-    pub(crate) const US_LIQUID_QUART: UnitDefinition =
-        definition!(473176473, 500000000000, 0, 0);
+    pub(crate) const US_LIQUID_QUART: UnitDefinition = definition!(473176473, 500000000000, 0, 0);
     /// Exact conversion definition for the `UsLiquidGallon` unit.
-    pub(crate) const US_LIQUID_GALLON: UnitDefinition =
-        definition!(473176473, 125000000000, 0, 0);
+    pub(crate) const US_LIQUID_GALLON: UnitDefinition = definition!(473176473, 125000000000, 0, 0);
 }
 
 /// Conversion constants for volume rate units.
@@ -1279,21 +1096,15 @@ pub(crate) mod volume_rate {
     use crate::measure::UnitDefinition;
 
     /// Exact conversion definition for the `CubicMeterPerSecond` unit.
-    pub(crate) const CUBIC_METER_PER_SECOND: UnitDefinition =
-        definition!(1, 1, 0, 0);
+    pub(crate) const CUBIC_METER_PER_SECOND: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `CubicMeterPerHour` unit.
-    pub(crate) const CUBIC_METER_PER_HOUR: UnitDefinition =
-        definition!(1, 3600, 0, 0);
+    pub(crate) const CUBIC_METER_PER_HOUR: UnitDefinition = definition!(1, 3600, 0, 0);
     /// Exact conversion definition for the `MilliliterPerSecond` unit.
-    pub(crate) const MILLILITER_PER_SECOND: UnitDefinition =
-        definition!(1, 1000000, 0, 0);
+    pub(crate) const MILLILITER_PER_SECOND: UnitDefinition = definition!(1, 1000000, 0, 0);
     /// Exact conversion definition for the `LiterPerSecond` unit.
-    pub(crate) const LITER_PER_SECOND: UnitDefinition =
-        definition!(1, 1000, 0, 0);
+    pub(crate) const LITER_PER_SECOND: UnitDefinition = definition!(1, 1000, 0, 0);
     /// Exact conversion definition for the `LiterPerMinute` unit.
-    pub(crate) const LITER_PER_MINUTE: UnitDefinition =
-        definition!(1, 60000, 0, 0);
+    pub(crate) const LITER_PER_MINUTE: UnitDefinition = definition!(1, 60000, 0, 0);
     /// Exact conversion definition for the `UsGallonPerMinute` unit.
-    pub(crate) const US_GALLON_PER_MINUTE: UnitDefinition =
-        definition!(157725491, 2500000000000, 0, 0);
+    pub(crate) const US_GALLON_PER_MINUTE: UnitDefinition = definition!(157725491, 2500000000000, 0, 0);
 }
