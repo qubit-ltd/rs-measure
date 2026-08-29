@@ -7,6 +7,6 @@ publish = false
 
 [dependencies]
 qubit-measure = { path = "../.." }
-rust_decimal = "=1.39.0"
+rust_decimal = "=1.42.0"
 
 [workspace]
