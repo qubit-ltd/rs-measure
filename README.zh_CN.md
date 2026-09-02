@@ -16,7 +16,7 @@
 
 ```toml
 [dependencies]
-qubit-measure = "0.7"
+qubit-measure = "0.8"
 rust_decimal = "1.39"
 ```
 
@@ -24,7 +24,7 @@ rust_decimal = "1.39"
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.7", features = ["uom"] }
+qubit-measure = { version = "0.8", features = ["uom"] }
 rust_decimal = "1.39"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
@@ -218,7 +218,7 @@ byte 和越界值会被拒绝，不进行舍入。反向的 `From<u64>` 会无�
 
 ```toml
 [dependencies]
-qubit-measure = "0.7"
+qubit-measure = "0.8"
 rust_decimal = "1.39"
 serde = "1.0"
 ```
@@ -273,7 +273,7 @@ SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一�
 
 ```toml
 [dependencies]
-qubit-measure = { version = "0.7", features = ["uom"] }
+qubit-measure = { version = "0.8", features = ["uom"] }
 rust_decimal = "1.39"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
