@@ -90,3 +90,6 @@ external/
 /coverage.json
 /coverage.txt
 /lcov.info
+
+# Locally generated fuzz corpus
+/fuzz/corpus/
