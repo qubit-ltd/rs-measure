@@ -1,0 +1,6 @@
+format = 1
+
+[[exceptions]]
+rule = "test-file-name"
+path = "tests/measure/support/definition_assertions.rs"
+reason = "Shared assertion helper includes its own regression test; the legacy style policy exempted support directories from test file naming."
