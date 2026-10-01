@@ -1,0 +1,5 @@
+# Pinned installation metadata for rs-infra-dependency.
+source = "https://github.com/qubit-ltd/rs-infra-dependency.git"
+revision = "0ce26d7803268461b3fab830058c8e0d7013e7bd"
+binary = "rs-infra-dependency"
+package = "qubit-infra-dependency"
