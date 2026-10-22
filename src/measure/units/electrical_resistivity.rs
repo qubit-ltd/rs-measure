@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electrical resistivity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricalResistivity;
+    ///
+    /// let resistivity: ElectricalResistivity = "Ω · m"
+    ///     .parse()
+    ///     .expect("the ohm-meter symbol is valid");
+    /// assert_eq!(resistivity.to_string(), "Ω · m");
+    /// ```
     pub enum ElectricalResistivity for "electrical_resistivity" {
         /// Milliohm meter (`mΩ · m`).
         MilliohmMeter => { symbol: "mΩ · m"; definition: crate::consts::electrical_resistivity::MILLIOHM_METER; aliases: ["mOhm m", "mΩ*m"]; }

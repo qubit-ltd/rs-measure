@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted luminous intensity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::{unit::LuminousIntensity, Unit};
+    ///
+    /// let unit = LuminousIntensity::parse_strict("cd")
+    ///     .expect("the canonical candela symbol is valid");
+    /// assert_eq!(unit, LuminousIntensity::Candela);
+    /// assert_eq!(unit.symbol(), "cd");
+    /// ```
     pub enum LuminousIntensity for "luminous_intensity" {
         /// Millicandela (`mcd`).
         Millicandela => { symbol: "mcd"; definition: crate::consts::luminous_intensity::MILLICANDELA; }

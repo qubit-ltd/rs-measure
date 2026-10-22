@@ -10,5 +10,24 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted catalytic activity concentration measurement.
+/// A catalytic activity concentration value whose decimal magnitude is
+/// interpreted in its stored unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::unit;
+/// use qubit_measure::measurement::CatalyticActivityConcentration;
+/// use rust_decimal::Decimal;
+///
+/// let concentration = CatalyticActivityConcentration::new(
+///     Decimal::ONE,
+///     unit::CatalyticActivityConcentration::KatalPerCubicMeter,
+/// );
+/// assert_eq!(concentration.value, Decimal::ONE);
+/// assert_eq!(
+///     concentration.unit,
+///     unit::CatalyticActivityConcentration::KatalPerCubicMeter,
+/// );
+/// ```
 pub type CatalyticActivityConcentration = Measurement<unit::CatalyticActivityConcentration>;

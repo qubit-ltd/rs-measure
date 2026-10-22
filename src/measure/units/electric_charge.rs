@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electric charge measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricCharge;
+    ///
+    /// let coulomb: ElectricCharge = "C".parse().expect("the coulomb symbol is valid");
+    /// assert_eq!(coulomb.to_string(), "C");
+    /// ```
     pub enum ElectricCharge for "electric_charge" {
         /// Microcoulomb (`µC`).
         Microcoulomb => { symbol: "µC"; definition: crate::consts::electric_charge::MICROCOULOMB; aliases: ["uC", "μC"]; }

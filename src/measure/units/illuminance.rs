@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted illuminance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Illuminance;
+    ///
+    /// let unit: Illuminance = "lx"
+    ///     .parse()
+    ///     .expect("lx is a valid illuminance unit");
+    /// assert_eq!(unit.to_string(), "lx");
+    /// ```
     pub enum Illuminance for "illuminance" {
         /// Lux (`lx`).
         Lux => { symbol: "lx"; definition: crate::consts::illuminance::LUX; }

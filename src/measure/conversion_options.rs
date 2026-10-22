@@ -17,6 +17,14 @@ use crate::measure::internal::ConversionMode;
 ///
 /// # Examples
 ///
+/// ```
+/// use qubit_measure::ConversionOptions;
+///
+/// let options = ConversionOptions::maximum_precision();
+/// assert_eq!(options.scale(), None);
+/// assert_eq!(options.rounding(), None);
+/// ```
+///
 /// Discarding configured options is diagnosed when unused results are denied:
 ///
 /// ```compile_fail

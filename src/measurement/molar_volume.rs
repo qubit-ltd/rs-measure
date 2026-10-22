@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted molar volume measurement.
+/// A persisted molar volume value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::MolarVolume;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let volume = MolarVolume::new(Decimal::ONE, unit::MolarVolume::CubicMeterPerMole);
+/// assert_eq!(volume.unit, unit::MolarVolume::CubicMeterPerMole);
+/// ```
 pub type MolarVolume = Measurement<unit::MolarVolume>;

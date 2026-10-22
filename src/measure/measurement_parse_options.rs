@@ -8,6 +8,20 @@
 //! Options controlling measurement text parsing.
 
 /// Options controlling resource limits for measurement text parsing.
+///
+/// # Examples
+///
+/// Apply a custom byte limit while parsing a typed measurement:
+///
+/// ```
+/// use qubit_measure::{Measurement, MeasurementParseOptions, unit};
+///
+/// let options = MeasurementParseOptions::new(32);
+/// let measurement =
+///     Measurement::<unit::Length>::parse_strict_with_options("1.25 m", &options)?;
+/// assert_eq!(measurement.to_string(), "1.25 m");
+/// # Ok::<(), qubit_measure::MeasurementError>(())
+/// ```
 #[must_use]
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct MeasurementParseOptions {

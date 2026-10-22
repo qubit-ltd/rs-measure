@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electric current measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricCurrent;
+    ///
+    /// let ampere: ElectricCurrent = "A".parse().expect("the ampere symbol is valid");
+    /// assert_eq!(ampere.to_string(), "A");
+    /// ```
     pub enum ElectricCurrent for "electric_current" {
         /// Picoampere (`pA`).
         Picoampere => { symbol: "pA"; definition: crate::consts::electric_current::PICOAMPERE; }

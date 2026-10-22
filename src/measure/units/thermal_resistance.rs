@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted thermal resistance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ThermalResistance;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = ThermalResistance::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "K/W"));
+    /// ```
     pub enum ThermalResistance for "thermal_resistance" {
         /// Kelvin per milliwatt (`K/mW`).
         KelvinPerMilliwatt => { symbol: "K/mW"; definition: crate::consts::thermal_resistance::KELVIN_PER_MILLIWATT; }

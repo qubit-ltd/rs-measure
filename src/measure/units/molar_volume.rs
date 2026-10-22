@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted molar volume measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MolarVolume;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MolarVolume::parse_strict("cm³/mol").expect("known molar volume unit");
+    /// assert_eq!(unit, MolarVolume::CubicCentimeterPerMole);
+    /// assert_eq!(unit.symbol(), "cm³/mol");
+    /// ```
     pub enum MolarVolume for "molar_volume" {
         /// Cubic centimeter per mole (`cm³/mol`).
         CubicCentimeterPerMole => { symbol: "cm³/mol"; definition: crate::consts::molar_volume::CUBIC_CENTIMETER_PER_MOLE; aliases: ["cm3/mol", "cm^3/mol"]; }

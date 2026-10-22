@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted specific heat capacity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::SpecificHeatCapacity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = SpecificHeatCapacity::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "J/(kg · K)"));
+    /// ```
     pub enum SpecificHeatCapacity for "specific_heat_capacity" {
         /// Joule per kilogram kelvin (`J/(kg · K)`).
         JoulePerKilogramKelvin => { symbol: "J/(kg · K)"; definition: crate::consts::specific_heat_capacity::JOULE_PER_KILOGRAM_KELVIN; aliases: ["J/(kg*K)"]; }

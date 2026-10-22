@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted solid angle measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::{unit::SolidAngle, Unit};
+    ///
+    /// let unit = "sr".parse::<SolidAngle>().unwrap();
+    /// assert_eq!(unit, SolidAngle::Steradian);
+    /// assert_eq!(unit.symbol(), "sr");
+    /// ```
     pub enum SolidAngle for "solid_angle" {
         /// Steradian (`sr`).
         Steradian => { symbol: "sr"; definition: crate::consts::solid_angle::STERADIAN; }

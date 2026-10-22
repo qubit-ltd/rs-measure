@@ -7,16 +7,23 @@
 // =============================================================================
 //! Uom-enabled downstream macro fixture without a local `uom` feature.
 
-use qubit_measure::{
-    UomUnit,
-    define_unit_family,
-    impl_uom_unit,
-};
+use qubit_measure::UomUnit;
+use qubit_measure::define_unit_family;
+use qubit_measure::impl_uom_unit;
 use uom::si::f64::Length as UomLength;
 use uom::si::length::meter;
 
 define_unit_family! {
     /// External length family used to verify dependency-owned features.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::Unit;
+    /// use qubit_measure_downstream_uom_fixture::DownstreamLength;
+    ///
+    /// assert_eq!(DownstreamLength::Meter.symbol(), "m");
+    /// ```
     pub enum DownstreamLength for "downstream_length" {
         /// Meter fixture unit.
         Meter => {

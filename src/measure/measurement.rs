@@ -50,6 +50,16 @@ use crate::measure::internal::parse_measurement_text;
 ///
 /// # Examples
 ///
+/// Construct a typed measurement and format its persisted value:
+///
+/// ```
+/// use qubit_measure::{Measurement, unit};
+/// use rust_decimal::Decimal;
+///
+/// let distance = Measurement::new(Decimal::new(125, 2), unit::Length::Meter);
+/// assert_eq!(distance.to_string(), "1.25 m");
+/// ```
+///
 /// Discarding a measurement is diagnosed when unused results are denied:
 ///
 /// ```compile_fail

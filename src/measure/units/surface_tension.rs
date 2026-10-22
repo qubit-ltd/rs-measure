@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted surface tension measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::SurfaceTension;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = SurfaceTension::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "N/m"));
+    /// ```
     pub enum SurfaceTension for "surface_tension" {
         /// Millinewton per meter (`mN/m`).
         MillinewtonPerMeter => { symbol: "mN/m"; definition: crate::consts::surface_tension::MILLINEWTON_PER_METER; }

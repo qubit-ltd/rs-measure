@@ -10,5 +10,20 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted force measurement.
+/// A persisted force measurement with an exact decimal value.
+///
+/// The unit identifies the force scale, such as newtons, and is preserved
+/// with the value when the measurement is serialized.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::Force;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let force = Force::new(Decimal::ONE, unit::Force::Newton);
+/// assert_eq!(force.value, Decimal::ONE);
+/// assert_eq!(force.unit, unit::Force::Newton);
+/// ```
 pub type Force = Measurement<unit::Force>;

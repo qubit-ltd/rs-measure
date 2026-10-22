@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted velocity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Velocity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = Velocity::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "m/s"));
+    /// ```
     pub enum Velocity for "velocity" {
         /// Micrometer per second (`µm/s`).
         MicrometerPerSecond => { symbol: "µm/s"; definition: crate::consts::velocity::MICROMETER_PER_SECOND; aliases: ["um/s", "μm/s"]; }

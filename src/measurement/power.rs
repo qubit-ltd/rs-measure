@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted power measurement.
+/// A persisted power value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::Power;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let power = Power::new(Decimal::ONE, unit::Power::Watt);
+/// assert_eq!(power.unit, unit::Power::Watt);
+/// ```
 pub type Power = Measurement<unit::Power>;

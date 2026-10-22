@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted catalytic activity concentration measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::CatalyticActivityConcentration;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(CatalyticActivityConcentration::KatalPerCubicMeter.symbol(), "kat/m³");
+    /// ```
     pub enum CatalyticActivityConcentration for "catalytic_activity_concentration" {
         /// Katal per cubic meter (`kat/m³`).
         KatalPerCubicMeter => { symbol: "kat/m³"; definition: crate::consts::catalytic_activity_concentration::KATAL_PER_CUBIC_METER; aliases: ["kat/m3", "kat/m^3"]; }

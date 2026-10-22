@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electrical resistance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricalResistance;
+    ///
+    /// let resistance: ElectricalResistance = "Ω"
+    ///     .parse()
+    ///     .expect("the ohm symbol is valid");
+    /// assert_eq!(resistance.to_string(), "Ω");
+    /// ```
     pub enum ElectricalResistance for "electrical_resistance" {
         /// Microohm (`µΩ`).
         Microohm => { symbol: "µΩ"; definition: crate::consts::electrical_resistance::MICROOHM; aliases: ["uΩ", "μΩ", "uOhm"]; }

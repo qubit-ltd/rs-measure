@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electric current density measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricCurrentDensity;
+    ///
+    /// let unit: ElectricCurrentDensity = "A/m²"
+    ///     .parse()
+    ///     .expect("the ampere-per-square-meter symbol is valid");
+    /// assert_eq!(unit.to_string(), "A/m²");
+    /// ```
     pub enum ElectricCurrentDensity for "electric_current_density" {
         /// Ampere per square meter (`A/m²`).
         AmperePerSquareMeter => { symbol: "A/m²"; definition: crate::consts::electric_current_density::AMPERE_PER_SQUARE_METER; aliases: ["A/m2", "A/m^2"]; }

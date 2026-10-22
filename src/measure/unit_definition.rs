@@ -20,6 +20,18 @@ use crate::measure::decimal_conversion::convert_decimal;
 ///
 /// # Examples
 ///
+/// ```
+/// use qubit_measure::{ConversionFactor, UnitDefinition};
+/// use rust_decimal::Decimal;
+///
+/// let fahrenheit = UnitDefinition::new(
+///     ConversionFactor::from_const_integers(5, 9),
+///     Decimal::from(32),
+/// );
+/// assert_eq!(fahrenheit.factor(), ConversionFactor::from_const_integers(5, 9));
+/// assert_eq!(fahrenheit.offset(), Decimal::from(32));
+/// ```
+///
 /// Discarding a definition is diagnosed when unused results are denied:
 ///
 /// ```compile_fail

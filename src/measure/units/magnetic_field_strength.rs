@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted magnetic field strength measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MagneticFieldStrength;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MagneticFieldStrength::AmperePerMeter;
+    /// assert_eq!(unit.symbol(), "A/m");
+    /// ```
     pub enum MagneticFieldStrength for "magnetic_field_strength" {
         /// Ampere per meter (`A/m`).
         AmperePerMeter => { symbol: "A/m"; definition: crate::consts::magnetic_field_strength::AMPERE_PER_METER; }

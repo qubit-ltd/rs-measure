@@ -10,5 +10,19 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted thermal conductivity measurement.
+/// A persisted thermal conductivity value with an exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::ThermalConductivity;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let conductivity = ThermalConductivity::new(
+///     Decimal::ONE,
+///     unit::ThermalConductivity::WattPerMeterKelvin,
+/// );
+/// assert_eq!(conductivity.unit, unit::ThermalConductivity::WattPerMeterKelvin);
+/// ```
 pub type ThermalConductivity = Measurement<unit::ThermalConductivity>;

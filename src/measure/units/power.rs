@@ -17,7 +17,18 @@ use crate::define_unit_family;
 use crate::impl_uom_unit;
 
 define_unit_family! {
-    /// Units for persisted power measurements.
+    /// Units used to represent power in persisted measurements.
+    ///
+    /// Each variant identifies a power unit by its canonical symbol and exact
+    /// conversion definition.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::{unit::Power, Unit};
+    ///
+    /// assert_eq!(Power::Watt.symbol(), "W");
+    /// ```
     pub enum Power for "power" {
         /// Nanowatt (`nW`).
         Nanowatt => { symbol: "nW"; definition: crate::consts::power::NANOWATT; }

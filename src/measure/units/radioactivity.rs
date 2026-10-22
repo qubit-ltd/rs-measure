@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted radioactivity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Radioactivity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = Radioactivity::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "Bq"));
+    /// ```
     pub enum Radioactivity for "radioactivity" {
         /// Becquerel (`Bq`).
         Becquerel => { symbol: "Bq"; definition: crate::consts::radioactivity::BECQUEREL; }

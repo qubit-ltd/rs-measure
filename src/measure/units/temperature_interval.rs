@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted temperature interval measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::TemperatureInterval;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = TemperatureInterval::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "K"));
+    /// ```
     pub enum TemperatureInterval for "temperature_interval" {
         /// Kelvin (`K`).
         Kelvin => { symbol: "K"; definition: crate::consts::temperature_interval::KELVIN; }

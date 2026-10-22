@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted amount of substance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::AmountOfSubstance;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(AmountOfSubstance::Mole.symbol(), "mol");
+    /// ```
     pub enum AmountOfSubstance for "amount_of_substance" {
         /// Micromole (`µmol`).
         Micromole => { symbol: "µmol"; definition: crate::consts::amount_of_substance::MICROMOLE; aliases: ["umol", "μmol"]; }

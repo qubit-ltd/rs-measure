@@ -18,6 +18,14 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted molar concentration measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MolarConcentration;
+    ///
+    /// assert_eq!(MolarConcentration::MolePerLiter.to_string(), "mol/L");
+    /// ```
     pub enum MolarConcentration for "molar_concentration" {
         /// Nanomole per liter (`nmol/L`).
         NanomolePerLiter => { symbol: "nmol/L"; definition: crate::consts::molar_concentration::NANOMOLE_PER_LITER; }

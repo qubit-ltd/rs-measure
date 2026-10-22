@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted molar mass measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Unit;
+    /// use qubit_measure::unit::MolarMass;
+    ///
+    /// let unit = MolarMass::parse_strict("g/mol").expect("known molar mass unit");
+    /// assert_eq!(unit, MolarMass::GramPerMole);
+    /// assert_eq!(unit.symbol(), "g/mol");
+    /// ```
     pub enum MolarMass for "molar_mass" {
         /// Milligram per mole (`mg/mol`).
         MilligramPerMole => { symbol: "mg/mol"; definition: crate::consts::molar_mass::MILLIGRAM_PER_MOLE; }

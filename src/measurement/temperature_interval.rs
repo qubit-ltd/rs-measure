@@ -10,5 +10,17 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted temperature interval measurement.
+/// A persisted temperature interval value that keeps its exact decimal and
+/// typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::TemperatureInterval;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let interval = TemperatureInterval::new(Decimal::ONE, unit::TemperatureInterval::Kelvin);
+/// assert_eq!(interval.unit, unit::TemperatureInterval::Kelvin);
+/// ```
 pub type TemperatureInterval = Measurement<unit::TemperatureInterval>;

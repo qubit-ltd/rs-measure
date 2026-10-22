@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted thermal conductivity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ThermalConductivity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = ThermalConductivity::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "W/(m · K)"));
+    /// ```
     pub enum ThermalConductivity for "thermal_conductivity" {
         /// Milliwatt per meter kelvin (`mW/(m · K)`).
         MilliwattPerMeterKelvin => { symbol: "mW/(m · K)"; definition: crate::consts::thermal_conductivity::MILLIWATT_PER_METER_KELVIN; aliases: ["mW/(m*K)"]; }

@@ -11,4 +11,24 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted magnetic field strength measurement.
+///
+/// The unit records the scale used for the value, such as amperes per meter.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::MagneticFieldStrength;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let field_strength = MagneticFieldStrength::new(
+///     Decimal::ONE,
+///     unit::MagneticFieldStrength::AmperePerMeter,
+/// );
+/// assert_eq!(field_strength.value, Decimal::ONE);
+/// assert_eq!(
+///     field_strength.unit,
+///     unit::MagneticFieldStrength::AmperePerMeter,
+/// );
+/// ```
 pub type MagneticFieldStrength = Measurement<unit::MagneticFieldStrength>;

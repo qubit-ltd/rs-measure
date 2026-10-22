@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electric field measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricField;
+    ///
+    /// let volt_per_meter: ElectricField = "V/m"
+    ///     .parse()
+    ///     .expect("the volt-per-meter symbol is valid");
+    /// assert_eq!(volt_per_meter.to_string(), "V/m");
+    /// ```
     pub enum ElectricField for "electric_field" {
         /// Volt per meter (`V/m`).
         VoltPerMeter => { symbol: "V/m"; definition: crate::consts::electric_field::VOLT_PER_METER; }

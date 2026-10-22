@@ -10,5 +10,20 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted information measurement.
+/// A persisted measurement of digital information, such as bits or bytes.
+///
+/// The alias retains the exact decimal value together with its typed
+/// information unit, so equivalent values expressed in different units remain
+/// distinguishable in storage.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::{measurement::Information, unit};
+/// use rust_decimal::Decimal;
+///
+/// let size = Information::new(Decimal::from(8), unit::Information::Bit);
+/// assert_eq!(size.value, Decimal::from(8));
+/// assert_eq!(size.unit, unit::Information::Bit);
+/// ```
 pub type Information = Measurement<unit::Information>;

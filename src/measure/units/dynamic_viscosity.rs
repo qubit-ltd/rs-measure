@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted dynamic viscosity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::DynamicViscosity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(DynamicViscosity::PascalSecond.symbol(), "Pa · s");
+    /// ```
     pub enum DynamicViscosity for "dynamic_viscosity" {
         /// Micropascal second (`µPa · s`).
         MicropascalSecond => { symbol: "µPa · s"; definition: crate::consts::dynamic_viscosity::MICROPASCAL_SECOND; aliases: ["uPa · s", "μPa · s", "uPa*s"]; }

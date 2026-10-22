@@ -28,6 +28,7 @@ pub(super) const MAX_MANTISSA: u128 = (1_u128 << 96) - 1;
 /// # Panics
 ///
 /// Panics when the scale or expanded mantissa is outside Decimal's range.
+#[must_use]
 pub(super) const fn finalize_decimal(mantissa: u128, exponent: i32, trailing_zeroes: u32, negative: bool) -> Decimal {
     let preferred_scale = if exponent < 0 { exponent.unsigned_abs() } else { 0 };
     let exponent = match exponent.checked_add_unsigned(trailing_zeroes) {
@@ -117,6 +118,7 @@ pub(crate) const fn finalize_exact_decimal(
 /// # Returns
 ///
 /// The exact Decimal represented by the supplied parts.
+#[must_use]
 #[inline(always)]
 pub(crate) const fn decimal_from_parts(mantissa: u128, scale: u32, negative: bool) -> Decimal {
     Decimal::from_parts(

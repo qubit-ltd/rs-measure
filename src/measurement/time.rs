@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted time measurement.
+/// A persisted time value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::Time;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let elapsed = Time::new(Decimal::ONE, unit::Time::Second);
+/// assert_eq!(elapsed.unit, unit::Time::Second);
+/// ```
 pub type Time = Measurement<unit::Time>;

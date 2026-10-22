@@ -18,6 +18,14 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted volume measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::{Unit, unit::Volume};
+    ///
+    /// assert_eq!(Volume::Liter.symbol(), "L");
+    /// ```
     pub enum Volume for "volume" {
         /// Cubic millimeter (`mm³`).
         CubicMillimeter => { symbol: "mm³"; definition: crate::consts::volume::CUBIC_MILLIMETER; aliases: ["mm3", "mm^3"]; }

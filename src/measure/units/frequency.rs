@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted frequency measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Frequency;
+    ///
+    /// let kilohertz: Frequency = "kHz".parse().expect("kHz is a valid frequency unit");
+    /// assert_eq!(kilohertz.to_string(), "kHz");
+    /// ```
     pub enum Frequency for "frequency" {
         /// Hertz (`Hz`).
         Hertz => { symbol: "Hz"; definition: crate::consts::frequency::HERTZ; }

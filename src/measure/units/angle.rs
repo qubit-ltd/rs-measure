@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted angle measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Angle;
+    ///
+    /// let degree: Angle = "°".parse().expect("the degree symbol is valid");
+    /// assert_eq!(degree.to_string(), "°");
+    /// ```
     pub enum Angle for "angle" {
         /// Radian (`rad`).
         Radian => { symbol: "rad"; definition: crate::consts::angle::RADIAN; }

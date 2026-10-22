@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted volume rate measurement.
+/// A persisted volume rate value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::VolumeRate;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let flow = VolumeRate::new(Decimal::ONE, unit::VolumeRate::LiterPerSecond);
+/// assert_eq!(flow.unit, unit::VolumeRate::LiterPerSecond);
+/// ```
 pub type VolumeRate = Measurement<unit::VolumeRate>;

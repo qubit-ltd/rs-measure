@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted information measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Information;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(Information::Byte.symbol(), "B");
+    /// ```
     pub enum Information for "information" {
         /// Bit (`b`).
         Bit => { symbol: "b"; definition: crate::consts::information::BIT; }

@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted heat capacity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::HeatCapacity;
+    ///
+    /// let kilojoule: HeatCapacity = "kJ/K"
+    ///     .parse()
+    ///     .expect("kJ/K is a valid heat capacity unit");
+    /// assert_eq!(kilojoule.to_string(), "kJ/K");
+    /// ```
     pub enum HeatCapacity for "heat_capacity" {
         /// Joule per kelvin (`J/K`).
         JoulePerKelvin => { symbol: "J/K"; definition: crate::consts::heat_capacity::JOULE_PER_KELVIN; }

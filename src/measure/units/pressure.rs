@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted pressure measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Pressure;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = Pressure::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "Pa"));
+    /// ```
     pub enum Pressure for "pressure" {
         /// Nanopascal (`nPa`).
         Nanopascal => { symbol: "nPa"; definition: crate::consts::pressure::NANOPASCAL; }

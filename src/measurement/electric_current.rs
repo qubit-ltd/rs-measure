@@ -11,4 +11,14 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted electric current measurement.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::{measurement::ElectricCurrent, unit};
+/// use rust_decimal::Decimal;
+///
+/// let current = ElectricCurrent::new(Decimal::ONE, unit::ElectricCurrent::Ampere);
+/// assert_eq!(current.unit, unit::ElectricCurrent::Ampere);
+/// ```
 pub type ElectricCurrent = Measurement<unit::ElectricCurrent>;

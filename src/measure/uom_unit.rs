@@ -21,6 +21,21 @@ use crate::measure::Unit;
 /// `qubit-measure` semantics, although precision may be lost. Reading the
 /// resulting quantity through a non-base `uom` unit still uses that unit's own
 /// coefficient, which may intentionally differ from this crate's definition.
+///
+/// # Examples
+///
+/// ```
+/// # #[cfg(feature = "uom")]
+/// # {
+/// use qubit_measure::{unit::Length, UomUnit};
+/// use rust_decimal::Decimal;
+///
+/// let quantity = Length::Meter
+///     .try_to_uom_approx(Decimal::ONE)
+///     .expect("the built-in meter definition is valid");
+/// assert_eq!(quantity.get::<uom::si::length::meter>(), 1.0);
+/// # }
+/// ```
 pub trait UomUnit: Unit {
     /// The corresponding strongly typed `uom/f64` quantity.
     type Quantity: Copy;

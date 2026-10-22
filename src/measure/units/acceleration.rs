@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted acceleration measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Acceleration;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(Acceleration::MeterPerSecondSquared.symbol(), "m/s²");
+    /// ```
     pub enum Acceleration for "acceleration" {
         /// Millimeter per second squared (`mm/s²`).
         MillimeterPerSecondSquared => { symbol: "mm/s²"; definition: crate::consts::acceleration::MILLIMETER_PER_SECOND_SQUARED; aliases: ["mm/s2", "mm/s^2"]; }

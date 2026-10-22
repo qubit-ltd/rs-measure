@@ -10,5 +10,20 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted magnetic flux density measurement.
+/// A magnetic flux density value paired with the unit used to express it.
+///
+/// The exact decimal value and its unit are retained when the measurement is
+/// serialized, so values in teslas and gauss remain distinguishable.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::MagneticFluxDensity;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let density = MagneticFluxDensity::new(Decimal::ONE, unit::MagneticFluxDensity::Tesla);
+/// assert_eq!(density.value, Decimal::ONE);
+/// assert_eq!(density.unit, unit::MagneticFluxDensity::Tesla);
+/// ```
 pub type MagneticFluxDensity = Measurement<unit::MagneticFluxDensity>;

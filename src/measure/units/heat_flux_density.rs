@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted heat flux density measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::HeatFluxDensity;
+    ///
+    /// let unit: HeatFluxDensity = "W/m²"
+    ///     .parse()
+    ///     .expect("W/m² is a valid heat flux density unit");
+    /// assert_eq!(unit.to_string(), "W/m²");
+    /// ```
     pub enum HeatFluxDensity for "heat_flux_density" {
         /// Milliwatt per square meter (`mW/m²`).
         MilliwattPerSquareMeter => { symbol: "mW/m²"; definition: crate::consts::heat_flux_density::MILLIWATT_PER_SQUARE_METER; aliases: ["mW/m2", "mW/m^2"]; }

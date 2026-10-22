@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted mass rate measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MassRate;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MassRate::KilogramPerSecond;
+    /// assert_eq!(unit.symbol(), "kg/s");
+    /// ```
     pub enum MassRate for "mass_rate" {
         /// Milligram per second (`mg/s`).
         MilligramPerSecond => { symbol: "mg/s"; definition: crate::consts::mass_rate::MILLIGRAM_PER_SECOND; }

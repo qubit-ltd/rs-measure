@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted volume rate measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::VolumeRate;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = VolumeRate::LiterPerSecond;
+    /// assert_eq!(unit.symbol(), "L/s");
+    /// ```
     pub enum VolumeRate for "volume_rate" {
         /// Cubic meter per second (`m³/s`).
         CubicMeterPerSecond => { symbol: "m³/s"; definition: crate::consts::volume_rate::CUBIC_METER_PER_SECOND; aliases: ["m3/s", "m^3/s"]; }

@@ -7,18 +7,23 @@
 // =============================================================================
 //! Uom-enabled member of the Cargo feature-unification fixture.
 
-use qubit_measure::{
-    UomUnit,
-    define_unit_family,
-    impl_uom_unit,
-};
-use uom::si::{
-    f64::Length as UomLength,
-    length::meter,
-};
+use qubit_measure::UomUnit;
+use qubit_measure::define_unit_family;
+use qubit_measure::impl_uom_unit;
+use uom::si::f64::Length as UomLength;
+use uom::si::length::meter;
 
 define_unit_family! {
     /// External length family with an explicit uom bridge.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::Unit;
+    /// use qubit_measure_feature_unification_uom::FixtureLength;
+    ///
+    /// assert_eq!(FixtureLength::Meter.symbol(), "m");
+    /// ```
     pub enum FixtureLength for "fixture_length" {
         /// Meter fixture unit.
         Meter => {

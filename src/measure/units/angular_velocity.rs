@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted angular velocity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::AngularVelocity;
+    ///
+    /// let rpm: AngularVelocity = "rpm".parse().expect("rpm is a valid symbol");
+    /// assert_eq!(rpm.to_string(), "rpm");
+    /// ```
     pub enum AngularVelocity for "angular_velocity" {
         /// Radian per second (`rad/s`).
         RadianPerSecond => { symbol: "rad/s"; definition: crate::consts::angular_velocity::RADIAN_PER_SECOND; }

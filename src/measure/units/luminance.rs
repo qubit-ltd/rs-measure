@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted luminance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Luminance;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = Luminance::CandelaPerSquareMeter;
+    /// assert_eq!(unit.symbol(), "cd/m²");
+    /// ```
     pub enum Luminance for "luminance" {
         /// Candela per square meter (`cd/m²`).
         CandelaPerSquareMeter => { symbol: "cd/m²"; definition: crate::consts::luminance::CANDELA_PER_SQUARE_METER; aliases: ["cd/m2", "cd/m^2"]; }

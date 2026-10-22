@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted mass concentration measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MassConcentration;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MassConcentration::MilligramPerLiter;
+    /// assert_eq!(unit.symbol(), "mg/L");
+    /// ```
     pub enum MassConcentration for "mass_concentration" {
         /// Microgram per liter (`µg/L`).
         MicrogramPerLiter => { symbol: "µg/L"; definition: crate::consts::mass_concentration::MICROGRAM_PER_LITER; aliases: ["ug/L", "μg/L"]; }

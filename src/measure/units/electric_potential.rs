@@ -20,6 +20,17 @@ define_unit_family! {
     /// Units for persisted electric potential measurements.
     ///
     /// Electric potential is the SI quantity commonly called voltage.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricPotential;
+    ///
+    /// let volt: ElectricPotential = "V"
+    ///     .parse()
+    ///     .expect("the volt symbol is valid");
+    /// assert_eq!(volt.to_string(), "V");
+    /// ```
     pub enum ElectricPotential for "electric_potential" {
         /// Nanovolt (`nV`).
         Nanovolt => { symbol: "nV"; definition: crate::consts::electric_potential::NANOVOLT; }

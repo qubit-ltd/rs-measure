@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted mass density measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MassDensity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MassDensity::KilogramPerCubicMeter;
+    /// assert_eq!(unit.symbol(), "kg/m³");
+    /// ```
     pub enum MassDensity for "mass_density" {
         /// Kilogram per cubic meter (`kg/m³`).
         KilogramPerCubicMeter => { symbol: "kg/m³"; definition: crate::consts::mass_density::KILOGRAM_PER_CUBIC_METER; aliases: ["kg/m3", "kg/m^3"]; }

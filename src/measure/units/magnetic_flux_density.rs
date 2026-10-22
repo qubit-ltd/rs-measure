@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted magnetic flux density measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MagneticFluxDensity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MagneticFluxDensity::Tesla;
+    /// assert_eq!(unit.symbol(), "T");
+    /// ```
     pub enum MagneticFluxDensity for "magnetic_flux_density" {
         /// Nanotesla (`nT`).
         Nanotesla => { symbol: "nT"; definition: crate::consts::magnetic_flux_density::NANOTESLA; }

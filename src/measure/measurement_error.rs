@@ -10,6 +10,16 @@
 use thiserror::Error;
 
 /// Errors returned by parsing, converting, or adapting measurements.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::MeasurementError;
+///
+/// let error = MeasurementError::InvalidMeasurementSyntax;
+/// assert_eq!(error.to_string(), "invalid measurement syntax");
+/// ```
+#[must_use]
 #[non_exhaustive]
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
 pub enum MeasurementError {

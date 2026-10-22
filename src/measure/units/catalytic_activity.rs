@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted catalytic activity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::CatalyticActivity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(CatalyticActivity::Katal.symbol(), "kat");
+    /// ```
     pub enum CatalyticActivity for "catalytic_activity" {
         /// Microkatal (`µkat`).
         Microkatal => { symbol: "µkat"; definition: crate::consts::catalytic_activity::MICROKATAL; aliases: ["ukat", "μkat"]; }

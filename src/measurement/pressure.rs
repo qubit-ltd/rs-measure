@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted pressure measurement.
+/// A persisted pressure value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::Pressure;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let pressure = Pressure::new(Decimal::ONE, unit::Pressure::Pascal);
+/// assert_eq!(pressure.unit, unit::Pressure::Pascal);
+/// ```
 pub type Pressure = Measurement<unit::Pressure>;

@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted kinematic viscosity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::KinematicViscosity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(KinematicViscosity::Stokes.symbol(), "St");
+    /// ```
     pub enum KinematicViscosity for "kinematic_viscosity" {
         /// Square millimeter per second (`mm²/s`).
         SquareMillimeterPerSecond => { symbol: "mm²/s"; definition: crate::consts::kinematic_viscosity::SQUARE_MILLIMETER_PER_SECOND; aliases: ["mm2/s", "mm^2/s"]; }

@@ -18,6 +18,14 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted time measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Time;
+    ///
+    /// assert_eq!(Time::Second.to_string(), "s");
+    /// ```
     pub enum Time for "time" {
         /// Nanosecond (`ns`).
         Nanosecond => { symbol: "ns"; definition: crate::consts::time::NANOSECOND; }

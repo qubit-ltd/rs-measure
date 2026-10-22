@@ -10,5 +10,15 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted volume measurement.
+/// A persisted measurement whose value is expressed in a volume unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::{measurement::Volume, unit};
+/// use rust_decimal::Decimal;
+///
+/// let volume = Volume::new(Decimal::ONE, unit::Volume::Liter);
+/// assert_eq!(volume.unit, unit::Volume::Liter);
+/// ```
 pub type Volume = Measurement<unit::Volume>;

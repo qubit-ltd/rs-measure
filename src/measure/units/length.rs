@@ -18,6 +18,14 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted length measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Length;
+    ///
+    /// assert_eq!(Length::Meter.to_string(), "m");
+    /// ```
     pub enum Length for "length" {
         /// Nanometer (`nm`).
         Nanometer => { symbol: "nm"; definition: crate::consts::length::NANOMETER; }

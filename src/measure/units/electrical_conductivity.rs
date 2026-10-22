@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electrical conductivity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricalConductivity;
+    ///
+    /// let conductivity: ElectricalConductivity = "S/m"
+    ///     .parse()
+    ///     .expect("the siemens-per-meter symbol is valid");
+    /// assert_eq!(conductivity.to_string(), "S/m");
+    /// ```
     pub enum ElectricalConductivity for "electrical_conductivity" {
         /// Siemens per meter (`S/m`).
         SiemensPerMeter => { symbol: "S/m"; definition: crate::consts::electrical_conductivity::SIEMENS_PER_METER; }

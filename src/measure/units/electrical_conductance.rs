@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted electrical conductance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::ElectricalConductance;
+    ///
+    /// let conductance: ElectricalConductance = "S"
+    ///     .parse()
+    ///     .expect("the siemens symbol is valid");
+    /// assert_eq!(conductance.to_string(), "S");
+    /// ```
     pub enum ElectricalConductance for "electrical_conductance" {
         /// Microsiemens (`µS`).
         Microsiemens => { symbol: "µS"; definition: crate::consts::electrical_conductance::MICROSIEMENS; aliases: ["uS", "μS"]; }

@@ -7,18 +7,14 @@
 // =============================================================================
 //! Unit family backed by an external const definition path.
 
-use qubit_measure::{
-    ConversionFactor,
-    UnitDefinition,
-    define_unit_family,
-};
+use qubit_measure::ConversionFactor;
+use qubit_measure::UnitDefinition;
+use qubit_measure::define_unit_family;
 use rust_decimal::Decimal;
 
 /// Non-identity definition constructed entirely in an external const context.
-const RATIONAL_DEFINITION: UnitDefinition = UnitDefinition::new(
-    ConversionFactor::from_const_integers(4, 6),
-    Decimal::ZERO,
-);
+const RATIONAL_DEFINITION: UnitDefinition =
+    UnitDefinition::new(ConversionFactor::from_const_integers(4, 6), Decimal::ZERO);
 
 define_unit_family! {
     /// Exact-definition family declared entirely by reusable paths.

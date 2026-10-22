@@ -24,6 +24,10 @@ use crate::measure::Unit;
 ///   parsed canonically.
 /// * `options` - Resource limits applied before parsing.
 ///
+/// # Type Parameters
+///
+/// * `U` - The unit type whose canonical symbols and aliases are recognized.
+///
 /// # Returns
 ///
 /// The exact Decimal value and typed unit.
@@ -212,6 +216,10 @@ fn resolve_compact_candidates(
 /// * `value_text` - Exact Decimal candidate.
 /// * `unit_text` - Canonical symbol or lenient alias candidate.
 /// * `strict` - Whether aliases must be rejected.
+///
+/// # Type Parameters
+///
+/// * `U` - The unit type parsed from `unit_text`.
 ///
 /// # Returns
 ///

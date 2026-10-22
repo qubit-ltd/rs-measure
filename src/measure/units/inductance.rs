@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted inductance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Inductance;
+    ///
+    /// let henry: Inductance = "H".parse().expect("the henry symbol is valid");
+    /// assert_eq!(henry.to_string(), "H");
+    /// ```
     pub enum Inductance for "inductance" {
         /// Nanohenry (`nH`).
         Nanohenry => { symbol: "nH"; definition: crate::consts::inductance::NANOHENRY; }

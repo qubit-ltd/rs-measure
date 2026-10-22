@@ -18,6 +18,15 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted force measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Force;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// assert_eq!(Force::Newton.symbol(), "N");
+    /// ```
     pub enum Force for "force" {
         /// Millinewton (`mN`).
         Millinewton => { symbol: "mN"; definition: crate::consts::force::MILLINEWTON; }

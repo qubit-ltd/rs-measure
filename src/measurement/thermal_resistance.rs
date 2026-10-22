@@ -10,5 +10,19 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted thermal resistance measurement.
+/// A persisted thermal resistance value with an exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::ThermalResistance;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let resistance = ThermalResistance::new(
+///     Decimal::ONE,
+///     unit::ThermalResistance::KelvinPerWatt,
+/// );
+/// assert_eq!(resistance.unit, unit::ThermalResistance::KelvinPerWatt);
+/// ```
 pub type ThermalResistance = Measurement<unit::ThermalResistance>;

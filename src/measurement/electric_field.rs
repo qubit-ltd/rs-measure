@@ -11,4 +11,14 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted electric field measurement.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::{measurement::ElectricField, unit};
+/// use rust_decimal::Decimal;
+///
+/// let field = ElectricField::new(Decimal::ONE, unit::ElectricField::VoltPerMeter);
+/// assert_eq!(field.unit, unit::ElectricField::VoltPerMeter);
+/// ```
 pub type ElectricField = Measurement<unit::ElectricField>;

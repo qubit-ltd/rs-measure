@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted specific radioactivity measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::SpecificRadioactivity;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let units = SpecificRadioactivity::all();
+    /// assert!(units.iter().any(|unit| unit.symbol() == "Bq/kg"));
+    /// ```
     pub enum SpecificRadioactivity for "specific_radioactivity" {
         /// Becquerel per kilogram (`Bq/kg`).
         BecquerelPerKilogram => { symbol: "Bq/kg"; definition: crate::consts::specific_radioactivity::BECQUEREL_PER_KILOGRAM; }

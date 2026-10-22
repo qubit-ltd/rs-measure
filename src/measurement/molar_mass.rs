@@ -10,5 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted molar mass measurement.
+/// A persisted molar mass value that keeps its exact decimal and typed unit.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::MolarMass;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let mass = MolarMass::new(Decimal::ONE, unit::MolarMass::GramPerMole);
+/// assert_eq!(mass.unit, unit::MolarMass::GramPerMole);
+/// ```
 pub type MolarMass = Measurement<unit::MolarMass>;

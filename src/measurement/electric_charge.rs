@@ -11,4 +11,14 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted electric charge measurement.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::{measurement::ElectricCharge, unit};
+/// use rust_decimal::Decimal;
+///
+/// let charge = ElectricCharge::new(Decimal::ONE, unit::ElectricCharge::Coulomb);
+/// assert_eq!(charge.unit, unit::ElectricCharge::Coulomb);
+/// ```
 pub type ElectricCharge = Measurement<unit::ElectricCharge>;

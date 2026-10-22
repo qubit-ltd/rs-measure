@@ -18,6 +18,16 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted magnetic flux measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::MagneticFlux;
+    /// use qubit_measure::unit::Unit;
+    ///
+    /// let unit = MagneticFlux::Weber;
+    /// assert_eq!(unit.symbol(), "Wb");
+    /// ```
     pub enum MagneticFlux for "magnetic_flux" {
         /// Microweber (`µWb`).
         Microweber => { symbol: "µWb"; definition: crate::consts::magnetic_flux::MICROWEBER; aliases: ["uWb", "μWb"]; }

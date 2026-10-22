@@ -10,7 +10,16 @@
 use crate::Measurement;
 use crate::unit;
 
-/// A persisted voltage measurement.
+/// A persisted voltage value that keeps its exact decimal and typed unit.
 ///
-/// This is an ergonomic alias for electric potential.
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::Voltage;
+/// use qubit_measure::unit;
+/// use rust_decimal::Decimal;
+///
+/// let voltage = Voltage::new(Decimal::ONE, unit::ElectricPotential::Volt);
+/// assert_eq!(voltage.unit, unit::ElectricPotential::Volt);
+/// ```
 pub type Voltage = Measurement<unit::ElectricPotential>;
