@@ -7,4 +7,4 @@ publish = false
 
 [dependencies]
 qubit-measure = { path = "../../.." }
-serde = "1.0"
+serde = "^1.0"
