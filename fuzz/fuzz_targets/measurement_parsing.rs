@@ -10,6 +10,8 @@
 
 #![no_main]
 
+use std::str;
+
 use libfuzzer_sys::fuzz_target;
 use qubit_measure::Measurement;
 use qubit_measure::MeasurementParseOptions;
