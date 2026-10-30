@@ -30,22 +30,40 @@ fn assert_successful_parse<U: Unit>(result: Result<Measurement<U>, MeasurementEr
     }
 }
 
+// Exercises a caller-selected text limit at its boundary and checks that
+// accepted inputs retain the default parser contract when that comparison
+// applies.
+fn assert_length_limit(input: &str, limit: usize) {
+    let options = MeasurementParseOptions::new(limit);
+    let strict = Measurement::<unit::Length>::parse_strict_with_options(input, &options);
+    let lenient = Measurement::<unit::Length>::parse_lenient_with_options(input, &options);
+    if input.len() > limit {
+        let expected = Err(MeasurementError::MeasurementTextLimitExceeded { maximum: limit });
+        assert_eq!(strict, expected);
+        assert_eq!(lenient, expected);
+        return;
+    }
+    if input.len() <= MeasurementParseOptions::DEFAULT_MAX_TEXT_BYTES {
+        assert_eq!(strict, Measurement::<unit::Length>::parse_strict(input));
+        assert_eq!(lenient, Measurement::<unit::Length>::parse_lenient(input));
+    }
+    assert_successful_parse(strict);
+    assert_successful_parse(lenient);
+}
+
 fuzz_target!(|data: &[u8]| {
     let Ok(input) = str::from_utf8(data) else {
         return;
     };
-    let constrained = MeasurementParseOptions::default().with_max_text_bytes(data.len().saturating_div(2));
-
     assert_successful_parse(Measurement::<unit::Length>::parse_strict(input));
     assert_successful_parse(Measurement::<unit::Length>::parse_lenient(input));
-    assert_successful_parse(Measurement::<unit::Length>::parse_strict_with_options(
-        input,
-        &constrained,
-    ));
-    assert_successful_parse(Measurement::<unit::Length>::parse_lenient_with_options(
-        input,
-        &constrained,
-    ));
+    for limit in [
+        input.len().saturating_sub(1),
+        input.len(),
+        input.len().saturating_add(1),
+    ] {
+        assert_length_limit(input, limit);
+    }
     assert_successful_parse(Measurement::<unit::Time>::parse_strict(input));
     assert_successful_parse(Measurement::<unit::Time>::parse_lenient(input));
     assert_successful_parse(Measurement::<unit::Temperature>::parse_strict(input));
