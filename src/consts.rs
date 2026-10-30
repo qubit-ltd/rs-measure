@@ -425,8 +425,12 @@ pub(crate) mod energy {
     /// Exact conversion definition for the `ThermochemicalKilocalorie` unit.
     pub(crate) const THERMOCHEMICAL_KILOCALORIE: UnitDefinition = definition!(4184, 1, 0, 0);
     /// Exact conversion definition for the
-    /// `BritishThermalUnitInternationalTable` unit.
-    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE: UnitDefinition = definition!(131882, 125, 0, 0);
+    /// `BritishThermalUnitInternationalTable` unit (1 Btu (IT) = 1055.05585262
+    /// J).
+    ///
+    /// The value follows NIST SP 811, Appendix B, footnote 9.
+    pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE: UnitDefinition =
+        definition!(52752792631, 50000000, 0, 0);
 }
 
 /// Conversion constants for force units.
@@ -478,8 +482,11 @@ pub(crate) mod heat_capacity {
     pub(crate) const THERMOCHEMICAL_CALORIE_PER_KELVIN: UnitDefinition = definition!(523, 125, 0, 0);
     /// Exact conversion definition for the
     /// `BritishThermalUnitInternationalTablePerDegreeFahrenheit` unit.
+    ///
+    /// This is derived from the exact Btu (IT) definition using the Fahrenheit
+    /// interval ratio of 9/5.
     pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_DEGREE_FAHRENHEIT: UnitDefinition =
-        definition!(1186938, 625, 0, 0);
+        definition!(474775133679, 250000000, 0, 0);
 }
 
 /// Conversion constants for heat flux density units.
@@ -892,8 +899,11 @@ pub(crate) mod specific_heat_capacity {
     pub(crate) const THERMOCHEMICAL_CALORIE_PER_GRAM_KELVIN: UnitDefinition = definition!(4184, 1, 0, 0);
     /// Exact conversion definition for the
     /// `BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit` unit.
+    ///
+    /// This is derived from the exact Btu (IT) definition using the Fahrenheit
+    /// interval ratio of 9/5 and the exact international pound definition.
     pub(crate) const BRITISH_THERMAL_UNIT_INTERNATIONAL_TABLE_PER_POUND_DEGREE_FAHRENHEIT: UnitDefinition =
-        definition!(189910080000, 45359237, 0, 0);
+        definition!(20934, 5, 0, 0);
 }
 
 /// Conversion constants for specific radioactivity units.

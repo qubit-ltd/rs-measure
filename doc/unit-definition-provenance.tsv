@@ -107,7 +107,7 @@ energy	kW · h	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy,
 energy	eV	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
 energy	cal (th)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
 energy	kcal (th)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
-energy	Btu (IT)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	SI energy, exact physical constants, calorie, and Btu conversions
+energy	Btu (IT)	BIPM-SI-9.3.01;NIST-SP-811-2008;CODATA-2022-V9.0	exact	NIST SP 811 Appendix B footnote 9: 1 Btu (IT) = 1055.05585262 J, exactly 52752792631/50000000
 force	mN	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
 force	N	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
 force	kN	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI newton, standard-gravity force, and pound-force conversions
@@ -123,7 +123,7 @@ heat_capacity	J/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermo
 heat_capacity	kJ/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
 heat_capacity	J/°C	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
 heat_capacity	cal (th)/K	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
-heat_capacity	Btu (IT)/°F	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI heat capacity, thermochemical calorie, and Btu conversions
+heat_capacity	Btu (IT)/°F	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Derived from exact Btu (IT) energy and Fahrenheit interval ratio 9/5: 474775133679/250000000 J/K
 heat_flux_density	mW/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
 heat_flux_density	W/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
 heat_flux_density	kW/m²	BIPM-SI-9.3.01	exact	SI power divided by SI area
@@ -252,7 +252,7 @@ specific_heat_capacity	J/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI spec
 specific_heat_capacity	kJ/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
 specific_heat_capacity	J/(g · °C)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
 specific_heat_capacity	cal (th)/(g · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
-specific_heat_capacity	Btu (IT)/(lb · °F)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
+specific_heat_capacity	Btu (IT)/(lb · °F)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Derived from exact Btu (IT), Fahrenheit interval ratio 9/5, and international pound 0.45359237 kg: 20934/5 J/(kg · K)
 specific_radioactivity	Bq/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
 specific_radioactivity	Ci/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass
 specific_radioactivity	dpm/kg	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	Radioactivity divided by SI mass

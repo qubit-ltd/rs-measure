@@ -283,7 +283,7 @@ macro_rules! assert_unit_family_matches_uom_base {
 fn test_energy_btu_it_uom_mapping_uses_si_oracle() {
     let measurement = measurement::Energy::new(Decimal::ONE, unit::Energy::BritishThermalUnitInternationalTable);
 
-    assert_approx_eq(measurement.to_uom_approx().get::<joule>(), 1_055.056);
+    assert_approx_eq(measurement.to_uom_approx().get::<joule>(), 1_055.055_852_62);
 }
 
 #[test]
@@ -293,7 +293,7 @@ fn test_heat_capacity_btu_it_uom_mapping_uses_si_oracle() {
         unit::HeatCapacity::BritishThermalUnitInternationalTablePerDegreeFahrenheit,
     );
 
-    assert_approx_eq(measurement.to_uom_approx().get::<joule_per_kelvin>(), 1_899.100_8);
+    assert_approx_eq(measurement.to_uom_approx().get::<joule_per_kelvin>(), 1_899.100_534_716);
 }
 
 #[test]
@@ -303,10 +303,7 @@ fn test_specific_heat_capacity_btu_it_uom_mapping_uses_si_oracle() {
         unit::SpecificHeatCapacity::BritishThermalUnitInternationalTablePerPoundDegreeFahrenheit,
     );
 
-    assert_approx_eq(
-        measurement.to_uom_approx().get::<joule_per_kilogram_kelvin>(),
-        189_910_080_000.0 / 45_359_237.0,
-    );
+    assert_approx_eq(measurement.to_uom_approx().get::<joule_per_kilogram_kelvin>(), 4_186.8);
 }
 
 #[test]

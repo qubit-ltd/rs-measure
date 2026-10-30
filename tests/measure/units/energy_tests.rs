@@ -7,8 +7,11 @@
 // =============================================================================
 //! Exact definitions and contract tests for the energy unit family.
 
+use qubit_measure::Measurement;
 use qubit_measure::assert_unit_family_valid;
 use qubit_measure::unit;
+use rust_decimal::Decimal;
+use rust_decimal::dec;
 
 use crate::measure::support::DefinitionCase;
 use crate::measure::support::assert_definition_cases;
@@ -67,11 +70,20 @@ fn test_energy_definitions_match_exact_golden_values() {
         },
         DefinitionCase {
             unit: unit::Energy::BritishThermalUnitInternationalTable,
-            numerator: "131882",
-            denominator: "125",
+            numerator: "52752792631",
+            denominator: "50000000",
             offset: "0",
         },
     ]);
+}
+
+#[test]
+fn test_btu_it_converts_to_independent_joule_value() {
+    let joules = Measurement::new(Decimal::ONE, unit::Energy::BritishThermalUnitInternationalTable)
+        .convert_to(unit::Energy::Joule)
+        .expect("Btu (IT) should convert to joules");
+
+    assert_eq!(joules.value, dec!(1055.05585262));
 }
 
 #[test]
