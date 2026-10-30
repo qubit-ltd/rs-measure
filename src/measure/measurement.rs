@@ -50,6 +50,9 @@ use crate::measure::internal::parse_measurement_text;
 ///
 /// # Examples
 ///
+/// See the [crate-level example](crate) for parsing, conversion, and JSON
+/// persistence that retains the original value, unit, and scale.
+///
 /// Construct a typed measurement and format its persisted value:
 ///
 /// ```
