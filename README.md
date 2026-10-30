@@ -120,6 +120,12 @@ that value, and square degree uses 28 decimal places. The versioned source set,
 numeric policy, and coverage scope for every built-in quantity family are recorded
 in the machine-readable [unit-definition provenance manifest](doc/unit-definition-provenance.tsv).
 
+The exact Btu (IT) definition is `1055.05585262 J`, following
+[NIST SP 811 footnote 9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-footnotes).
+This corrects the former `1055.056 J` coefficient and the derived heat-capacity and
+specific-heat coefficients. Stored values and units need no format change; recompute
+cached derived values from their original value and unit.
+
 ```rust
 use qubit_measure::{
     ConversionOptions, measurement, unit,
@@ -224,11 +230,16 @@ scanning begins.
 `From` and `TryFrom` implementations. Conversion is exact to one nanosecond and
 rejects negative, subnanosecond, and out-of-range measurements without rounding.
 
-This adapter is not a replacement for the workspace Duration codecs. `Measurement<Time>`
-uses the three-field measurement record `{"quantity","value","unit"}` and accepts only
-the canonical unit symbol during Serde deserialization. Use `qubit-datatype` and
-`qubit-serde` for their established non-negative `Duration` formats: compact exact unit
-text or the explicitly lossy whole-millisecond representations used by downstream crates.
+This adapter is not a replacement for a `Duration` codec. `Measurement<Time>` uses the
+three-field measurement record `{"quantity","value","unit"}` and accepts only the
+canonical unit symbol during Serde deserialization. For existing `std::time::Duration`
+fields, use [`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
+for exact unit-suffixed text that preserves submillisecond precision, or
+[`qubit_datatype::serde::duration_millis`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_millis.rs)
+for a `u64` millisecond count rounded to nearest with half-up ties (for example,
+1500 µs becomes 2 ms) when losing submillisecond precision is intentional. Values
+exceeding `u64::MAX` milliseconds are rejected. These codecs do not use the
+three-field `Measurement<Time>` record.
 
 ### Exact information-size adapters
 

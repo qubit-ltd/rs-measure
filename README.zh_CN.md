@@ -110,6 +110,11 @@ Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不
 平方度采用 28 位小数。每个内建 quantity family 使用的版本化来源、数值策略和覆盖范围
 记录在机器可读的[单位定义来源清单](doc/unit-definition-provenance.tsv)中。
 
+Btu (IT) 的精确定义为 `1055.05585262 J`，依据
+[NIST SP 811 脚注 9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-footnotes)。
+本次修正了原先的 `1055.056 J` 系数及其派生的热容、比热容系数。已存储的数值和单位无需
+更改格式；缓存的派生值应根据原始数值和单位重新计算。
+
 ```rust
 use qubit_measure::{
     ConversionOptions, measurement, unit,
@@ -202,10 +207,15 @@ fn main() -> Result<(), qubit_measure::MeasurementError> {
 `std::time::Duration` 双向转换。转换精确到纳秒；负值、亚纳秒值和越界值会直接报错，
 不会隐式舍入。
 
-该适配不是工作区 Duration codec 的替代品。`Measurement<Time>` 使用
+该适配不能替代 `Duration` 专用 codec。`Measurement<Time>` 使用
 `{"quantity","value","unit"}` 三字段 measurement 记录，Serde 反序列化只接受规范单位
-符号。既有的非负 `Duration` 持久化格式应继续使用 `qubit-datatype` 与 `qubit-serde`：
-精确紧凑单位文本，或下游 crate 已采用的显式有损整毫秒格式。
+符号。已有的 `std::time::Duration` 字段可按格式需求选择：使用
+[`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
+序列化为带单位文本，可精确保留亚毫秒精度；若业务有意舍弃亚毫秒精度，可使用
+[`qubit_datatype::serde::duration_millis`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_millis.rs)
+序列化为 `u64` 毫秒数，该格式按最近值舍入，恰好一半时向上舍入（例如 1500 µs → 2 ms）。
+舍入后的毫秒数超过 `u64::MAX` 时会报错。这两个 codec 都不使用
+`Measurement<Time>` 的三字段记录。
 
 ### 精确信息大小适配
 
