@@ -12,8 +12,6 @@ use qubit_measure::measurement as measurement_api;
 use qubit_measure::unit;
 use rust_decimal::Decimal;
 
-mod measurement;
-
 /// Verifies that the public measurement module aggregates the Length alias.
 #[test]
 fn test_measurement_module_aggregates_length_alias() {
