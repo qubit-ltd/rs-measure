@@ -20,6 +20,7 @@ mod external_unit_tests;
 mod information_integer_tests;
 mod internal;
 mod internal_tests;
+mod macro_hygiene_tests;
 mod measurement_error_tests;
 mod measurement_parse_options_tests;
 mod measurement_tests;

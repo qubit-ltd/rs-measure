@@ -236,7 +236,7 @@ macro_rules! __define_unit_family_core {
             }
 
             #[inline]
-            fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
+            fn definition(self) -> ::core::result::Result<$crate::UnitDefinition, $crate::MeasurementError> {
                 match self {
                     $(#[cfg$variant_cfg] Self::$variant => $definition,)+
                 }
@@ -256,7 +256,7 @@ macro_rules! __define_unit_family_core {
             type Err = $crate::MeasurementError;
 
             #[inline(always)]
-            fn from_str(input: &str) -> Result<Self, Self::Err> {
+            fn from_str(input: &str) -> ::core::result::Result<Self, Self::Err> {
                 <Self as $crate::Unit>::parse_strict(input)
             }
         }
@@ -264,7 +264,7 @@ macro_rules! __define_unit_family_core {
         #[cfg$enum_cfg]
         impl ::serde::Serialize for $unit {
             #[inline]
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            fn serialize<S>(&self, serializer: S) -> ::core::result::Result<S::Ok, S::Error>
             where
                 S: ::serde::Serializer,
             {
@@ -275,7 +275,7 @@ macro_rules! __define_unit_family_core {
         #[cfg$enum_cfg]
         impl<'de> ::serde::Deserialize<'de> for $unit {
             #[inline]
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            fn deserialize<D>(deserializer: D) -> ::core::result::Result<Self, D::Error>
             where
                 D: ::serde::Deserializer<'de>,
             {
@@ -354,17 +354,17 @@ macro_rules! impl_uom_unit {
             fn try_to_uom_approx(
                 self,
                 value: ::rust_decimal::Decimal,
-            ) -> Result<Self::Quantity, $crate::MeasurementError> {
+            ) -> ::core::result::Result<Self::Quantity, $crate::MeasurementError> {
                 let definition = $crate::Unit::definition(self)?;
                 let base_value = $crate::__private::unit_value_to_base_f64(value, definition);
-                Ok(<$quantity_ty>::new::<$uom_base_unit>(base_value))
+                ::core::result::Result::Ok(<$quantity_ty>::new::<$uom_base_unit>(base_value))
             }
 
             #[inline]
             fn value_from_uom_approx(
                 self,
                 quantity: Self::Quantity,
-            ) -> Result<::rust_decimal::Decimal, $crate::MeasurementError> {
+            ) -> ::core::result::Result<::rust_decimal::Decimal, $crate::MeasurementError> {
                 let definition = $crate::Unit::definition(self)?;
                 let base_value = quantity.get::<$uom_base_unit>();
                 $crate::__private::base_f64_to_unit_value(base_value, definition)
@@ -768,7 +768,7 @@ macro_rules! define_unit_family {
             [$enum_cfg] [$($enum_attr)*]
             $visibility enum $unit for $quantity_name {
                 $( [$variant_cfg] [$($variant_attr)*] $variant => {
-                    symbol: $symbol; definition: Ok($definition); $(aliases: [$($alias),*];)?
+                    symbol: $symbol; definition: ::core::result::Result::Ok($definition); $(aliases: [$($alias),*];)?
                 } )+
             }
         }
@@ -789,7 +789,7 @@ macro_rules! define_unit_family {
                     symbol: $symbol;
                     definition: {
                         let factor = $crate::__unit_factor!($numerator $(/ $denominator)?)?;
-                        Ok($crate::UnitDefinition::new(factor, $crate::__unit_offset!($($offset)?)))
+                        ::core::result::Result::Ok($crate::UnitDefinition::new(factor, $crate::__unit_offset!($($offset)?)))
                     };
                     $(aliases: [$($alias),*];)?
                 } )+
