@@ -90,6 +90,40 @@ fn test_decimal_conversion_applies_requested_scale() {
     assert_eq!(result.scale(), 4);
 }
 
+#[test]
+fn test_rounding_matches_literal_expectations() {
+    let cases = [
+        (dec!(0.1524), [0, 1, 0, 0, 1, 0, 1]),
+        (dec!(-0.1524), [0, -1, 0, 0, -1, -1, 0]),
+        (dec!(0.4572), [2, 2, 1, 1, 2, 1, 2]),
+        (dec!(-0.4572), [-2, -2, -1, -1, -2, -2, -1]),
+        (dec!(0.1520952), [0, 0, 0, 0, 1, 0, 1]),
+        (dec!(0.1527048), [1, 1, 1, 0, 1, 0, 1]),
+        (dec!(-0.1520952), [0, 0, 0, 0, -1, -1, 0]),
+        (dec!(-0.1527048), [-1, -1, -1, 0, -1, -1, 0]),
+        (dec!(0.3048), [1, 1, 1, 1, 1, 1, 1]),
+        (dec!(-0.3048), [-1, -1, -1, -1, -1, -1, -1]),
+    ];
+
+    for (input, expected) in cases {
+        for (strategy, expected_integer) in ROUNDING_STRATEGIES.into_iter().zip(expected) {
+            let actual = convert(
+                input,
+                DecimalConversionUnit::Base,
+                DecimalConversionUnit::Foot,
+                ConversionOptions::fixed_scale(0, strategy).expect("scale zero is valid"),
+            )
+            .expect("table value fits Decimal");
+            assert_eq!(
+                actual,
+                Decimal::from(expected_integer),
+                "input={input}, strategy={strategy:?}"
+            );
+            assert_eq!(actual.scale(), 0);
+        }
+    }
+}
+
 /// Verifies that a representable result survives a larger intermediate product.
 #[test]
 fn test_decimal_conversion_avoids_intermediate_ratio_rounding() {
@@ -455,6 +489,47 @@ fn test_fixed_scale_conversion_preserves_value_range_error() {
 }
 
 #[test]
+fn test_decimal_conversion_handles_scale_and_large_coefficient_boundaries() {
+    let maximum_scale = ConversionOptions::fixed_scale(Decimal::MAX_SCALE, RoundingStrategy::MidpointNearestEven)
+        .expect("maximum Decimal scale is valid");
+    let tiny_result = convert(
+        Decimal::ONE,
+        DecimalConversionUnit::TinyHalf,
+        DecimalConversionUnit::Base,
+        maximum_scale,
+    )
+    .expect("half at maximum scale fits Decimal");
+    assert_eq!(tiny_result, dec!(0.5000000000000000000000000000));
+    assert_eq!(tiny_result.scale(), Decimal::MAX_SCALE);
+
+    let large = dec!(7922816251426433759354395033.4);
+    for (input, strategy, expected) in [
+        (
+            large,
+            RoundingStrategy::MidpointNearestEven,
+            dec!(5281877500950955839569596689),
+        ),
+        (large, RoundingStrategy::ToZero, dec!(5281877500950955839569596688)),
+        (
+            -large,
+            RoundingStrategy::MidpointNearestEven,
+            dec!(-5281877500950955839569596689),
+        ),
+        (-large, RoundingStrategy::ToZero, dec!(-5281877500950955839569596688)),
+    ] {
+        let actual = convert(
+            input,
+            DecimalConversionUnit::TwoThirds,
+            DecimalConversionUnit::Base,
+            ConversionOptions::fixed_scale(0, strategy).expect("scale zero is valid"),
+        )
+        .expect("rounded large coefficient fits Decimal");
+        assert_eq!(actual, expected, "input={input}, strategy={strategy:?}");
+        assert_eq!(actual.scale(), 0);
+    }
+}
+
+#[test]
 fn test_decimal_conversion_reduces_two_over_two_before_max_arithmetic() {
     assert_eq!(
         convert(
@@ -563,5 +638,41 @@ proptest! {
 
         prop_assert_eq!(actual, expected);
         prop_assert_eq!(actual.scale(), scale);
+    }
+
+    #[test]
+    fn prop_rounding_matches_decimal_native(
+        coefficient in -1_000_000_i64..=1_000_000_i64,
+        input_scale in 0_u32..=6,
+        output_scale in 0_u32..=6,
+        strategy_index in 0_usize..ROUNDING_STRATEGIES.len(),
+    ) {
+        let value = Decimal::new(coefficient, input_scale);
+        let exact = value * Decimal::TEN;
+        let strategy = ROUNDING_STRATEGIES[strategy_index];
+        let mut expected = exact.round_dp_with_strategy(output_scale, strategy);
+        expected.rescale(output_scale);
+        let options = ConversionOptions::fixed_scale(output_scale, strategy)
+            .expect("generated scale should be valid");
+
+        let converted = convert(
+            value,
+            DecimalConversionUnit::Ten,
+            DecimalConversionUnit::Base,
+            options,
+        )
+        .expect("generated exact conversion should fit Decimal");
+        let fast_path = convert(
+            exact,
+            DecimalConversionUnit::Base,
+            DecimalConversionUnit::Base,
+            options,
+        )
+        .expect("generated same-definition conversion should fit Decimal");
+
+        prop_assert_eq!(converted, expected);
+        prop_assert_eq!(converted.scale(), output_scale);
+        prop_assert_eq!(fast_path, expected);
+        prop_assert_eq!(fast_path.scale(), output_scale);
     }
 }
