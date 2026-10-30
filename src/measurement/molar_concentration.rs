@@ -11,4 +11,16 @@ use crate::Measurement;
 use crate::unit;
 
 /// A persisted molar concentration measurement.
+///
+/// # Examples
+///
+/// ```
+/// use qubit_measure::measurement::MolarConcentration;
+/// use rust_decimal::Decimal;
+///
+/// let value = MolarConcentration::parse_strict("1 mol/m³")?;
+/// assert_eq!(value.value, Decimal::ONE);
+/// assert_eq!(value.to_string(), "1 mol/m³");
+/// # Ok::<(), qubit_measure::MeasurementError>(())
+/// ```
 pub type MolarConcentration = Measurement<unit::MolarConcentration>;

@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted mass measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Mass;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Mass::parse_strict("kg")?;
+    /// assert_eq!(unit.symbol(), "kg");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Mass for "mass" {
         /// Microgram (`µg`).
         Microgram => { symbol: "µg"; definition: crate::consts::mass::MICROGRAM; aliases: ["ug", "μg"]; }

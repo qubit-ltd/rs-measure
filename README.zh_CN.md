@@ -72,6 +72,8 @@ scale。严格解析会拒绝非规范时间输入 `1 year`，并提供规范替
 
 完整的定标换算与 JSON 持久化示例见 [basic_usage](examples/basic_usage.rs)。运行 `cargo run --example basic_usage`，可检查四位小数和三字段 JSON 记录。
 
+绝对温度使用 [`Temperature`](https://docs.rs/qubit-measure/latest/qubit_measure/measurement/type.Temperature.html)，温度差使用 [`TemperatureInterval`](https://docs.rs/qubit-measure/latest/qubit_measure/measurement/type.TemperatureInterval.html)。因此 `0 °C` 换算为 `273.15 K`，而 `1 °C` 的温度差换算为 `1 K`；两者的 quantity 名分别是 `temperature` 和 `temperature_interval`。
+
 ## 2. 三字段 JSON 契约
 
 Serde 使用带 quantity 校验的 wire format：

@@ -177,12 +177,20 @@ pub trait Unit: Copy + Eq + fmt::Display + FromStr<Err = MeasurementError> + 'st
 /// # Examples
 ///
 /// ```
-/// use qubit_measure::{
-///     assert_unit_family_valid,
-///     unit,
-/// };
+/// use qubit_measure::assert_unit_family_valid;
+/// use qubit_measure::unit::Length;
+/// use qubit_measure::Unit;
+/// use qubit_measure::UnitDefinition;
 ///
-/// assert_unit_family_valid::<unit::Length>();
+/// assert_eq!(Length::parse_strict("m")?, Length::Meter);
+/// assert!(matches!(
+///     Length::parse_strict("um"),
+///     Err(qubit_measure::MeasurementError::NonCanonicalUnit { .. }),
+/// ));
+/// assert_eq!(Length::parse_lenient("um")?, Length::Micrometer);
+/// assert_eq!(Length::Meter.definition()?, UnitDefinition::base());
+/// assert_unit_family_valid::<Length>();
+/// # Ok::<(), qubit_measure::MeasurementError>(())
 /// ```
 #[track_caller]
 pub fn assert_unit_family_valid<U>()

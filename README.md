@@ -74,6 +74,8 @@ The example prints `Please use the canonical time unit: a (365 d)` and
 
 For a complete runnable example covering fixed-scale conversion and JSON persistence, see [basic_usage](examples/basic_usage.rs). Run it with `cargo run --example basic_usage`; it checks four decimal places and the three-field JSON record.
 
+Use [`Temperature`](https://docs.rs/qubit-measure/latest/qubit_measure/measurement/type.Temperature.html) for absolute temperatures and [`TemperatureInterval`](https://docs.rs/qubit-measure/latest/qubit_measure/measurement/type.TemperatureInterval.html) for temperature differences. Thus `0 °C` converts to `273.15 K`, while an interval of `1 °C` converts to `1 K`; their quantity names are `temperature` and `temperature_interval`, respectively.
+
 ## 2. Three-field JSON contract
 
 Serde uses a quantity-aware wire format:

@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted area measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Area;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Area::parse_strict("m²")?;
+    /// assert_eq!(unit.symbol(), "m²");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Area for "area" {
         /// Square millimeter (`mm²`).
         SquareMillimeter => { symbol: "mm²"; definition: crate::consts::area::SQUARE_MILLIMETER; aliases: ["mm2", "mm^2"]; }

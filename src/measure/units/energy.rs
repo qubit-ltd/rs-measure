@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted energy measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Energy;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Energy::parse_strict("J")?;
+    /// assert_eq!(unit.symbol(), "J");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Energy for "energy" {
         /// Joule (`J`).
         Joule => { symbol: "J"; definition: crate::consts::energy::JOULE; }

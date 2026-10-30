@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted molality measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Molality;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Molality::parse_strict("mol/kg")?;
+    /// assert_eq!(unit.symbol(), "mol/kg");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Molality for "molality" {
         /// Mole per kilogram (`mol/kg`).
         MolePerKilogram => { symbol: "mol/kg"; definition: crate::consts::molality::MOLE_PER_KILOGRAM; }

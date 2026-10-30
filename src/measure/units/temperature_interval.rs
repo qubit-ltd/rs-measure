@@ -19,14 +19,25 @@ use crate::impl_uom_unit;
 define_unit_family! {
     /// Units for persisted temperature interval measurements.
     ///
+    /// These units measure temperature differences, so `1 °C` converts to
+    /// `1 K` without an absolute zero offset. Absolute temperatures use
+    /// [`crate::unit::Temperature`] instead.
+    ///
     /// # Examples
     ///
     /// ```
-    /// use qubit_measure::unit::TemperatureInterval;
-    /// use qubit_measure::unit::Unit;
+    /// use qubit_measure::measurement::Temperature;
+    /// use qubit_measure::measurement::TemperatureInterval;
+    /// use qubit_measure::unit;
+    /// use rust_decimal::Decimal;
     ///
-    /// let units = TemperatureInterval::all();
-    /// assert!(units.iter().any(|unit| unit.symbol() == "K"));
+    /// let temperature = Temperature::parse_strict("0 °C")?;
+    /// let interval = TemperatureInterval::parse_strict("1 °C")?;
+    /// assert_eq!(temperature.convert_to(unit::Temperature::Kelvin)?.value, Decimal::new(27315, 2));
+    /// assert_eq!(interval.convert_to(unit::TemperatureInterval::Kelvin)?.value, Decimal::ONE);
+    /// assert_eq!(temperature.quantity_name(), "temperature");
+    /// assert_eq!(interval.quantity_name(), "temperature_interval");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
     /// ```
     pub enum TemperatureInterval for "temperature_interval" {
         /// Kelvin (`K`).

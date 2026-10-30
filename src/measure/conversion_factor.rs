@@ -19,6 +19,16 @@ use crate::measure::MeasurementError;
 ///
 /// # Examples
 ///
+/// ```
+/// use qubit_measure::ConversionFactor;
+/// use rust_decimal::Decimal;
+///
+/// let factor = ConversionFactor::new(Decimal::from(2), Decimal::from(3))?;
+/// assert_eq!(factor.numerator(), Decimal::from(2));
+/// assert_eq!(factor.denominator(), Decimal::from(3));
+/// # Ok::<(), qubit_measure::MeasurementError>(())
+/// ```
+///
 /// Discarding a validated factor is diagnosed when unused results are denied:
 ///
 /// ```compile_fail

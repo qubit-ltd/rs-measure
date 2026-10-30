@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted capacitance measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Capacitance;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Capacitance::parse_strict("F")?;
+    /// assert_eq!(unit.symbol(), "F");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Capacitance for "capacitance" {
         /// Picofarad (`pF`).
         Picofarad => { symbol: "pF"; definition: crate::consts::capacitance::PICOFARAD; }

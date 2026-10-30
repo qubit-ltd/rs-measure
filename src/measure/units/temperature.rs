@@ -18,6 +18,28 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted thermodynamic temperature measurements.
+    ///
+    /// A temperature such as `0 °C` is an absolute point and converts to
+    /// `273.15 K`; a temperature interval of `1 °C` is a difference and
+    /// converts to `1 K`. See [`crate::unit::TemperatureInterval`] for interval
+    /// units.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::measurement::Temperature;
+    /// use qubit_measure::measurement::TemperatureInterval;
+    /// use qubit_measure::unit;
+    /// use rust_decimal::Decimal;
+    ///
+    /// let temperature = Temperature::parse_strict("0 °C")?;
+    /// let interval = TemperatureInterval::parse_strict("1 °C")?;
+    /// assert_eq!(temperature.convert_to(unit::Temperature::Kelvin)?.value, Decimal::new(27315, 2));
+    /// assert_eq!(interval.convert_to(unit::TemperatureInterval::Kelvin)?.value, Decimal::ONE);
+    /// assert_eq!(temperature.quantity_name(), "temperature");
+    /// assert_eq!(interval.quantity_name(), "temperature_interval");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Temperature for "temperature" {
         /// Kelvin (`K`).
         Kelvin => { symbol: "K"; definition: crate::consts::temperature::KELVIN; }

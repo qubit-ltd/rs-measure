@@ -18,6 +18,17 @@ use crate::impl_uom_unit;
 
 define_unit_family! {
     /// Units for persisted torque measurements.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use qubit_measure::unit::Torque;
+    /// use qubit_measure::Unit;
+    ///
+    /// let unit = Torque::parse_strict("N · m")?;
+    /// assert_eq!(unit.symbol(), "N · m");
+    /// # Ok::<(), qubit_measure::MeasurementError>(())
+    /// ```
     pub enum Torque for "torque" {
         /// Millinewton meter (`mN · m`).
         MillinewtonMeter => { symbol: "mN · m"; definition: crate::consts::torque::MILLINEWTON_METER; aliases: ["mN m", "mN*m"]; }
