@@ -20,16 +20,36 @@ use crate::measure::decimal_conversion::convert_decimal;
 ///
 /// # Examples
 ///
+/// This example uses Kelvin as the base unit and the formula `(value + offset)
+/// * factor`.
+///
 /// ```
-/// use qubit_measure::{ConversionFactor, UnitDefinition};
+/// use qubit_measure::{ConversionFactor, Measurement, Unit, UnitDefinition, define_unit_family, unit};
 /// use rust_decimal::Decimal;
 ///
-/// let fahrenheit = UnitDefinition::new(
+/// const FAHRENHEIT: UnitDefinition = UnitDefinition::new(
 ///     ConversionFactor::from_const_integers(5, 9),
-///     Decimal::from(32),
+///     Decimal::from_parts(45967, 0, 0, false, 2),
 /// );
-/// assert_eq!(fahrenheit.factor(), ConversionFactor::from_const_integers(5, 9));
-/// assert_eq!(fahrenheit.offset(), Decimal::from(32));
+/// const KELVIN: UnitDefinition = UnitDefinition::base();
+///
+/// define_unit_family! {
+///     /// Example temperature family with Kelvin as its base.
+///     enum ExampleTemperature for "example_temperature" {
+///         /// Fahrenheit temperature.
+///         Fahrenheit => { symbol: "°F"; definition: FAHRENHEIT; }
+///         /// Kelvin temperature.
+///         Kelvin => { symbol: "K"; definition: KELVIN; }
+///     }
+/// }
+///
+/// assert_eq!(FAHRENHEIT.factor(), ConversionFactor::from_const_integers(5, 9));
+/// assert_eq!(FAHRENHEIT.offset(), Decimal::new(45967, 2));
+/// assert_eq!(FAHRENHEIT, unit::Temperature::Fahrenheit.definition()?);
+/// let freezing = Measurement::new(Decimal::from(32), ExampleTemperature::Fahrenheit)
+///     .convert_to(ExampleTemperature::Kelvin)?;
+/// assert_eq!(freezing.value, Decimal::new(27315, 2));
+/// # Ok::<(), qubit_measure::MeasurementError>(())
 /// ```
 ///
 /// Discarding a definition is diagnosed when unused results are denied:

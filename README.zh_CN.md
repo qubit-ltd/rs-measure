@@ -33,14 +33,18 @@ uom = { version = "0.38", default-features = false, features = ["f64", "si", "st
 use qubit_measure::{measurement, unit};
 use rust_decimal::Decimal;
 
-let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-let meters = length.convert_to(unit::Length::Meter)?;
-assert_eq!(meters.value, Decimal::new(5, 1));
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let meters = length.convert_to(unit::Length::Meter)?;
+    assert_eq!(meters.value, Decimal::new(5, 1));
+    Ok(())
+}
 ```
 
 `Measurement<U>` 保存一个 `Decimal` 和一个类型化单位。`measurement::*` 中的别名与
 `unit::*` 中的枚举覆盖 57 个 quantity family。
+
+完整的定标换算与 JSON 持久化示例见 [basic_usage](examples/basic_usage.rs)。运行 `cargo run --example basic_usage`，可检查四位小数和三字段 JSON 记录。
 
 ## 2. 三字段 JSON 契约
 
@@ -86,14 +90,16 @@ use qubit_measure::{
 };
 use rust_decimal::{Decimal, RoundingStrategy};
 
-let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
-let options = ConversionOptions::fixed_scale(
-    4,
-    RoundingStrategy::MidpointNearestEven,
-)?;
-let feet = value.convert_to_with_options(unit::Length::Foot, options)?;
-assert_eq!(feet.value.to_string(), "3.2808");
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+    let options = ConversionOptions::fixed_scale(
+        4,
+        RoundingStrategy::MidpointNearestEven,
+    )?;
+    let feet = value.convert_to_with_options(unit::Length::Foot, options)?;
+    assert_eq!(feet.value.to_string(), "3.2808");
+    Ok(())
+}
 ```
 
 `ConversionOptions::maximum_precision()` 不指定固定输出 scale。换算过程先进行精确有理数
@@ -124,15 +130,17 @@ assert_eq!(feet.value.to_string(), "3.2808");
 ```rust
 use qubit_measure::{Unit, unit};
 
-assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
-assert!(unit::Time::parse_strict("year").is_err());
-assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
-assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
-assert_eq!(
-    qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
-    unit::Time::CommonYear365,
-);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
+    assert!(unit::Time::parse_strict("year").is_err());
+    assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
+    assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
+    assert_eq!(
+        qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
+        unit::Time::CommonYear365,
+    );
+    Ok(())
+}
 ```
 
 `Time::Minute` 也接受宽松别名 `m`，但显示、严格解析和 Serde 始终保留规范符号
@@ -152,10 +160,12 @@ measurement 数值支持普通和科学计数法 Decimal 文本，并按最终�
 ```rust
 use qubit_measure::{MeasurementParseOptions, measurement};
 
-let options = MeasurementParseOptions::default().with_max_text_bytes(64);
-let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
-assert_eq!(length.value.scale(), 2);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let options = MeasurementParseOptions::default().with_max_text_bytes(64);
+    let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
+    assert_eq!(length.value.scale(), 2);
+    Ok(())
+}
 ```
 
 超限输入会在 Decimal 或单位扫描开始前返回 `MeasurementTextLimitExceeded`。
@@ -237,8 +247,10 @@ define_unit_family! {
     }
 }
 
-assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
+    Ok(())
+}
 ```
 
 宏会生成规范显示、严格和宽松解析、Serde、枚举遍历及精确定义。可选 `uom` 桥接通过
@@ -283,8 +295,10 @@ use qubit_measure::{measurement, unit};
 use rust_decimal::Decimal;
 use uom::si::length::meter;
 
-let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
-assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
+fn main() {
+    let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
+    assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
+}
 ```
 
 适合二进制浮点语义的量纲计算仍可使用 `uom`，然后在持久化边界显式适配结果。

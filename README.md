@@ -33,14 +33,18 @@ uom = { version = "0.38", default-features = false, features = ["f64", "si", "st
 use qubit_measure::{measurement, unit};
 use rust_decimal::Decimal;
 
-let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-let meters = length.convert_to(unit::Length::Meter)?;
-assert_eq!(meters.value, Decimal::new(5, 1));
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
+    let meters = length.convert_to(unit::Length::Meter)?;
+    assert_eq!(meters.value, Decimal::new(5, 1));
+    Ok(())
+}
 ```
 
 `Measurement<U>` stores a `Decimal` and a typed unit. The aliases in
 `measurement::*` and enums in `unit::*` cover 57 quantity families.
+
+For a complete runnable example covering fixed-scale conversion and JSON persistence, see [basic_usage](examples/basic_usage.rs). Run it with `cargo run --example basic_usage`; it checks four decimal places and the three-field JSON record.
 
 ## 2. Three-field JSON contract
 
@@ -94,14 +98,16 @@ use qubit_measure::{
 };
 use rust_decimal::{Decimal, RoundingStrategy};
 
-let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
-let options = ConversionOptions::fixed_scale(
-    4,
-    RoundingStrategy::MidpointNearestEven,
-)?;
-let feet = value.convert_to_with_options(unit::Length::Foot, options)?;
-assert_eq!(feet.value.to_string(), "3.2808");
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let value = measurement::Length::new(Decimal::ONE, unit::Length::Meter);
+    let options = ConversionOptions::fixed_scale(
+        4,
+        RoundingStrategy::MidpointNearestEven,
+    )?;
+    let feet = value.convert_to_with_options(unit::Length::Foot, options)?;
+    assert_eq!(feet.value.to_string(), "3.2808");
+    Ok(())
+}
 ```
 
 `ConversionOptions::maximum_precision()` does not request a fixed output scale.
@@ -140,15 +146,17 @@ aliases should be accepted. Canonical symbols and aliases must be disjoint.
 ```rust
 use qubit_measure::{Unit, unit};
 
-assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
-assert!(unit::Time::parse_strict("year").is_err());
-assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
-assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
-assert_eq!(
-    qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
-    unit::Time::CommonYear365,
-);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    assert_eq!(unit::Time::parse_lenient("year")?, unit::Time::CommonYear365);
+    assert!(unit::Time::parse_strict("year").is_err());
+    assert_eq!(unit::Time::parse_strict("a (365 d)")?, unit::Time::CommonYear365);
+    assert!("1 year".parse::<qubit_measure::measurement::Time>().is_err());
+    assert_eq!(
+        qubit_measure::measurement::Time::parse_lenient("1 year")?.unit,
+        unit::Time::CommonYear365,
+    );
+    Ok(())
+}
 ```
 
 `Time::Minute` also accepts the lenient alias `m`, while display, strict parsing,
@@ -171,10 +179,12 @@ bytes. Use explicit options to choose a smaller or larger limit:
 ```rust
 use qubit_measure::{MeasurementParseOptions, measurement};
 
-let options = MeasurementParseOptions::default().with_max_text_bytes(64);
-let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
-assert_eq!(length.value.scale(), 2);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    let options = MeasurementParseOptions::default().with_max_text_bytes(64);
+    let length = measurement::Length::parse_strict_with_options("1.00e0 m", &options)?;
+    assert_eq!(length.value.scale(), 2);
+    Ok(())
+}
 ```
 
 Oversized input returns `MeasurementTextLimitExceeded` before Decimal or unit
@@ -263,8 +273,10 @@ define_unit_family! {
     }
 }
 
-assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
-# Ok::<(), qubit_measure::MeasurementError>(())
+fn main() -> Result<(), qubit_measure::MeasurementError> {
+    assert_eq!(CustomLength::parse_lenient("half-cu")?, CustomLength::Half);
+    Ok(())
+}
 ```
 
 The macro generates canonical display, strict and lenient parsing, Serde, enumeration,
@@ -319,8 +331,10 @@ use qubit_measure::{measurement, unit};
 use rust_decimal::Decimal;
 use uom::si::length::meter;
 
-let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
-assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
+fn main() {
+    let value = measurement::Length::new(Decimal::new(50, 0), unit::Length::Centimeter);
+    assert_eq!(value.to_uom_approx().get::<meter>(), 0.5);
+}
 ```
 
 Use `uom` for dimensional calculations where binary floating-point behavior is
