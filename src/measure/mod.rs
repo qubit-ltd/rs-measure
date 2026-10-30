@@ -24,6 +24,8 @@ mod uom_unit;
 
 pub use conversion_factor::ConversionFactor;
 pub use conversion_options::ConversionOptions;
+#[cfg(feature = "uom")]
+pub(crate) use decimal_conversion::convert_decimal_to_rational;
 pub use measurement::Measurement;
 pub use measurement_error::MeasurementError;
 pub use measurement_parse_options::MeasurementParseOptions;

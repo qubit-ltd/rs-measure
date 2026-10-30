@@ -12,6 +12,7 @@ use rust_decimal::prelude::FromPrimitive;
 use rust_decimal::prelude::ToPrimitive;
 
 use crate::UnitDefinition;
+use crate::measure::convert_decimal_to_rational;
 
 /// Converts Decimal into the finite `f64` storage used by `uom`.
 ///
@@ -43,16 +44,15 @@ pub fn decimal_to_f64_approx(value: Decimal) -> f64 {
 ///
 /// # Returns
 ///
-/// The corresponding approximate `f64` SI base value.
+/// The exact affine definition is applied with rational arithmetic before the
+/// result is approximated as `f64`. Validated Decimal definitions keep the
+/// result within finite `f64` range.
 #[must_use]
 #[inline]
 pub fn unit_value_to_base_f64(value: Decimal, definition: UnitDefinition) -> f64 {
-    let factor = definition.factor();
-    let value = decimal_to_f64_approx(value);
-    let offset = decimal_to_f64_approx(definition.offset());
-    let numerator = decimal_to_f64_approx(factor.numerator());
-    let denominator = decimal_to_f64_approx(factor.denominator());
-    (value + offset) * numerator / denominator
+    convert_decimal_to_rational(value, definition, UnitDefinition::base())
+        .to_f64()
+        .expect("validated Decimal affine definitions produce finite f64 base values")
 }
 
 /// Converts an approximate SI base value into one exact-definition unit.

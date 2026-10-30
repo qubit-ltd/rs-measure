@@ -94,7 +94,7 @@ fn definitions_are_mathematically_equivalent(source: UnitDefinition, target: Uni
 ///
 /// The exact rational value expressed by `target`, without applying a Decimal
 /// representation boundary or rounding policy.
-pub(super) fn convert_decimal_to_rational(
+pub(crate) fn convert_decimal_to_rational(
     value: Decimal,
     source: UnitDefinition,
     target: UnitDefinition,

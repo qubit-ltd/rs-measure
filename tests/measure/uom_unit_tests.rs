@@ -335,6 +335,29 @@ fn test_length_measurement_to_uom_approx_converts_unit() {
 }
 
 #[test]
+fn test_uom_affine_cancellation_preserves_small_base_value() {
+    use rust_decimal::dec;
+
+    for (input, expected) in [
+        (dec!(-273.149999999999999), 1.0e-15_f64),
+        (dec!(-273.150000000000001), -1.0e-15_f64),
+    ] {
+        let actual = measurement::Temperature::new(input, unit::Temperature::Celsius)
+            .try_to_uom_approx()
+            .expect("built-in Celsius is valid")
+            .get::<kelvin>();
+        assert_ne!(actual, 0.0, "nonzero Kelvin value was cancelled");
+        assert!((actual - expected).abs() <= expected.abs() * 1.0e-14);
+    }
+
+    let exact_zero = measurement::Temperature::new(dec!(-273.15), unit::Temperature::Celsius)
+        .try_to_uom_approx()
+        .expect("built-in Celsius is valid")
+        .get::<kelvin>();
+    assert_eq!(exact_zero, 0.0);
+}
+
+#[test]
 fn test_try_to_uom_approx_returns_invalid_definition_error() {
     let unit = FallibleUomUnit::Invalid;
     let measurement = Measurement::new(Decimal::ONE, unit);

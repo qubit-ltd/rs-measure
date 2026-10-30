@@ -50,3 +50,32 @@ fn test_unit_value_and_base_f64_follow_exact_definition() {
     let round_trip = round_trip.to_f64().expect("round-trip Decimal should fit f64");
     assert!((round_trip - 32.0).abs() <= 1.0E-12);
 }
+
+#[test]
+fn test_unit_value_to_base_f64_preserves_affine_range() {
+    let large_offset = UnitDefinition::new(
+        ConversionFactor::new(dec!(1), dec!(2)).expect("positive ratio should be valid"),
+        Decimal::MAX,
+    );
+    assert_eq!(
+        unit_value_to_base_f64(Decimal::MAX, large_offset),
+        decimal_to_f64_approx(Decimal::MAX),
+    );
+
+    let tiny_positive_factor = UnitDefinition::new(
+        ConversionFactor::new(Decimal::ONE, Decimal::MAX).expect("positive ratio should be valid"),
+        Decimal::ZERO,
+    );
+    let tiny_positive = unit_value_to_base_f64(Decimal::ONE, tiny_positive_factor);
+    assert!(tiny_positive.is_finite());
+    assert!(tiny_positive > 0.0);
+
+    let large_factor = UnitDefinition::new(
+        ConversionFactor::new(Decimal::MAX, Decimal::ONE).expect("positive ratio should be valid"),
+        Decimal::ZERO,
+    );
+    let large_positive = unit_value_to_base_f64(Decimal::MAX, large_factor);
+    let large_negative = unit_value_to_base_f64(-Decimal::MAX, large_factor);
+    assert!(large_positive.is_finite() && large_positive > 0.0);
+    assert!(large_negative.is_finite() && large_negative < 0.0);
+}
