@@ -70,6 +70,21 @@ fn test_unit_definition_provenance_covers_every_builtin_unit() {
         "NIST-HB-44-2026",
         "NIST-SP-811-2008",
     ]);
+    let expected_finite_pi = BTreeSet::from([
+        ("angle", "°"),
+        ("angle", "r"),
+        ("angle", "′"),
+        ("angle", "″"),
+        ("angular_velocity", "°/s"),
+        ("angular_velocity", "rps"),
+        ("angular_velocity", "rpm"),
+        ("solid_angle", "sp"),
+    ]);
+    let expected_finite_decimal = BTreeSet::from([
+        ("luminance", "fl"),
+        ("magnetic_field_strength", "Oe"),
+        ("solid_angle", "°²"),
+    ]);
     let mut actual = BTreeSet::new();
     for (index, line) in lines.enumerate() {
         let fields = line.split('\t').collect::<Vec<_>>();
@@ -97,10 +112,29 @@ fn test_unit_definition_provenance_covers_every_builtin_unit() {
             );
         }
         assert!(
-            matches!(numeric_policy, "exact" | "mixed_exact_and_finite_pi"),
+            matches!(numeric_policy, "exact" | "finite_pi" | "finite_decimal_approximation"),
             "invalid numeric policy {numeric_policy} for {quantity}",
         );
+        let expected_policy = if expected_finite_pi.contains(&(quantity, unit)) {
+            "finite_pi"
+        } else if expected_finite_decimal.contains(&(quantity, unit)) {
+            "finite_decimal_approximation"
+        } else {
+            "exact"
+        };
+        assert_eq!(numeric_policy, expected_policy, "numeric policy for {quantity} {unit}");
         assert!(!scope.is_empty(), "missing provenance scope for {quantity}");
+        if numeric_policy != "exact" {
+            for key in ["representation=", "derivation=", "rounding="] {
+                assert!(
+                    scope
+                        .split(';')
+                        .map(str::trim)
+                        .any(|field| field.strip_prefix(key).is_some_and(|value| !value.trim().is_empty())),
+                    "missing {key} for {quantity} {unit}",
+                );
+            }
+        }
     }
 
     assert_eq!(actual, expected);

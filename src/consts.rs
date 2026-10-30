@@ -605,7 +605,9 @@ pub(crate) mod luminance {
     pub(crate) const CANDELA_PER_SQUARE_CENTIMETER: UnitDefinition = definition!(10000, 1, 0, 0);
     /// Exact conversion definition for the `CandelaPerSquareFoot` unit.
     pub(crate) const CANDELA_PER_SQUARE_FOOT: UnitDefinition = definition!(1562500, 145161, 0, 0);
-    /// Exact conversion definition for the `Footlambert` unit.
+    /// Finite legacy approximation for the `Footlambert` conversion factor:
+    /// 6852518199270781/2000000000000000 (16 decimal places). Its historical
+    /// generation and rounding steps are not recorded.
     pub(crate) const FOOTLAMBERT: UnitDefinition = definition!(6852518199270781, 2000000000000000, 0, 0);
     /// Exact conversion definition for the `Stilb` unit.
     pub(crate) const STILB: UnitDefinition = definition!(10000, 1, 0, 0);
@@ -631,7 +633,9 @@ pub(crate) mod magnetic_field_strength {
     pub(crate) const AMPERE_PER_METER: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `AmperePerCentimeter` unit.
     pub(crate) const AMPERE_PER_CENTIMETER: UnitDefinition = definition!(100, 1, 0, 0);
-    /// Exact conversion definition for the `Oersted` unit.
+    /// Finite legacy approximation for the `Oersted` conversion factor:
+    /// 7957747154594767/100000000000000 (14 decimal places). Its historical
+    /// generation and rounding steps are not recorded.
     pub(crate) const OERSTED: UnitDefinition = definition!(7957747154594767, 100000000000000, 0, 0);
 }
 
@@ -872,14 +876,16 @@ pub(crate) mod solid_angle {
     /// Denominator used for the finite 28-place square-degree factor.
     const SQUARE_DEGREE_DENOMINATOR: i128 = 10_000_000_000_000_000_000_000_000_000;
 
-    /// Rounded numerator for `(pi / 180)^2` from the NIST DLMF digits of pi.
+    /// Rounded numerator for `(pi / 180)^2`, stored to 28 decimal places.
+    /// The historical rounding rule and derivation from a finite pi input are
+    /// not recorded; see `doc/unit-definition-provenance.tsv`.
     const SQUARE_DEGREE_NUMERATOR: i128 = 3_046_174_197_867_085_993_467_435;
 
     /// Exact conversion definition for the `Steradian` unit.
     pub(crate) const STERADIAN: UnitDefinition = definition!(1, 1, 0, 0);
     /// Exact conversion definition for the `Spat` unit.
     pub(crate) const SPAT: UnitDefinition = definition!(2 * TAU_DECIMAL_NUMERATOR, TAU_DECIMAL_DENOMINATOR, 0, 0,);
-    /// Exact conversion definition for the `SquareDegree` unit.
+    /// Finite legacy approximation for the `SquareDegree` conversion factor.
     pub(crate) const SQUARE_DEGREE: UnitDefinition =
         definition!(SQUARE_DEGREE_NUMERATOR, SQUARE_DEGREE_DENOMINATOR, 0, 0,);
 }

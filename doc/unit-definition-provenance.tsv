@@ -19,15 +19,15 @@ amount_of_substance	mmol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal 
 amount_of_substance	mol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
 amount_of_substance	kmol	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
 amount_of_substance	particle	BIPM-SI-9.3.01;CODATA-2022-V9.0	exact	SI mole, decimal prefixes, and Avogadro-based particle count
-angle	rad	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
-angle	°	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
-angle	r	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
-angle	′	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
-angle	″	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI angle conventions and finite pi-derived angular units
-angular_velocity	rad/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
-angular_velocity	°/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
-angular_velocity	rps	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
-angular_velocity	rpm	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	Angle definitions combined with SI time
+angle	rad	BIPM-SI-9.3.01;NIST-DLMF-3.12	exact	SI angle conventions and finite pi-derived angular units
+angle	°	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	SI angle conventions and finite pi-derived angular units; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=pi/180; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angle	r	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	SI angle conventions and finite pi-derived angular units; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=2*pi; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angle	′	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	SI angle conventions and finite pi-derived angular units; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=pi/10800; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angle	″	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	SI angle conventions and finite pi-derived angular units; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=pi/648000; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angular_velocity	rad/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	exact	Angle definitions combined with SI time
+angular_velocity	°/s	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	Angle definitions combined with SI time; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=pi/180 per second; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angular_velocity	rps	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	Angle definitions combined with SI time; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=2*pi per second; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+angular_velocity	rpm	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	Angle definitions combined with SI time; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=2*pi/60 per second; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
 area	mm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
 area	cm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
 area	m²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI area and exact international-foot customary area
@@ -159,17 +159,17 @@ length	in	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and ex
 length	ft	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
 length	yd	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
 length	mi	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-HB-44-2026	exact	SI length and exact international-inch and foot relationships
-luminance	cd/m²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
-luminance	cd/cm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
-luminance	cd/ft²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
-luminance	fl	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
-luminance	sb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI luminance, international foot, and finite footlambert conversion
+luminance	cd/m²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI luminance, international foot, and finite footlambert conversion
+luminance	cd/cm²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI luminance, international foot, and finite footlambert conversion
+luminance	cd/ft²	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI luminance, international foot, and finite footlambert conversion
+luminance	fl	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	finite_decimal_approximation	SI luminance, international foot, and finite footlambert conversion; representation=6852518199270781/2000000000000000; 16 decimal places; derivation=legacy fixed approximation; historical generation steps not recorded; rounding=not_recorded
+luminance	sb	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI luminance, international foot, and finite footlambert conversion
 luminous_intensity	mcd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
 luminous_intensity	cd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
 luminous_intensity	kcd	BIPM-SI-9.3.01	exact	SI candela and decimal prefixes
-magnetic_field_strength	A/m	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
-magnetic_field_strength	A/cm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
-magnetic_field_strength	Oe	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI field strength and finite oersted conversion
+magnetic_field_strength	A/m	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI field strength and finite oersted conversion
+magnetic_field_strength	A/cm	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	exact	SI field strength and finite oersted conversion
+magnetic_field_strength	Oe	BIPM-SI-9.3.01;NIST-SP-811-2008;NIST-DLMF-3.12	finite_decimal_approximation	SI field strength and finite oersted conversion; representation=7957747154594767/100000000000000; 14 decimal places; derivation=legacy fixed approximation; historical generation steps not recorded; rounding=not_recorded
 magnetic_flux	µWb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
 magnetic_flux	mWb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
 magnetic_flux	Wb	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI weber and maxwell conversion
@@ -245,9 +245,9 @@ radioactivity	Ci	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and 
 radioactivity	mCi	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
 radioactivity	µCi	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
 radioactivity	dpm	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI becquerel, curie, and disintegrations per minute
-solid_angle	sr	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
-solid_angle	sp	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
-solid_angle	°²	BIPM-SI-9.3.01;NIST-DLMF-3.12	mixed_exact_and_finite_pi	SI steradian and finite pi-derived solid-angle units
+solid_angle	sr	BIPM-SI-9.3.01;NIST-DLMF-3.12	exact	SI steradian and finite pi-derived solid-angle units
+solid_angle	sp	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_pi	SI steradian and finite pi-derived solid-angle units; representation=pi=314159265358979323846264/10^23; tau=2*pi; derivation=4*pi; finite pi input; derived without further rounding; rounding=finite pi input is rounded; derivation adds no rounding
+solid_angle	°²	BIPM-SI-9.3.01;NIST-DLMF-3.12	finite_decimal_approximation	SI steradian and finite pi-derived solid-angle units; representation=3046174197867085993467435/10^28; 28 decimal places; derivation=rounded (pi/180)^2; not established as derived from the finite 23-place pi input; rounding=not_recorded
 specific_heat_capacity	J/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
 specific_heat_capacity	kJ/(kg · K)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
 specific_heat_capacity	J/(g · °C)	BIPM-SI-9.3.01;NIST-SP-811-2008	exact	SI specific heat, thermochemical calorie, and Btu conversions
