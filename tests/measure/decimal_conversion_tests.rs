@@ -75,6 +75,65 @@ fn test_maximum_precision_rounds_repeating_result_to_nearest_even() {
 }
 
 #[test]
+fn test_maximum_precision_reduces_scale_after_mantissa_carry() {
+    for (input, source, target, expected) in [
+        (
+            dec!(7922816251426433759354395033.5),
+            DecimalConversionUnit::OffsetPointFour,
+            DecimalConversionUnit::Base,
+            dec!(7922816251426433759354395034),
+        ),
+        (
+            dec!(-7922816251426433759354395033.5),
+            DecimalConversionUnit::Base,
+            DecimalConversionUnit::OffsetPointFour,
+            dec!(-7922816251426433759354395034),
+        ),
+    ] {
+        let actual = convert(input, source, target, ConversionOptions::maximum_precision())
+            .expect("rounded boundary value should fit Decimal");
+        assert_eq!(actual, expected);
+        assert_eq!(actual.scale(), 0);
+    }
+}
+
+#[test]
+fn test_maximum_precision_rounds_subquantum_midpoints_to_even() {
+    for (mantissa, expected) in [
+        (1, Decimal::ZERO),
+        (-1, Decimal::ZERO),
+        (3, Decimal::new(2, 28)),
+        (-3, Decimal::new(-2, 28)),
+    ] {
+        let actual = convert(
+            Decimal::new(mantissa, 28),
+            DecimalConversionUnit::TinyHalf,
+            DecimalConversionUnit::Base,
+            ConversionOptions::maximum_precision(),
+        )
+        .expect("rounded subquantum midpoint should fit Decimal");
+        assert_eq!(actual, expected);
+        assert_eq!(actual.scale(), expected.scale());
+    }
+}
+
+#[test]
+fn test_maximum_precision_rounds_subquantum_non_midpoints() {
+    for mantissa in [1, -1] {
+        let expected = Decimal::new(mantissa, 28);
+        let actual = convert(
+            expected,
+            DecimalConversionUnit::TwoThirds,
+            DecimalConversionUnit::Base,
+            ConversionOptions::maximum_precision(),
+        )
+        .expect("rounded subquantum non-midpoint should fit Decimal");
+        assert_eq!(actual, expected);
+        assert_eq!(actual.scale(), 28);
+    }
+}
+
+#[test]
 fn test_decimal_conversion_applies_requested_scale() {
     let options =
         ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven).expect("scale should be valid");
