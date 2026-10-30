@@ -12,6 +12,7 @@
 mod fixtures;
 mod support;
 
+mod cfg_unit_family_tests;
 mod conversion_factor_tests;
 mod conversion_options_tests;
 mod decimal_conversion_tests;

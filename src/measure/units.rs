@@ -170,10 +170,10 @@ macro_rules! __unit_offset {
 #[macro_export]
 macro_rules! __define_unit_family_core {
     (
-        $(#[$enum_attr:meta])*
+        [$enum_cfg:tt] [$($enum_attr:tt)*]
         $visibility:vis enum $unit:ident for $quantity_name:literal {
             $(
-                $(#[$variant_attr:meta])*
+                [$variant_cfg:tt] [$($variant_attr:tt)*]
                 $variant:ident => {
                     symbol: $symbol:literal;
                     definition: $definition:expr;
@@ -182,13 +182,14 @@ macro_rules! __define_unit_family_core {
             )+
         }
     ) => {
+        #[cfg$enum_cfg]
         const _: () = {
             const SYMBOLS: &[&str] = &[
-                $($symbol,)+
+                $(#[cfg$variant_cfg] $symbol,)+
             ];
             const ALIASES: &[&str] = &[
                 $(
-                    $($($alias,)*)?
+                    $($( #[cfg$variant_cfg] $alias, )*)?
                 )+
             ];
             $crate::__private::assert_unit_family_metadata(
@@ -198,47 +199,51 @@ macro_rules! __define_unit_family_core {
             );
         };
 
-        $(#[$enum_attr])*
+        #[cfg$enum_cfg]
+        $($enum_attr)*
         #[must_use]
         #[non_exhaustive]
         #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
         $visibility enum $unit {
             $(
-                $(#[$variant_attr])*
+                #[cfg$variant_cfg]
+                $($variant_attr)*
                 $variant,
             )+
         }
 
+        #[cfg$enum_cfg]
         impl $crate::Unit for $unit {
             const QUANTITY: &'static str = $quantity_name;
 
             #[inline(always)]
             fn all() -> &'static [Self] {
-                &[$(Self::$variant,)+]
+                &[$(#[cfg$variant_cfg] Self::$variant,)+]
             }
 
             #[inline(always)]
             fn symbol(self) -> &'static str {
                 match self {
-                    $(Self::$variant => $symbol,)+
+                    $(#[cfg$variant_cfg] Self::$variant => $symbol,)+
                 }
             }
 
             #[inline(always)]
             fn aliases(self) -> &'static [&'static str] {
                 match self {
-                    $(Self::$variant => &[$($($alias,)*)?],)+
+                    $(#[cfg$variant_cfg] Self::$variant => &[$($($alias,)*)?],)+
                 }
             }
 
             #[inline]
             fn definition(self) -> Result<$crate::UnitDefinition, $crate::MeasurementError> {
                 match self {
-                    $(Self::$variant => $definition,)+
+                    $(#[cfg$variant_cfg] Self::$variant => $definition,)+
                 }
             }
         }
 
+        #[cfg$enum_cfg]
         impl ::std::fmt::Display for $unit {
             #[inline]
             fn fmt(&self, formatter: &mut ::std::fmt::Formatter<'_>) -> ::std::fmt::Result {
@@ -246,6 +251,7 @@ macro_rules! __define_unit_family_core {
             }
         }
 
+        #[cfg$enum_cfg]
         impl ::std::str::FromStr for $unit {
             type Err = $crate::MeasurementError;
 
@@ -255,6 +261,7 @@ macro_rules! __define_unit_family_core {
             }
         }
 
+        #[cfg$enum_cfg]
         impl ::serde::Serialize for $unit {
             #[inline]
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -265,6 +272,7 @@ macro_rules! __define_unit_family_core {
             }
         }
 
+        #[cfg$enum_cfg]
         impl<'de> ::serde::Deserialize<'de> for $unit {
             #[inline]
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -286,9 +294,11 @@ macro_rules! __define_unit_family_core {
 /// the supplied `uom` quantity and SI base-unit types are available. The base
 /// unit must represent the abstract base used by every
 /// [`UnitDefinition`](crate::UnitDefinition)
-/// returned by the family. The bridge applies that exact definition before
-/// crossing `f64`; reading the resulting quantity through another `uom` unit
-/// then follows `uom`'s own coefficient for that unit. The generated
+/// returned by the family. Outbound conversion applies the exact definition
+/// with rational arithmetic before converting once to `f64`. Inbound conversion
+/// starts from the existing `f64` base value and approximates the reverse
+/// conversion. Reading the resulting quantity through another `uom` unit then
+/// follows `uom`'s own coefficient for that unit. The generated
 /// required `UomUnit::try_to_uom_approx` method returns a unit-definition
 /// error, while the trait's default `to_uom_approx` convenience method panics
 /// for the same invalid external definition. Keeping this bridge separate from
@@ -363,6 +373,74 @@ macro_rules! impl_uom_unit {
     };
 }
 
+#[doc(hidden)]
+#[macro_export]
+macro_rules! __scan_unit_family_attrs {
+    (@enum [$($predicates:tt)*] [$($attrs:tt)*] ; #[cfg($($predicate:tt)*)] $($rest:tt)*) => {
+        $crate::__scan_unit_family_attrs! {
+            @enum [all($($predicates)*, $($predicate)*)] [$($attrs)*] ; $($rest)*
+        }
+    };
+    (@enum [$($predicates:tt)*] [$($attrs:tt)*] ; #[$($attribute:tt)*] $($rest:tt)*) => {
+        $crate::__scan_unit_family_attrs! {
+            @enum [$($predicates)*] [$($attrs)* #[$($attribute)*]] ; $($rest)*
+        }
+    };
+    (@enum [$($enum_predicates:tt)*] [$($enum_attrs:tt)*] ;
+        $visibility:vis enum $unit:ident for $quantity_name:literal { $($variants:tt)* }
+    ) => {
+        $crate::__scan_unit_family_attrs! {
+            @variant [(all($($enum_predicates)*))] [$($enum_attrs)*] [$visibility] [$unit] [$quantity_name]
+            [] [all()] [] ; $($variants)*
+        }
+    };
+    (@variant [$enum_cfg:tt] [$($enum_attrs:tt)*] [$visibility:vis] [$unit:ident] [$quantity_name:literal]
+        [$($output:tt)*] [$($variant_predicates:tt)*] [$($variant_attrs:tt)*] ;
+        #[cfg($($predicate:tt)*)] $($rest:tt)*
+    ) => {
+        $crate::__scan_unit_family_attrs! {
+            @variant [$enum_cfg] [$($enum_attrs)*] [$visibility] [$unit] [$quantity_name]
+            [$($output)*] [all($($variant_predicates)*, $($predicate)*)] [$($variant_attrs)*] ; $($rest)*
+        }
+    };
+    (@variant [$enum_cfg:tt] [$($enum_attrs:tt)*] [$visibility:vis] [$unit:ident] [$quantity_name:literal]
+        [$($output:tt)*] [$($variant_predicates:tt)*] [$($variant_attrs:tt)*] ;
+        #[$($attribute:tt)*] $($rest:tt)*
+    ) => {
+        $crate::__scan_unit_family_attrs! {
+            @variant [$enum_cfg] [$($enum_attrs)*] [$visibility] [$unit] [$quantity_name]
+            [$($output)*] [$($variant_predicates)*] [$($variant_attrs)* #[$($attribute)*]] ; $($rest)*
+        }
+    };
+    (@variant [$enum_cfg:tt] [$($enum_attrs:tt)*] [$visibility:vis] [$unit:ident] [$quantity_name:literal]
+        [$($output:tt)*] [$($variant_predicates:tt)*] [$($variant_attrs:tt)*] ;
+        $variant:ident => { symbol: $symbol:literal; definition: $definition:path; $(aliases: [$($alias:literal),* $(,)?];)? } $($rest:tt)*
+    ) => {
+        $crate::__scan_unit_family_attrs! {
+            @variant [$enum_cfg] [$($enum_attrs)*] [$visibility] [$unit] [$quantity_name]
+            [$($output)* [(all($($variant_predicates)*))] [$($variant_attrs)*] $variant => { symbol: $symbol; definition: $definition; $(aliases: [$($alias),*];)? }]
+            [all()] [] ; $($rest)*
+        }
+    };
+    (@variant [$enum_cfg:tt] [$($enum_attrs:tt)*] [$visibility:vis] [$unit:ident] [$quantity_name:literal]
+        [$($output:tt)*] [$($variant_predicates:tt)*] [$($variant_attrs:tt)*] ;
+        $variant:ident => { symbol: $symbol:literal; coefficient: $numerator:literal $(/ $denominator:literal)?; $(offset: $offset:literal;)? $(aliases: [$($alias:literal),* $(,)?];)? } $($rest:tt)*
+    ) => {
+        $crate::__scan_unit_family_attrs! {
+            @variant [$enum_cfg] [$($enum_attrs)*] [$visibility] [$unit] [$quantity_name]
+            [$($output)* [(all($($variant_predicates)*))] [$($variant_attrs)*] $variant => { symbol: $symbol; coefficient: $numerator $(/ $denominator)?; $(offset: $offset;)? $(aliases: [$($alias),*];)? }]
+            [all()] [] ; $($rest)*
+        }
+    };
+    (@variant [$enum_cfg:tt] [$($enum_attrs:tt)*] [$visibility:vis] [$unit:ident] [$quantity_name:literal]
+        [$($output:tt)+] [all()] [] ;
+    ) => {
+        $crate::define_unit_family! {
+            @normalized [$enum_cfg] [$($enum_attrs)*] $visibility enum $unit for $quantity_name { $($output)* }
+        }
+    };
+}
+
 /// Defines an externally extensible unit family with exact Decimal factors.
 ///
 /// The generated type implements [`Unit`](crate::Unit), display, strict
@@ -387,6 +465,28 @@ macro_rules! impl_uom_unit {
 /// `Display`, strict `FromStr`, and canonical-only string Serde. Its `all()`
 /// slice is generated from every declared variant, so it is complete by
 /// construction.
+///
+/// Direct `#[cfg(...)]` attributes on the enum and its variants control the
+/// generated family consistently, including metadata checks and every
+/// generated implementation. Use direct `cfg` when conditionally removing the
+/// whole family or individual variants; the entire macro invocation may also be
+/// placed behind an outer `cfg`. Other attributes such as `doc` and `allow`
+/// remain attached to their original enum or variant. This macro does not
+/// interpret `cfg_attr` as a source of additional conditions. The family must
+/// remain non-empty after its cfg conditions are applied.
+///
+/// An enabled family whose variants are all disabled is rejected:
+///
+/// ```compile_fail
+/// use qubit_measure::define_unit_family;
+///
+/// define_unit_family! {
+///     enum EmptyAfterCfg for "empty_after_cfg" {
+///         #[cfg(any())]
+///         Disabled => { symbol: "disabled"; coefficient: 1; }
+///     }
+/// }
+/// ```
 ///
 /// # Metadata contract
 ///
@@ -656,67 +756,49 @@ macro_rules! impl_uom_unit {
 /// ```
 #[macro_export]
 macro_rules! define_unit_family {
-    (
-        $(#[$enum_attr:meta])*
+    (@normalized
+        [$enum_cfg:tt] [$($enum_attr:tt)*]
         $visibility:vis enum $unit:ident for $quantity_name:literal {
-            $(
-                $(#[$variant_attr:meta])*
-                $variant:ident => {
-                    symbol: $symbol:literal;
-                    definition: $definition:path;
-                    $(aliases: [$($alias:literal),* $(,)?];)?
-                }
-            )+
+            $( [$variant_cfg:tt] [$($variant_attr:tt)*] $variant:ident => {
+                symbol: $symbol:literal; definition: $definition:path; $(aliases: [$($alias:literal),* $(,)?];)?
+            } )+
         }
     ) => {
         $crate::__define_unit_family_core! {
-            $(#[$enum_attr])*
+            [$enum_cfg] [$($enum_attr)*]
             $visibility enum $unit for $quantity_name {
-                $(
-                    $(#[$variant_attr])*
-                    $variant => {
-                        symbol: $symbol;
-                        definition: Ok($definition);
-                        $(aliases: [$($alias),*];)?
-                    }
-                )+
+                $( [$variant_cfg] [$($variant_attr)*] $variant => {
+                    symbol: $symbol; definition: Ok($definition); $(aliases: [$($alias),*];)?
+                } )+
             }
         }
     };
-    (
-        $(#[$enum_attr:meta])*
+    (@normalized
+        [$enum_cfg:tt] [$($enum_attr:tt)*]
         $visibility:vis enum $unit:ident for $quantity_name:literal {
-            $(
-                $(#[$variant_attr:meta])*
-                $variant:ident => {
-                    symbol: $symbol:literal;
-                    coefficient: $numerator:literal $(/ $denominator:literal)?;
-                    $(offset: $offset:literal;)?
-                    $(aliases: [$($alias:literal),* $(,)?];)?
-                }
-            )+
+            $( [$variant_cfg:tt] [$($variant_attr:tt)*] $variant:ident => {
+                symbol: $symbol:literal; coefficient: $numerator:literal $(/ $denominator:literal)?;
+                $(offset: $offset:literal;)? $(aliases: [$($alias:literal),* $(,)?];)?
+            } )+
         }
     ) => {
         $crate::__define_unit_family_core! {
-            $(#[$enum_attr])*
+            [$enum_cfg] [$($enum_attr)*]
             $visibility enum $unit for $quantity_name {
-                $(
-                    $(#[$variant_attr])*
-                    $variant => {
-                        symbol: $symbol;
-                        definition: {
-                            let factor = $crate::__unit_factor!(
-                                $numerator $(/ $denominator)?
-                            )?;
-                            Ok($crate::UnitDefinition::new(
-                                factor,
-                                $crate::__unit_offset!($($offset)?),
-                            ))
-                        };
-                        $(aliases: [$($alias),*];)?
-                    }
-                )+
+                $( [$variant_cfg] [$($variant_attr)*] $variant => {
+                    symbol: $symbol;
+                    definition: {
+                        let factor = $crate::__unit_factor!($numerator $(/ $denominator)?)?;
+                        Ok($crate::UnitDefinition::new(factor, $crate::__unit_offset!($($offset)?)))
+                    };
+                    $(aliases: [$($alias),*];)?
+                } )+
             }
+        }
+    };
+    ($(#[$($enum_attr:tt)*])* $visibility:vis enum $unit:ident for $quantity_name:literal { $($variants:tt)* }) => {
+        $crate::__scan_unit_family_attrs! {
+            @enum [all()] [] ; $(#[$($enum_attr)*])* $visibility enum $unit for $quantity_name { $($variants)* }
         }
     };
 }
