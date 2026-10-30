@@ -14,8 +14,21 @@ use std::str;
 
 use libfuzzer_sys::fuzz_target;
 use qubit_measure::Measurement;
+use qubit_measure::MeasurementError;
 use qubit_measure::MeasurementParseOptions;
+use qubit_measure::Unit;
 use qubit_measure::unit;
+
+fn assert_successful_parse<U: Unit>(result: Result<Measurement<U>, MeasurementError>) {
+    if let Ok(original) = result {
+        let text = original.to_string();
+        let restored =
+            Measurement::<U>::parse_strict(&text).expect("canonical display of a parsed measurement should parse");
+        assert_eq!(restored.value, original.value);
+        assert_eq!(restored.value.scale(), original.value.scale());
+        assert!(restored.unit == original.unit, "round trip should preserve the unit");
+    }
+}
 
 fuzz_target!(|data: &[u8]| {
     let Ok(input) = str::from_utf8(data) else {
@@ -23,15 +36,21 @@ fuzz_target!(|data: &[u8]| {
     };
     let constrained = MeasurementParseOptions::default().with_max_text_bytes(data.len().saturating_div(2));
 
-    let _ = Measurement::<unit::Length>::parse_strict(input);
-    let _ = Measurement::<unit::Length>::parse_lenient(input);
-    let _ = Measurement::<unit::Length>::parse_strict_with_options(input, &constrained);
-    let _ = Measurement::<unit::Length>::parse_lenient_with_options(input, &constrained);
-    let _ = Measurement::<unit::Time>::parse_strict(input);
-    let _ = Measurement::<unit::Time>::parse_lenient(input);
-    let _ = Measurement::<unit::Temperature>::parse_strict(input);
-    let _ = Measurement::<unit::Temperature>::parse_lenient(input);
-    let _ = Measurement::<unit::Area>::parse_lenient(input);
-    let _ = Measurement::<unit::Volume>::parse_lenient(input);
-    let _ = Measurement::<unit::Velocity>::parse_lenient(input);
+    assert_successful_parse(Measurement::<unit::Length>::parse_strict(input));
+    assert_successful_parse(Measurement::<unit::Length>::parse_lenient(input));
+    assert_successful_parse(Measurement::<unit::Length>::parse_strict_with_options(
+        input,
+        &constrained,
+    ));
+    assert_successful_parse(Measurement::<unit::Length>::parse_lenient_with_options(
+        input,
+        &constrained,
+    ));
+    assert_successful_parse(Measurement::<unit::Time>::parse_strict(input));
+    assert_successful_parse(Measurement::<unit::Time>::parse_lenient(input));
+    assert_successful_parse(Measurement::<unit::Temperature>::parse_strict(input));
+    assert_successful_parse(Measurement::<unit::Temperature>::parse_lenient(input));
+    assert_successful_parse(Measurement::<unit::Area>::parse_lenient(input));
+    assert_successful_parse(Measurement::<unit::Volume>::parse_lenient(input));
+    assert_successful_parse(Measurement::<unit::Velocity>::parse_lenient(input));
 });

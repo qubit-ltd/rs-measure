@@ -9,6 +9,10 @@
 use std::cmp::Ordering;
 use std::str::FromStr;
 
+use proptest::prelude::any;
+use proptest::prop_assert;
+use proptest::prop_assert_eq;
+use proptest::proptest;
 use qubit_measure::ConversionOptions;
 use qubit_measure::Measurement;
 use qubit_measure::MeasurementError;
@@ -101,6 +105,141 @@ fn test_measurement_try_cmp_exact_orders_cross_unit_values() {
 
     assert_eq!(meter.try_cmp_exact(&centimeters), Ok(Ordering::Greater));
     assert_eq!(centimeters.try_cmp_exact(&meter), Ok(Ordering::Less));
+}
+
+#[test]
+fn test_measurement_exact_comparison_survives_conversion_overflow() {
+    let meters = measurement::Length::new(Decimal::MAX, unit::Length::Meter);
+    let centimeters = measurement::Length::new(Decimal::MAX, unit::Length::Centimeter);
+
+    assert_eq!(
+        meters.convert_to(unit::Length::Centimeter),
+        Err(MeasurementError::ValueOutOfRange),
+    );
+    assert_eq!(meters.try_cmp_exact(&centimeters), Ok(Ordering::Greater));
+    assert_eq!(centimeters.try_cmp_exact(&meters), Ok(Ordering::Less));
+}
+
+#[test]
+fn test_measurement_exact_comparison_distinguishes_rounding_collision() {
+    let zero = measurement::Length::new(Decimal::ZERO, unit::Length::Meter);
+    let tiny = measurement::Length::new(Decimal::from_parts(1, 0, 0, false, 28), unit::Length::Centimeter);
+
+    assert_eq!(
+        tiny.convert_to(unit::Length::Meter)
+            .expect("tiny value should round at the Decimal boundary")
+            .value,
+        Decimal::ZERO,
+    );
+    assert_eq!(zero.try_cmp_exact(&tiny), Ok(Ordering::Less));
+    assert_eq!(tiny.try_cmp_exact(&zero), Ok(Ordering::Greater));
+    assert_eq!(zero.equivalent_to(&tiny), Ok(false));
+}
+
+proptest! {
+    #[test]
+    fn prop_measurement_exact_comparison_preserves_order_properties(
+        a_value in -1_000_000_000_i64..=1_000_000_000,
+        b_value in -1_000_000_000_i64..=1_000_000_000,
+        c_value in -1_000_000_000_i64..=1_000_000_000,
+        a_scale in 0_u32..=8,
+        b_scale in 0_u32..=8,
+        c_scale in 0_u32..=8,
+        a_unit in 0_usize..3,
+        b_unit in 0_usize..3,
+        c_unit in 0_usize..3,
+    ) {
+        let units = [unit::Length::Meter, unit::Length::Centimeter, unit::Length::Kilometer];
+        let a = measurement::Length::new(Decimal::new(a_value, a_scale), units[a_unit]);
+        let b = measurement::Length::new(Decimal::new(b_value, b_scale), units[b_unit]);
+        let c = measurement::Length::new(Decimal::new(c_value, c_scale), units[c_unit]);
+
+        let ab = a.try_cmp_exact(&b).expect("valid length definitions should compare");
+        let ba = b.try_cmp_exact(&a).expect("valid length definitions should compare");
+        prop_assert_eq!(ab, ba.reverse());
+
+        let bc = b.try_cmp_exact(&c).expect("valid length definitions should compare");
+        let ac = a.try_cmp_exact(&c).expect("valid length definitions should compare");
+        if ab != Ordering::Greater && bc != Ordering::Greater {
+            prop_assert!(ac != Ordering::Greater);
+        }
+
+        let a_equivalent_b = a.equivalent_to(&b).expect("valid length definitions should compare");
+        let b_equivalent_a = b.equivalent_to(&a).expect("valid length definitions should compare");
+        prop_assert_eq!(a_equivalent_b, b_equivalent_a);
+        prop_assert_eq!(a_equivalent_b, ab == Ordering::Equal);
+    }
+}
+
+#[test]
+fn test_measurement_exact_comparison_orders_negative_values() {
+    let meters = measurement::Length::new(Decimal::new(-1, 0), unit::Length::Meter);
+    let centimeters = measurement::Length::new(Decimal::new(-99, 0), unit::Length::Centimeter);
+
+    assert_eq!(meters.try_cmp_exact(&centimeters), Ok(Ordering::Less));
+}
+
+fn assert_measurement_round_trip<U: Unit>(original: Measurement<U>) {
+    let text = original.to_string();
+    let strict = Measurement::<U>::parse_strict(&text).expect("canonical display should parse strictly");
+    let lenient = Measurement::<U>::parse_lenient(&text).expect("canonical display should parse leniently");
+    let json = serde_json::to_vec(&original).expect("measurement should serialize");
+    let restored: Measurement<U> = serde_json::from_slice(&json).expect("measurement JSON should deserialize");
+
+    for actual in [strict, lenient, restored] {
+        assert_eq!(actual.value, original.value);
+        assert_eq!(actual.value.scale(), original.value.scale());
+        assert!(actual.unit == original.unit, "round trip should preserve the unit");
+    }
+}
+
+proptest! {
+    #[test]
+    fn test_measurement_round_trip_full_decimal(
+        lo in any::<u32>(),
+        mid in any::<u32>(),
+        hi in any::<u32>(),
+        negative in any::<bool>(),
+        scale in 0_u32..=28,
+        unit_index in any::<usize>(),
+    ) {
+        let value = Decimal::from_parts(lo, mid, hi, negative, scale);
+
+        let length_units = unit::Length::all();
+        let length_unit = length_units[unit_index % length_units.len()];
+        assert_measurement_round_trip(Measurement::new(value, length_unit));
+
+        let temperature_units = unit::Temperature::all();
+        let temperature_unit = temperature_units[unit_index % temperature_units.len()];
+        assert_measurement_round_trip(Measurement::new(value, temperature_unit));
+
+        let time_units = unit::Time::all();
+        let time_unit = time_units[unit_index % time_units.len()];
+        assert_measurement_round_trip(Measurement::new(value, time_unit));
+    }
+}
+
+#[test]
+fn test_measurement_round_trip_full_decimal_boundary_seeds() {
+    let values = [
+        Decimal::MIN,
+        Decimal::MAX,
+        Decimal::ZERO,
+        Decimal::ONE,
+        Decimal::from_parts(1, 0, 0, false, 28),
+    ];
+
+    for value in values {
+        for length_unit in unit::Length::all() {
+            assert_measurement_round_trip(Measurement::new(value, *length_unit));
+        }
+        for temperature_unit in unit::Temperature::all() {
+            assert_measurement_round_trip(Measurement::new(value, *temperature_unit));
+        }
+        for time_unit in unit::Time::all() {
+            assert_measurement_round_trip(Measurement::new(value, *time_unit));
+        }
+    }
 }
 
 #[test]

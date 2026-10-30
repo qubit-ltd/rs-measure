@@ -11,6 +11,7 @@
 
 use libfuzzer_sys::fuzz_target;
 use qubit_measure::Measurement;
+use qubit_measure::MeasurementError;
 use qubit_measure::Unit;
 use qubit_measure::define_unit_family;
 
@@ -44,6 +45,17 @@ define_unit_family! {
     }
 }
 
+fn assert_successful_parse<U: Unit>(result: Result<Measurement<U>, MeasurementError>) {
+    if let Ok(original) = result {
+        let text = original.to_string();
+        let restored =
+            Measurement::<U>::parse_strict(&text).expect("canonical display of a parsed measurement should parse");
+        assert_eq!(restored.value, original.value);
+        assert_eq!(restored.value.scale(), original.value.scale());
+        assert!(restored.unit == original.unit, "round trip should preserve the unit");
+    }
+}
+
 fuzz_target!(|data: &[u8]| {
     let Ok(input) = str::from_utf8(data) else {
         return;
@@ -51,6 +63,6 @@ fuzz_target!(|data: &[u8]| {
 
     let _ = FuzzUnit::parse_strict(input);
     let _ = FuzzUnit::parse_lenient(input);
-    let _ = Measurement::<FuzzUnit>::parse_strict(input);
-    let _ = Measurement::<FuzzUnit>::parse_lenient(input);
+    assert_successful_parse(Measurement::<FuzzUnit>::parse_strict(input));
+    assert_successful_parse(Measurement::<FuzzUnit>::parse_lenient(input));
 });
