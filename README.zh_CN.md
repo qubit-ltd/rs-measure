@@ -107,10 +107,14 @@ Decimal 有理数，因此 `5 / 9`、精确 SI 前缀及精确英美制定义不
 遵循 [BIPM SI Brochure](https://www.bipm.org/en/publications/si-brochure)、
 [NIST 换算资料](https://www.nist.gov/pml/owm/metric-si/unit-conversion)、
 [NIST Handbook 44](https://www.nist.gov/pml/owm/nist-handbook-44-current-edition) 和
-[2022 CODATA](https://physics.nist.gov/cuu/Constants/)。无理数只能使用有限近似：pi 采用
-[NIST DLMF 3.12](https://dlmf.nist.gov/3.12) 的 23 位小数，有限 tau 严格等于它的两倍，
-平方度采用 28 位小数。每个内建 quantity family 使用的版本化来源、数值策略和覆盖范围
-记录在机器可读的[单位定义来源清单](doc/unit-definition-provenance.tsv)中。
+[2022 CODATA](https://physics.nist.gov/cuu/Constants/)。数值策略按单位记录在机器可读的
+[单位定义来源清单](doc/unit-definition-provenance.tsv)中。
+
+使用 pi 或 tau 的单位因子由有限 23 位小数 pi 值 `314159265358979323846264/10^23`
+通过精确有理数运算派生（tau 严格等于该输入的两倍）；派生运算不再舍入，但无理数物理定义
+仍是近似值。Footlambert（`fl`）、Oersted（`Oe`）和平方度（`°²`）使用独立存储的有限近似，
+清单分别记录其表示以及历史舍入信息是否可得。Decimal 运算可以精确保留这些已存有理数，但不能让
+近似的物理定义变成精确值。
 
 Btu (IT) 的精确定义为 `1055.05585262 J`，依据
 [NIST SP 811 脚注 9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-footnotes)。
@@ -261,15 +265,17 @@ byte 和越界值会被拒绝，不进行舍入。反向的 `From<u64>` 会无�
 
 `Unit`、`ConversionFactor` 和 `UnitDefinition` 均为公开 API。导出的宏支持编译期扩展，
 不引入运行时注册表，也不强制要求 `uom` 映射。
-宏展开会在下游 crate 中直接解析 `rust_decimal` 和 `serde`，因此外部单位族必须直接声明
-这两个依赖：
+精确的 `define_unit_family!` 宏通过 `qubit-measure` 解析生成的 Decimal 类型；其 Serde
+实现要求调用方直接声明 `serde`。最小依赖如下：
 
 ```toml
 [dependencies]
 qubit-measure = "0.8"
-rust_decimal = "1.39"
 serde = "1.0"
 ```
+
+若业务代码直接使用 `Decimal` 或调用 `impl_uom_unit!`，还须直接声明 `rust_decimal`。
+使用 `uom` 类型的代码也须直接声明 `uom`，并启用 `qubit-measure` 对应 feature。
 
 ```rust
 use qubit_measure::{Unit, define_unit_family};
@@ -344,6 +350,10 @@ fn main() {
 
 ## 测试
 
+以下四组消费者夹具组成手动验证流程，每条命令都应成功退出。第一条检查外部宏和定义路径；
+第二条检查最小公开 Decimal API；第三条检查可选 `uom` 桥接；最后一条在同时构建两个消费者时
+检查 feature 统一行为。根目录的 `cargo test` 不会自动发现这些独立 manifest。
+
 ```bash
 # 使用默认 feature 集运行测试
 cargo test
@@ -351,7 +361,13 @@ cargo test
 # 使用项目声明的全部 feature 运行测试
 cargo test --all-features
 
-# 运行项目 CI 检查
+# 独立消费者夹具（手动运行；根 cargo test 不会自动发现）
+cargo test --manifest-path fixtures/downstream-default/Cargo.toml
+cargo check --manifest-path fixtures/downstream-minimum/Cargo.toml
+cargo test --manifest-path fixtures/downstream-uom/Cargo.toml
+cargo test --manifest-path fixtures/feature-unification/Cargo.toml --workspace
+
+# 运行当前 crate 的项目 CI 检查
 ./.infra/bin/ci-check.sh
 
 # 检查代码覆盖率

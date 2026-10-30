@@ -115,12 +115,16 @@ by quantity. Exact and derived definitions follow the
 [BIPM SI Brochure](https://www.bipm.org/en/publications/si-brochure),
 [NIST conversion references](https://www.nist.gov/pml/owm/metric-si/unit-conversion),
 [NIST Handbook 44](https://www.nist.gov/pml/owm/nist-handbook-44-current-edition),
-and [2022 CODATA](https://physics.nist.gov/cuu/Constants/). Irrational values are
-finite approximations: pi uses 23 decimal places from
-[NIST DLMF section 3.12](https://dlmf.nist.gov/3.12), the finite tau is exactly twice
-that value, and square degree uses 28 decimal places. The versioned source set,
-numeric policy, and coverage scope for every built-in quantity family are recorded
-in the machine-readable [unit-definition provenance manifest](doc/unit-definition-provenance.tsv).
+and [2022 CODATA](https://physics.nist.gov/cuu/Constants/). Numeric policy is recorded
+per unit in the machine-readable [unit-definition provenance manifest](doc/unit-definition-provenance.tsv).
+
+Units using pi or tau derive factors by exact rational operations from the finite
+23-place pi value `314159265358979323846264/10^23` (with tau exactly twice that input);
+those operations add no rounding, but the irrational physical definition remains
+approximated. Footlambert (`fl`), Oersted (`Oe`), and square degree (`°²`) use separate
+stored finite approximations; the manifest records their representations and whether
+historical rounding details are available. Decimal arithmetic preserves these stored
+ratios exactly; it does not make an approximate physical definition exact.
 
 The exact Btu (IT) definition is `1055.05585262 J`, following
 [NIST SP 811 footnote 9](https://www.nist.gov/pml/special-publication-811/nist-guide-si-footnotes).
@@ -290,15 +294,19 @@ and [Appendix B.9](https://www.nist.gov/pml/special-publication-811/nist-guide-s
 
 `Unit`, `ConversionFactor`, and `UnitDefinition` are public. The exported macro
 defines compile-time families without a runtime registry or a mandatory `uom` mapping.
-The expansion resolves `rust_decimal` and `serde` in the consumer crate, so
-external families declare both dependencies directly:
+The exact `define_unit_family!` macro resolves generated Decimal types through
+`qubit-measure`; its Serde implementation requires consumers to declare `serde`
+directly. The minimal dependencies are:
 
 ```toml
 [dependencies]
 qubit-measure = "0.8"
-rust_decimal = "1.39"
 serde = "1.0"
 ```
+
+Declare `rust_decimal` directly if your own code uses `Decimal` or invokes
+`impl_uom_unit!`. Code that uses `uom` types must also declare `uom` directly and
+enable the matching `qubit-measure` feature.
 
 ```rust
 use qubit_measure::{Unit, define_unit_family};
@@ -385,6 +393,12 @@ appropriate, then explicitly adapt the result at the persistence boundary.
 
 ## Testing
 
+The four consumer fixtures below are a manual validation flow. Each command should
+exit successfully. The first checks external macros and definition paths; the second
+checks the minimum public Decimal API; the third checks the optional `uom` bridge;
+the workspace command checks feature unification while both consumers build together.
+Root `cargo test` does not discover these separate manifests.
+
 ```bash
 # Run tests with the default feature set
 cargo test
@@ -392,7 +406,13 @@ cargo test
 # Run tests with all declared features
 cargo test --all-features
 
-# Project CI checks
+# Manually validate independent consumer fixtures (not discovered by root cargo test)
+cargo test --manifest-path fixtures/downstream-default/Cargo.toml
+cargo check --manifest-path fixtures/downstream-minimum/Cargo.toml
+cargo test --manifest-path fixtures/downstream-uom/Cargo.toml
+cargo test --manifest-path fixtures/feature-unification/Cargo.toml --workspace
+
+# Run project CI checks (current crate)
 ./.infra/bin/ci-check.sh
 
 # Check code coverage
