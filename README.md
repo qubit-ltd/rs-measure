@@ -18,6 +18,7 @@ The exact Decimal core is the default and does not compile `uom`:
 [dependencies]
 qubit-measure = "0.8"
 rust_decimal = "1.39"
+serde_json = "1.0"
 ```
 
 Enable the approximate `f64` bridge explicitly:
@@ -26,21 +27,48 @@ Enable the approximate `f64` bridge explicitly:
 [dependencies]
 qubit-measure = { version = "0.8", features = ["uom"] }
 rust_decimal = "1.39"
+serde_json = "1.0"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
 
 ```rust
-use qubit_measure::{measurement, unit};
-use rust_decimal::Decimal;
+use qubit_measure::{ConversionOptions, MeasurementError, measurement, unit};
+use rust_decimal::RoundingStrategy;
+use serde_json::json;
 
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-    let meters = length.convert_to(unit::Length::Meter)?;
-    assert_eq!(meters.value, Decimal::new(5, 1));
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Accept the user's input, retain it for storage, and derive meters for the app.
+    let original = measurement::Length::parse_strict("50.0 cm")?;
+    let meters = original.convert_to_with_options(
+        unit::Length::Meter,
+        ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven)?,
+    )?;
+    assert_eq!(meters.value.to_string(), "0.5000");
+
+    let stored = serde_json::to_value(original)?;
+    assert_eq!(stored, json!({"quantity":"length","value":"50.0","unit":"cm"}));
+    let restored: measurement::Length = serde_json::from_value(stored)?;
+    assert_eq!(restored, original);
+    assert_eq!(restored.value.to_string(), "50.0");
+    assert_eq!(restored.value.scale(), 1);
+
+    match measurement::Time::parse_strict("1 year") {
+        Err(MeasurementError::NonCanonicalUnit { canonical, .. }) => {
+            println!("Please use the canonical time unit: {canonical}");
+        }
+        result => panic!("expected a non-canonical unit error, got {result:?}"),
+    }
+    println!("{original} = {meters}");
     Ok(())
 }
 ```
 
+The stored source remains `50.0 cm`; `0.5000 m` is a derived result. The JSON is
+`{"quantity":"length","value":"50.0","unit":"cm"}`, and deserialization
+restores the original value, unit, and scale. Strict parsing rejects `1 year` as
+a non-canonical time unit and supplies the canonical replacement `a (365 d)`.
+The example prints `Please use the canonical time unit: a (365 d)` and
+`50.0 cm = 0.5000 m`.
 `Measurement<U>` stores a `Decimal` and a typed unit. The aliases in
 `measurement::*` and enums in `unit::*` cover 57 quantity families.
 
@@ -305,13 +333,15 @@ This bridge is available only with the default-off `uom` Cargo feature. Without
 that feature, `UomUnit`, `try_to_uom_approx`, `to_uom_approx`, and
 `from_uom_approx` are absent.
 Families mapped to `uom` implement `UomUnit` when enabled. The `_approx` suffix
-is intentional: each adapter first applies the `qubit-measure` exact definition
-to obtain the SI base value, then crosses `Decimal <-> f64` and may lose
-precision. This keeps the quantity's physical base value aligned with the exact
-Decimal core. A later getter for a non-base `uom` unit still follows `uom`'s own
+is intentional: the adapters cross `Decimal <-> f64` and may lose precision.
+Outbound conversion performs the definition's affine arithmetic as an exact
+rational calculation, then converts the base value to `f64`. Inbound conversion
+starts from an existing `f64` base value and uses an approximate reverse
+calculation. A later getter for a non-base `uom` unit follows `uom`'s own
 coefficient, so its displayed number may differ when the two libraries define
-that named unit differently. Persisted unit conversion through `convert_to`
-does not use this bridge.
+that named unit differently. Floating-point precision loss means a round trip
+through `to_uom_approx` and `from_uom_approx` is not guaranteed to be an identity.
+Persisted unit conversion through `convert_to` does not use this bridge.
 
 External `UomUnit` implementations must implement `try_to_uom_approx`, which
 returns the definition error. The default `to_uom_approx` convenience wrapper

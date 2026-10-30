@@ -18,6 +18,7 @@
 [dependencies]
 qubit-measure = "0.8"
 rust_decimal = "1.39"
+serde_json = "1.0"
 ```
 
 需要近似 `f64` 桥接时显式启用：
@@ -26,21 +27,46 @@ rust_decimal = "1.39"
 [dependencies]
 qubit-measure = { version = "0.8", features = ["uom"] }
 rust_decimal = "1.39"
+serde_json = "1.0"
 uom = { version = "0.38", default-features = false, features = ["f64", "si", "std"] }
 ```
 
 ```rust
-use qubit_measure::{measurement, unit};
-use rust_decimal::Decimal;
+use qubit_measure::{ConversionOptions, MeasurementError, measurement, unit};
+use rust_decimal::RoundingStrategy;
+use serde_json::json;
 
-fn main() -> Result<(), qubit_measure::MeasurementError> {
-    let length = measurement::Length::new(Decimal::new(500, 1), unit::Length::Centimeter);
-    let meters = length.convert_to(unit::Length::Meter)?;
-    assert_eq!(meters.value, Decimal::new(5, 1));
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // 接收用户输入并保留原单位持久化，同时为应用生成米值。
+    let original = measurement::Length::parse_strict("50.0 cm")?;
+    let meters = original.convert_to_with_options(
+        unit::Length::Meter,
+        ConversionOptions::fixed_scale(4, RoundingStrategy::MidpointNearestEven)?,
+    )?;
+    assert_eq!(meters.value.to_string(), "0.5000");
+
+    let stored = serde_json::to_value(original)?;
+    assert_eq!(stored, json!({"quantity":"length","value":"50.0","unit":"cm"}));
+    let restored: measurement::Length = serde_json::from_value(stored)?;
+    assert_eq!(restored, original);
+    assert_eq!(restored.value.to_string(), "50.0");
+    assert_eq!(restored.value.scale(), 1);
+
+    match measurement::Time::parse_strict("1 year") {
+        Err(MeasurementError::NonCanonicalUnit { canonical, .. }) => {
+            println!("请使用规范时间单位：{canonical}");
+        }
+        result => panic!("预期得到非规范单位错误，实际为 {result:?}"),
+    }
+    println!("{original} = {meters}");
     Ok(())
 }
 ```
 
+保存的数据仍是原始输入 `50.0 cm`，`0.5000 m` 只是派生结果。JSON 为
+`{"quantity":"length","value":"50.0","unit":"cm"}`；反序列化后会恢复原值、单位和
+scale。严格解析会拒绝非规范时间输入 `1 year`，并提供规范替代值 `a (365 d)`。
+示例会输出“请使用规范时间单位：a (365 d)”以及 `50.0 cm = 0.5000 m`。
 `Measurement<U>` 保存一个 `Decimal` 和一个类型化单位。`measurement::*` 中的别名与
 `unit::*` 中的枚举覆盖 57 个 quantity family。
 
@@ -272,11 +298,12 @@ fn main() -> Result<(), qubit_measure::MeasurementError> {
 
 该桥接只在显式启用默认关闭的 `uom` Cargo feature 后存在。未启用时，`UomUnit`、
 `try_to_uom_approx`、`to_uom_approx` 和 `from_uom_approx` 均不在 API 中。启用后，
-映射到 `uom` 的 family 会实现 `UomUnit`。`_approx` 后缀是有意设计：这些适配器会跨越
-`Decimal <-> f64`，因此可能损失精度。适配器会先按 `qubit-measure` 的精确定义得到
-SI 基单位值，所以 quantity 的物理基准值与精确 Decimal 核心一致；但之后若通过
-`uom` 自带的非基准单位 getter 读取，当两个库对同名单位的定义不同时，显示数值仍按
-`uom` 自身的系数计算。持久化单位换算 `convert_to` 不使用该桥接。
+映射到 `uom` 的 family 会实现 `UomUnit`。`_approx` 后缀是有意设计：适配器会跨越
+`Decimal <-> f64`，因此可能损失精度。出站换算先依据单位定义进行精确有理仿射运算，再将
+基准值转成 `f64`。入站换算从已有的 `f64` 基准值开始，使用近似反向计算。之后若通过
+`uom` 自带的非基准单位 getter 读取，仍按 `uom` 自身的系数计算；两个库对同名单位定义不同时，
+显示数值可能不同。浮点精度损失也意味着经过 `to_uom_approx` 和 `from_uom_approx` 往返不保证
+恒等。持久化单位换算 `convert_to` 不使用该桥接。
 
 外部 `UomUnit` 实现必须实现 `try_to_uom_approx`，以便返回 definition 错误；默认提供的
 `to_uom_approx` 是便捷包装，只要 fallible 方法返回错误就会 panic。
