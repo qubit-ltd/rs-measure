@@ -18,15 +18,8 @@ use qubit_measure_downstream_default_fixture::DefaultFixtureUnit;
 /// * `numerator` - Expected exact factor numerator.
 /// * `denominator` - Expected exact factor denominator.
 /// * `offset` - Expected exact conversion offset.
-fn assert_definition(
-    unit: DefaultFixtureUnit,
-    numerator: &str,
-    denominator: &str,
-    offset: &str,
-) {
-    let definition = unit
-        .definition()
-        .expect("fixture unit definition should be valid");
+fn assert_definition(unit: DefaultFixtureUnit, numerator: &str, denominator: &str, offset: &str) {
+    let definition = unit.definition().expect("fixture unit definition should be valid");
     assert_eq!(definition.factor().numerator().to_string(), numerator);
     assert_eq!(definition.factor().denominator().to_string(), denominator);
     assert_eq!(definition.offset().to_string(), offset);
