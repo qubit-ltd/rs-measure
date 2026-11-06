@@ -44,6 +44,11 @@ use crate::measure::internal::parse_measurement_text;
 /// string; callers needing payload or pre-allocation limits must configure
 /// them at the transport or deserializer boundary.
 ///
+/// # Type Parameters
+///
+/// * `U` - Unit family that determines the measurement's quantity and valid
+///   unit values.
+///
 /// Derived [`PartialEq`] and [`Eq`] compare the stored Decimal and unit fields,
 /// not their converted physical values. Use [`Measurement::equivalent_to`] or
 /// [`Measurement::try_cmp_exact`] for exact cross-unit semantics.
@@ -404,6 +409,10 @@ where
 {
     /// Serializes the stable quantity, Decimal string, and canonical unit.
     ///
+    /// # Type Parameters
+    ///
+    /// * `S` - Serializer that writes the measurement record.
+    ///
     /// # Parameters
     ///
     /// * `serializer` - Serde serializer receiving the three-field record.
@@ -433,6 +442,10 @@ where
     U: Unit,
 {
     /// Deserializes and validates the three-field persistence representation.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `D` - Deserializer that reads the persisted measurement record.
     ///
     /// # Parameters
     ///
@@ -487,6 +500,9 @@ impl<U> FromStr for Measurement<U>
 where
     U: Unit,
 {
+    /// The error returned when parsing a string into this typed measurement
+    /// fails. Parsing errors retain the measurement parser's classified
+    /// syntax, value, size, and unit failure information.
     type Err = MeasurementError;
 
     /// Parses a typed measurement written as `<decimal><unit>` or `<decimal>

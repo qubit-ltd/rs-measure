@@ -41,6 +41,8 @@ impl From<Duration> for Measurement<Time> {
 }
 
 impl TryFrom<Measurement<Time>> for Duration {
+    /// Errors raised when an exact time measurement cannot be represented as a
+    /// duration.
     type Error = MeasurementError;
 
     /// Converts an exact time measurement into a standard duration.

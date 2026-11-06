@@ -227,6 +227,11 @@ fn negative_exponent_scale(exponent: i64) -> u32 {
 
 /// Deserializes a string containing an exactly representable Decimal.
 ///
+/// # Type Parameters
+///
+/// * `'de` - Lifetime of data borrowed by the deserializer.
+/// * `D` - Deserializer that provides the input string and its error type.
+///
 /// # Parameters
 ///
 /// * `deserializer` - Serde deserializer providing the Decimal string.
@@ -249,6 +254,11 @@ where
 }
 
 /// Deserializes a string subject to the default measurement text byte limit.
+///
+/// # Type Parameters
+///
+/// * `'de` - Lifetime of data borrowed by the deserializer.
+/// * `D` - Deserializer that provides the input string and its error type.
 ///
 /// # Parameters
 ///

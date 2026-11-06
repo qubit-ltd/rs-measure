@@ -126,7 +126,11 @@ pub enum MeasurementError {
 
     /// Floating-point-to-decimal conversion failed.
     #[error("f64 value cannot be represented as Decimal: {0}")]
-    DecimalConversion(String),
+    DecimalConversion(
+        /// Text representation of the floating-point value that could not be
+        /// converted.
+        String,
+    ),
 
     /// The requested Decimal scale exceeds the supported limit.
     #[error("invalid Decimal scale {scale}; maximum is {max}")]

@@ -149,6 +149,14 @@ fn decimal_as_rational(value: Decimal) -> BigRational {
 
 /// Tests whether an exact rational lies within Decimal's closed value range.
 ///
+/// # Parameters
+///
+/// * `value` - Exact rational value to check before Decimal conversion.
+///
+/// # Returns
+///
+/// `true` when `value` is within Decimal's inclusive minimum and maximum.
+///
 /// This check must precede Decimal rounding so an out-of-range rational cannot
 /// round back to Decimal::MIN or Decimal::MAX.
 fn fits_decimal_range(value: &BigRational) -> bool {

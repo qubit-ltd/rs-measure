@@ -135,6 +135,9 @@ impl ConversionOptions {
 }
 
 impl Default for ConversionOptions {
+    /// Returns the default maximum-precision conversion policy.
+    ///
+    /// This is equivalent to [`ConversionOptions::DEFAULT`].
     #[inline(always)]
     fn default() -> Self {
         Self::DEFAULT

@@ -23,6 +23,11 @@ use crate::Unit;
 
 /// Serializes a measurement as canonical `<value> <unit>` text.
 ///
+/// # Type Parameters
+///
+/// * `S` - Serializer that receives the formatted string.
+/// * `U` - Unit family that supplies the measurement's canonical symbol.
+///
 /// # Parameters
 ///
 /// * `measurement` - Typed measurement to format with its canonical unit.
@@ -49,6 +54,12 @@ where
 /// The default measurement text byte limit applies after Serde constructs the
 /// string. Transport and pre-allocation limits remain the caller's
 /// responsibility.
+///
+/// # Type Parameters
+///
+/// * `'de` - Lifetime of data borrowed by the deserializer.
+/// * `D` - Deserializer that provides the compact string.
+/// * `U` - Unit family used to type the parsed measurement.
 ///
 /// # Parameters
 ///
@@ -91,6 +102,11 @@ pub mod option {
 
     /// Serializes an optional measurement as canonical text or `null`.
     ///
+    /// # Type Parameters
+    ///
+    /// * `S` - Serializer that receives the string or `null`.
+    /// * `U` - Unit family that supplies the measurement's canonical symbol.
+    ///
     /// # Parameters
     ///
     /// * `measurement` - Optional typed measurement to serialize.
@@ -113,6 +129,12 @@ pub mod option {
     }
 
     /// Deserializes optional canonical text from a string or `null`.
+    ///
+    /// # Type Parameters
+    ///
+    /// * `'de` - Lifetime of data borrowed by the deserializer.
+    /// * `D` - Deserializer that provides a string or `null`.
+    /// * `U` - Unit family used to type the parsed measurement.
     ///
     /// # Parameters
     ///

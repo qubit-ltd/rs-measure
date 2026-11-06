@@ -90,6 +90,8 @@ impl From<usize> for Measurement<Information> {
 }
 
 impl TryFrom<Measurement<Information>> for u64 {
+    /// Error returned when the measurement is negative, fractional, or out of
+    /// range.
     type Error = MeasurementError;
 
     /// Converts an information measurement into an exact `u64` byte count.
@@ -119,6 +121,8 @@ impl TryFrom<Measurement<Information>> for u64 {
 }
 
 impl TryFrom<Measurement<Information>> for usize {
+    /// Error returned when the measurement is negative, fractional, or out of
+    /// range.
     type Error = MeasurementError;
 
     /// Converts an information measurement into an exact `usize` byte count.
