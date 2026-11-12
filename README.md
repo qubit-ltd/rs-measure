@@ -403,11 +403,12 @@ appropriate, then explicitly adapt the result at the persistence boundary.
 
 ## Testing
 
-The four consumer fixtures below are a manual validation flow. Each command should
-exit successfully. The first checks external macros and definition paths; the second
-checks the minimum public Decimal API; the third checks the optional `uom` bridge;
-the workspace command checks feature unification while both consumers build together.
-Root `cargo test` does not discover these separate manifests.
+The project CI check runs all four independent consumer fixtures through its
+`project-hook` task. Root `cargo test` does not discover these separate manifests;
+the commands below are also useful for running the checks locally. The first checks
+external macros and definition paths; the second checks the minimum public Decimal
+API; the third checks the optional `uom` bridge; the workspace command checks feature
+unification while both consumers build together.
 
 ```bash
 # Run tests with the default feature set
@@ -416,7 +417,7 @@ cargo test
 # Run tests with all declared features
 cargo test --all-features
 
-# Manually validate independent consumer fixtures (not discovered by root cargo test)
+# Locally validate independent consumer fixtures (also run by the project CI hook)
 cargo test --manifest-path fixtures/downstream-default/Cargo.toml
 cargo check --manifest-path fixtures/downstream-minimum/Cargo.toml
 cargo test --manifest-path fixtures/downstream-uom/Cargo.toml

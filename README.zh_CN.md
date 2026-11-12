@@ -358,9 +358,10 @@ fn main() {
 
 ## 测试
 
-以下四组消费者夹具组成手动验证流程，每条命令都应成功退出。第一条检查外部宏和定义路径；
+项目 CI 检查会通过 `project-hook` 任务运行全部四组独立消费者夹具。根目录的 `cargo test`
+不会自动发现这些独立 manifest；以下命令也可用于本地运行。第一条检查外部宏和定义路径；
 第二条检查最小公开 Decimal API；第三条检查可选 `uom` 桥接；最后一条在同时构建两个消费者时
-检查 feature 统一行为。根目录的 `cargo test` 不会自动发现这些独立 manifest。
+检查 feature 统一行为。
 
 ```bash
 # 使用默认 feature 集运行测试
@@ -369,7 +370,7 @@ cargo test
 # 使用项目声明的全部 feature 运行测试
 cargo test --all-features
 
-# 独立消费者夹具（手动运行；根 cargo test 不会自动发现）
+# 本地运行独立消费者夹具（项目 CI hook 也会运行）
 cargo test --manifest-path fixtures/downstream-default/Cargo.toml
 cargo check --manifest-path fixtures/downstream-minimum/Cargo.toml
 cargo test --manifest-path fixtures/downstream-uom/Cargo.toml
