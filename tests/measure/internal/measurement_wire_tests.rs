@@ -82,6 +82,42 @@ fn test_measurement_wire_rejects_malformed_decimal_text() {
     }
 }
 
+#[test]
+fn test_measurement_wire_syntax_takes_precedence_over_mantissa_overflow() {
+    let nines = "9".repeat(40);
+    let zeroes = "0".repeat(40);
+    for value in [
+        format!("{nines}_"),
+        format!("_{nines}"),
+        format!("{nines}..0"),
+        format!("1..{nines}"),
+        format!("1{zeroes}1_"),
+    ] {
+        let error = from_value::<measurement::Length>(json!({
+            "quantity": "length", "value": value, "unit": "m",
+        }))
+        .expect_err("malformed coefficient must be rejected");
+        assert!(
+            error.to_string().contains("invalid measurement syntax"),
+            "unexpected error for {value:?}: {error}",
+        );
+    }
+}
+
+#[test]
+fn test_measurement_wire_valid_mantissa_overflow_remains_unrepresentable() {
+    for value in ["9".repeat(40), format!("1{}1", "0".repeat(40))] {
+        let error = from_value::<measurement::Length>(json!({
+            "quantity": "length", "value": value, "unit": "m",
+        }))
+        .expect_err("unrepresentable coefficient must be rejected");
+        assert!(
+            error.to_string().contains("cannot be represented exactly as Decimal"),
+            "unexpected error for {value:?}: {error}",
+        );
+    }
+}
+
 /// Verifies that every persisted string field uses the default byte limit.
 #[test]
 fn test_measurement_wire_rejects_oversized_string_fields() {

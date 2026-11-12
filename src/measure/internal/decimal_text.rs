@@ -108,7 +108,9 @@ fn parse_scientific_exponent(value: &str) -> Option<i64> {
 ///
 /// # Errors
 ///
-/// Returns a classified syntax or exact-representation error.
+/// Returns a syntax error for malformed grammar, or an exact-representation
+/// error after the complete coefficient has been checked when its mantissa is
+/// too large.
 fn parse_decimal_base(value: &str) -> Result<(u128, usize, usize, bool), MeasurementError> {
     let bytes = value.as_bytes();
     let (negative, start) = decimal_sign(bytes);
@@ -117,6 +119,7 @@ fn parse_decimal_base(value: &str) -> Result<(u128, usize, usize, bool), Measure
     let mut fraction_digits = 0_usize;
     let mut has_digit = false;
     let mut after_decimal_point = false;
+    let mut overflowed = false;
 
     for &byte in &bytes[start..] {
         match byte {
@@ -129,15 +132,30 @@ fn parse_decimal_base(value: &str) -> Result<(u128, usize, usize, bool), Measure
             b'1'..=b'9' => {
                 has_digit = true;
                 fraction_digits += usize::from(after_decimal_point);
-                mantissa = append_decimal_zeroes(mantissa, trailing_zeroes)?;
+                if !overflowed {
+                    match append_decimal_zeroes(mantissa, trailing_zeroes) {
+                        Ok(value) => mantissa = value,
+                        Err(MeasurementError::UnrepresentableMeasurementValue) => overflowed = true,
+                        Err(error) => return Err(error),
+                    }
+                }
                 trailing_zeroes = 0;
-                mantissa = append_decimal_digit(mantissa, byte - b'0')?;
+                if !overflowed {
+                    match append_decimal_digit(mantissa, byte - b'0') {
+                        Ok(value) => mantissa = value,
+                        Err(MeasurementError::UnrepresentableMeasurementValue) => overflowed = true,
+                        Err(error) => return Err(error),
+                    }
+                }
             }
             _ => return Err(MeasurementError::InvalidMeasurementSyntax),
         }
     }
     if !has_digit {
         return Err(MeasurementError::InvalidMeasurementSyntax);
+    }
+    if overflowed {
+        return Err(MeasurementError::UnrepresentableMeasurementValue);
     }
     Ok((mantissa, trailing_zeroes, fraction_digits, negative))
 }
