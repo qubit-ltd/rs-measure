@@ -6,5 +6,5 @@ rust-version = "1.94"
 publish = false
 
 [dependencies]
-qubit-measure = { path = "../../.." }
+qubit-measure = { path = "../../../", version = "^0.8" }
 serde = "^1.0"
