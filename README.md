@@ -239,7 +239,17 @@ rejects negative, subnanosecond, and out-of-range measurements without rounding.
 This adapter is not a replacement for a `Duration` codec. `Measurement<Time>` uses the
 three-field measurement record `{"quantity","value","unit"}` and accepts only the
 canonical unit symbol during Serde deserialization. For existing `std::time::Duration`
-fields, use [`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
+fields, use the codecs provided by `qubit-datatype` and enable its `duration` feature
+(it is not enabled by default). If deriving Serde for your configuration structs, add
+these dependencies:
+
+```toml
+[dependencies]
+qubit-datatype = { version = "0.15", features = ["duration"] }
+serde = { version = "1.0", features = ["derive"] }
+```
+
+Use [`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
 for exact unit-suffixed text that preserves submillisecond precision, or
 [`qubit_datatype::serde::duration_millis`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_millis.rs)
 for a `u64` millisecond count rounded to nearest with half-up ties (for example,

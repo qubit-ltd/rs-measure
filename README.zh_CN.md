@@ -215,8 +215,16 @@ fn main() -> Result<(), qubit_measure::MeasurementError> {
 
 该适配不能替代 `Duration` 专用 codec。`Measurement<Time>` 使用
 `{"quantity","value","unit"}` 三字段 measurement 记录，Serde 反序列化只接受规范单位
-符号。已有的 `std::time::Duration` 字段可按格式需求选择：使用
-[`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
+符号。已有的 `std::time::Duration` 字段可按格式需求选择 `qubit-datatype` 提供的 codec；
+该 crate 默认不启用 `duration`，必须显式开启。若配置结构体使用 Serde 派生，请添加以下依赖：
+
+```toml
+[dependencies]
+qubit-datatype = { version = "0.15", features = ["duration"] }
+serde = { version = "1.0", features = ["derive"] }
+```
+
+使用 [`qubit_datatype::serde::duration_with_unit`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_with_unit.rs)
 序列化为带单位文本，可精确保留亚毫秒精度；若业务有意舍弃亚毫秒精度，可使用
 [`qubit_datatype::serde::duration_millis`](https://github.com/qubit-ltd/rs-datatype/blob/main/src/serde/duration_millis.rs)
 序列化为 `u64` 毫秒数，该格式按最近值舍入，恰好一半时向上舍入（例如 1500 µs → 2 ms）。
